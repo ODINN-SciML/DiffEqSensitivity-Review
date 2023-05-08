@@ -1,0 +1,75 @@
+
+
+This is a generalization of the adjoint state method to the continuous domain, where now instead we are going to define an adjoint $\lambda(t)$ that is a function of time and that solves its own set of differential equations \cite{ma_comparison_2021}. %\footnote{Based on slides of Chris Rackauckas about "Data Efficient model discovery with Scientific Machine Learning", Neural ODE paper, video "The use and practice of scientific machine learning". Paper comparing CSA and DSA} 
+Consider an integrated loss function of the form 
+\begin{equation}
+    L(u; \theta) = \int_{t_0}^{t_1} h(u(t;\theta), \theta) dt,
+\end{equation}
+which includes the simple case of the loss function $\mathcal L_k(\theta)$ in Equation \eqref{eq:loss}. 
+%We define the variations of the loss function with respect to the solution of the differential equation as the adjoint, given by\footnote{It is common to use both $\lambda(t)$ and $a(t)$ to refer to the adjoint. In order to keep consistency with the adjoint state method and since the choice of $\lambda(t)$ resembles to the Lagrange multipliers employed by this method, we are going to keep this notation.}
+%\begin{equation}
+%    \lambda(t) = \frac{\partial L}{\partial u(t)}
+%\end{equation}
+Using the Lagrange multiplier trick, we can write a new loss function $I(\theta)$ identical to $L(\theta)$ as 
+\begin{equation}
+    I(\theta) = L(\theta) - \int_{t_0}^{t_1} \lambda(t)^T \left( \frac{du}{dt} - f(u, t, \theta) \right) dt
+\end{equation}
+where $\lambda(t) \in \mathbb R^n$ is the Lagrange multiplier of the continuous constraint defined by the differential equation. Now, 
+\begin{equation}
+    \frac{dL}{d\theta} = \frac{dI}{d\theta} = 
+    \int_{t_0}^{t_1} \left( \frac{\partial h}{\partial \theta} + \frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta} \right) dt
+    - 
+    \int_{t_0}^{t_1} \lambda(t)^T \left( \frac{d}{dt} \frac{du}{d\theta} - \frac{\partial f}{\partial u} \frac{du}{d\theta} - \frac{\partial f}{\partial \theta} \right) dt.
+\end{equation}
+Notice that the term involved in the second integral is the same we found when deriving the sensitivity equations. 
+We can derive an easier expression for the last term using integration by parts. 
+Using our usual definition of the sensitivity $s = \frac{du}{d\theta}$, and performing integration by parts in the term $\lambda^T \frac{d}{dt} \frac{du}{d\theta}$ we derive 
+\begin{equation}
+    \frac{dL}{d\theta}
+    = 
+    \int_{t_0}^{t_1} \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt
+    - 
+    \int_{t_0}^{t_1} \left( - \frac{d\lambda^T}{dt} - \lambda^T \frac{\partial f}{\partial u} - \frac{\partial h}{\partial u} \right) \, s(t) \, dt
+    -
+    \bigg ( \lambda(t_1)^T s(t_1) - \lambda(t_0)^T s(t_0) \bigg ).
+    \label{eq:continous-adjoint-loss}
+\end{equation}
+Now, we can force some of the terms in the last equation to be zero by solving the following adjoint differential equation for $\lambda(t)^T$ in backwards mode
+\begin{equation}
+    \frac{d\lambda}{d\theta} = - \left(\frac{\partial f}{\partial u}\right)^T \lambda - \left( \frac{\partial h}{\partial u} \right)^T,
+    \label{eq:continuous-adjoint}
+\end{equation}
+with final condition $\lambda(t_1) = 0$. Then, in order to compute the full gradient $\frac{dL}{d\theta}$ we do
+\begin{enumerate}
+    \item Solve the original differential equation $\frac{du}{dt} = f(u, t, \theta)$;
+    \item Solve the backwards adjoint differential equation \eqref{eq:continuous-adjoint};
+    \item Compute the simplified version of the full gradient in Equation \eqref{eq:continous-adjoint-loss} as
+    \begin{equation}
+        \frac{dL}{d\theta} = \lambda^T (t_0) s(t_0) + \int_{t_0}^{t_1}  \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right)  dt.
+    \end{equation}
+\end{enumerate}
+In order to solve the adjoint equation, we need to know $u(t)$ at any given time. There are different ways in which we can accomplish this: i) we can solve for $u(t)$ again backwards; ii) we can store $u(t)$ in memory during the forward step; or iii) we can do checkpointing to save some reference values in memory and interpolate in between. 
+Computing the ODE backwards can be unstable and lead to exponential errors, \cite{kim_stiff_2021}. 
+In \cite{chen_neural_2019}, the solution is recalculated backwards together with the adjoint simulating an augmented dynamics: 
+\begin{equation}
+    \frac{d}{dt}
+    \begin{bmatrix}
+       u \\
+       \lambda \\
+       \frac{dL}{d\theta}
+    \end{bmatrix}
+    = 
+    \begin{bmatrix}
+       -f \\
+       - \lambda^T \frac{\partial f}{\partial u} \\
+       - \lambda^T \frac{\partial f}{\partial \theta}
+    \end{bmatrix}
+    = 
+    - [ 1, \lambda^T, \lambda^T ]
+    \begin{bmatrix}
+       f & \frac{\partial f}{\partial u} & \frac{\partial f}{\partial \theta} \\
+       0 & 0 & 0 \\
+       0 & 0 & 0
+    \end{bmatrix},
+\end{equation}
+with initial condition $[u(t_1), \frac{\partial L}{\partial u(t_1)}, 0]$. One way of solving this system of equations that ensures stability is by using implicit methods. However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. Two alternatives are proposed in \cite{kim_stiff_2021}, the first one called \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, then solve for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step. This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. A second but similar approach is to use a implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. This method also will have complexity $\mathcal O (n^3 + p)$.

@@ -1,0 +1,23 @@
+An easy way to derive an expression for the sensitivity $s$ is by deriving the sensitivity equations \cite{ramsay2017dynamic}, a method also referred to as continuous local sensitivity analysis (CSA). If we consider the original system of ODEs and we differentiate with respect to $\theta$, we then obtain
+\begin{equation}
+ \frac{d}{d\theta} \frac{du}{dt} 
+ =
+ \frac{d}{d\theta} f(u(\theta), \theta, t)
+ = 
+ \frac{\partial f}{\partial \theta}
+ + 
+ \frac{\partial f}{\partial u} \frac{\partial u}{\partial \theta},
+\end{equation}
+that is
+\begin{equation}
+ \frac{ds}{dt} = \frac{\partial f}{\partial u} s + \frac{\partial f}{\partial \theta}.
+ \label{eq:sensitivity_equations}
+\end{equation}
+By solving the sensitivity equation at the same time we solve the original differential equation for $u(t)$, we ensure that by the end of the forward step we have calculated both $u(t)$ and $s(t)$. This also implies that as we solve the model forward, we can ensure the same level of numerical precision for the two of them.
+
+In opposition to the methods previously introduced, the sensitivity equations find the gradient by solving a new set of continuous differential equations. Notice also that the obtained sensitivity $s(t)$ can be evaluated at any given time $t$. This method can be labeled as forward, since we solve both $u(t)$ and $s(t)$ as we solve the differential equation forward in time, without the need of backtracking any operation though the solver.
+
+
+For systems of equations with few number of parameters, this method is useful since the system of equations composed by Equations \eqref{eq:original_ODE} and \eqref{eq:sensitivity_equations} can be solved in $\mathcal O (np)$ using the same precision for both solution and sensitivity numerical evaluation. Furthermore, this method does not required saving the solution in memory, so it can be solved purely in forward mode without backtracking operations.
+
+%Notice that since $s(t)$ is a matrix of size $n \times p$, the complexity of solving the sensitivity equation scales as $\mathcal O(np)$. From a computational perspective, the sensitivity $s$ appears in the sensitivity equation as a VJP, meaning the the term $\frac{\partial f}{\partial u} s$ can be efficiently computed using backwards automatic differentiation. 

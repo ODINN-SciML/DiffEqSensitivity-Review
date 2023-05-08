@@ -1,0 +1,63 @@
+The adjoint state method is another example of a forward discrete method, but that computes exact gradient by computationally effectively solving a new set of equations (the adjoint equation) before computing the gradient.
+Just as for forward automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
+In order to apply the state adjoin method as we solve numerically a system of differential equations, we differentiate
+a given loss function with respect to one state or evaluation in time of the full solution $u(t;\theta)$. Let's denote $u = u(\tau, \theta)$ the state of the solution at some given time $\tau$. We are interested in differentiating a function $h(u, \theta)$ constrained to satisfy the algebraic equation $g(u, \theta)=0$.\footnote{A useful tutorial on this is provided in \url{https://www.youtube.com/watch?v=wNiulgucIbc}.}
+This constraint may come form the numerical scheme we use to solve the differential equation. For an explicit scheme, this may look like $u = u(\tau; \theta) = (I + \Delta \tau \, K) \, u(t - \tau)$, with $u$ being the updated solution when we move $\Delta t$ forward in time following some numerical scheme defined by a matrix $K$. Now,
+\begin{equation}
+ \frac{dh}{d\theta} = \frac{\partial h}{\partial \theta} + \frac{\partial h }{\partial u} \frac{\partial u}{\partial \theta},
+ \label{eq:dhdtheta0}
+\end{equation}
+and also for the constraint $g(u, \theta)=0$ we can derive
+\begin{equation}
+ \frac{dg}{d\theta} = 0 = \frac{\partial g}{\partial \theta} + \frac{\partial g}{\partial u} \frac{\partial u}{\partial \theta}
+ \quad \Rightarrow \quad
+ \frac{\partial u}{\partial \theta} = - \left( \frac{\partial g}{\partial u} \right)^{-1} \frac{\partial g}{\partial \theta}.
+\end{equation}
+If we replace this last expression into equation \eqref{eq:dhdtheta0}, we obtain
+\begin{equation}
+ \frac{dh}{d\theta} 
+ =
+ \frac{\partial h}{\partial \theta} - \frac{\partial h}{\partial u} \left( \frac{\partial g}{\partial u} \right)^{-1} \frac{\partial g}{\partial \theta}.
+    \label{eq:dhdtheta}
+\end{equation}
+Now, let's define the adjoint $\lambda(t)$ as the solution of the linear system of equations 
+\begin{equation}
+    \left( \frac{\partial g}{\partial u}\right)^T \lambda =  \left( \frac{\partial h}{\partial u} \right)^T,
+\end{equation}
+that is,
+\begin{equation}
+    \lambda^T = \frac{\partial h}{\partial u} \left( \frac{\partial g}{\partial u} \right)^{-1}.
+    \label{eq:def_adjoint}
+\end{equation}
+Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta}, we obtain 
+\begin{equation}
+    \frac{dh}{d\theta} 
+    =
+    \frac{\partial h}{\partial \theta} - \lambda^T \frac{\partial g}{\partial \theta}.
+\end{equation}
+The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial g}{\partial u} \frac{\partial u}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
+Let's see this by considering the simple example of a linear system of equations. Suppose that the constraint $g(u, \theta)=0$ takes the form $A(\theta) u = b(\theta)$ \cite{Johnson}. In that case, we have
+\begin{equation}
+    \frac{\partial g}{\partial \theta} = \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta},
+\end{equation}
+so the gradient can be computed as 
+\begin{equation}
+    \frac{dh}{d\theta} = \frac{\partial h}{\partial \theta} - \lambda^T \left( \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta} \right)
+    \label{eq:dhdtheta_linear}
+\end{equation}
+with $\lambda$ the solution of the linear system 
+\begin{equation}
+    A(\theta)^T \lambda = \frac{\partial h}{\partial u}^T.
+\end{equation}
+This is a linear system of equations with the same size of the original $Au = b$, but involving the adjoint matrix $A^T$. Computationally this also means that if we can solve the original system then we can also solve the adjoint (for example, with LU factorization $A=LU$ we have $A^T=U^TL^T$).
+This example also allows us to see the improvement  in efficiency achieved by first computing the adjoint and then the full gradient. For a linear constraint, equation \eqref{eq:dhdtheta_linear} becomes
+\begin{equation}
+    \frac{dh}{d\theta} = \frac{\partial h}{\partial \theta} - 
+    \underbrace{\frac{\partial h}{\partial u}}_{1 \times n}
+    \underbrace{A^{-1}}_{n \times n} 
+    \underbrace{\left( \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta} \right)}_{n \times p}.
+    \label{eq:state_method_linear}
+\end{equation}
+Computing first the last product will cost $O(n^2p)$ to generate a $n \times p$ matrix. On the other side, if first we solve the first two terms in the product, this will cost $O(n)$ and them the product will be just $O(np)$. In order words, it is easy to compute the full gradient if we treat the last term in equation \eqref{eq:state_method_linear} as a VJP. 
+
+In order to compute the gradient of the full solution of the differential equation, we apply this method sequentially using the chain rule. One single step of the state method can be understood as the chain of operations $\theta \mapsto g \mapsto u \mapsto L$. This allows us to create adjoints for any primitive function $g$ (i.e. the numerical solver scheme) we want, and then incorporated it as a unit of any AD program. 

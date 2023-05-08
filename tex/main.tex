@@ -1,0 +1,89 @@
+\documentclass[12pt]{article}
+
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-0.5in}
+\setlength{\textheight}{9in}
+
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}% Include figure files
+\usepackage{caption}
+\usepackage{color}% Include colors for document elements
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{apacite}
+\usepackage{algorithm}
+
+% for fancy Mike style table
+\usepackage[table]{xcolor} 
+\usepackage{multirow}
+
+% \bibliographystyle{apacite} 
+% \hypersetup{colorlinks = true, citecolor = black, urlcolor = blue}
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{bibliography.bib}
+
+% package for drawing graphs
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+
+\definecolor{background-color}{gray}{0.98}
+\definecolor{charlesBlue}{RGB}{100, 155, 255}
+
+
+\title{A Review of Sentitivity Methods \\ for Differential Equations}
+
+\input{contributors}
+
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\hfill \break
+\thanks
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+\normalsize
+
+\clearpage
+
+\tableofcontents
+\clearpage
+
+\section{Introduction}
+\input{sections/introduction}
+
+\section{Finite differences}
+\input{sections/finite-differences}
+
+\section{Automatic Differentiation}
+\input{sections/automatic-differentiation}
+
+\section{Sensitivity Equations}
+\input{sections/sensitivity-equation}
+
+\section{Adjoint state method}
+\input{sections/adjoint-state}
+
+\section{Continous Adjoint Sensitivity Analysis (CASA)}
+\input{sections/adjoint-continuous}
+
+
+\section{Do we need full gradients?}
+
+\section{Open Science form Scratch}
+
+\printbibliography
+
+\end{document}
