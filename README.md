@@ -1,13 +1,13 @@
 # A Review of Sensitivity Methods for Differential Equations 
 
 This respository contains all the text, code and figures used for the review paper about sentitivity methods for differential equations. This topic received different names in different communities, but the core problem is very simple and important. Given a system of differential equations 
-$$
+```math
 \frac{du}{dt} = f(u, \theta, t),
-$$
+```math
 with $u \in \mathbb R^n$ the unknow solution and $\theta \in \mathbb R^p$ a vector of parameters, how do we compute the gradient of a loss function 
-$$
+$$$
 \mathcal L (\theta) = L ( u(\cdot, \theta) )
-$$
+$$$
 with respect to the parameters $\theta$ of the dynamical model? 
 
 ## Open Science from Scratch: contribute to the project! 
