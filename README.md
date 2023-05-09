@@ -34,7 +34,8 @@ This repository is organized in a way that contains most of the important elemen
 
 ### Makefile
 
-Make is an old but very useful technology that allows automation of computing processes. From the directory where you have this respository you can enter `make file` from a terminal to display the different functionalities currently supported in our `Makefile`. We currently support the following operations: 
+Make is an old but very useful technology that allows automation of computing processes. From the directory where you have this respository you can enter `make help` from a terminal to display the different functionalities currently supported in our `Makefile`. We currently support the following operations:
+- `make tex`: Compiles the `main.tex` latex file inside the folder `tex` with its respective bibliografy, deletes auxiliaries files in the process and them move the generated pdf file to the home directory. 
 
 ## Open Science from Scratch: contribute to the project! 
 
