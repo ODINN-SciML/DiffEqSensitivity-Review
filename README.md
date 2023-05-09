@@ -49,11 +49,14 @@ Some **content** with _Markdown_ `syntax`.
 
 :::
  -->
- 
-### Contribute 
 
 We encourage contributors to participate in this project! If you are interested in contributing, there are many ways in which you can help build this:
-- Open `Issues` in this repository to report bugs, 
+- :collision: **Report bugs in the code.** You can report problems with the code by oppening issues under the `Issues` tabin this repository. Please explain the problem you encounter and try to give a complete description of it so we can follow up on that.  
+- :books: **Suggest new bibliography.** If you are aware of references that may be useful to explore and expand this review, you can report it by creating an `Issue` in this repository, with the title of the issue being the title of the paper and adding the label `paper` to the issue. 
+- :deciduous_tree: **Add contents.** You are more than welcome to directly contribute to this repository and add contents to it. In order to do so, you can directly make a Pull Request to this repository and we will review the changes before being accepted. If you want to get more and more involved in the project. 
+- :bulb: **Request new features and explanations.** If there is an important topic or example that you feel falls under the scope of this review and you would like us to include it, please request it! We are looking for new insights into what the community wants to learn. 
+
+## Contact 
 
 <!-- ## Reference
 
