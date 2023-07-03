@@ -1,17 +1,24 @@
-The simplest way of evaluating a derivative is by computing the difference between the evaluation of the function at a given point and a small perturbation of the function. In the case of a loss function, we can approximate
+The simplest way of evaluating a derivative is by computing the difference between the evaluation of the function at a given point and a small perturbation of the function. 
+In the case of a loss function, we can approximate
 \begin{equation}
  \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon},
  \label{eq:finite_diff}
 \end{equation}
-with $e_i$ the $i$-th canonical vector and $\varepsilon$ a small number. Even better, it is easy to see that the centered difference scheme
+with $e_i$ the $i$-th canonical vector and $\varepsilon$ a small number. 
+Even better, it is easy to see that the centered difference scheme
 \begin{equation}
  \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon},
  \label{eq:finite_diff2}
 \end{equation}
 leads also to more precise estimation of the derivative.
 
-However, there are a series of problems associated to this approach. The first one is how this scales with the number of parameters $p$. Each directional derivative requires the evaluation of the function twice. For the centered differences approach in Equation \eqref{eq:finite_diff2}, this will require $2p$ function evaluations, which demand to solve the differential equation in forward mode each time.
-A second problem is due to truncation errors. Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other. As $\varepsilon$ gets smaller, this will lead to truncation of the subtraction, introducing numerical errors than then will be amplified by the division by $\varepsilon$.
+However, there are a series of problems associated to this approach. 
+The first one is due to how this scales with the number of parameters $p$. 
+Each directional derivative requires the evaluation of the loss function $L$ twice. 
+For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands to solve the differential equation in forward mode each time for a new set of parameters.
+A second problem is due to truncation errors. 
+Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other. 
+As $\varepsilon$ gets smaller, this will lead to truncation of the subtraction, introducing numerical errors than then will be amplified by the division by $\varepsilon$.
 Due to this, some heuristics have been introduced in order to pick the value of $\varepsilon$ that will minimize the error, specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
  
 % Even with all these caveats, finite differences can be useful when computing Jacobian-vector products. Suppose we are interested in computing 
@@ -23,3 +30,5 @@ Due to this, some heuristics have been introduced in order to pick the value of 
 % \frac{dL}{d\theta} v \approx \frac{L(\theta + \varepsilon v) - L(\theta - \varepsilon v)}{2\varepsilon},
 % \end{equation}
 % which depending on the output size of the function $L(\theta)$, could be a reasonable idea. 
+
+% To add: how to use finite difference to convert PDE into a system of ODEs
