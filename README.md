@@ -58,6 +58,11 @@ We encourage contributors to participate in this project! If you are interested 
 
 ### Make a Pull Request! :octocat:
 
+The easiest way to contribute by adding code and/or text is to [create a new fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of this repository and then [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to the main 
+repository. You can add changes and explore new things in your own fork of this repository and then make a pull request to the repository asking to include some of the contents in the repository. Pull requests are the best way of merging different versions of a repository since it allows to open a conversation about the new implemented changes and solve potential merge conflicts at the same time. 
+
+**working from Overleaf?** You can create a Overleaf project that is synchronized with a GitHub repository (see [here](https://www.overleaf.com/learn/how-to/Git_Integration_and_GitHub_Synchronization) for more information). This allows you to do edits on the text file directly from Overleaf and then push your changes directly to your fork, from where you can make a pull request to the main repository.
+
 ## Contact 
 
 <!-- ## Reference
