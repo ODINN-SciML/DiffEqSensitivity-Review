@@ -22,7 +22,9 @@ jobs:
         with:
           commit_message: Automated compiled Latex PDF
           branch: main
+          file_pattern: main.pdf
           commit_options: '--no-verify --signoff'
+          commit_user_name: My GitHub Actions Bot
           commit_author: Author <actions@github.com>
           status_options: '--untracked-files=no'
           skip_dirty_check: true
