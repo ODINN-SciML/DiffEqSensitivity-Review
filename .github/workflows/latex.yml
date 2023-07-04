@@ -17,3 +17,12 @@ jobs:
           name: Compiled main PDF
           path: tex/main.pdf
           if-no-files-found: error
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Automated compiled Latex PDF
+          branch: main
+          commit_options: '--no-verify --signoff'
+          commit_author: Author <actions@github.com>
+          status_options: '--untracked-files=no'
+          skip_dirty_check: true
