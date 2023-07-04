@@ -3,6 +3,9 @@ on: [push]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
@@ -22,7 +25,7 @@ jobs:
         with:
           commit_message: Automated compiled Latex PDF
           branch: main
-          file_pattern: main.pdf
+          file_pattern: tex/main.pdf
           commit_options: '--no-verify --signoff'
           commit_user_name: My GitHub Actions Bot
           commit_author: Author <actions@github.com>
