@@ -12,12 +12,13 @@ Even better, it is easy to see that the centered difference scheme
 \end{equation}
 leads also to more precise estimation of the derivative.
 
-However, there are a series of problems associated to this approach. 
-The first one is due to how this scales with the number of parameters $p$. 
-Each directional derivative requires the evaluation of the loss function $L$ twice. 
+However, there are a series of problems associated to this approach.
+The first one is due to how this scales with the number of parameters $p$.
+Each directional derivative requires the evaluation of the loss function $L$ twice.
 For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands to solve the differential equation in forward mode each time for a new set of parameters.
-A second problem is due to truncation errors. 
-Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other. 
+A second problem is due to truncation errors.
+Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other.
+
 As $\varepsilon$ gets smaller, this will lead to truncation of the subtraction, introducing numerical errors than then will be amplified by the division by $\varepsilon$.
 Due to this, some heuristics have been introduced in order to pick the value of $\varepsilon$ that will minimize the error, specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
  
@@ -31,28 +32,29 @@ Due to this, some heuristics have been introduced in order to pick the value of 
 % \end{equation}
 % which depending on the output size of the function $L(\theta)$, could be a reasonable idea. 
 
-Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs). 
-To illustrate this point, let's consider the case of the one-dimensional heat equation 
+Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines}. 
+To illustrate this point, let's consider the case of the one-dimensional heat equation
 \begin{equation}
-    \frac{\partial u}{\partial t}
-    = 
-    D \, 
-    \frac{\partial^2 u}{\partial x^2}, 
-    \quad u(0, t) = \alpha(t), 
-    \quad u(1, t) = \beta(t)
-    \label{eq:heat-equation}
+ \frac{\partial u}{\partial t}
+ = 
+ D \, 
+ \frac{\partial^2 u}{\partial x^2}, 
+ \quad u(0, t) = \alpha(t), 
+ \quad u(1, t) = \beta(t)
+ \label{eq:heat-equation}
 \end{equation}
-that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$. 
-In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$. 
+that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
+In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
 If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference\footnote{Since $u_m(t)$ is a function of one single variable, we write the total derivative $\frac{du_m}{dt}$ instead of the partial derivative symbol used before $\frac{\partial u}{\partial t}$, which it is usually used just for multivariable function.}
 \begin{equation}
-    \frac{d u_m}{dt} 
-    = 
-    D 
-    \frac{u_{m-1} - 2u_m + u_{m+1}}{\Delta x^2}
-    \label{eq:heat-equation-discrete}
+ \frac{d u_m}{dt} 
+ = 
+ D 
+ \frac{u_{m-1} - 2u_m + u_{m+1}}{\Delta x^2}
+ \label{eq:heat-equation-discrete}
 \end{equation}
-for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$). 
-Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differential equations (just temporal derivatives) with a total of $N-1$ equations. 
+for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$).
+Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differential equations (just temporal derivatives) with a total of $N-1$ equations.
 This can be solved directly using an ODE solver.
-Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid. 
+Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
+
