@@ -27,7 +27,7 @@ This implies that we can use dual numbers to implement forward AD through a nume
 
 Backward mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. Given a directional graph of operations defined by a Wengert list, we can compute gradients of any given function backwards as
 \begin{equation}
-    \bar v = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
+ \bar v = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
 
 Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}. In the backward step, this executes a series of functions calls, one for each elementary operation.
@@ -36,7 +36,7 @@ If one of the nodes in the graph $w$ is the output of an operation involving the
  \bar v_1, \bar v_2 = v_2 \times \bar w , \quad
  v_1 \times \bar w = \mathcal{B}_w (\bar w),
 \end{equation}
-which is equivalent to using the chain rule as 
+which is equivalent to using the chain rule as
 \begin{equation}
  \frac{\partial \ell}{\partial v_1} = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}.
 \end{equation}
@@ -44,7 +44,7 @@ which is equivalent to using the chain rule as
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016},
 while \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
 
-\subsection{AD connection with JVPs and VJPs}
+\subsubsection{AD connection with JVPs and VJPs}
 
 When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters. When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVP). As their name indicate, the difference between them regards the fact if the quantity we are interested in computing is described by the product of a Jacobian (the two dimensional matrix with the gradients as rows) by a vector on the left
 side (VJP) or the right (JVP).
