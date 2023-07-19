@@ -18,6 +18,7 @@ Each directional derivative requires the evaluation of the loss function $L$ twi
 For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands to solve the differential equation in forward mode each time for a new set of parameters.
 A second problem is due to truncation errors.
 Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other.
+
 As $\varepsilon$ gets smaller, this will lead to truncation of the subtraction, introducing numerical errors than then will be amplified by the division by $\varepsilon$.
 Due to this, some heuristics have been introduced in order to pick the value of $\varepsilon$ that will minimize the error, specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
  
@@ -57,4 +58,3 @@ Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differen
 This can be solved directly using an ODE solver.
 Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
 
- 
