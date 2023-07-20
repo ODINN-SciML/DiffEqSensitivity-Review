@@ -1,29 +1,70 @@
-Automatic differentiation (AD) is a technology that allows computing gradients thought a computer program. The main idea is that every computer program manipulating numbers can be reduced to a sequence of simple algebraic operations that can be easily differentiable. The derivatives of the outputs of the computer program with respect to their inputs are then combined using the chain rule.
-One advantage of AD systems is that we can automatically differentiate programs that include control flow, such as branching, loops or recursions. This is because at the end of the day, any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
-
-Sometimes AD is compared against symbolic differentiation.
-According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.
+Automatic differentiation (AD) is a technology that allows computing gradients thought a computer program. 
+The main idea is that every computer program manipulating numbers can be reduced to a sequence of simple algebraic operations that can be easily differentiable. 
+The derivatives of the outputs of the computer program with respect to their inputs are then combined using the chain rule.
+One advantage of AD systems is that we can automatically differentiate programs that include control flow, such as branching, loops or recursions. 
+This is because at the end of the day, any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
 Depending if the concatenation of these gradients is done as we execute the program (from input to output) or in a later instance were we trace-back the calculation from the end (from output to input), we are going to talk about \textit{forward} or \textit{backward} AD, respectively.
 
-Forward mode AD can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists (see \cite{Baydin_Pearlmutter_Radul_Siskind_2015} for a good review on these methods). Let's consider the case of dual numbers.
-We can define an abstract type, defined as a dual number, composed of two elements:
+\subsubsection{Forward mode}
+
+Forward mode AD can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists (see \cite{Baydin_Pearlmutter_Radul_Siskind_2015} for a good review on these methods). 
+
+Let's first consider the case of dual numbers.
+The idea is to extend the definition of a variable that takes a certain value to also carry information about the derivative with respect to certain scalar parameter $\theta \in \R$. 
+We can define an abstract type, defined as a dual number, composed of two elements: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
+Just as complex number do, we can represent dual numbers in the vectorial form $(x_1, x_2)$ or in the rectangular form 
 \begin{equation}
- x_\epsilon = x_1 + \epsilon x_2,
+ x_\epsilon = x_1 + \epsilon \, x_2
 \end{equation}
-where $\epsilon$ is an abstract number with the property $\epsilon^2 = 0$ and $\epsilon \neq 0$.
-Given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\epsilon = y_1 + \epsilon y_2$, it is easy to derive using the fact $\epsilon^2=0$ that
+where $\epsilon$ is an abstract number with the properties $\epsilon^2 = 0$ and $\epsilon \neq 0$.
+This last representation is quite convenient since it naturally allow us to extend algebraic operations, like addition and multiplication, to dual numbers. 
+For example, given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\epsilon = y_1 + \epsilon y_2$, it is easy to derive using the fact $\epsilon^2=0$ that
 \begin{equation}
- x_\epsilon y_\epsilon = x_1 y_1 + \epsilon(x_1 y_2 + x_2 y_1) \qquad
- \frac{x_\epsilon}{y_\epsilon} = \frac{x_1}{y_1} + \epsilon \frac{x_2 y_1 - x_1 y_2}{y_1^2}.
+ x_\epsilon + y_\epsilon = (x_1 + y_1) + \epsilon \, (x_2 + y_2)
+ \qquad
+ x_\epsilon y_\epsilon = x_1 y_1 + \epsilon \, (x_1 y_2 + x_2 y_1) .
+ %\qquad
+ %\frac{x_\epsilon}{y_\epsilon} = \frac{x_1}{y_1} + \epsilon \, \frac{x_2 y_1 - x_1 y_2}{y_1^2}.
 \end{equation}
-From these last examples, we can see that the dual component of the dual number carries the information of the derivatives when combining operations.
+From these last examples, we can see that the derivative component of the dual number carries the information of the derivatives when combining operations.
 Intuitively, we can think about $\epsilon$ as being a differential in the Taylor expansion:
 \begin{equation}
- f(x + \epsilon) = f(x) + \epsilon f'(x) + \mathcal O (\epsilon^2)
+ f(x + \epsilon) = f(x) + \epsilon f'(x) + \mathcal O (\epsilon^2).
 \end{equation}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
-This implies that we can use dual numbers to implement forward AD through a numerical algorithm. Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.\footnote{See \url{https://alemorales.info/post/automatic-differentiation-with-dual-numbers/} for an example on how these operations can be implemented in Julia.}
+This implies that we can use dual numbers to implement forward AD through a numerical algorithm. Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.%\footnote{See \url{https://alemorales.info/post/automatic-differentiation-with-dual-numbers/} for an example on how these operations can be implemented in Julia.}
+For example, in Julia we create a dual number object and extend the definition of algebraic operations by relying in multiple distpach
+\begin{jllisting}
+using Base: @kwdef
+
+@kwdef struct DualNumber{F <: AbstractFloat}
+    value::F
+    derivative::F
+end
+
+# Binary sum
+Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value + b.value, derivative = a.derivative + b.derivative)
+
+# Binary product 
+Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value * b.value, derivative = a.value*b.derivative + a.derivative*b.value)
+\end{jllisting}
+and then we can simply evaluate derivatives by evaluating the derivative component of the dual number that results from the combination of operations
+\begin{jllisting}
+a = DualNumber(value=1.0, derivative=1.0)
+
+b = DualNumber(value=2.0, derivative=0.0)
+c = DualNumber(value=3.0, derivative=0.0)
+
+result = a * b * c
+println("The derivative of a*b*c with respect to a is: ", result.derivative)
+\end{jllisting}
+Notice that in this last example the dual numbers \texttt{b} and \texttt{c} where initialized with derivative value equals to zero, while \texttt{a} with value equals to one. 
+This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
+
+In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}.
+
+\subsubsection{Backward mode}
 
 Backward mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. Given a directional graph of operations defined by a Wengert list, we can compute gradients of any given function backwards as
 \begin{equation}
@@ -41,8 +82,7 @@ which is equivalent to using the chain rule as
  \frac{\partial \ell}{\partial v_1} = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}.
 \end{equation}
 
-In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016},
-while \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
+The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
 
 \subsubsection{AD connection with JVPs and VJPs}
 
@@ -70,3 +110,8 @@ In general, when the function we are trying to differentiate has a larger input 
     \caption{Comparison between forward and backward AD.}
     \label{fig:vjp-jvp}
 \end{figure}
+
+\subsubsection{Symbolic differentiation}
+
+Sometimes AD is compared against symbolic differentiation.
+According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.

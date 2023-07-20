@@ -1,7 +1,7 @@
 \begin{figure}[]
     \centering
     \includegraphics[width=0.80\textwidth]{figures/scheme-methods.png}
-    \caption{Schematic representation of the different methods available for differentiation involving differential equation solutions.}
+    \caption{Schematic representation of the different methods available for differentiation involving differential equation solutions. These can be classified depending if they find the gradient by solving a new system of differential equations (\textit{continuous}) or if instead they manipulate unit algebraic operations (\textit{discrete}). Furthermore, depending if these methods run in the same direction than the numerical solver, we are going to be talking about \textit{backward} and \textit{forward} methods.}
     \label{fig:diff}
 \end{figure}
 Depending on the number of parameters and the complexity of the differential equation we are trying to solve, there are different methods to compute gradients with different numerical and computational advantages and that also scale differently depending of the number of differential equations $n$ and number of parameters $p$.
