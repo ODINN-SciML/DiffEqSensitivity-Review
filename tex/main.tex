@@ -15,6 +15,7 @@
 \usepackage{hyperref}
 %\usepackage{apacite}
 \usepackage{algorithm}
+\usepackage{jlcode}
 
 % for fancy Mike style table
 \usepackage[table]{xcolor} 
@@ -37,6 +38,7 @@ sorting=ynt
 \definecolor{background-color}{gray}{0.98}
 \definecolor{charlesBlue}{RGB}{100, 155, 255}
 
+\DeclareMathOperator{\R}{\mathbb{R}}
 
 \title{A Review of Sensitivity Methods \\ for Differential Equations}
 
@@ -66,7 +68,11 @@ sorting=ynt
 \section{Introduction}
 \input{sections/introduction}
 
+\section{Preliminaries}
+\input{tex/sections/preliminaries}
+
 \section{Methods}
+\input{sections/methods-intro}
 
 \subsection{Finite differences}
 \input{sections/finite-differences}
@@ -83,14 +89,11 @@ sorting=ynt
 \subsection{Continous Adjoint Sensitivity Analysis (CASA)}
 \input{sections/adjoint-continuous}
 
-
 \section{Do we need full gradients?}
-
-
 
 \section{Open Science from Scratch}
 
-\section{Glossary} 
+% \section{Glossary} 
 
 \printbibliography
 
