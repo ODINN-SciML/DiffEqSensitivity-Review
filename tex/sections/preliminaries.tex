@@ -1,0 +1,54 @@
+Consider a system of ordinary differential equations (ODEs) given by
+\begin{equation}
+ \frac{du}{dt} = f(u, \theta, t),
+ \label{eq:original_ODE}
+\end{equation}
+where $u \in \mathbb{R}^n$ is the unknown solution; $\theta \in \mathbb R^p$ is a parameter vector; and with initial condition $u(t_0) = u_0$.
+Here $n$ denotes the total number of ordinary differential equations and $p$ the size of a parameter embedded in the functional form of the differential equation.
+Although here we consider the case of ordinary differential equations, that is, when the derivatives are just with respect to the time variable $t$, this also includes the case of partial differential equations (PDEs).
+Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not avoid the use of higher-dimension objects (for example, when $u$ is a matrix or a tensor). 
+
+We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
+Here we are using the letter $L$ to emphasized that in many cases this will be a loss function, but without loss of generality this include the more general cases of likelihood functions, summary statistics, or any function of the solution. 
+Examples of loss functions include
+\begin{equation}
+ L(u(\cdot, \theta)) = \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
+ \label{eq:quadratic-loss-function}
+\end{equation}
+where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
+\begin{equation}
+ L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+\end{equation}
+with $h$ some function that quantifies the contribution of the error term at time $t \in [t_0, t_1]$.
+We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
+\begin{equation}
+ \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
+ \label{eq:dLdtheta_VJP}
+\end{equation} 
+The first term on the right hand side is usually easy to evaluate, since it just involves the partial derivative of the scalar loss function to the solution.
+For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
+\begin{equation}
+    \frac{dL}{du} = 2 \, (u - u_1).
+    \label{eq:dLdu}
+\end{equation}
+The second term on the right hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity},
+\begin{equation}
+ s 
+ = 
+ \frac{\partial u}{\partial \theta} 
+ =
+ \begin{bmatrix}
+   \frac{\partial u_1}{\partial \theta_1} & \dots & \frac{\partial u_1}{\partial \theta_p} \\
+   \vdots & \ddots & \vdots \\
+   \frac{\partial u_n}{\partial \theta_1} & \dots & \frac{\partial u_n}{\partial \theta_p}
+ \end{bmatrix}
+ \in \mathbb R^{n \times p}.
+ \label{eq:sensitivity-definition}
+\end{equation}
+Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
+When a function depends on more than one argument, we are going to use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
+On the other side, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
+Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives.
+
+In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
+Although the names adjoint and tangent are usually used to refer to the same object, we are going to skip the use of these to avoid confusion and use them just when a specific method is called that way, as we will see for the case of the adjoint methods. 
