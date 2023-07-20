@@ -28,12 +28,15 @@ For example, given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\ep
  %\frac{x_\epsilon}{y_\epsilon} = \frac{x_1}{y_1} + \epsilon \, \frac{x_2 y_1 - x_1 y_2}{y_1^2}.
 \end{equation}
 From these last examples, we can see that the derivative component of the dual number carries the information of the derivatives when combining operations.
+For example, suppose than in the last example the dual variables $x_2$ and $y_2$ carry the value of the derivative of $x_1$ and $x_2$ with respect to a parameter $\theta$, respectively. 
+
+
 Intuitively, we can think about $\epsilon$ as being a differential in the Taylor expansion:
 \begin{equation}
  f(x + \epsilon) = f(x) + \epsilon f'(x) + \mathcal O (\epsilon^2).
 \end{equation}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
-This implies that we can use dual numbers to implement forward AD through a numerical algorithm. Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.%\footnote{See \url{https://alemorales.info/post/automatic-differentiation-with-dual-numbers/} for an example on how these operations can be implemented in Julia.}
+This implies that we can use dual numbers to implement forward AD through a numerical algorithm. Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.
 For example, in Julia we create a dual number object and extend the definition of algebraic operations by relying in multiple distpach
 \begin{jllisting}
 using Base: @kwdef
