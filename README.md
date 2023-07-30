@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/facusapienza21/review-diffeq-gradient/blob/main/.github/workflows/latex.yml/badge.svg?branch=main)](https://github.com/facusapienza21/review-diffeq-gradient/blob/main/.github/workflows/latex.yml?query=branch%3Amain)
+[![Build Status](https://github.com/facusapienza21/review-diffeq-gradient/.github/workflows/latex.yml/badge.svg?branch=main)](https://github.com/facusapienza21/review-diffeq-gradient/.github/workflows/latex.yml?query=branch%3Amain)
 
 # A Review of Sensitivity Methods for Differential Equations
 
