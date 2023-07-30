@@ -17,26 +17,18 @@
 \usepackage{algorithm}
 \usepackage{jlcode}
 
-% for fancy Mike style table
-% \usepackage[table]{xcolor} 
-% \usepackage{multirow}
+%%% Customized packages %%%
+% Authors information
+\usepackage{contributors}
+% Julia code
+\usepackage{jlcode}
 
-% \bibliographystyle{apacite} 
-% \hypersetup{colorlinks = true, citecolor = black, urlcolor = blue}
 \usepackage[
 backend=biber,
-style=alphabetic,
-sorting=ynt
+style=numeric
 ]{biblatex}
 \addbibresource{bibliography.bib}
 
-% package for drawing graphs
-\usepackage{tikz}
-\usetikzlibrary{positioning}
-
-
-\definecolor{background-color}{gray}{0.98}
-\definecolor{charlesBlue}{RGB}{100, 155, 255}
 
 \DeclareMathOperator{\R}{\mathbb{R}}
 
@@ -46,8 +38,6 @@ sorting=ynt
 
 \begin{document}
 \maketitle
-
-\input{contributors}
 
 
 \hfill \break
