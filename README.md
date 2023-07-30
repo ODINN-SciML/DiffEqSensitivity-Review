@@ -1,4 +1,5 @@
-[![Build Status](https://github.com/facusapienza21/review-diffeq-gradient/.github/workflows/latex.yml/badge.svg?branch=main)](https://github.com/facusapienza21/review-diffeq-gradient/.github/workflows/latex.yml?query=branch%3Amain)
+![example workflow](https://github.com/ODINN-SciML/review-sensitivity-gradient/actions/workflows/latex/badge.svg)
+
 
 # A Review of Sensitivity Methods for Differential Equations
 
