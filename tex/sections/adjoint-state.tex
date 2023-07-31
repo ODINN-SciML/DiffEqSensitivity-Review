@@ -20,7 +20,7 @@ If we replace this last expression into equation \eqref{eq:dhdtheta0}, we obtain
  \frac{\partial h}{\partial \theta} - \frac{\partial h}{\partial u} \left( \frac{\partial g}{\partial u} \right)^{-1} \frac{\partial g}{\partial \theta}.
     \label{eq:dhdtheta}
 \end{equation}
-Now, let's define the adjoint $\lambda(t)$ as the solution of the linear system of equations 
+Now, let's define the adjoint $\lambda$ as the solution of the linear system of equations 
 \begin{equation}
     \left( \frac{\partial g}{\partial u}\right)^T \lambda =  \left( \frac{\partial h}{\partial u} \right)^T,
 \end{equation}
@@ -35,7 +35,9 @@ Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta},
     =
     \frac{\partial h}{\partial \theta} - \lambda^T \frac{\partial g}{\partial \theta}.
 \end{equation}
-The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial g}{\partial u} \frac{\partial u}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
+The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
+
+\begin{example*}[Linear system]
 Let's see this by considering the simple example of a linear system of equations. Suppose that the constraint $g(u, \theta)=0$ takes the form $A(\theta) u = b(\theta)$ \cite{Johnson}. In that case, we have
 \begin{equation}
     \frac{\partial g}{\partial \theta} = \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta},
@@ -59,5 +61,6 @@ This example also allows us to see the improvement  in efficiency achieved by fi
     \label{eq:state_method_linear}
 \end{equation}
 Computing first the last product will cost $O(n^2p)$ to generate a $n \times p$ matrix. On the other side, if first we solve the first two terms in the product, this will cost $O(n)$ and them the product will be just $O(np)$. In order words, it is easy to compute the full gradient if we treat the last term in equation \eqref{eq:state_method_linear} as a VJP. 
+\end{example*}
 
 In order to compute the gradient of the full solution of the differential equation, we apply this method sequentially using the chain rule. One single step of the state method can be understood as the chain of operations $\theta \mapsto g \mapsto u \mapsto L$. This allows us to create adjoints for any primitive function $g$ (i.e. the numerical solver scheme) we want, and then incorporated it as a unit of any AD program. 

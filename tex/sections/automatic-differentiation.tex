@@ -110,7 +110,7 @@ In general, when the function we are trying to differentiate has a larger input 
 \begin{figure}
     \centering
     \includegraphics[width=0.95\textwidth]{figures/VJP-JVP.png}
-    \caption{Comparison between forward and backward AD.}
+    \caption{Comparison between forward and backward AD. Changing the order how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode.}
     \label{fig:vjp-jvp}
 \end{figure}
 
