@@ -12,12 +12,12 @@ We are interested in computing the gradient of a given function $L(u(\cdot, \the
 Here we are using the letter $L$ to emphasized that in many cases this will be a loss function, but without loss of generality this include the more general cases of likelihood functions, summary statistics, or any function of the solution. 
 Examples of loss functions include
 \begin{equation}
- L(u(\cdot, \theta)) = \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
+ L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
  \label{eq:quadratic-loss-function}
 \end{equation}
 where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
 \begin{equation}
- L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+ L(u(\cdot, \theta)) = \frac{1}{2} \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
 \end{equation}
 with $h$ some function that quantifies the contribution of the error term at time $t \in [t_0, t_1]$.
 We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
@@ -28,7 +28,7 @@ We are interested in computing the gradient of the loss function with respect to
 The first term on the right hand side is usually easy to evaluate, since it just involves the partial derivative of the scalar loss function to the solution.
 For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
 \begin{equation}
-    \frac{dL}{du} = 2 \, (u - u_1).
+    \frac{dL}{du} = u - u^{\text{target}(t_1)}.
     \label{eq:dLdu}
 \end{equation}
 The second term on the right hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity},

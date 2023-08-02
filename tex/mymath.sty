@@ -1,0 +1,31 @@
+% Math style latex setup 
+
+\usepackage{amsmath, amssymb, amsthm}
+% \usepackage{bm}% bold math
+
+% Theorem environmnets 
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{example*}{Example}
+
+% General Math
+\DeclareMathOperator{\R}{\mathbb{R}}   % Real numbers
+\DeclareMathOperator{\N}{\mathbb{N}}   % Natural numbers
+\DeclareMathOperator{\Z}{\mathbb{Z}}   % Integers
+\DeclareMathOperator{\I}{\mathbb{I}}   % Identity
+
+% Optimization 
+\newcommand{\argmin}[1]{\underset{#1}{\text{argmin}} \quad }  % Arg minimum 
+\newcommand{\argmax}[1]{\underset{#1}{\text{argmax}} \quad }  % Arg maximum
+
+
+% Probability and integrals 
+\newcommand{\Prob}[1]{\operatorname{\mathbb P} \bigg ( #1 \bigg )}    % Probability
+\newcommand{\Int}[1]{\operatorname{\int}_{#1} }                       % Integral 
+\newcommand{\E}[1]{\operatorname{\mathbb E} \left [ #1 \right ]}      % Expectation 
+\newcommand{\V}[1]{\operatorname{\mathbb Var} \left [ #1 \right ]}    % Variance
+\newcommand{\indep}{\perp \!\!\!\perp}                                % Independence    
+
+
+\newcommand{\norm}[2]{\| #1 \|_{#2} }      % Norm 

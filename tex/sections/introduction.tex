@@ -10,11 +10,17 @@ When numerically computing the posterior of a probabilistic model, gradient-base
 Second derivatives further help to improve convergence rates of these algorithms and allow uncertainty quantification around parameter values.
 \textit{A gradient serves as a compass in modern data science: it tells us where in the open wide ocean of parameters we should move in order to increase our chances of success}.  
 
-% Differential equations
+% Differential Programming
 Dynamical systems, where the goal is to model observations governed by differential equations, is not an exception to the rule.
-There are different approaches to this problem depending on the traditions of each field. 
+Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
+In order to bridge the gap between modern machine learning methods and traditional scientific methods, some authors have recently suggested that differentiable programming is the way to go \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling}. 
+Being able to compute gradients and sensitivities of dynamical systems opens the game to more complex models.
+
+% Some examples
+There are different approaches to the calculation of the gradient of dynamical systems depending on the traditions of each field. 
 In statistics, the sensitivity equations allow computation of gradients of the likelihood of the model with respect to the parameters of the dynamical system, which can be later used for inference \cite{ramsay2017dynamic}. 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
+This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimize certain loss function. 
 In recent years, there has been an increasing interest in designing machine learning pipelines that include constraints in the form of differential equations. 
 Examples of this include physics-informed neural networks (PINNs) \cite{PINNs_2019} and universal differential equations (UDEs) \cite{rackauckas2020universal}.  
 % soft / hard constrains

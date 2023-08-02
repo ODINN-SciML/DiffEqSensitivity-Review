@@ -5,40 +5,51 @@
 \setlength{\topmargin}{-0.5in}
 \setlength{\textheight}{9in}
 
-\usepackage{amsmath, amssymb}
-\usepackage{graphicx}% Include figure files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%     General packages     %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{graphicx}   % Include figure files
 \usepackage{caption}
-\usepackage{color}% Include colors for document elements
-\usepackage{dcolumn}% Align table columns on decimal point
-\usepackage{bm}% bold math
+\usepackage{color}      % Include colors for document elements
+\usepackage{dcolumn}    % Align table columns on decimal point
 \usepackage{float}
 \usepackage{hyperref}
-%\usepackage{apacite}
 \usepackage{algorithm}
-\usepackage{jlcode}
 
-%%% Customized packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%    Customized packages   %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Authors information
 \usepackage{contributors}
 % Julia code
 \usepackage{jlcode}
+% Math 
+\usepackage{mymath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%       Bibliography       %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[
 backend=biber,
-style=numeric
+style=numeric, 
+sorting=none
 ]{biblatex}
+
 \addbibresource{bibliography.bib}
 
-
-\DeclareMathOperator{\R}{\mathbb{R}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%         Document         %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{A Review of Sensitivity Methods \\ for Differential Equations}
 
-\date{}
+\date{\today}
 
 \begin{document}
 \maketitle
-
 
 \hfill \break
 \thanks
@@ -67,21 +78,30 @@ style=numeric
 \subsection{Finite differences}
 \input{sections/finite-differences}
 
-\subsection{Automatic Differentiation}
+\subsection{Automatic differentiation}
 \input{sections/automatic-differentiation}
 
-\subsection{Sensitivity Equations}
+\subsection{Sensitivity equations}
 \input{sections/sensitivity-equation}
 
 \subsection{Adjoint state method}
 \input{sections/adjoint-state}
 
-\subsection{Continous Adjoint Sensitivity Analysis (CASA)}
+\subsection{Continuous adjoint sensitivity analysis (CASA)}
 \input{sections/adjoint-continuous}
+
+\section{Comparison between methods}
+\input{sections/comparison}
 
 \section{Do we need full gradients?}
 
-\section{Open Science from Scratch}
+\section{Generalization to PDEs}
+
+\section{Open science from scratch}
+
+\newpage
+\section{Notation}
+\input{sections/notation}
 
 % \section{Glossary} 
 
