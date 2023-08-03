@@ -10,8 +10,9 @@ Even better, it is easy to see that the centered difference scheme
  \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon},
  \label{eq:finite_diff2}
 \end{equation}
-leads also to more precise estimation of the derivative.
-
+leads also to more precise estimation of the derivative. 
+While Equation \eqref{eq:finite_diff} gives to an error of magnitude $\mathcal O (\varepsilon)$, the centered differences schemes improves to $\mathcal O (\varepsilon^2)$. 
+ 
 However, there are a series of problems associated to this approach.
 The first one is due to how this scales with the number of parameters $p$.
 Each directional derivative requires the evaluation of the loss function $L$ twice.
@@ -20,7 +21,7 @@ A second problem is due to truncation errors.
 Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other.
 
 As $\varepsilon$ gets smaller, this will lead to truncation of the subtraction, introducing numerical errors than then will be amplified by the division by $\varepsilon$.
-Due to this, some heuristics have been introduced in order to pick the value of $\varepsilon$ that will minimize the error, specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
+Due to this, some heuristics and algorithms had been introduced in order to pick the value of $\varepsilon$ that will minimize the error \cite{mathur2012stepsize-finitediff}. %specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
  
 % Even with all these caveats, finite differences can be useful when computing Jacobian-vector products. Suppose we are interested in computing 
 % \begin{equation}
