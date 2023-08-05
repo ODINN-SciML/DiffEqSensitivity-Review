@@ -4,13 +4,21 @@ This approach follows the discretize-optimize approach, meaning that we first di
 Just as in the case of automatic differentiation, the set of adjoint equations can be solved in both forward and backward mode. 
 % Just as in the case of automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
 
+\subsubsection{Discrete differential equation}
+
 The first step in order to derive the adjoint equation is to discretize the set of differential equations in \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
-Given the set of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
+Given the sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
 In the case of using an explicit numerical solver, these values will be constrained to satisfy a set of equations of the form 
 \begin{equation}
     u_{i+1} = A_i (\theta) \, u_i + b_i
 \end{equation}
 with $A_i \in \R^{n \times n}$ a squared matrix defined by the numerical solver. 
+Solving the differential equation then implies to be able to solve the system of constraints 
+\begin{equation}
+    g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i = 0
+\end{equation}
+for all $i=0, 1, \ldots, N-1$. 
+For most cases, this system can be solved sequentially, by solving for $u_i$ in increasing order of index. 
 If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations in into one single system of linear equations 
 \begin{equation}
     A(\theta) U 
@@ -31,7 +39,7 @@ If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can co
     \end{bmatrix}
     = 
     \begin{bmatrix}
-        M_0 u_0 + b_0 \\
+        A_0 u_0 + b_0 \\
         b_1 \\
         b_2 \\
         \vdots \\
@@ -43,6 +51,10 @@ If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can co
 with $\I_{n \times n}$ the identity matrix of size $n \times n$.
 It is usually convenient to write this system of linear equations in the residual form $G(U; \theta) = 0$, where $G(U; \theta) = A(\theta) U - b(\theta)$ is the residual between both sides of the equation. 
 Different numerical schemes will lead to different design matrix $A(\theta)$ and vector $b(\theta)$, but ultimately every numerical method will lead to a system of linear equations with the form $G(U; \theta) = A(\theta) U - b(\theta) = 0$ after being discretized. 
+It is important to notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
+If well this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
+
+\subsubsection{Adjoint state equations}
 
 We are interested in differentiating a function $h(U, \theta)$ constrained to satisfy the algebraic linear equation $G(U; \theta) = 0$.
 Now,
@@ -70,12 +82,19 @@ If we replace this last expression into equation \eqref{eq:dhdtheta0}, we obtain
 \begin{equation}
     \frac{dh}{d\theta} 
     =
-    \frac{\partial h}{\partial \theta} - \frac{\partial h}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1} \frac{\partial G}{\partial \theta}.
+    \frac{\partial h}{\partial \theta} 
+    - 
+    \underbrace{\frac{\partial h}{\partial U}}_{\text{vector}}
+    \left( \frac{\partial G}{\partial U} \right)^{-1} 
+    \frac{\partial G}{\partial \theta}.
     \label{eq:dhdtheta}
 \end{equation}
-Now, let's define the adjoint $\lambda \in \R^{nN}$ as the solution of the linear system of equations 
+The important trick in the adjoint state methods is to observe that in this last equation, the right-hand side can be resolved as a vector-Jacobian product (VJP).
+Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the operation $\frac{\partial h}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
+This is what leads to the definition of the adjoint $\lambda \in \R^{nN}$ as the solution of the linear system of equations 
 \begin{equation}
     \left( \frac{\partial G}{\partial U}\right)^T \lambda =  \left( \frac{\partial h}{\partial U} \right)^T,
+    \label{eq:adjoint-state-equation}
 \end{equation}
 that is,
 \begin{equation}
@@ -87,33 +106,63 @@ Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta},
     \frac{dh}{d\theta} 
     =
     \frac{\partial h}{\partial \theta} - \lambda^T \frac{\partial G}{\partial \theta}.
+    \label{eq:gradient-adjoint-state-method}
 \end{equation}
 The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial h}{\partial U} \frac{\partial U}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
 
-\begin{example*}[Linear system]
-Let's see this by considering the simple example of a linear system of equations. Suppose that the constraint $g(u, \theta)=0$ takes the form $A(\theta) u = b(\theta)$ \cite{Johnson}. In that case, we have
+For the linear system of discrete equations $G(U; \theta)=0$, we have \cite{Johnson}
 \begin{equation}
-    \frac{\partial g}{\partial \theta} = \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta},
+    \frac{\partial G}{\partial \theta} 
+    = 
+    \frac{\partial A }{\partial \theta} U - \frac{\partial b}{\partial \theta},
 \end{equation}
-so the gradient can be computed as 
+so the desired gradient in Equation \eqref{eq:gradient-adjoint-state-method} can be computed as 
 \begin{equation}
-    \frac{dh}{d\theta} = \frac{\partial h}{\partial \theta} - \lambda^T \left( \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta} \right)
+    \frac{dh}{d\theta} 
+    = 
+    \frac{\partial h}{\partial \theta} - \lambda^T \left( \frac{\partial A }{\partial \theta} U - \frac{\partial b}{\partial \theta} \right)
     \label{eq:dhdtheta_linear}
 \end{equation}
-with $\lambda$ the solution of the linear system 
+with $\lambda$ the solution of the linear system (Equation \eqref{eq:adjoint-state-equation})
 \begin{equation}
-    A(\theta)^T \lambda = \frac{\partial h}{\partial u}^T.
+    A(\theta)^T \lambda 
+    =
+    \begin{bmatrix}
+        \I_{n \times n} & -A_1^T &   &  & \\
+        0 & \I_{n \times n} & -A_2^T &  &  \\
+          & 0 & \I_{n \times n} & -A_3^T &  \\
+         &  &   & \ddots & -A_{N-1}^T  \\
+         &  &  & 0 & \I_{n \times n}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \lambda_1 \\
+        \lambda_2 \\
+        \lambda_3 \\
+        \vdots \\
+        \lambda_N
+    \end{bmatrix}
+    = 
+    \frac{\partial h}{\partial u}^T.
+    \label{eq:linea-adjoint-state-equation}
 \end{equation}
-This is a linear system of equations with the same size of the original $Au = b$, but involving the adjoint matrix $A^T$. Computationally this also means that if we can solve the original system then we can also solve the adjoint (for example, with LU factorization $A=LU$ we have $A^T=U^TL^T$).
-This example also allows us to see the improvement  in efficiency achieved by first computing the adjoint and then the full gradient. For a linear constraint, equation \eqref{eq:dhdtheta_linear} becomes
+This is a linear system of equations with the same size of the original $A(\theta) U = b(\theta)$, but involving the adjoint matrix $A^T$. 
+Computationally this also means that if we can solve the original system of discretized equations then we can also solve the adjoint. 
+One way of doing this is relying on matrix factorization. 
+Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrices $A (\theta) = LU$, which then can be also used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
+Another more natural way of finding the adjoins $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the iterative scheme
 \begin{equation}
-    \frac{dh}{d\theta} = \frac{\partial h}{\partial \theta} - 
-    \underbrace{\frac{\partial h}{\partial u}}_{1 \times n}
-    \underbrace{A^{-1}}_{n \times n} 
-    \underbrace{\left( \frac{\partial A }{\partial \theta} u - \frac{\partial b}{\partial \theta} \right)}_{n \times p}.
-    \label{eq:state_method_linear}
+    \lambda_{i} = A_{i}^T \lambda_{i+1} + \left( \frac{\partial h}{\partial u}^T \right)_i
 \end{equation}
-Computing first the last product will cost $O(n^2p)$ to generate a $n \times p$ matrix. On the other side, if first we solve the first two terms in the product, this will cost $O(n)$ and them the product will be just $O(np)$. In order words, it is easy to compute the full gradient if we treat the last term in equation \eqref{eq:state_method_linear} as a VJP. 
-\end{example*}
+with initial condition $\lambda_N$. 
+This means that we can solve the adjoint equation in backwards mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
+% When do we solve this backwards and when forward?
 
-In order to compute the gradient of the full solution of the differential equation, we apply this method sequentially using the chain rule. One single step of the state method can be understood as the chain of operations $\theta \mapsto g \mapsto u \mapsto L$. This allows us to create adjoints for any primitive function $g$ (i.e. the numerical solver scheme) we want, and then incorporated it as a unit of any AD program. 
+
+%In order to compute the gradient of the full solution of the differential equation, we apply this method sequentially using the chain rule. One single step of the state method can be understood as the chain of operations $\theta \mapsto g \mapsto u \mapsto L$. This allows us to create adjoints for any primitive function $g$ (i.e. the numerical solver scheme) we want, and then incorporated it as a unit of any AD program. 
+
+\subsubsection{Further remarks}
+
+% Conection with duality
+% Conection with the adjoint operator
+% Different ways of deriving the adjoint equations: lagrangian
+% Is the adjoint the same than a gradient? Yes, but these are derivatives with respect to the state of the system, not with respect to the parameters! 

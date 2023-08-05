@@ -4,23 +4,34 @@ In the case of a loss function, we can approximate
  \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon},
  \label{eq:finite_diff}
 \end{equation}
-with $e_i$ the $i$-th canonical vector and $\varepsilon$ a small number. 
+with $e_i$ the $i$-th canonical vector and $\varepsilon$ the stepsize. 
 Even better, it is easy to see that the centered difference scheme
 \begin{equation}
  \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon},
  \label{eq:finite_diff2}
 \end{equation}
-leads also to more precise estimation of the derivative.
-
+leads also to more precise estimation of the derivative. 
+While Equation \eqref{eq:finite_diff} gives to an error of magnitude $\mathcal O (\varepsilon)$, the centered differences schemes improves to $\mathcal O (\varepsilon^2)$. 
+ 
 However, there are a series of problems associated to this approach.
 The first one is due to how this scales with the number of parameters $p$.
 Each directional derivative requires the evaluation of the loss function $L$ twice.
 For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands to solve the differential equation in forward mode each time for a new set of parameters.
-A second problem is due to truncation errors.
-Equation \eqref{eq:finite_diff} involves the subtraction of two numbers that are very close to each other.
 
-As $\varepsilon$ gets smaller, this will lead to truncation of the subtraction, introducing numerical errors than then will be amplified by the division by $\varepsilon$.
-Due to this, some heuristics have been introduced in order to pick the value of $\varepsilon$ that will minimize the error, specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
+A second problem is due to rounding errors due to the fact that every computer ultimately stores and manipulate numbers using floating points arithmetic \cite{Goldberg_1991_floatingpoint}. 
+Equations \eqref{eq:finite_diff} and \eqref{eq:finite_diff2} involve the subtraction of two numbers that are very close to each other, which leads to large cancellation errors for small values of $\varepsilon$ than are amplified by the division by $\varepsilon$.
+On the other hand, large values of the stepsize give inaccurate estimations of the gradient. 
+Finding the optimal value of $\varepsilon$ that trade-offs these two effects is sometimes called the \textit{stepsize dilemma} \cite{mathur2012stepsize-finitediff}.
+Due to this, some heuristics and algorithms had been introduced in order to pick the value of $\varepsilon$ that will minimize the error \cite{BARTON_1992_finite_diff, mathur2012stepsize-finitediff}, but all these methods require some a priori knowledge about the function to be differentiated. 
+If well many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
+This is illustrated in Figure \ref{fig:finite-diff}, where the error in computing the gradient is shown for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize.
+
+Other authors had suggested to use complex variable analysis to compute the derivative as the imaginary part of $L(\theta + i \varepsilon)/h$, which coincides with $L'(\theta)$ for the case where $\theta$ is a scalar \cite{Squire_Trapp_1998_complex_diff, Martins_Sturdza_Alonso_2003_complex_differentiation}.
+% This approach was later generalized to the multivariable case 
+Although this solves the problem of cancellation errors in Equation \eqref{eq:finite_diff2} for small $\varepsilon$, this approach is just valid for cases where the function $L$ is known analytically. 
+
+% Condition error
+%specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
  
 % Even with all these caveats, finite differences can be useful when computing Jacobian-vector products. Suppose we are interested in computing 
 % \begin{equation}
@@ -58,3 +69,9 @@ Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differen
 This can be solved directly using an ODE solver.
 Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
+    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where this is computed finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using  a numerical solver are larger and these are also affercted by the precision of the numerical solver. }
+    \label{fig:finite-diff}
+\end{figure}

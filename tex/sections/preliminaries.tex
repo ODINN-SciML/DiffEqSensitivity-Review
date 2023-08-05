@@ -10,6 +10,7 @@ Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors doe
 
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
 Here we are using the letter $L$ to emphasized that in many cases this will be a loss function, but without loss of generality this include the more general cases of likelihood functions, summary statistics, or any function of the solution. 
+Another important example is when $L$ just returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
 Examples of loss functions include
 \begin{equation}
  L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
