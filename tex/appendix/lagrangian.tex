@@ -1,0 +1,35 @@
+\label{appendix:lagrangian}
+
+In this section we are going to derive the adjoint equation for both discrete and continuous methods using the Lagrange multiplier trick. 
+Conceptually, the method is the same in both discrete and continuous case, with the difference that we manipulate linear algebra objects for the former and continuous operators for the later. 
+
+For the continuous adjoint method, we proceed the same way by writing a new loss function $I(\theta)$ identical to $L(\theta)$ as 
+\begin{equation}
+    I(\theta) = L(\theta) - \inttime \lambda(t)^T \left( \frac{du}{dt} - f(u, \theta, t) \right) dt
+\end{equation}
+where $\lambda(t) \in \mathbb R^n$ is the Lagrange multiplier of the continuous constraint defined by the differential equation. Now, 
+\begin{equation}
+    \frac{dL}{d\theta} = \frac{dI}{d\theta} = 
+    \inttime \left( \frac{\partial h}{\partial \theta} + \frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta} \right) dt
+    - 
+    \inttime \lambda(t)^T \left( \frac{d}{dt} \frac{du}{d\theta} - \frac{\partial f}{\partial u} \frac{du}{d\theta} - \frac{\partial f}{\partial \theta} \right) dt.
+\end{equation}
+Notice that the term involved in the second integral is the same we found when deriving the sensitivity equations. 
+We can derive an easier expression for the last term using integration by parts. 
+Using our usual definition of the sensitivity $s = \frac{du}{d\theta}$, and performing integration by parts in the term $\lambda^T \frac{d}{dt} \frac{du}{d\theta}$ we derive 
+\begin{multline}
+    \frac{dL}{d\theta}
+    = 
+    \inttime \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt 
+    - 
+    \inttime \left( - \frac{d\lambda^T}{dt} - \lambda^T \frac{\partial f}{\partial u} - \frac{\partial h}{\partial u} \right) \, s(t) \, dt \\
+    -
+    \bigg ( \lambda(t_1)^T s(t_1) - \lambda(t_0)^T s(t_0) \bigg ).
+    \label{eq:continous-adjoint-loss}
+\end{multline}
+Now, we can force some of the terms in the last equation to be zero by solving the following adjoint differential equation for $\lambda(t)^T$ in backwards mode
+\begin{equation}
+    \frac{d\lambda}{d\theta} = - \left(\frac{\partial f}{\partial u}\right)^T \lambda - \left( \frac{\partial h}{\partial u} \right)^T,
+    \label{eq:continuous-adjoint}
+\end{equation}
+with final condition $\lambda(t_1) = 0$. 
