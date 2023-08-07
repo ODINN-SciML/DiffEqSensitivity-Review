@@ -1,4 +1,4 @@
-![example workflow](https://github.com/ODINN-SciML/review-diffeq-gradient/actions/workflows/latex.yml/badge.svg)
+![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/latex.yml/badge.svg)
 
 
 # A Review of Sensitivity Methods for Differential Equations
