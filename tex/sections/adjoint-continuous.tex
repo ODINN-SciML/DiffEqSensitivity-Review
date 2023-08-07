@@ -1,54 +1,98 @@
+The continuous adjoint method, also known as continuous adjoint sensitivity analysis (CASA), operates by defining a convenient set of new differential equations for the adjoint variable and using this to compute the gradient in a more efficient manner. 
+Mathematically speaking, the adjoint equations can be derived from a duality or Lagrangian point of view \cite{Giles_Pierce_2000}.
+We prefer to derive the equation using the former methods since we believe it gives better insights to how the method works and also allow to generalize to other user cases. 
+The derivation of both the discrete and continuous adjoint methods using Lagrangian multipliers can be found in Appendix \ref{appendix:lagrangian}.
+We encourage the interested reader to make the effort of following how the continuous adjoint method follows the same logic than the discrete methods, but where the discretization of the differential equation does not happen until the very last step, when the solutions of the differential equations involved need to be numerically evaluated. 
+%\footnote{Based on slides of Chris Rackauckas about "Data Efficient model discovery with Scientific Machine Learning", Neural ODE paper, video "The use and practice of scientific machine learning". Paper comparing CSA and DSA} 
 
-
-This is a generalization of the adjoint state method to the continuous domain, where now instead we are going to define an adjoint $\lambda(t)$ that is a function of time and that solves its own set of differential equations \cite{ma_comparison_2021}. %\footnote{Based on slides of Chris Rackauckas about "Data Efficient model discovery with Scientific Machine Learning", Neural ODE paper, video "The use and practice of scientific machine learning". Paper comparing CSA and DSA} 
 Consider an integrated loss function of the form 
 \begin{equation}
-    L(u; \theta) = \int_{t_0}^{t_1} h(u(t;\theta), \theta) dt,
+    L(u; \theta) = \inttime h(u(t;\theta), \theta) dt
 \end{equation}
-which includes the simple case of the loss function $\mathcal L_k(\theta)$ in Equation \eqref{eq:loss}. 
-%We define the variations of the loss function with respect to the solution of the differential equation as the adjoint, given by\footnote{It is common to use both $\lambda(t)$ and $a(t)$ to refer to the adjoint. In order to keep consistency with the adjoint state method and since the choice of $\lambda(t)$ resembles to the Lagrange multipliers employed by this method, we are going to keep this notation.}
-%\begin{equation}
-%    \lambda(t) = \frac{\partial L}{\partial u(t)}https://twitter.com/_Frank_Schaefer
-%\end{equation}
-Using the Lagrange multiplier trick, we can write a new loss function $I(\theta)$ identical to $L(\theta)$ as 
-\begin{equation}
-    I(\theta) = L(\theta) - \int_{t_0}^{t_1} \lambda(t)^T \left( \frac{du}{dt} - f(u, t, \theta) \right) dt
-\end{equation}
-where $\lambda(t) \in \mathbb R^n$ is the Lagrange multiplier of the continuous constraint defined by the differential equation. Now, 
-\begin{equation}
-    \frac{dL}{d\theta} = \frac{dI}{d\theta} = 
-    \int_{t_0}^{t_1} \left( \frac{\partial h}{\partial \theta} + \frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta} \right) dt
-    - 
-    \int_{t_0}^{t_1} \lambda(t)^T \left( \frac{d}{dt} \frac{du}{d\theta} - \frac{\partial f}{\partial u} \frac{du}{d\theta} - \frac{\partial f}{\partial \theta} \right) dt.
-\end{equation}
-Notice that the term involved in the second integral is the same we found when deriving the sensitivity equations. 
-We can derive an easier expression for the last term using integration by parts. 
-Using our usual definition of the sensitivity $s = \frac{du}{d\theta}$, and performing integration by parts in the term $\lambda^T \frac{d}{dt} \frac{du}{d\theta}$ we derive 
+and its derivative with respect to the parameter $\theta$ given by
 \begin{equation}
     \frac{dL}{d\theta}
     = 
-    \int_{t_0}^{t_1} \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt
-    - 
-    \int_{t_0}^{t_1} \left( - \frac{d\lambda^T}{dt} - \lambda^T \frac{\partial f}{\partial u} - \frac{\partial h}{\partial u} \right) \, s(t) \, dt
-    -
-    \bigg ( \lambda(t_1)^T s(t_1) - \lambda(t_0)^T s(t_0) \bigg ).
-    \label{eq:continous-adjoint-loss}
+    \inttime \left( \frac{\partial h}{\partial \theta} + \frac{\partial h}{\partial u} s(t) \right) dt.
+    \label{eq:casa-loss}
 \end{equation}
-Now, we can force some of the terms in the last equation to be zero by solving the following adjoint differential equation for $\lambda(t)^T$ in backwards mode
+As explained in previous section, the complicated term to evaluate in the last expression is the sensitivity (Equation \eqref{eq:sensitivity-definition}).
+Just as in the case of the discrete adjoint method, the trick is to evaluate the VJP $\frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta}$ by defining an intermediate adjoint variable. 
+The continuous adjoint equation now is obtained by finding the dual/adjoint equation of the sensitivity equation using the weak formulation of Equation \eqref{eq:sensitivity_equations}. 
+The adjoint equation is obtained by writing the sensitivity equation in the form 
 \begin{equation}
-    \frac{d\lambda}{d\theta} = - \left(\frac{\partial f}{\partial u}\right)^T \lambda - \left( \frac{\partial h}{\partial u} \right)^T,
-    \label{eq:continuous-adjoint}
+    \inttime \lambda(t)^T \left( \frac{ds}{dt} - f(u, \theta, t) \, s - \frac{\partial f}{\partial \theta}  \right) dt 
+    = 
+    0,
+    \label{eq:integrated-sensitivity-equation}
 \end{equation}
-with final condition $\lambda(t_1) = 0$. Then, in order to compute the full gradient $\frac{dL}{d\theta}$ we do
+where this equation must be satisfied for every function $\lambda(t)$ in order to Equation \eqref{eq:continuous-adjoint} to be true. 
+The next step is to get rid of all time derivative applied to the sensitivity $s$ using integration by parts: 
+\begin{equation}
+    \inttime \lambda(t)^T \frac{ds}{dt} dt
+    = 
+    \lambda(t_1)^T s(t_1) - \lambda(t_0)^T s(t_0)
+    -
+    \inttime \frac{d\lambda^T}{dt} s(t)\, dt.
+\end{equation}
+Replacing this last expression into Equation \eqref{eq:integrated-sensitivity-equation} we obtain 
+\begin{equation}
+    \inttime \left( - \frac{d\lambda^T}{dt} -  \lambda(t)^T f(u, \theta, t) \right) s(t) dt
+    =
+    \inttime \lambda(t)^T \frac{\partial f}{\partial \theta} dt 
+    - 
+    \lambda(t_1)^T s(t_1)
+    + 
+    \lambda(t_0)^T s(t_0)
+    \label{eq:casa-semiadjoint}
+\end{equation}
+At first glance, there is nothing particularly interesting about this last equation. 
+However, both Equations \eqref{eq:casa-loss} and \eqref{eq:casa-semiadjoint} involved a VJP with $s(t)$. 
+Since Equation \eqref{eq:casa-semiadjoint} must hold for every function $\lambda(t)$, we can pick $\lambda(t)$ to make the terms involving $s(t)$ in Equations \eqref{eq:casa-loss} and \eqref{eq:casa-semiadjoint} to perfectly coincide. 
+This is done by defining the adjoint $\lambda(t)$ to be the solution of the new system of differential equations
+\begin{equation}
+    \frac{d\lambda}{dt} 
+    = 
+    - 
+    f(u, \theta, t)^T \lambda  
+    - 
+    \frac{\partial h^T}{\partial u} 
+    \qquad \quad \lambda(t_1) = 0. 
+    \label{eq:casa-adjoint-equation}
+\end{equation}
+Notice that the adjoint equation is define with final condition at $t_1$, meaning that it needs to be solved backwards in time. 
+The definition of the adjoint $\lambda(t)$ as the solution of this last ODE simplifies Equation \eqref{eq:casa-semiadjoint} to
+\begin{equation}
+    \inttime \frac{\partial h}{\partial u} s(t) dt
+    = 
+    \lambda(t_0)^T s(t_0)
+    + 
+    \inttime \lambda^T (t) \frac{\partial f}{\partial \theta} dt.
+\end{equation}
+Finally, replacing this inside the expression for the gradient of the loss function we have 
+\begin{equation}
+    \frac{dL}{d\theta}
+    = 
+    \lambda^T(t_0) s(t_0)
+    + 
+    \inttime
+    \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt
+    \label{eq:casa-final-loss-gradient}
+\end{equation}
+The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be described as follows:
 \begin{enumerate}
     \item Solve the original differential equation $\frac{du}{dt} = f(u, t, \theta)$;
-    \item Solve the backwards adjoint differential equation \eqref{eq:continuous-adjoint};
-    \item Compute the simplified version of the full gradient in Equation \eqref{eq:continous-adjoint-loss} as
-    \begin{equation}
-        \frac{dL}{d\theta} = \lambda^T (t_0) s(t_0) + \int_{t_0}^{t_1}  \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right)  dt.
-    \end{equation}
+    \item Solve the backwards adjoint differential equation \eqref{eq:casa-adjoint-equation};
+    \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.
 \end{enumerate}
-In order to solve the adjoint equation, we need to know $u(t)$ at any given time. There are different ways in which we can accomplish this: i) we can solve for $u(t)$ again backwards; ii) we can store $u(t)$ in memory during the forward step; or iii) we can do checkpointing to save some reference values in memory and interpolate in between. 
+The bottleneck on this method is the calculation of the adjoint, since in order to solve the adjoint equation we need to know $u(t)$ at any given time. 
+Effectively, notice that the adjoint equation involves the term $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$ which are both functions of $u(t)$. 
+There are different ways of addressing the evaluation of $u(t)$ during the backward step:
+\begin{enumerate}[label=(\roman*)]
+    \item Solve for $u(t)$ again backwards.
+    \item Store $u(t)$ in memory during the forward step.
+    \item Store reference values in memory and interpolate in between. This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
+\end{enumerate} 
 Computing the ODE backwards can be unstable and lead to exponential errors, \cite{kim_stiff_2021}. 
 In \cite{chen_neural_2019}, the solution is recalculated backwards together with the adjoint simulating an augmented dynamics: 
 \begin{equation}
