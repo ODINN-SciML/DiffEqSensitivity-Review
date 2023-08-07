@@ -1,4 +1,4 @@
-The adjoint state method is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
+Also know as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}
 This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
 Just as in the case of automatic differentiation, the set of adjoint equations can be solved in both forward and backward mode. 
@@ -56,10 +56,22 @@ If well this representation of the discrete differential equation is quite conve
 
 \subsubsection{Adjoint state equations}
 
-We are interested in differentiating a function $h(U, \theta)$ constrained to satisfy the algebraic linear equation $G(U; \theta) = 0$.
+We are interested in differentiating a function $L(U, \theta)$ with respect to the parameter $\theta$. 
+Since here $U$ is the discrete set of evaluations of the solution, examples of loss functions now include 
+\begin{equation}
+    L(U, \theta) 
+    = 
+    \frac{1}{2} \sum_{i=1}^N \| u_i - u_i^\text{obs} \|^2, 
+\end{equation}
+with $u_i^\text{obs}$ the observed time-series. 
+We further need to impose the constraint that the solution satisfies the algebraic linear equation $G(U; \theta) = 0$.
 Now,
 \begin{equation}
-    \frac{dh}{d\theta} = \frac{\partial h}{\partial \theta} + \frac{\partial h }{\partial U} \frac{\partial U}{\partial \theta},
+    \frac{dL}{d\theta} 
+    = 
+    \frac{\partial L}{\partial \theta} 
+    + 
+    \frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta},
     \label{eq:dhdtheta0}
 \end{equation}
 and also for the constraint $G(U; \theta)=0$ we can derive
@@ -80,35 +92,39 @@ which is equivalent to
 \end{equation}
 If we replace this last expression into equation \eqref{eq:dhdtheta0}, we obtain
 \begin{equation}
-    \frac{dh}{d\theta} 
+    \frac{dL}{d\theta} 
     =
-    \frac{\partial h}{\partial \theta} 
+    \frac{\partial L}{\partial \theta} 
     - 
-    \underbrace{\frac{\partial h}{\partial U}}_{\text{vector}}
+    \underbrace{\frac{\partial L}{\partial U}}_{\text{vector}}
     \left( \frac{\partial G}{\partial U} \right)^{-1} 
     \frac{\partial G}{\partial \theta}.
     \label{eq:dhdtheta}
 \end{equation}
 The important trick in the adjoint state methods is to observe that in this last equation, the right-hand side can be resolved as a vector-Jacobian product (VJP).
-Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the operation $\frac{\partial h}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
+Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
 This is what leads to the definition of the adjoint $\lambda \in \R^{nN}$ as the solution of the linear system of equations 
 \begin{equation}
-    \left( \frac{\partial G}{\partial U}\right)^T \lambda =  \left( \frac{\partial h}{\partial U} \right)^T,
+    \left( \frac{\partial G}{\partial U}\right)^T \lambda 
+    =  
+    \left( \frac{\partial L}{\partial U} \right)^T,
     \label{eq:adjoint-state-equation}
 \end{equation}
 that is,
 \begin{equation}
-    \lambda^T = \frac{\partial h}{\partial U} \left( \frac{\partial g}{\partial U} \right)^{-1}.
+    \lambda^T = \frac{\partial L}{\partial U} \left( \frac{\partial g}{\partial U} \right)^{-1}.
     \label{eq:def_adjoint}
 \end{equation}
 Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta}, we obtain 
 \begin{equation}
-    \frac{dh}{d\theta} 
+    \frac{dL}{d\theta} 
     =
-    \frac{\partial h}{\partial \theta} - \lambda^T \frac{\partial G}{\partial \theta}.
+    \frac{\partial L}{\partial \theta} 
+    - 
+    \lambda^T \frac{\partial G}{\partial \theta}.
     \label{eq:gradient-adjoint-state-method}
 \end{equation}
-The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial h}{\partial U} \frac{\partial U}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
+The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
 
 For the linear system of discrete equations $G(U; \theta)=0$, we have \cite{Johnson}
 \begin{equation}
@@ -118,9 +134,11 @@ For the linear system of discrete equations $G(U; \theta)=0$, we have \cite{John
 \end{equation}
 so the desired gradient in Equation \eqref{eq:gradient-adjoint-state-method} can be computed as 
 \begin{equation}
-    \frac{dh}{d\theta} 
+    \frac{dL}{d\theta} 
     = 
-    \frac{\partial h}{\partial \theta} - \lambda^T \left( \frac{\partial A }{\partial \theta} U - \frac{\partial b}{\partial \theta} \right)
+    \frac{\partial L}{\partial \theta} 
+    - 
+    \lambda^T \left( \frac{\partial A }{\partial \theta} U - \frac{\partial b}{\partial \theta} \right)
     \label{eq:dhdtheta_linear}
 \end{equation}
 with $\lambda$ the solution of the linear system (Equation \eqref{eq:adjoint-state-equation})
@@ -142,7 +160,15 @@ with $\lambda$ the solution of the linear system (Equation \eqref{eq:adjoint-sta
         \lambda_N
     \end{bmatrix}
     = 
-    \frac{\partial h}{\partial u}^T.
+    \begin{bmatrix}
+        u_1 - u_1^\text{obs} \\
+        u_2 - u_2^\text{obs} \\
+        u_3 - u_3^\text{obs} \\
+        \vdots \\
+        u_N - u_N^\text{obs}     
+    \end{bmatrix}
+    = 
+    \frac{\partial L}{\partial U}^T.
     \label{eq:linea-adjoint-state-equation}
 \end{equation}
 This is a linear system of equations with the same size of the original $A(\theta) U = b(\theta)$, but involving the adjoint matrix $A^T$. 
@@ -151,7 +177,7 @@ One way of doing this is relying on matrix factorization.
 Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrices $A (\theta) = LU$, which then can be also used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
 Another more natural way of finding the adjoins $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the iterative scheme
 \begin{equation}
-    \lambda_{i} = A_{i}^T \lambda_{i+1} + \left( \frac{\partial h}{\partial u}^T \right)_i
+    \lambda_{i} = A_{i}^T \lambda_{i+1} + (u_i - u_i^\text{obs})
 \end{equation}
 with initial condition $\lambda_N$. 
 This means that we can solve the adjoint equation in backwards mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 

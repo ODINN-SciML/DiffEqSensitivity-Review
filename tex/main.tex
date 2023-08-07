@@ -16,6 +16,7 @@
 \usepackage{float}
 \usepackage[hidelinks]{hyperref}     % hidelinks added to not display red box for links
 \usepackage{algorithm}
+\usepackage{enumitem}   % Necesarry for enumerating with romans (i), (ii), ...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%    Customized packages   %%%%%
@@ -84,10 +85,12 @@ sorting=none
 \subsection{Sensitivity equations}
 \input{sections/sensitivity-equation}
 
-\subsection{Adjoint state method}
+% \subsection{Adjoint state method}
+\subsection{Discrete adjoint method}
 \input{sections/adjoint-state}
 
-\subsection{Continuous adjoint sensitivity analysis}
+\subsection{Continuous adjoint method}
+% \subsection{Continuous adjoint sensitivity analysis}
 \input{sections/adjoint-continuous}
 
 \section{Comparison between methods}
@@ -102,8 +105,18 @@ sorting=none
 \section{Notation}
 \input{sections/notation}
 
+\newpage
+\appendix
+\section*{Appendices}
+\addcontentsline{toc}{section}{Appendices}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+
+\subsection{Lagrangian derivation of adjoints}
+\input{tex/appendix/lagrangian}
+
 % \section{Glossary} 
 
+\newpage
 \printbibliography[heading=bibintoc, title={References}]
 
 \end{document}
