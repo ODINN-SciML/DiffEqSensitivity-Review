@@ -16,7 +16,7 @@ with respect to the parameters $\theta$ of the dynamical model?
 There are different methods that try to solve this problem, and we had roughly classify them in the following scheeme.
 
 <p align="center">
-	<img src="tex/figures/scheme-methods.pdf" width="50%">
+	<img src="tex/figures/scheme-methods.png" width="50%">
 </p>  
 <p align="center">	
 	<i>Schematic classification of different methods to compute gradients of functions involving solutions of differential equations.</i>
