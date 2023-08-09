@@ -9,18 +9,22 @@ Although here we consider the case of ordinary differential equations, that is, 
 Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not avoid the use of higher-dimension objects (for example, when $u$ is a matrix or a tensor). 
 
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
-Here we are using the letter $L$ to emphasized that in many cases this will be a loss function, but without loss of generality this include the more general cases of likelihood functions, summary statistics, or any function of the solution. 
-Another important example is when $L$ just returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
-Examples of loss functions include
-\begin{equation}
- L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
- \label{eq:quadratic-loss-function}
-\end{equation}
-where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
-\begin{equation}
- L(u(\cdot, \theta)) = \frac{1}{2} \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
-\end{equation}
-with $h$ some function that quantifies the contribution of the error term at time $t \in [t_0, t_1]$.
+Here we are using the letter $L$ to emphasized that in many cases this will be a loss function, but without loss of generality this include a broader class of functions: 
+\begin{itemize}
+    \item \textbf{Loss functions}. This is usually a real valued function that quantifies the prediction power of a given model. Examples of loss functions include
+    \begin{equation}
+     L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
+     \label{eq:quadratic-loss-function}
+    \end{equation}
+    where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
+    \begin{equation}
+     L(u(\cdot, \theta)) = \frac{1}{2} \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+    \end{equation}
+    with $h$ some function that quantifies the contribution of the error term at time $t \in [t_0, t_1]$. This also includes the case of likelihood functions.  
+    \item \textbf{Summary of the solution.} Another important example is when $L$ just returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
+    \item \textbf{Diagnosis of the solution.} In many cases we are interested in maximizing/minimizing the value of some interest quantity that is function of the solution of a differential equation. This is particularly the case in design control theory, a very popular approach in aerodynamics modelling where the goal could be to maximize the speed of an airplane given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
+\end{itemize}
+
 We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
 \begin{equation}
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
