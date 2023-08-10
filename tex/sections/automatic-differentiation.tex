@@ -1,4 +1,4 @@
-Automatic differentiation (AD) is a technology that allows computing gradients thought a computer program. 
+Automatic differentiation (AD) is a technology that allows computing gradients thought a computer program \cite{griewank2008evaluatingderivatives}. 
 The main idea is that every computer program manipulating numbers can be reduced to a sequence of simple algebraic operations that can be easily differentiable. 
 The derivatives of the outputs of the computer program with respect to their inputs are then combined using the chain rule.
 One advantage of AD systems is that we can automatically differentiate programs that include control flow, such as branching, loops or recursions. 
@@ -30,13 +30,24 @@ For example, given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\ep
 From these last examples, we can see that the derivative component of the dual number carries the information of the derivatives when combining operations.
 For example, suppose than in the last example the dual variables $x_2$ and $y_2$ carry the value of the derivative of $x_1$ and $x_2$ with respect to a parameter $\theta$, respectively. 
 
-
 Intuitively, we can think about $\epsilon$ as being a differential in the Taylor expansion:
-\begin{equation}
- f(x + \epsilon) = f(x) + \epsilon f'(x) + \mathcal O (\epsilon^2).
-\end{equation}
+\begin{align}
+    f(x_1 + \epsilon x_2)
+    &= 
+    f(x_1)
+    + 
+    \epsilon \, x_2 \,  f'(x_1)
+    + 
+    \epsilon^2 \cdot ( \ldots ) \nonumber \\
+    &= 
+    f(x_1)
+    + 
+    \epsilon \, x_2 \,  f'(x_1)
+    \label{eq:dual-number-function}
+\end{align}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
-This implies that we can use dual numbers to implement forward AD through a numerical algorithm. Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.
+This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
+Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.
 For example, in Julia we create a dual number object and extend the definition of algebraic operations by relying in multiple distpach
 \begin{jllisting}
 using Base: @kwdef
@@ -64,6 +75,16 @@ println("The derivative of a*b*c with respect to a is: ", result.derivative)
 \end{jllisting}
 Notice that in this last example the dual numbers \texttt{b} and \texttt{c} where initialized with derivative value equals to zero, while \texttt{a} with value equals to one. 
 This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
+
+We can also extend the definition of standard functions by simply applying the chain rule and storing the derivative in the dual variable following Equation \eqref{eq:dual-number-function}:
+\begin{jllisting}
+function Base.:(sin)(a::DualNumber)
+    value = sin(a.value)
+    derivative = a.derivative * cos(a.value)
+    return DualNumber(value=value, derivative=derivative)
+end
+\end{jllisting}
+With all these pieces together, we are able to propagate forward the value of a single-valued derivative though a series of algebraic operations. 
 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
 Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
@@ -114,8 +135,3 @@ In general, when the function we are trying to differentiate has a larger input 
     \caption{Comparison between forward and backward AD. Changing the order how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode.}
     \label{fig:vjp-jvp}
 \end{figure}
-
-\subsubsection{Symbolic differentiation}
-
-Sometimes AD is compared against symbolic differentiation.
-According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.
