@@ -3,7 +3,7 @@
 
 using OrdinaryDiffEq
 using CairoMakie
-# using Makie.Colors
+using ComplexDiff
 
 # Parameters 
 u0 = [0.0, 1.0]
@@ -70,6 +70,16 @@ function finitediff_solver(h, t, u0, p, reltol, abstol)
     return (sol₊.u[end][1] - sol₋.u[end][1]) /(2h)
 end
 
+function complexdiff_solver(h, t, u0, p, reltol, abstol)
+    function simple_sol(ω)
+        tspan = (0.0, t)
+        prob = ODEProblem(oscilatior!, u0, tspan, [ω])
+        sol = solve(prob, Tsit5(), reltol=reltol, abstol=abstol)
+        return sol.u[end][1]
+    end
+    return ComplexDiff.derivative(simple_sol, p[1], h)
+end
+
 ######### Simulation with differerent stepsizes ###########
 
 stepsizes = 2.0.^collect(round(log2(eps(Float64))):1:0)
@@ -81,6 +91,7 @@ derivative_true = solution_derivative(t₁, u0, p)
 # Numerical finite differences solution computed with real analytical solution
 # derivative_numerical = finitediff_numerical.(stepsizes, Ref(t₁), Ref(u0), Ref(p))
 derivative_numerical = finitediff_numerical.(stepsizes, Ref(t₁), Ref(u0), Ref(p))
+error_numerical = abs.((derivative_numerical .- derivative_true)./derivative_true)
 
 # Finite differences with solution from solver and low tolerance
 derivative_solver_low = finitediff_solver.(stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-5), Ref(1e-6))
@@ -90,6 +101,15 @@ error_solver_low = abs.((derivative_solver_low .- derivative_true)./derivative_t
 derivative_solver_high = finitediff_solver.(stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-12), Ref(1e-12))
 error_solver_high = abs.((derivative_solver_high .- derivative_true)./derivative_true)
 
+# Complex step differentiation with solution from solver and high tolerance
+# derivative_solver_high_complex = complexdiff_solver.(stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-12), Ref(1e-12))
+# error_solver_high_complex = abs.((derivative_solver_high_complex .- derivative_true)./derivative_true)
+
+# Complex step Differentiation
+derivative_complex = ComplexDiff.derivative.(ω -> solution(t₁, u0, [ω]), p[1], stepsizes)
+error_complex = abs.((derivative_complex .- derivative_true)./derivative_true)
+
+
 ######### Figure ###########
 
 
@@ -97,11 +117,14 @@ error_solver_high = abs.((derivative_solver_high .- derivative_true)./derivative
 fig = Figure(resolution=(900, 500)) 
 ax = Axis(fig[1, 1], xlabel = L"Stepsize ($\varepsilon$)", ylabel = L"\text{Relative error}", 
           xscale = log10, yscale=log10)
-scatter!(ax, stepsizes, error_numerical,   xscale=log10, yscale=log10, label=L"\text{Exact Solution}")
-scatter!(ax, stepsizes, error_solver_low,  xscale=log10, yscale=log10, label=L"Numerical solution (tol=$10^{-6}$)", color=:orange)
-scatter!(ax, stepsizes, error_solver_high, xscale=log10, yscale=log10, label=L"Numerical solution (tol=$10^{-12}$)", color=:red)
+
+scatter!(ax, stepsizes, error_complex,     xscale=log10, yscale=log10, label=L"\text{Complex step differentiation}", color=:green, zorder=1)
+scatter!(ax, stepsizes, error_numerical,   xscale=log10, yscale=log10, label=L"\text{Exact Solution}", zorder=2)
+scatter!(ax, stepsizes, error_solver_high, xscale=log10, yscale=log10, label=L"Numerical solution (tol=$10^{-12}$)", color=:red, zorder=3)
+# scatter!(ax, stepsizes, error_solver_high_complex, xscale=log10, yscale=log10, label=L"Numerical solution Complex (tol=$10^{-12}$)", color=:violet, zorder=3)
+scatter!(ax, stepsizes, error_solver_low,  xscale=log10, yscale=log10, label=L"Numerical solution (tol=$10^{-6}$)", color=:orange, zorder=4)
 
 # Add legend
 fig[1, 2] = Legend(fig, ax)
 
-save("finite_difference/finite_difference_derivative.pdf", fig)
+save("finite_differences/finite_difference_derivative.pdf", fig)
