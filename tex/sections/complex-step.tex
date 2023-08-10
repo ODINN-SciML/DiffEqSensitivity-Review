@@ -1,6 +1,6 @@
 An alternative to finite differences that avoids rounding errors is based complex variable analysis. 
 The first proposals originated in 1967 using the Cauchy integral theorem involving the numerical evaluation of a complex valued integral \cite{Lyness_1967, Lyness_Moler_1967} .
-A new approach recently emerged that uses the Taylor expansion of a function to define its complex generalization \cite{Squire_Trapp_1998_complex_diff}. 
+A new approach recently emerged that uses the Taylor expansion of a function to define its complex generalization \cite{Squire_Trapp_1998_complex_diff, Martins_Sturdza_Alonso_2003_complex_differentiation}. 
 Assuming that we have one single scalar parameter $\theta \in \R$, then the function $L(\theta)$ can be expanded as 
 the Taylor expansion
 \begin{equation}
@@ -26,7 +26,3 @@ The method of \textit{complex step differentiation} consist then in estimating t
 Besides the advantage of being a method with precision $\mathcal{O}(\varepsilon^2)$, the complex step method avoids subtracting cancellation error and then the value of $\varepsilon$ can be reduce to almost machine precision error without affecting the calculation of the derivative. 
 
 Extension to higher order derivatives can be done by introducing multicomplex variables \cite{Lantoine_Russell_Dargent_2012}. 
-
-Other authors had suggested to use complex variable analysis to compute the derivative as the imaginary part of $L(\theta + i \varepsilon)/h$, which coincides with $L'(\theta)$ for the case where $\theta$ is a scalar \cite{ Martins_Sturdza_Alonso_2003_complex_differentiation}.
-% This approach was later generalized to the multivariable case 
-Although this solves the problem of cancellation errors in Equation \eqref{eq:finite_diff2} for small $\varepsilon$, this approach is just valid for cases where the function $L$ is known analytically. 
