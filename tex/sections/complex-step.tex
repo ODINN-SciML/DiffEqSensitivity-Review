@@ -1,0 +1,28 @@
+An alternative to finite differences that avoids rounding errors is based complex variable analysis. 
+The first proposals originated in 1967 using the Cauchy integral theorem involving the numerical evaluation of a complex valued integral \cite{Lyness_1967, Lyness_Moler_1967} .
+A new approach recently emerged that uses the Taylor expansion of a function to define its complex generalization \cite{Squire_Trapp_1998_complex_diff, Martins_Sturdza_Alonso_2003_complex_differentiation}. 
+Assuming that we have one single scalar parameter $\theta \in \R$, then the function $L(\theta)$ can be expanded as 
+the Taylor expansion
+\begin{equation}
+    L(\theta + i \, \varepsilon)
+    = 
+    L(\theta) + i \varepsilon L'(\theta) 
+    - 
+    \frac 1 2
+    L''(\theta) \varepsilon^2
+    + 
+    \mathcal O (\varepsilon^3),
+\end{equation}
+where $i$ is the imaginary unit with the property $i^2 = -1$. 
+From this equation we can observed that many factors vanish when we compute the imaginary part $\text{Im}(L(\theta + i \varepsilon))$, which leads to
+\begin{equation}
+    L'(\theta) 
+    = 
+    \frac{\text{Im}(L(\theta + i \varepsilon))}{\varepsilon}
+    + 
+    \mathcal{O} (\varepsilon^2)
+\end{equation}
+The method of \textit{complex step differentiation} consist then in estimating the gradient as $\text{Im}(L(\theta + i \varepsilon)) / \varepsilon$ for a small value of $\varepsilon$. 
+Besides the advantage of being a method with precision $\mathcal{O}(\varepsilon^2)$, the complex step method avoids subtracting cancellation error and then the value of $\varepsilon$ can be reduce to almost machine precision error without affecting the calculation of the derivative. 
+
+Extension to higher order derivatives can be done by introducing multicomplex variables \cite{Lantoine_Russell_Dargent_2012}. 

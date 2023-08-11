@@ -26,10 +26,6 @@ Due to this, some heuristics and algorithms had been introduced in order to pick
 If well many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
 This is illustrated in Figure \ref{fig:finite-diff}, where the error in computing the gradient is shown for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize.
 
-Other authors had suggested to use complex variable analysis to compute the derivative as the imaginary part of $L(\theta + i \varepsilon)/h$, which coincides with $L'(\theta)$ for the case where $\theta$ is a scalar \cite{Squire_Trapp_1998_complex_diff, Martins_Sturdza_Alonso_2003_complex_differentiation}.
-% This approach was later generalized to the multivariable case 
-Although this solves the problem of cancellation errors in Equation \eqref{eq:finite_diff2} for small $\varepsilon$, this approach is just valid for cases where the function $L$ is known analytically. 
-
 % Condition error
 %specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
  
@@ -69,7 +65,7 @@ Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differen
 This can be solved directly using an ODE solver.
 Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
 
-\begin{figure}
+\begin{figure}[tbh]
     \centering
     \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
     \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where this is computed finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using  a numerical solver are larger and these are also affercted by the precision of the numerical solver. }
