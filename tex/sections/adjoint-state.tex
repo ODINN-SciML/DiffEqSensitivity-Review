@@ -2,9 +2,14 @@ Also know as the adjoint state method, it is another example of a discrete metho
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}
 This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
 Just as in the case of automatic differentiation, the set of adjoint equations can be solved in both forward and backward mode. 
+
 % Just as in the case of automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
 
+% Mathematically, reverse mode AD is related to the adjoint differential equations \cite{Griewack-on-AD}
+
 \subsubsection{Discrete differential equation}
+
+% reference: Sensitivity theory of non-linear systems
 
 The first step in order to derive the adjoint equation is to discretize the set of differential equations in \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
 Given the sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 

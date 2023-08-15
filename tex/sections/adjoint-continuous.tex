@@ -91,7 +91,9 @@ There are different ways of addressing the evaluation of $u(t)$ during the backw
 \begin{enumerate}[label=(\roman*)]
     \item Solve for $u(t)$ again backwards.
     \item Store $u(t)$ in memory during the forward step.
-    \item Store reference values in memory and interpolate in between. This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
+    \item Store reference values in memory and interpolate in between. 
+    This technique is known as \textit{checkpoiting} or windowing that tradeoffs computational running time and storage.
+    This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
 \end{enumerate} 
 Computing the ODE backwards can be unstable and lead to exponential errors, \cite{kim_stiff_2021}. 
 In \cite{chen_neural_2019}, the solution is recalculated backwards together with the adjoint simulating an augmented dynamics: 
