@@ -98,9 +98,9 @@ Notice that a major limitation of the dual number approach is that we need a dua
 \vspace*{5px}
 
 An useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
-Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical} or Wengert list \cite{Wengert_1964}. 
+Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
-We can define $v_1, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
+We can define $v_1, v_2, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
 Once the graph is constructed, we can compute the derivative of every node with respect to other using Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
 \begin{equation}
@@ -118,8 +118,9 @@ Instead of evaluating the last expression for all possible path, a simplificatio
     \sum_\text{$u$\text{ such that} $u \rightarrow v_j$}
     \frac{\partial v_j}{\partial u}
     \frac{\partial u}{\partial v_i} 
+    \label{eq:AD-graph-recursion}
 \end{equation}
-Since every $u$ with $u \rightarrow v_j$ part of the computational graph with have index less than $j$, we can iterate this procedure as we run the computer program and solve for both the function and its gradient. 
+Since every variable node $u$ such that $u \rightarrow v_j$ is an edge of the computational graph have index less than $j$, we can iterate this procedure as we run the computer program and solve for both the function and its gradient: the term $\frac{\partial u}{\partial v_i}$ has been computed in a previous iteration, while $\frac{\partial v_j}{\partial u}$ can be evaluated at the same time the node $v_j$ is computed based on only the value of the parent variable nodes. 
 
 Both implementations of forward AD require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
 
@@ -128,13 +129,14 @@ Both implementations of forward AD require a number of operations that increases
 Backward mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. 
 The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that do not depend of the number of parameters to differentiate \cite{Griewack-on-AD, Wolfe_1982}, a point known as \textit{cheap gradient principle} \cite{griewank2012invented}.  
 
-Given a directional graph of operations defined by a Wengert list, we can compute gradients of any given function backwards as
+Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in backwards mode as
 \begin{equation}
  \bar v = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
-
-Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}. In the backward step, this executes a series of functions calls, one for each elementary operation.
-If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
+Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
+In the backward step, this executes a series of functions calls, one for each elementary operation.
+If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
+Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
 \begin{equation}
  \bar v_1, \bar v_2 = v_2 \times \bar w , \quad
  v_1 \times \bar w = \mathcal{B}_w (\bar w),
@@ -145,8 +147,6 @@ which is equivalent to using the chain rule as
 \end{equation}
 
 The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
-
-
 
 % However, this improve comes at the cost of more storage, since in order to compute gradient in reverse order one needs to evalaute intermediate variables 
 
