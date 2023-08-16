@@ -27,7 +27,7 @@ The adjoint equation is obtained by writing the sensitivity equation in the form
     \label{eq:integrated-sensitivity-equation}
 \end{equation}
 where this equation must be satisfied for every function $\lambda(t)$ in order to Equation \eqref{eq:continuous-adjoint} to be true. 
-The next step is to get rid of all time derivative applied to the sensitivity $s$ using integration by parts: 
+The next step is to get rid of all time derivative applied to the sensitivity $s(t)$ using integration by parts: 
 \begin{equation}
     \inttime \lambda(t)^T \frac{ds}{dt} dt
     = 
@@ -43,7 +43,7 @@ Replacing this last expression into Equation \eqref{eq:integrated-sensitivity-eq
     - 
     \lambda(t_1)^T s(t_1)
     + 
-    \lambda(t_0)^T s(t_0)
+    \lambda(t_0)^T s(t_0).
     \label{eq:casa-semiadjoint}
 \end{equation}
 At first glance, there is nothing particularly interesting about this last equation. 
@@ -91,9 +91,11 @@ There are different ways of addressing the evaluation of $u(t)$ during the backw
 \begin{enumerate}[label=(\roman*)]
     \item Solve for $u(t)$ again backwards.
     \item Store $u(t)$ in memory during the forward step.
-    \item Store reference values in memory and interpolate in between. This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
+    \item Store reference values in memory and interpolate in between. 
+    This technique is known as \textit{checkpoiting} or windowing that tradeoffs computational running time and storage.
+    This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
 \end{enumerate} 
-Computing the ODE backwards can be unstable and lead to exponential errors, \cite{kim_stiff_2021}. 
+Computing the ODE backwards can be unstable and lead to exponential errors \cite{kim_stiff_2021}. 
 In \cite{chen_neural_2019}, the solution is recalculated backwards together with the adjoint simulating an augmented dynamics: 
 \begin{equation}
     \frac{d}{dt}

@@ -1,5 +1,29 @@
+%Finite differences is less accurate and as costly as forward AD \cite{Griewack-on-AD}.
+
 Sometimes AD is compared against symbolic differentiation.
 According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.
 
-% Also, complex step differentiation and dual number do the same.
-% We can do this by considering the simple example of sin(x^2) and see the result of the two different operations.
+Another important point of comparison is the one existing between forward mode AD implemented with dual numbers and complex step differentiation. 
+Both methods introduce an abstract unit ($\epsilon$ and $i$, respectively) associated to the imaginary part of the extender value that carries forward the numerical value of the gradient. 
+This resemblance between the methods makes them to be susceptible to the same advantages and disadvantages: easiness to implement with operator overloading; inefficient scaling with respect to the number of variables to differentiate. 
+However, although these methods seems very similar, it is important to remark that AD gives the exact gradient, while complex step differentiation relies in numerical approximations that are valid just when the stepsize $\varepsilon$ is small. 
+The next example shows how the calculation of the gradient of $\sin (x^2)$ is performed by these two methods:
+\begin{equation}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{} l @{\qquad} l @{\qquad} l @{}}
+Operation & AD with Dual Numbers  & Complex Step Differentiation \\
+$x$ & $x + \epsilon$    & $x + i \varepsilon$ \\
+$x^2$ & $x^2 + \epsilon \, (2x)$  & $x^2 - \varepsilon^2 + 2i\varepsilon x$\\
+$\sin(x^2)$  & $\sin(x^2) + \epsilon \, \cos(x^2) (2x)$ &
+$\sin(x^2 - \varepsilon^2) \cosh (2i\varepsilon) + i \, \cos(x^2 - \varepsilon^2) \sinh (2i\varepsilon)$
+\end{tabular}
+\label{eq:AD-complex-comparision}
+\end{equation}
+While the second component of the dual number has the exact derivative of $\sin(x^2)$, it is not until we take $\varepsilon \rightarrow 0$ than we obtain the derivative in the imaginary component for the complex step method
+\begin{equation}
+    \lim_{\varepsilon \rightarrow 0} \, \frac{1}{\varepsilon} \, \cos(x^2 - \varepsilon^2) \sinh (2i\varepsilon) 
+    = 
+    \, \cos(x^2) (2x).
+\end{equation}
+The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
+This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operation that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
