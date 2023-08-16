@@ -33,7 +33,13 @@ We provide code for the different simulations and examples we exhibit in the pro
 This repository is organized in a way that contains most of the important elements of modern scientific workflow. We have included the following elements:
 - `tex`: This is the folder where all the latex text belongs and what we use to compile `main.pdf`.
 - `code`: Folder with both Jupyter notebooks and Julia scripts.
+- `CI`: Continuous integration with GitHub actions to automatically compile and commit the manuscript. 
 - `Makefile`: make file that automatizes all the commands that can be executed within this repository.
+
+### Continuous integrations
+
+This repository has a [workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/blob/main/.github/workflows/latex.yml) implemented that automatically compiles the latex files into the file `main.pdf` and then commits this file directy to the repository. 
+If you are working from your fork, this action should also work and you should be able to generate the pdf file automatically using GitHub actions. 
 
 ### Makefile
 
@@ -60,6 +66,8 @@ repository. You can add changes and explore new things in your own fork of this 
 **working from Overleaf?** You can create a Overleaf project that is synchronized with a GitHub repository (see [here](https://www.overleaf.com/learn/how-to/Git_Integration_and_GitHub_Synchronization) for more information). This allows you to do edits on the text file directly from Overleaf and then push your changes directly to your fork, from where you can make a pull request to the main repository.
 
 ## Contact 
+
+If you have any questions or want to reach out, feel free to send us an email to `fsapienza@berkeley.edu`.
 
 <!-- ## Reference
 
