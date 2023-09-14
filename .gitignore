@@ -25,3 +25,4 @@ __pycache__
 .vscode
 .gitconfig.local
 core.*
+Manifest.toml
