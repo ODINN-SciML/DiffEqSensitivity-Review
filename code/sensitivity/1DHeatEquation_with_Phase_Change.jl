@@ -1,6 +1,7 @@
 using ComponentArrays
 using FreezeCurves
 using IfElse
+using LinearAlgebra
 using OrdinaryDiffEq
 using SciMLSensitivity
 using Statistics
@@ -107,8 +108,9 @@ grid_edges = vcat(0.0:0.05:5.0, 5.1:0.1:20.0, 20.5:0.5:50.0, 51.0:1.0:100.0)
 grid = Grid1D(grid_edges)
 T0, H0 = steady_state_init(grid, p; Tsurf=-10.0)
 f = heateq_with_phase_change(grid, T_ub)
+jac_prototype = Tridiagonal(ones(length(H0)-1), ones(length(H0)), ones(length(H0)-1))
 tspan = (0.0, 48*3600.0)
-prob = ODEProblem(f, H0, tspan, p)
+prob = ODEProblem(ODEFunction(f; jac_prototype), H0, tspan, p)
 sol = @time solve(prob, SSPRK43(), abstol=1e-2, reltol=1e-6)
 
 H_sol = reduce(hcat, sol.u)
@@ -116,8 +118,9 @@ T_sol = enthalpyinv.(H_sol, Ref(p))
 Plots.plot(T_sol[1:5:50,:]', leg=nothing)
 
 function loss(p)
-    sol_p = solve(prob, SSPRK43(), p=p, sensealg=InterpolatingAdjoint(autojacvec=ZygoteVJP()))
-    return mean(sol_p.u[end])
+    sensealg = sensealg=InterpolatingAdjoint(autojacvec=EnzymeVJP(), checkpointing=true)
+    sol_p = solve(prob, SSPRK43(); p, sensealg)
+    return mean(sol_p.u[end])/L
 end
 
 grad = @time Zygote.gradient(loss, p)
