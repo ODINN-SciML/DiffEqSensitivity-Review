@@ -18,7 +18,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \end{equation}
     where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
     \begin{equation}
-     L(u(\cdot, \theta)) = \frac{1}{2} \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+     L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
     \end{equation}
     with $h$ being a function that quantifies the contribution of the error term at time $t \in [t_0, t_1]$. This also includes the case of likelihood functions.  
     \item \textbf{Summary of the solution.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
