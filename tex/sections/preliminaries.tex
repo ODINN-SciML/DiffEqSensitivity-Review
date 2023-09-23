@@ -3,7 +3,7 @@ Consider a system of ordinary differential equations (ODEs) given by
  \frac{du}{dt} = f(u, \theta, t),
  \label{eq:original_ODE}
 \end{equation}
-where $u \in \mathbb{R}^n$ is the unknown solution; $\theta \in \mathbb R^p$ is a parameter vector; and with initial condition $u(t_0) = u_0$.
+where $u \in \mathbb{R}^n$ is the unknown solution; $f$ is a function that depends on the state $u$, some parameter $\theta \in \mathbb R^p$, and potentially time $t$; and with initial condition $u(t_0) = u_0$.
 Here $n$ denotes the total number of ODEs and $p$ the size of a parameter embedded in the functional form of the differential equation.
 Although here we consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, this also includes the case of partial differential equations (PDEs).
 Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
@@ -30,7 +30,7 @@ We are interested in computing the gradient of the loss function with respect to
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
 \end{equation} 
-The first term on the right hand side is usually easy to evaluate, since it just involves the partial derivative of the scalar loss function to the solution.
+The first term on the right hand side is usually easy to evaluate, since it just involves the partial derivative of the scalar loss function with respect to the solution.
 For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
 \begin{equation}
     \frac{dL}{du} = u - u^{\text{target}(t_1)}.
