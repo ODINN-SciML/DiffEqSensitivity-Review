@@ -1,5 +1,5 @@
 Also know as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
-These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}
+These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
 This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
 Just as in the case of automatic differentiation, the set of adjoint equations can be solved in both forward and backward mode. 
 
@@ -186,6 +186,7 @@ Another more natural way of finding the adjoins $\lambda$ is by noticing that th
 \end{equation}
 with initial condition $\lambda_N$. 
 This means that we can solve the adjoint equation in backwards mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
+In principle, notice that in order to do this we need to know the value of $u_i$ at any given timestep. 
 % When do we solve this backwards and when forward?
 
 

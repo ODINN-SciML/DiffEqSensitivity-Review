@@ -11,9 +11,9 @@ Second derivatives further help to improve convergence rates of these algorithms
 \textit{A gradient serves as a compass in modern data science: it tells us in which direction in the open wide ocean of parameters we should move towards in order to increase our chances of success}.  
 
 % Differential Programming
-Dynamical systems, where the goal is to model observations governed by differential equations, is not an exception to the rule.
+Dynamical systems governed by differential equations are not an exception to the rule.
 Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
-In order to bridge the gap between modern machine learning methods and traditional scientific methods, some authors have recently suggested that differentiable programming is the solution to this problem \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling}. 
+In order to bridge the gap between modern machine learning methods and traditional scientific methods, some authors have recently suggested differentiable programming as the solution to this problem \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling}. 
 Being able to compute gradients and sensitivities of dynamical systems opens the door to more complex models.
 
 % Some examples
@@ -50,7 +50,7 @@ We are going to refer to this family of methods as \textit{continuous}, and we w
 
 The differences between methods arise both from their mathematical formulation and their computational implementations. 
 The first provides different guarantees on the method returning the actual gradient or a good approximation of it. 
-The second involves how the theory is translated to software, and what are the data structures and algorithms used to implement it. 
+The second involves how theory is translated to software, and what are the data structures and algorithms used to implement it. 
 Different methods have different computational complexities depending on the number of parameters and differential equations, and these complexities are also balanced between total execution time and required memory. 
 The second goal of this work is then to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
 \begin{quote}
@@ -61,7 +61,7 @@ Despite the fact that these methods can be (in principle) implemented in differe
 Julia is a recently new but mature programming language that has already a large tradition in implementing packages aiming to advance differential programming \cite{Julialang_2017}. 
 
 % The need to introduce all this methods in a common framework
-Without aiming at making an extensive and specialized review of the field, we bielieve such a study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
+Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
 Differential programming is opening new ways of doing research across sciences. 
 As we make progress in the use of these tools, new methodological questions start to emerge. 
 How do these methods compare? How can their been improved? 
