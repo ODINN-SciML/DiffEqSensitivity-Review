@@ -14,10 +14,10 @@ Forward mode AD can be implemented in different ways depending on the data struc
 \noindent \textbf{\textit{Dual numbers}}
 \vspace*{5px}
 
-Let's first consider the case of dual numbers.
-The idea is to extend the definition of a variable that takes a certain value to also carry information about the derivative with respect to certain scalar parameter $\theta \in \R$. 
+Let us first consider the case of dual numbers.
+The idea is to extend the definition of a numerical variable that takes a certain value to also carry information about its derivative with respect to certain scalar parameter $\theta \in \R$. 
 We can define an abstract type, defined as a dual number, composed of two elements: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
-Just as complex number do, we can represent dual numbers in the vectorial form $(x_1, x_2)$ or in the rectangular form 
+Just as complex number, we can represent dual numbers in the vectorial form $(x_1, x_2)$ or in the rectangular form 
 \begin{equation}
  x_\epsilon = x_1 + \epsilon \, x_2
 \end{equation}
@@ -52,7 +52,7 @@ Intuitively, we can think about $\epsilon$ as being a differential in the Taylor
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
 Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.
-In Julia we can create directly create a dual number by defining an object with two values, and then extend the definition of algebraic operations and functions, a process known as \textit{operator overloading} \cite{Neuenhofen_2018}, by relying in multiple dispatch
+In Julia we can create a dual number by defining an object with two values, and then extend the definition of algebraic operations and functions, a process known as \textit{operator overloading} \cite{Neuenhofen_2018}, by relying in multiple dispatch:
 \begin{jllisting}
 using Base: @kwdef
 
@@ -168,8 +168,8 @@ with $Dg_i$ the Jacobians of each neasted function.
 Notice that in the last equation, $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
 In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiple the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
 The important aspect of this last case is that we will always been computing VJPs, since $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
-Since VJP are easier to evaluate than full Jacobians, the backward mode will be in general faster (see Figure \ref{fig:vjp-jvp}). 
-For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$ (more efficient algorithms exist but this does not impact these results ). This implies that forward AD requires a total of
+Since VJPs are easier to evaluate than full Jacobians, the backward mode will be in general faster (see Figure \ref{fig:vjp-jvp}). 
+For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$ (more efficient algorithms exist but this does not impact these results). This implies that forward AD requires a total of
 \begin{equation}
  d_2 d_1 n + d_3 d_2 p + \ldots + d_k d_{k-1} p + d_k p = \mathcal O (p)
 \end{equation}
@@ -188,6 +188,6 @@ This means that for problems with a small number of parameters, forward mode can
 \begin{figure}
     \centering
     \includegraphics[width=0.95\textwidth]{figures/VJP-JVP.png}
-    \caption{Comparison between forward and backward AD. Changing the order how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode.}
+    \caption{Comparison between forward and backward AD. Changing the order how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. However, backwards mode requires to store in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
     \label{fig:vjp-jvp}
 \end{figure}
