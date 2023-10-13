@@ -85,37 +85,3 @@ The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be desc
     \item Solve the backwards adjoint differential equation \eqref{eq:casa-adjoint-equation};
     \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.
 \end{enumerate}
-The bottleneck on this method is the calculation of the adjoint, since in order to solve the adjoint equation we need to know $u(t)$ at any given time. 
-Effectively, notice that the adjoint equation involves the term $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$ which are both functions of $u(t)$. 
-There are different ways of addressing the evaluation of $u(t)$ during the backward step:
-\begin{enumerate}[label=(\roman*)]
-    \item Solve for $u(t)$ again backwards.
-    \item Store $u(t)$ in memory during the forward step.
-    \item Store reference values in memory and interpolate in between. 
-    This technique is known as \textit{checkpoiting} or windowing that tradeoffs computational running time and storage.
-    This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
-\end{enumerate} 
-Computing the ODE backwards can be unstable and lead to exponential errors \cite{kim_stiff_2021}. 
-In \cite{chen_neural_2019}, the solution is recalculated backwards together with the adjoint simulating an augmented dynamics: 
-\begin{equation}
-    \frac{d}{dt}
-    \begin{bmatrix}
-       u \\
-       \lambda \\
-       \frac{dL}{d\theta}
-    \end{bmatrix}
-    = 
-    \begin{bmatrix}
-       -f \\
-       - \lambda^T \frac{\partial f}{\partial u} \\
-       - \lambda^T \frac{\partial f}{\partial \theta}
-    \end{bmatrix}
-    = 
-    - [ 1, \lambda^T, \lambda^T ]
-    \begin{bmatrix}
-       f & \frac{\partial f}{\partial u} & \frac{\partial f}{\partial \theta} \\
-       0 & 0 & 0 \\
-       0 & 0 & 0
-    \end{bmatrix},
-\end{equation}
-with initial condition $[u(t_1), \frac{\partial L}{\partial u(t_1)}, 0]$. One way of solving this system of equations that ensures stability is by using implicit methods. However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. Two alternatives are proposed in \cite{kim_stiff_2021}, the first one called \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, then solve for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step. This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. A second but similar approach is to use a implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. This method also will have complexity $\mathcal O (n^3 + p)$.

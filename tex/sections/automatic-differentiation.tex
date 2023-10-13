@@ -51,47 +51,7 @@ Intuitively, we can think about $\epsilon$ as being a differential in the Taylor
 \end{align}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
-Implementing such a type in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.
-In Julia we can create a dual number by defining an object with two values, and then extend the definition of algebraic operations and functions, a process known as \textit{operator overloading} \cite{Neuenhofen_2018}, by relying in multiple dispatch:
-\begin{jllisting}
-using Base: @kwdef
-
-@kwdef struct DualNumber{F <: AbstractFloat}
-    value::F
-    derivative::F
-end
-
-# Binary sum
-Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value + b.value, derivative = a.derivative + b.derivative)
-
-# Binary product 
-Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value * b.value, derivative = a.value*b.derivative + a.derivative*b.value)
-\end{jllisting}
-and then we can simply evaluate derivatives by evaluating the derivative component of the dual number that results from the combination of operations
-\begin{jllisting}
-a = DualNumber(value=1.0, derivative=1.0)
-
-b = DualNumber(value=2.0, derivative=0.0)
-c = DualNumber(value=3.0, derivative=0.0)
-
-result = a * b * c
-println("The derivative of a*b*c with respect to a is: ", result.derivative)
-\end{jllisting}
-Notice that in this last example the dual numbers \texttt{b} and \texttt{c} where initialized with derivative value equals to zero, while \texttt{a} with value equals to one. 
-This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
-
-We can also extend the definition of standard functions by simply applying the chain rule and storing the derivative in the dual variable following Equation \eqref{eq:dual-number-function}:
-\begin{jllisting}
-function Base.:(sin)(a::DualNumber)
-    value = sin(a.value)
-    derivative = a.derivative * cos(a.value)
-    return DualNumber(value=value, derivative=derivative)
-end
-\end{jllisting}
-With all these pieces together, we are able to propagate forward the value of a single-valued derivative though a series of algebraic operations. 
-
-In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
-Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
+We will explore how this is carried in Section \ref{sec:computational-implementation}.
 
 \vspace*{10px}
 \noindent \textbf{\textit{Computational graph}}
@@ -106,33 +66,34 @@ Once the graph is constructed, we can compute the derivative of every node with 
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
-    \sum_{\substack{ \text{paths }u_0 \rightarrow u_1 \rightarrow \ldots \rightarrow u_m \\
-                    \text{with } u_0=v_i, u_m = v_j}}
-    \prod_{k=0}^{m-1} \frac{\partial u_{k+1}}{\partial u_{k}},
+    \sum_{\substack{ \text{paths }w_0 \rightarrow w_1 \rightarrow \ldots \rightarrow w_K \\
+                    \text{with } w_0=v_i, w_K = v_j}}
+    \prod_{k=0}^{K-1} \frac{\partial w_{k+1}}{\partial w_{k}},
 \end{equation}
 where the sum is calculated with respect to all the directed paths in the graph connecting the input and target node.
 Instead of evaluating the last expression for all possible path, a simplification is to increasingly evaluate $j=p+1, \ldots, m$ using the recursion 
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
-    \sum_\text{$u$\text{ such that} $u \rightarrow v_j$}
-    \frac{\partial v_j}{\partial u}
-    \frac{\partial u}{\partial v_i} 
+    \sum_\text{$w$\text{ such that} $w \rightarrow v_j$}
+    \frac{\partial v_j}{\partial w}
+    \frac{\partial w}{\partial v_i} 
     \label{eq:AD-graph-recursion}
 \end{equation}
-Since every variable node $u$ such that $u \rightarrow v_j$ is an edge of the computational graph have index less than $j$, we can iterate this procedure as we run the computer program and solve for both the function and its gradient: the term $\frac{\partial u}{\partial v_i}$ has been computed in a previous iteration, while $\frac{\partial v_j}{\partial u}$ can be evaluated at the same time the node $v_j$ is computed based on only the value of the parent variable nodes. 
-
-Both implementations of forward AD require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
+Since every variable node $w$ such that $w \rightarrow v_j$ is an edge of the computational graph have index less than $j$, we can iterate this procedure as we run the computer program and solve for both the function and its gradient.
+This is possible because in forward mode the term $\frac{\partial w}{\partial v_i}$ has been computed in a previous iteration, while $\frac{\partial v_j}{\partial w}$ can be evaluated at the same time the node $v_j$ is computed based on only the value of the parent variable nodes. 
 
 \subsubsection{Backward mode}
 
 Backward mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. 
 The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that do not depend of the number of parameters to differentiate \cite{Griewack-on-AD, Wolfe_1982}, a point known as \textit{cheap gradient principle} \cite{griewank2012invented}.  
-
 Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in backwards mode as
 \begin{equation}
- \bar v = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
+ \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
+Here we have introduce the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ to indicate that the partial derivative is always of the final loss function with respect to the different program variables. 
+Since in backwards AD the values of $\bar \omega$ are being updated in reverse order, in order to evaluate the terms $\frac{\partial \omega}{\partial v}$ we need to know the state value of all the argument variables $v$ of $\omega$, which need to be stored in memory during the evaluation of the function in order to be able to apply backward AD.
+
 Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
 In the backward step, this executes a series of functions calls, one for each elementary operation.
 If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
@@ -146,18 +107,14 @@ which is equivalent to using the chain rule as
  \frac{\partial \ell}{\partial v_1} = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}.
 \end{equation}
 
-The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
-
-% However, this improve comes at the cost of more storage, since in order to compute gradient in reverse order one needs to evalaute intermediate variables 
 
 \subsubsection{AD connection with JVPs and VJPs}
 
 When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters.
 When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVP).
-As their name indicate, the difference between them regards the fact if the quantity we are interested in computing is described by the product of a Jacobian (the two dimensional matrix with the gradients as rows) by a vector on the left
-side (VJP) or the right (JVP).
+As their name indicate, the difference between them regards the fact if the quantity we are interested in computing is described by the product of a Jacobian by a vector on the left side (VJP) or the right (JVP).
 
-For the examples we care here, the Jacobian is described as the product of multiple Jacobian using the chain rule.
+For nested functions, the Jacobian is described as the product of multiple Jacobian using the chain rule.
 In this case, the full gradient is computed as the chain product of vectors and Jacobians. 
 Let us consider for example the case of a loss function $L : \mathbb R^p \mapsto \mathbb R$ that can be decomposed as $L(\theta) = \ell \circ g_{k} \circ \ldots \circ g_2 \circ g_1(\theta)$, with $\ell : \mathbb R^{d_k} \mapsto \mathbb R$ the final evaluation of the loss function after we apply in order a sequence of intermediate functions $g_i : \mathbb R^{d_{i-1}} \mapsto \mathbb R^{d_i}$, $d_0 = p$. 
 Now, using the chain rule, we can calculate the gradient of the final loss function as
