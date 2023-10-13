@@ -67,14 +67,20 @@ sorting=none
 \tableofcontents
 \clearpage
 
+\section*{Plain language summary}
+\input{sections/plain}
+
 \section{Introduction}
 \input{sections/introduction}
 
-\section{Preliminaries}
-\input{sections/preliminaries}
+\section{Scientific motivation}
+\input{sections/motivation}
 
 \section{Methods}
 \input{sections/methods-intro}
+
+\subsection{Preliminaries}
+\input{sections/preliminaries}
 
 \subsection{Finite differences}
 \input{sections/finite-differences}
@@ -85,28 +91,24 @@ sorting=none
 \subsection{Automatic differentiation}
 \input{sections/automatic-differentiation}
 
-% \subsection{Symbolic differentiation}
-% \input{sections/symbolic}
-
-
-% \subsection{Further remarks}
-% \input{sections/further-remarks-1}
-% Comparision between these. Are they the same? 
+\subsection{Symbolic differentiation}
+\input{sections/symbolic}
 
 \subsection{Sensitivity equations}
 \input{sections/sensitivity-equation}
 
-\section{Adjoint methods}
+\subsection{Adjoint methods}
 \label{section:adjoint-methods}
 
-\subsection{Discrete adjoint method}
+\subsubsection{Discrete adjoint method}
 \input{sections/adjoint-state}
 
-\subsection{Continuous adjoint method}
+\subsubsection{Continuous adjoint method}
 \input{sections/adjoint-continuous}
 
-\section{Comparison between methods}
-\input{sections/comparison}
+\section{Computational implementation}
+\label{sec:computational-implementation}
+\input{sections/software}
 
 % \section{Do we need full gradients?}
 
@@ -114,8 +116,8 @@ sorting=none
 
 % \section{Open science from scratch}
 
-\section{Notation}
-\input{sections/notation}
+% \section{Notation}
+% \input{sections/notation}
 
 \newpage
 \appendix
