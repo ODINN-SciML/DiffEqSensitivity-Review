@@ -1,0 +1,128 @@
+% Giles (2000) has a good discussion on this.
+% \cite{ma_comparison_2021}. 
+
+In this section we are going to address how these tools are computationally implemented and how to decide which method to use depending the problem. 
+
+\subsection{Forward discrete methods}
+
+Let us start comparing how finite differences and complex-step differentiation perform for a simple problem with one single parameter. 
+Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$.
+
+\begin{figure}[tbh]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
+    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where this is computed finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using  a numerical solver is larger and it is dependent of the numerical precision of the numerical solver. }
+    \label{fig:finite-diff}
+\end{figure}
+
+In general, finite differences is very easy to implement since it does not require any type of software support, but it is a less accurate and as costly as forward AD \cite{Griewack-on-AD} and comple-step differentiation. 
+Implementing these last types in a programming language implies defining what it means to perform basic operations and then combine them using the chain rule provided by the dual number properties.
+In Julia we can create a dual number by defining an object with two values, and then extend the definition of algebraic operations and functions, a process known as \textit{operator overloading} \cite{Neuenhofen_2018}, by relying in multiple dispatch:
+\begin{jllisting}
+using Base: @kwdef
+
+@kwdef struct DualNumber{F <: AbstractFloat}
+    value::F
+    derivative::F
+end
+
+# Binary sum
+Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value + b.value, derivative = a.derivative + b.derivative)
+
+# Binary product 
+Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value * b.value, derivative = a.value*b.derivative + a.derivative*b.value)
+\end{jllisting}
+and then we can simply evaluate derivatives by evaluating the derivative component of the dual number that results from the combination of operations
+\begin{jllisting}
+a = DualNumber(value=1.0, derivative=1.0)
+
+b = DualNumber(value=2.0, derivative=0.0)
+c = DualNumber(value=3.0, derivative=0.0)
+
+result = a * b * c
+println("The derivative of a*b*c with respect to a is: ", result.derivative)
+\end{jllisting}
+Notice that in this last example the dual numbers \texttt{b} and \texttt{c} where initialized with derivative value equals to zero, while \texttt{a} with value equals to one. 
+This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
+
+We can also extend the definition of standard functions by simply applying the chain rule and storing the derivative in the dual variable following Equation \eqref{eq:dual-number-function}:
+\begin{jllisting}
+function Base.:(sin)(a::DualNumber)
+    value = sin(a.value)
+    derivative = a.derivative * cos(a.value)
+    return DualNumber(value=value, derivative=derivative)
+end
+\end{jllisting}
+With all these pieces together, we are able to propagate forward the value of a single-valued derivative though a series of algebraic operations. 
+
+In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
+Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
+Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
+This consideration applies to most forward methods. 
+
+Notice that both AD based in dual number and complex-step differentiation are based on defining and extended variable that carries information about the gradient. 
+% Another important point of comparison is the one existing between forward mode AD implemented with dual numbers and complex step differentiation. 
+Both methods introduce an abstract unit ($\epsilon$ and $i$, respectively) associated to the imaginary part of the extender value that carries forward the numerical value of the gradient. 
+This resemblance between the methods makes them to be susceptible to the same advantages and disadvantages: easiness to implement with operator overloading; inefficient scaling with respect to the number of variables to differentiate. 
+However, although these methods seems very similar, it is important to remark that AD gives the exact gradient, while complex step differentiation relies in numerical approximations that are valid just when the stepsize $\varepsilon$ is small. 
+The next example shows how the calculation of the gradient of $\sin (x^2)$ is performed by these two methods:
+\begin{equation}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{} l @{\qquad} l @{\qquad} l @{}}
+Operation & AD with Dual Numbers  & Complex Step Differentiation \\
+$x$ & $x + \epsilon$    & $x + i \varepsilon$ \\
+$x^2$ & $x^2 + \epsilon \, (2x)$  & $x^2 - \varepsilon^2 + 2i\varepsilon x$\\
+$\sin(x^2)$  & $\sin(x^2) + \epsilon \, \cos(x^2) (2x)$ &
+$\sin(x^2 - \varepsilon^2) \cosh (2i\varepsilon) + i \, \cos(x^2 - \varepsilon^2) \sinh (2i\varepsilon)$
+\end{tabular}
+\label{eq:AD-complex-comparision}
+\end{equation}
+While the second component of the dual number has the exact derivative of $\sin(x^2)$, it is not until we take $\varepsilon \rightarrow 0$ than we obtain the derivative in the imaginary component for the complex step method
+\begin{equation}
+    \lim_{\varepsilon \rightarrow 0} \, \frac{1}{\varepsilon} \, \cos(x^2 - \varepsilon^2) \sinh (2i\varepsilon) 
+    = 
+    \, \cos(x^2) (2x).
+\end{equation}
+The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
+This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operation that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
+
+\subsection{Backwards methods}
+
+The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
+
+\subsection{Solving the adjoint}
+
+The bottleneck on this method is the calculation of the adjoint, since in order to solve the adjoint equation we need to know $u(t)$ at any given time. 
+Effectively, notice that the adjoint equation involves the term $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$ which are both functions of $u(t)$. 
+There are different ways of addressing the evaluation of $u(t)$ during the backward step:
+\begin{enumerate}[label=(\roman*)]
+    \item Solve for $u(t)$ again backwards.
+    \item Store $u(t)$ in memory during the forward step.
+    \item Store reference values in memory and interpolate in between. 
+    This technique is known as \textit{checkpoiting} or windowing that tradeoffs computational running time and storage.
+    This is implemented in \texttt{Checkpoiting.jl} \cite{Checkpoiting_2023}.
+\end{enumerate} 
+Computing the ODE backwards can be unstable and lead to exponential errors \cite{kim_stiff_2021}. 
+In \cite{chen_neural_2019}, the solution is recalculated backwards together with the adjoint simulating an augmented dynamics: 
+\begin{equation}
+    \frac{d}{dt}
+    \begin{bmatrix}
+       u \\
+       \lambda \\
+       \frac{dL}{d\theta}
+    \end{bmatrix}
+    = 
+    \begin{bmatrix}
+       -f \\
+       - \lambda^T \frac{\partial f}{\partial u} \\
+       - \lambda^T \frac{\partial f}{\partial \theta}
+    \end{bmatrix}
+    = 
+    - [ 1, \lambda^T, \lambda^T ]
+    \begin{bmatrix}
+       f & \frac{\partial f}{\partial u} & \frac{\partial f}{\partial \theta} \\
+       0 & 0 & 0 \\
+       0 & 0 & 0
+    \end{bmatrix},
+\end{equation}
+with initial condition $[u(t_1), \frac{\partial L}{\partial u(t_1)}, 0]$. One way of solving this system of equations that ensures stability is by using implicit methods. However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. Two alternatives are proposed in \cite{kim_stiff_2021}, the first one called \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, then solve for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step. This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. A second but similar approach is to use a implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. This method also will have complexity $\mathcal O (n^3 + p)$.

@@ -1,0 +1,11 @@
+The adjoint method is a very popular approach to compute the gradients of a loss function by first computing an intermediate variable (the adjoint) that serves as a bridge between the solution of the ODE and the final sensitivity. 
+There is a large family of adjoint methods that a first order we can classify them between discrete and continuous adjoints. 
+The former usually arises as the numerical discretization of the later, and when the discrete adjoint method is a consistent estimator of the continuous adjoint depends of the ODE and equation.  
+Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods had been provided in \cite{sandu2006properties, sandu2011solution}.
+Depending the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.
+
+An equal important consideration when working with adjoints is when these are numerically stable. 
+Some works had shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
+Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. 
+The key computational consideration when working with adjoint methods is how they handle the VJPs involved in the adjoint equations. 
+This calculation is carried by another sensitivity method (finite differences, AD) and this also plays a central role at the moment of analyzing accuracy and stability of the adjoint method. 

@@ -3,34 +3,35 @@ Consider a system of ordinary differential equations (ODEs) given by
  \frac{du}{dt} = f(u, \theta, t),
  \label{eq:original_ODE}
 \end{equation}
-where $u \in \mathbb{R}^n$ is the unknown solution; $\theta \in \mathbb R^p$ is a parameter vector; and with initial condition $u(t_0) = u_0$.
+where $u \in \mathbb{R}^n$ is the unknown solution; $f$ is a function that depends on the state $u$, some parameter $\theta \in \mathbb R^p$, and potentially time $t$; and with initial condition $u(t_0) = u_0$.
 Here $n$ denotes the total number of ODEs and $p$ the size of a parameter embedded in the functional form of the differential equation.
 Although here we consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, this also includes the case of partial differential equations (PDEs).
 Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
 
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
-Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this include a broader class of functions: 
+Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this include a broader class of functions. 
 \begin{itemize}
-    \item \textbf{Loss functions}. This is usually a real valued function that quantifies the prediction power of a given model. Examples of loss functions include
+    \item \textbf{Loss functions}. This is usually a real valued function that quantifies the accuracy or prediction power of a given model. Examples of loss functions include the squared error
     \begin{equation}
      L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1, \theta) - u^{\text{target}(t_1)} \|_2^2,
      \label{eq:quadratic-loss-function}
     \end{equation}
     where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
     \begin{equation}
-     L(u(\cdot, \theta)) = \frac{1}{2} \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+     L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
     \end{equation}
-    with $h$ being a function that quantifies the contribution of the error term at time $t \in [t_0, t_1]$. This also includes the case of likelihood functions.  
+    with $h$ being a function that quantifies the contribution of the error term at every time $t \in [t_0, t_1]$. 
+    \item \textbf{Likelihood profiles. }   
     \item \textbf{Summary of the solution.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
-    \item \textbf{Diagnosis of the solution.} In many cases we are interested in maximizing/minimizing the value of some interest quantity that is a function of the solution of a differential equation. This is particularly the case in design control theory, a very popular approach in aerodynamics modelling where the goal could be to maximize the speed of an airplane given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
+    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some interest quantity that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include to maximize the speed of an airplane given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
 \end{itemize}
 
 We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
-\begin{equation}
+\begin{equation} 
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
 \end{equation} 
-The first term on the right hand side is usually easy to evaluate, since it just involves the partial derivative of the scalar loss function to the solution.
+The first term on the right hand side is usually easy to evaluate, since it just involves the partial derivative of the scalar loss function with respect to the solution.
 For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
 \begin{equation}
     \frac{dL}{du} = u - u^{\text{target}(t_1)}.
@@ -53,8 +54,8 @@ The second term on the right hand side is more difficult to compute and it is us
 Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
 When a function depends on more than one argument, we are going to use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
 On the other side, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
-Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives.
+Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
 
-In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
-Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.
-The same nature of the adjoint methods deserves to be treated entirely in Section \ref{section:adjoint-methods}.
+% In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
+% Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.
+% The same nature of the adjoint methods deserves to be treated entirely in Section \ref{section:adjoint-methods}.

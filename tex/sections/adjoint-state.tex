@@ -1,5 +1,5 @@
 Also know as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
-These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}
+These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
 This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
 Just as in the case of automatic differentiation, the set of adjoint equations can be solved in both forward and backward mode. 
 
@@ -7,7 +7,9 @@ Just as in the case of automatic differentiation, the set of adjoint equations c
 
 % Mathematically, reverse mode AD is related to the adjoint differential equations \cite{Griewack-on-AD}
 
-\subsubsection{Discrete differential equation}
+\vspace*{10px}
+\noindent \textbf{\textit{Discrete differential equation}}
+\vspace*{5px}
 
 % reference: Sensitivity theory of non-linear systems
 
@@ -59,7 +61,9 @@ Different numerical schemes will lead to different design matrix $A(\theta)$ and
 It is important to notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
 If well this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
 
-\subsubsection{Adjoint state equations}
+\vspace*{10px}
+\noindent \textbf{\textit{Adjoint state equations}}
+\vspace*{5px}
 
 We are interested in differentiating a function $L(U, \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solution, examples of loss functions now include 
@@ -186,12 +190,13 @@ Another more natural way of finding the adjoins $\lambda$ is by noticing that th
 \end{equation}
 with initial condition $\lambda_N$. 
 This means that we can solve the adjoint equation in backwards mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
+In principle, notice that in order to do this we need to know the value of $u_i$ at any given timestep. 
 % When do we solve this backwards and when forward?
 
 
 %In order to compute the gradient of the full solution of the differential equation, we apply this method sequentially using the chain rule. One single step of the state method can be understood as the chain of operations $\theta \mapsto g \mapsto u \mapsto L$. This allows us to create adjoints for any primitive function $g$ (i.e. the numerical solver scheme) we want, and then incorporated it as a unit of any AD program. 
 
-\subsubsection{Further remarks}
+% \subsubsection{Further remarks}
 
 % Conection with duality
 % Conection with the adjoint operator
