@@ -16,7 +16,7 @@ and its derivative with respect to the parameter $\theta$ given by
     \inttime \left( \frac{\partial h}{\partial \theta} + \frac{\partial h}{\partial u} s(t) \right) dt.
     \label{eq:casa-loss}
 \end{equation}
-As explained in previous section, the complicated term to evaluate in the last expression is the sensitivity (Equation \eqref{eq:sensitivity-definition}).
+Just as in the case of the discrete adjoint method, the complicated term to evaluate in the last expression is the sensitivity (Equation \eqref{eq:sensitivity-definition}).
 Just as in the case of the discrete adjoint method, the trick is to evaluate the VJP $\frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta}$ by defining an intermediate adjoint variable. 
 The continuous adjoint equation now is obtained by finding the dual/adjoint equation of the sensitivity equation using the weak formulation of Equation \eqref{eq:sensitivity_equations}. 
 The adjoint equation is obtained by writing the sensitivity equation in the form 

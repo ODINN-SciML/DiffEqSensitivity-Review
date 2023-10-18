@@ -17,4 +17,6 @@ We can either discretize the original system of ODEs in order to numerically sol
 The second distinction is related to the fact that some methods compute gradients by resolving a new sequential problem that may move in the same direction of the original numerical solver - i.e. moving forward in time - or, instead, they solve a new system that goes backwards in time. 
 Figure \ref{fig:diff} displays a classification of some methods under this two-fold classification. In the following section we are going to explore more in detail these methods.
 
-% It is important to remark that all the 
+It is important to remark that if well all the methods we explore in this section are mathematically correct, \textit{that does not imply they are numerically stable}.
+This statements applied to methods based on pure automatic differentiation as well as adjoint methods. 
+We are going to explore this consideration in more detail in section \ref{sec:computational-implementation}.
