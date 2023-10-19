@@ -1,10 +1,5 @@
 # Lotka Volterra with time-dependent interaction
 
-cd(@__DIR__)
-using Pkg;
-Pkg.activate(".")
-Pkg.instantiate()
-
 using Test
 using LinearAlgebra
 using ForwardDiff # forward-mode AD
