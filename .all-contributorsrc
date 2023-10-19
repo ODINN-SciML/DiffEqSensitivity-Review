@@ -43,6 +43,15 @@
         "mentoring",
         "financial"
       ]
+    },
+    {
+      "login": "frankschae",
+      "name": "frankschae",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42201748?v=4",
+      "profile": "http://frankschae.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
