@@ -33,3 +33,5 @@ jobs:
           commit_author: Author <actions@github.com>
           status_options: '--untracked-files=no'
           skip_dirty_check: true
+          # Force push since we are adding a pdf file
+          push_options: '--force'
