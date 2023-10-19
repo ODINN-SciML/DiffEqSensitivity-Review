@@ -64,9 +64,6 @@ function fu(u, p, t)
     J[1, 2] = - β * x * t
     J[2, 2] = - δ + x * γ * t
 
-    dx = α * x - β * x * y * t
-    dy = -δ * y + γ * x * y * t
-
     J
 end
 
