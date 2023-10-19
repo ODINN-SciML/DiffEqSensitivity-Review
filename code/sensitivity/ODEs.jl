@@ -1,4 +1,4 @@
-# free fall ODE
+# Lotka Volterra with time-dependent interaction
 
 cd(@__DIR__)
 using Pkg;
