@@ -32,6 +32,17 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "fperez",
+      "name": "Fernando Perez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57394?v=4",
+      "profile": "https://statistics.berkeley.edu/people/fernando-perez",
+      "contributions": [
+        "ideas",
+        "mentoring",
+        "financial"
+      ]
     }
   ]
 }
