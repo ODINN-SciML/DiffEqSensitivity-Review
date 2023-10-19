@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/latex.yml/badge.svg)
+[![All Contributors](https://img.shields.io/github/all-contributors/ODINN-SciML/DiffEqSensitivity-Review?color=ee8449&style=flat-square)](#contributors)
 
 
 # A Review of Sensitivity Methods for Differential Equations
@@ -23,6 +24,18 @@ There are different methods that try to solve this problem, and we had roughly c
 </p>
 
 The goal of this review is to revisit all this methods and compare them.
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 
 ## Code :computer:
 
@@ -75,3 +88,5 @@ If you find this article useful, you can cite it as follows
 ```
 
 ``` -->
+
+
