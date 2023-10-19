@@ -3,6 +3,8 @@ on: [push]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
+    # Just run action when the word "docs" is in the commit message
+    if: "! contains(github.event.head_commit.message, 'docs')"
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
