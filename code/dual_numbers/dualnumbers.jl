@@ -27,6 +27,10 @@ Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value      = a.value + b.va
 Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value      = a.value * b.value, 
                                                      derivative = a.value*b.derivative + a.derivative*b.value)
 
+# Power 
+Base.:(^)(a::DualNumber, b::AbstractFloat) = DualNumber(value      = a.value ^ b, 
+                                                        derivative = b * a.value^(b-1) * a.derivative)
+
 
 # Now we define a series of variables. We are interested in computing the derivative with respect to the variable "a":
 
@@ -37,4 +41,4 @@ c = DualNumber(value=3.0, derivative=0.0)
 
 # Now, we can evaluate a new DualNumber
 result = a * b * c
-println("The derivative of a*b*c with respect to a is: ", result.derivative)
+# println("The derivative of a*b*c with respect to a is: ", result.derivative)

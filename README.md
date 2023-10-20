@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/latex.yml/badge.svg)
+[![All Contributors](https://img.shields.io/github/all-contributors/ODINN-SciML/DiffEqSensitivity-Review?color=ee8449&style=flat-square)](#contributors)
 
 
 # A Review of Sensitivity Methods for Differential Equations
@@ -23,6 +24,29 @@ There are different methods that try to solve this problem, and we had roughly c
 </p>
 
 The goal of this review is to revisit all this methods and compare them.
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://facusapienza.org"><img src="https://avatars.githubusercontent.com/u/39526081?v=4?s=100" width="100px;" alt="Facundo Sapienza"/><br /><sub><b>Facundo Sapienza</b></sub></a><br /><a href="#code-facusapienza21" title="Code">💻</a> <a href="#doc-facusapienza21" title="Documentation">📖</a> <a href="#infra-facusapienza21" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-facusapienza21" title="Maintenance">🚧</a> <a href="#projectManagement-facusapienza21" title="Project Management">📆</a> <a href="#research-facusapienza21" title="Research">🔬</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jordibolibar.wordpress.com"><img src="https://avatars.githubusercontent.com/u/2025815?v=4?s=100" width="100px;" alt="Jordi Bolibar"/><br /><sub><b>Jordi Bolibar</b></sub></a><br /><a href="#doc-JordiBolibar" title="Documentation">📖</a> <a href="#example-JordiBolibar" title="Examples">💡</a> <a href="#ideas-JordiBolibar" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://statistics.berkeley.edu/people/fernando-perez"><img src="https://avatars.githubusercontent.com/u/57394?v=4?s=100" width="100px;" alt="Fernando Perez"/><br /><sub><b>Fernando Perez</b></sub></a><br /><a href="#ideas-fperez" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-fperez" title="Mentoring">🧑‍🏫</a> <a href="#financial-fperez" title="Financial">💵</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://frankschae.github.io"><img src="https://avatars.githubusercontent.com/u/42201748?v=4?s=100" width="100px;" alt="frankschae"/><br /><sub><b>frankschae</b></sub></a><br /><a href="#code-frankschae" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://bgroenke.com"><img src="https://avatars.githubusercontent.com/u/841306?v=4?s=100" width="100px;" alt="Brian Groenke"/><br /><sub><b>Brian Groenke</b></sub></a><br /><a href="#code-bgroenks96" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 
 ## Code :computer:
 
@@ -75,3 +99,5 @@ If you find this article useful, you can cite it as follows
 ```
 
 ``` -->
+
+
