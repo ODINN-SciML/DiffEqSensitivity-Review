@@ -1,9 +1,5 @@
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
-LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-ReverseDiff = "37e2e3b7-166d-5795-8a7a-e32c996b4267"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 FreezeCurves = "71e4ad71-e4f2-45a3-aa0a-91ffaa9676be"
