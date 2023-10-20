@@ -3,26 +3,33 @@
 
 
 % General statement: why gradients are important?
-Evaluating how the value of a function changes with respect to its arguments/parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, uncertainty quantification, among many. 
+Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, uncertainty quantification, among many. 
 Modern machine learning applications require the use of gradients to explore and exploit more efficiently the space of parameters. 
-When optimizing a loss function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding minimal and converge faster to them than than gradient-free methods.
+When optimizing a loss function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than than gradient-free methods.
 When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies converge faster to the posterior distribution than gradient-free methods. 
-Second derivatives further help to improve convergence rates of these algorithms and allow uncertainty quantification around parameter values.
-\textit{A gradient serves as a compass in modern data science: it tells us where in the open wide ocean of parameters we should move in order to increase our chances of success}.  
+Second derivatives further help to improve convergence rates of these algorithms and enable uncertainty quantification around parameter values.
+\textit{A gradient serves as a compass in modern data science: it tells us in which direction in the open wide ocean of parameters we should move towards in order to increase our chances of success}.  
 
 % Differential Programming
-Dynamical systems, where the goal is to model observations governed by differential equations, is not an exception to the rule.
+Dynamical systems governed by differential equations are not an exception to the rule.
 Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
-In order to bridge the gap between modern machine learning methods and traditional scientific methods, some authors have recently suggested that differentiable programming is the way to go \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling}. 
-Being able to compute gradients and sensitivities of dynamical systems opens the game to more complex models.
+In order to bridge the gap between modern machine learning methods and traditional scientific methods, some authors have recently suggested differentiable programming as the solution to this problem \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling}. 
+Being able to compute gradients and sensitivities of dynamical systems opens the door to more complex models.
+This is very appealing in geophysical models, where there is a broad literature on physical models and a long tradition in numerical methods. 
+The first goal of this work is to introduce some of the applications of this emerging technology and to motivate its incorporation for the modelling of complex systems in the natural and social sciences. 
+\begin{quote}
+    \textbf{Question 1. }
+    \textit{What are the scientific applications of differential programming for complex dynamical systems?}
+\end{quote}
 
 % Some examples
-There are different approaches to the calculation of the gradient of dynamical systems depending on the traditions of each field. 
-In statistics, the sensitivity equations allow computation of gradients of the likelihood of the model with respect to the parameters of the dynamical system, which can be later used for inference \cite{ramsay2017dynamic}. 
+There are different approaches to calculate the gradient of dynamical systems depending on the traditions of each field. 
+In statistics, the sensitivity equations enable the computation of gradients of the likelihood of the model with respect to the parameters of the dynamical system, which can be later used for inference \cite{ramsay2017dynamic}. 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
-This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimize certain loss function. 
-In recent years, there has been an increasing interest in designing machine learning pipelines that include constraints in the form of differential equations. 
-Examples of this include physics-informed neural networks (PINNs) \cite{PINNs_2019} and universal differential equations (UDEs) \cite{rackauckas2020universal}.  
+This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
+In recent years, there has been an increasing interest in designing machine learning workflows that include constraints in the form of differential equations. 
+Examples of this include Physics-Informed Neural Networks (PINNs) \cite{PINNs_2019} and Universal Differential Equations (UDEs) \cite{rackauckas2020universal}.  
+
 % soft / hard constrains
 
 % Differentiation 
@@ -30,46 +37,44 @@ However, when working with differential equations, the computation of gradients 
 Except for a small set of particular cases, most differential equations require numerical methods to calculate their solution and cannot be differentiated analytically. 
 This means that solutions cannot be directly differentiated and require special treatment if, besides the numerical solution, we also want to compute first or second order derivatives. 
 Furthermore, numerical solutions introduce approximation errors. 
-These errors can be propagated and even amplified during the computation of the gradient. 
+These errors can be propagated and amplified during the computation of the gradient. 
 Alternatively, there is a broad literature in numerical methods for solving differential equations. 
 Although each method provides different guarantees and advantages depending on the use case, this means that the tools developed to compute gradients when using a solver need to be universal enough in order to be applied to all or 
 at least to a large set of them. 
-The first goal of this article is making a review of the different methods that exists to archive this goal.
+The second goal of this article is making a review of the different methods that exists to achieve this goal.
 \begin{quote}
-    \textbf{Question 1. }
-    \textit{How can we compute the gradient of a function that depends on the numerical solution of a differential equation?}
+    \textbf{Question 2. }
+    \textit{How can I compute the gradient of a function that depends on the numerical solution of a differential equation?}
 \end{quote}
 %Notice here the phrase \textit{the gradient of a function that depends}, emphasizing the fact that in many cases we may be interested in computing the gradient of a function that depends on the solution of the differential equation.
 %This is certainly the case in machine learning and optimization where the goal is to minimize a loss function that depends of some predicted and target responses. 
 
 % AD
-The broader set of tools known as Automatic Differentiation (AD) aims to compute derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program. 
-The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of simple algebraic operations (addition, multiplication) that are i) easy to differentiate and ii) their combination is easy to differentiate by using the chain rule. 
-Although many modern differentiation tools use AD at some extend, there is also a family of methods that compute the gradient by relying on a auxiliary set of differential equations. 
+The broader set of tools known as Automatic Differentiation (AD) aims at computing derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program. 
+The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of simple algebraic operations (addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule. 
+Although many modern differentiation tools use AD to some extend, there is also a family of methods that compute the gradient by relying on a auxiliary set of differential equations. 
 We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
 
-The difference between the different methods is set by both their mathematical formulation and their computational implementations. 
-The first provides different guarantees that the method is actually returning the gradient or a good approximation of it. 
-The second involves how the theory is translated to software, and what are the data structures and algorithms we use to implement it. 
+The differences between methods arise both from their mathematical formulation and their computational implementations. 
+The first provides different guarantees on the method returning the actual gradient or a good approximation of it. 
+The second involves how theory is translated to software, and what are the data structures and algorithms used to implement it. 
 Different methods have different computational complexities depending on the number of parameters and differential equations, and these complexities are also balanced between total execution time and required memory. 
-The second goal of this work is then to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
+The third goal of this work is then to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
 \begin{quote}
-    \textbf{Question 2. }
+    \textbf{Question 3. }
     \textit{What are the advantages and disadvantages of different differentiation methods and how can I incorporate them in my research?}
 \end{quote}
 Despite the fact that these methods can be (in principle) implemented in different programming languages, here we decided to use the Julia programming language for the different examples. 
 Julia is a recently new but mature programming language that has already a large tradition in implementing packages aiming to advance differential programming \cite{Julialang_2017}. 
 
 % The need to introduce all this methods in a common framework
-Without aiming at making an extensive and specialized review on the field, we find this resource useful for other researchers and students working on problems that combine optimization and sensitivity analysis with differential equations.
+Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
 Differential programming is opening new ways of doing research across sciences. 
 As we make progress in the use of these tools, new methodological questions start to emerge. 
 How do these methods compare? How can their been improved? 
-We also hope this paper serves as a gateway to new questions regarding new advances in these methods. 
-\begin{quote}
-    \textbf{Question 3. }
-    \textit{Are there opportunities for developing new methods?}
-\end{quote}
+We also hope this paper serves as a gateway to new questions regarding advances in these methods. 
 
-
-%\subsection{Use cases}
+% \begin{quote}
+%     \textbf{Question 3. }
+%     \textit{Are there opportunities for developing new sensitivity methods?}
+% \end{quote}

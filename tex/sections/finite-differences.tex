@@ -11,20 +11,23 @@ Even better, it is easy to see that the centered difference scheme
  \label{eq:finite_diff2}
 \end{equation}
 leads also to more precise estimation of the derivative. 
-While Equation \eqref{eq:finite_diff} gives to an error of magnitude $\mathcal O (\varepsilon)$, the centered differences schemes improves to $\mathcal O (\varepsilon^2)$. 
+While Equation \eqref{eq:finite_diff} gives to an error of magnitude $\mathcal O (\varepsilon)$, the centered differences schemes improves to $\mathcal O (\varepsilon^2)$ \cite{ascher2008-numerical-methods}. 
  
 However, there are a series of problems associated to this approach.
 The first one is due to how this scales with the number of parameters $p$.
 Each directional derivative requires the evaluation of the loss function $L$ twice.
 For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands to solve the differential equation in forward mode each time for a new set of parameters.
 
-A second problem is due to rounding errors due to the fact that every computer ultimately stores and manipulate numbers using floating points arithmetic \cite{Goldberg_1991_floatingpoint}. 
+A second problem is due to rounding errors.
+Every computer ultimately stores and manipulate numbers using floating points arithmetic \cite{Goldberg_1991_floatingpoint}. 
 Equations \eqref{eq:finite_diff} and \eqref{eq:finite_diff2} involve the subtraction of two numbers that are very close to each other, which leads to large cancellation errors for small values of $\varepsilon$ than are amplified by the division by $\varepsilon$.
 On the other hand, large values of the stepsize give inaccurate estimations of the gradient. 
 Finding the optimal value of $\varepsilon$ that trade-offs these two effects is sometimes called the \textit{stepsize dilemma} \cite{mathur2012stepsize-finitediff}.
 Due to this, some heuristics and algorithms had been introduced in order to pick the value of $\varepsilon$ that will minimize the error \cite{BARTON_1992_finite_diff, mathur2012stepsize-finitediff}, but all these methods require some a priori knowledge about the function to be differentiated. 
 If well many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
-This is illustrated in Figure \ref{fig:finite-diff}, where the error in computing the gradient is shown for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize.
+We will further emphatize this point in Section \ref{sec:computational-implementation}.
+
+
 
 % Condition error
 %specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
@@ -40,7 +43,7 @@ This is illustrated in Figure \ref{fig:finite-diff}, where the error in computin
 % which depending on the output size of the function $L(\theta)$, could be a reasonable idea. 
 
 Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines} \cite{ascher2008numerical}. 
-To illustrate this point, let's consider the case of the one-dimensional heat equation
+To illustrate this point, let us consider the case of the one-dimensional heat equation
 \begin{equation}
  \frac{\partial u}{\partial t}
  = 
@@ -65,9 +68,3 @@ Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differen
 This can be solved directly using an ODE solver.
 Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
 
-\begin{figure}[tbh]
-    \centering
-    \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
-    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where this is computed finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using  a numerical solver are larger and these are also affercted by the precision of the numerical solver. }
-    \label{fig:finite-diff}
-\end{figure}
