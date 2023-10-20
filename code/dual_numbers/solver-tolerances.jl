@@ -4,6 +4,7 @@
 using SciMLSensitivity
 using OrdinaryDiffEq
 using Zygote
+using ForwardDiff
 
 tspan = [0.0, 1000.0]
 u0 = [0.0]
@@ -33,7 +34,7 @@ function loss(p, sensealg)
     else
         sol = solve(ODEProblem(dyn!, u0, tspan, p), Tsit5(), sensealg=sensealg)
     end
-    @show diff(sol.t)
+    @show "Number of time steps: ", length(sol.t)
     sol.u[end][1]
 end
 
@@ -58,6 +59,9 @@ g1 = Zygote.gradient(p -> loss(p, ForwardDiffSensitivity()), p)
 
 g3 = Zygote.gradient(p -> loss(p, nothing), p)
 @show g3
+
+g4 = ForwardDiff.gradient(p -> loss(p, nothing), p)
+@show g4
 
 @show grad_true(p)
 
