@@ -6,15 +6,17 @@ using OrdinaryDiffEq
 using Zygote
 using ForwardDiff
 
-tspan = [0.0, 1000.0]
+tspan = (0.0, 20.0)
 u0 = [0.0]
+reltol = 1e-6
+abstol = 1e-6
 
 """
     dyn!
 
 This generates solutions u(t) = (t-θ)^5/5 that can be solved exactly with a 5th order integrator.
 """
-function dyn!(du, u, t, p)
+function dyn!(du, u, p, t)
     θ = p[1]
     du .= (t .- θ).^4.0
 end
@@ -22,7 +24,7 @@ end
 p = [1.0] 
 
 prob = ODEProblem(dyn!, u0, tspan, p)
-sol  = solve(prob, Tsit5())
+sol  = solve(prob, Tsit5(), reltol=reltol, abstol=abstol)
 
 # We can see that the time steps increase with non-stop
 @show diff(sol.t)
@@ -30,9 +32,9 @@ sol  = solve(prob, Tsit5())
 function loss(p, sensealg)
     prob = ODEProblem(dyn!, u0, tspan, p)
     if isnothing(sensealg)
-        sol = solve(ODEProblem(dyn!, u0, tspan, p), Tsit5())
+        sol = solve(prob, Tsit5(), reltol=reltol, abstol=abstol)
     else
-        sol = solve(ODEProblem(dyn!, u0, tspan, p), Tsit5(), sensealg=sensealg)
+        sol = solve(prob, Tsit5(), sensealg=sensealg, reltol=reltol, abstol=abstol)
     end
     @show "Number of time steps: ", length(sol.t)
     sol.u[end][1]
@@ -54,8 +56,8 @@ https://docs.sciml.ai/SciMLSensitivity/stable/manual/differential_equation_sensi
 g1 = Zygote.gradient(p -> loss(p, ForwardDiffSensitivity()), p)
 @show g1
 
-# g2 = Zygote.gradient(p -> loss(p, ForwardSensitivity()), p)
-# @show g2
+g2 = Zygote.gradient(p -> loss(p, ForwardSensitivity()), p)
+@show g2
 
 g3 = Zygote.gradient(p -> loss(p, nothing), p)
 @show g3
