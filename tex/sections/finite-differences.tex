@@ -23,48 +23,41 @@ Every computer ultimately stores and manipulate numbers using floating points ar
 Equations \eqref{eq:finite_diff} and \eqref{eq:finite_diff2} involve the subtraction of two numbers that are very close to each other, which leads to large cancellation errors for small values of $\varepsilon$ than are amplified by the division by $\varepsilon$.
 On the other hand, large values of the stepsize give inaccurate estimations of the gradient. 
 Finding the optimal value of $\varepsilon$ that trade-offs these two effects is sometimes called the \textit{stepsize dilemma} \cite{mathur2012stepsize-finitediff}.
-Due to this, some heuristics and algorithms had been introduced in order to pick the value of $\varepsilon$ that will minimize the error \cite{BARTON_1992_finite_diff, mathur2012stepsize-finitediff}, but all these methods require some a priori knowledge about the function to be differentiated. 
+Due to this, some heuristics and algorithms had been introduced in order to pick the value of $\varepsilon$ \cite{mathur2012stepsize-finitediff, BARTON_1992_finite_diff, SUNDIALS-hindmarsh2005sundials}, 
+Some of these methods require some a priori knowledge about the function to be differentiated, and others are based in arbitrary historical rules. 
 If well many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
 We will further emphatize this point in Section \ref{sec:computational-implementation}.
 
-
-
-% Condition error
-%specifically picking $\varepsilon^* = \sqrt{\varepsilon_\text{machine}} \| \theta \|$, with $\varepsilon_\text{machine}$ the machine precision (e.g. \texttt{Float64}).
- 
-% Even with all these caveats, finite differences can be useful when computing Jacobian-vector products. Suppose we are interested in computing 
-% \begin{equation}
-% \frac{du}{d\theta} v, 
-% \end{equation}
-% with $v \in \mathbb R^p$ a vector. This last evaluation corresponds to the directional derivative in the direction of $v$. Then, we can save some computations by directly computing the Jacobian-vector product as 
-% \begin{equation}
-% \frac{dL}{d\theta} v \approx \frac{L(\theta + \varepsilon v) - L(\theta - \varepsilon v)}{2\varepsilon},
-% \end{equation}
-% which depending on the output size of the function $L(\theta)$, could be a reasonable idea. 
-
-Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines} \cite{ascher2008numerical}. 
-To illustrate this point, let us consider the case of the one-dimensional heat equation
+Even with all these caveats, finite differences can be useful when computing Jacobian-vector products. 
+Given a Jacobian matrix $J = \frac{\partial f}{\partial u}$ (or the sensitivity $s = \frac{\partial u}{\partial \theta}$) and a vector $v$, the product $Jv$ corresponding to the directional derivative can be approximated as 
 \begin{equation}
- \frac{\partial u}{\partial t}
- = 
- D \, 
- \frac{\partial^2 u}{\partial x^2}, 
- \quad u(0, t) = \alpha(t), 
- \quad u(1, t) = \beta(t)
- \label{eq:heat-equation}
+    Jv \approx \frac{f(u + \varepsilon v, \theta, t) - f(u, \theta, t)}{\varepsilon}
 \end{equation}
-that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
-In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
-If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference\footnote{Since $u_m(t)$ is a function of one single variable, we write the total derivative $\frac{du_m}{dt}$ instead of the partial derivative symbol used before $\frac{\partial u}{\partial t}$, which it is usually used just for multivariable function.}
-\begin{equation}
- \frac{d u_m}{dt} 
- = 
- D 
- \frac{u_{m-1} - 2u_m + u_{m+1}}{\Delta x^2}
- \label{eq:heat-equation-discrete}
-\end{equation}
-for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$).
-Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differential equations (just temporal derivatives) with a total of $N-1$ equations.
-This can be solved directly using an ODE solver.
-Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
+This approach is used in numerical solvers based on Krylow methods, where linear systems  are solver by iterative solving matrix-vectors products \cite{Ipsen_Meyer_1998}.
+
+% Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines} \cite{ascher2008numerical}. 
+% To illustrate this point, let us consider the case of the one-dimensional heat equation
+% \begin{equation}
+%  \frac{\partial u}{\partial t}
+%  = 
+%  D \, 
+%  \frac{\partial^2 u}{\partial x^2}, 
+%  \quad u(0, t) = \alpha(t), 
+%  \quad u(1, t) = \beta(t)
+%  \label{eq:heat-equation}
+% \end{equation}
+% that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
+% In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
+% If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference\footnote{Since $u_m(t)$ is a function of one single variable, we write the total derivative $\frac{du_m}{dt}$ instead of the partial derivative symbol used before $\frac{\partial u}{\partial t}$, which it is usually used just for multivariable function.}
+% \begin{equation}
+%  \frac{d u_m}{dt} 
+%  = 
+%  D 
+%  \frac{u_{m-1} - 2u_m + u_{m+1}}{\Delta x^2}
+%  \label{eq:heat-equation-discrete}
+% \end{equation}
+% for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$).
+% Now, equation \eqref{eq:heat-equation-discrete} is a system of ordinary differential equations (just temporal derivatives) with a total of $N-1$ equations.
+% This can be solved directly using an ODE solver.
+% Further improvements can be made by exploiting the fact that the coupling between the different functions $u_m$ is sparse, that is, the temporal derivative of $u_m$ just depends of the values of the function in the neighbour points in the grid.
 
