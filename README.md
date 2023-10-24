@@ -38,6 +38,7 @@ The goal of this review is to revisit all this methods and compare them.
       <td align="center" valign="top" width="14.28%"><a href="https://statistics.berkeley.edu/people/fernando-perez"><img src="https://avatars.githubusercontent.com/u/57394?v=4?s=100" width="100px;" alt="Fernando Perez"/><br /><sub><b>Fernando Perez</b></sub></a><br /><a href="#ideas-fperez" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-fperez" title="Mentoring">🧑‍🏫</a> <a href="#financial-fperez" title="Financial">💵</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://frankschae.github.io"><img src="https://avatars.githubusercontent.com/u/42201748?v=4?s=100" width="100px;" alt="frankschae"/><br /><sub><b>frankschae</b></sub></a><br /><a href="#code-frankschae" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://bgroenke.com"><img src="https://avatars.githubusercontent.com/u/841306?v=4?s=100" width="100px;" alt="Brian Groenke"/><br /><sub><b>Brian Groenke</b></sub></a><br /><a href="#code-bgroenks96" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.chrisrackauckas.com"><img src="https://avatars.githubusercontent.com/u/1814174?v=4?s=100" width="100px;" alt="Christopher Rackauckas"/><br /><sub><b>Christopher Rackauckas</b></sub></a><br /><a href="#ideas-ChrisRackauckas" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
