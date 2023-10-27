@@ -14,15 +14,18 @@ This approach follows the discretize-optimize approach, meaning that we first di
 
 The first step in order to derive the adjoint equation is to discretize the ODE in Equation \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
 Given the sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
-Most commonly used numerical solver consists in linear multisteps methods with the form 
+Some common numerical solver consists in linear multisteps methods of the form 
 \begin{equation}
-    \sum_{i=1}^{K_1} \alpha_{n,i} u_{n-i} 
+    \sum_{i=0}^{K_1} \alpha_{n,i} u_{n-i} 
     +
-    h_n \sum_{i=1}^{K_2} \beta_{n,i} f(u_{n-i}, \theta, t_i)
+    h_n \sum_{i=0}^{K_2} \beta_{n,i} f(u_{n-i}, \theta, t_{n-i})
     = 
-    0
+    0.
 \end{equation}
-In the case of using an explicit numerical solver, these values will be constrained to satisfy a set of equations of the form 
+The method is called linear because is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
+Explicit methods are characterize by $\beta_{n, 0} = 0$, otherwise the method is implicit. 
+
+For simplicity, let us consider an explicit numerical solverof the form 
 \begin{equation}
     u_{i+1} = A_i (\theta) \, u_i + b_i
 \end{equation}
