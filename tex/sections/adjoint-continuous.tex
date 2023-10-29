@@ -67,13 +67,13 @@ The definition of the adjoint $\lambda(t)$ as the solution of this last ODE simp
     = 
     \lambda(t_0)^T s(t_0)
     + 
-    \inttime \lambda^T (t) \frac{\partial f}{\partial \theta} dt.
+    \inttime \lambda(t)^T \frac{\partial f}{\partial \theta} dt.
 \end{equation}
 Finally, replacing this inside the expression for the gradient of the loss function we have 
 \begin{equation}
     \frac{dL}{d\theta}
     = 
-    \lambda^T(t_0) s(t_0)
+    \lambda(t_0)^T s(t_0)
     + 
     \inttime
     \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt
