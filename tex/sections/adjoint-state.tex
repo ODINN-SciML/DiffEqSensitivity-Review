@@ -1,7 +1,6 @@
 Also know as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
 This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
-Just as in the case of automatic differentiation, the set of adjoint equations can be solved in both forward and backward mode. 
 
 % Just as in the case of automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
 
@@ -13,9 +12,20 @@ Just as in the case of automatic differentiation, the set of adjoint equations c
 
 % reference: Sensitivity theory of non-linear systems
 
-The first step in order to derive the adjoint equation is to discretize the set of differential equations in \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
+The first step in order to derive the adjoint equation is to discretize the ODE in Equation \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
 Given the sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
-In the case of using an explicit numerical solver, these values will be constrained to satisfy a set of equations of the form 
+Some common numerical solver consists in linear multisteps methods of the form 
+\begin{equation}
+    \sum_{i=0}^{K_1} \alpha_{n,i} u_{n-i} 
+    +
+    h_n \sum_{i=0}^{K_2} \beta_{n,i} f(u_{n-i}, \theta, t_{n-i})
+    = 
+    0.
+\end{equation}
+The method is called linear because is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
+Explicit methods are characterize by $\beta_{n, 0} = 0$, otherwise the method is implicit. 
+
+For simplicity, let us consider an explicit numerical solver of the form 
 \begin{equation}
     u_{i+1} = A_i (\theta) \, u_i + b_i
 \end{equation}

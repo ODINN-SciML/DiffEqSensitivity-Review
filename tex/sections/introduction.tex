@@ -1,7 +1,3 @@
-% More general open paragraph or plain language summary
-% ...
-
-
 % General statement: why gradients are important?
 Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, uncertainty quantification, among many. 
 Modern machine learning applications require the use of gradients to explore and exploit more efficiently the space of parameters. 
@@ -13,22 +9,24 @@ Second derivatives further help to improve convergence rates of these algorithms
 % Differential Programming
 Dynamical systems governed by differential equations are not an exception to the rule.
 Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
-In order to bridge the gap between modern machine learning methods and traditional scientific methods, some authors have recently suggested differentiable programming as the solution to this problem \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling}. 
+Some authors have recently suggested differentiable programming as the bridge between modern machine learning methods and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth}. 
 Being able to compute gradients and sensitivities of dynamical systems opens the door to more complex models.
 This is very appealing in geophysical models, where there is a broad literature on physical models and a long tradition in numerical methods. 
 The first goal of this work is to introduce some of the applications of this emerging technology and to motivate its incorporation for the modelling of complex systems in the natural and social sciences. 
 \begin{quote}
     \textbf{Question 1. }
-    \textit{What are the scientific applications of differential programming for complex dynamical systems?}
+    \textit{What are the scientific applications of differentiable programming for complex dynamical systems?}
 \end{quote}
 
 % Some examples
-There are different approaches to calculate the gradient of dynamical systems depending on the traditions of each field. 
+Sensitivity analysis correspond to any method aiming to calculate the how much the output of a function or program changes when we vary one of the model parameters. 
+This task is perform in different ways by different communities when working with dynamical systems. 
 In statistics, the sensitivity equations enable the computation of gradients of the likelihood of the model with respect to the parameters of the dynamical system, which can be later used for inference \cite{ramsay2017dynamic}. 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
 This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
 In recent years, there has been an increasing interest in designing machine learning workflows that include constraints in the form of differential equations. 
 Examples of this include Physics-Informed Neural Networks (PINNs) \cite{PINNs_2019} and Universal Differential Equations (UDEs) \cite{rackauckas2020universal}.  
+Furthermore, numerical solvers are used as forward models in the case of Neural ordinary differential equations \cite{chen_neural_2019}.
 
 % soft / hard constrains
 
@@ -65,11 +63,11 @@ The third goal of this work is then to illustrate the different strengths and we
     \textit{What are the advantages and disadvantages of different differentiation methods and how can I incorporate them in my research?}
 \end{quote}
 Despite the fact that these methods can be (in principle) implemented in different programming languages, here we decided to use the Julia programming language for the different examples. 
-Julia is a recently new but mature programming language that has already a large tradition in implementing packages aiming to advance differential programming \cite{Julialang_2017}. 
+Julia is a recently new but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Julialang_2017}. 
 
 % The need to introduce all this methods in a common framework
 Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
-Differential programming is opening new ways of doing research across sciences. 
+Differentiable programming is opening new ways of doing research across sciences. 
 As we make progress in the use of these tools, new methodological questions start to emerge. 
 How do these methods compare? How can their been improved? 
 We also hope this paper serves as a gateway to new questions regarding advances in these methods. 
