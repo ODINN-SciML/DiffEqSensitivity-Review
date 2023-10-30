@@ -1,6 +1,8 @@
 For complex and large systems, computing the gradient directly on top of the numerical solver (for example, using AD) can be memory expensive since the large number of function evaluation required by the solver and the later store of the intermediate states. 
 For these cases, adjoint-based method allow to compute the gradients of a loss function by instead computing an intermediate variable (the adjoint) that serves as a bridge between the solution of the ODE and the final sensitivity. 
+
 There is a large family of adjoint methods that a first order we can classify them between discrete and continuous adjoints. 
-The former usually arises as the numerical discretization of the later, and when the discrete adjoint method is a consistent estimator of the continuous adjoint depends of the ODE and equation.  
+The former usually arises as the numerical discretization of the later, and in general these two give different different computational results \cite{Sirkes_Tziperman_1997}.
+Different results exist regarding the consistency or inconsistency between the two approaches, and this usually depends on the ODE and equation.  
 Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods had been provided in \cite{sandu2006properties, sandu2011solution}.
 Depending the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.

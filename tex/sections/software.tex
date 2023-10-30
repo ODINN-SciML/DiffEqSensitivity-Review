@@ -2,7 +2,9 @@
 % \cite{ma_comparison_2021}. 
 
 In this section we are going to address how these tools are computationally implemented and how to decide which method to use depending the problem. 
-This decision is in general driven by the type of differential equation (stiff or non-stiff, number of equations, number of parameters) and the available computational resources. 
+One factor that drives this decision is are the details of the numerical solver used to solve the ODEs. 
+% While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
+The total number of equations and parameters is a main limiting factor depending on  the available computational resources. 
 The most important considerations that modern software needs to deal with in order to compute sensitivities are 
 \begin{enumerate}
     \item How to handle matrix/Jacobian-vector products
@@ -102,7 +104,7 @@ The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to co
 \subsection{Solver-based methods}
 
 Just a few modern scientific software have the capabilities of handling ODE solvers and compute their sensitivities at the same time. 
-The include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}. 
+The include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}. 
 On the other hand, it is important to remark that the underlying machinery of all solvers relies in solvers for linear systems of equations, which can be solved in dense, band (sparse) and Krylow mode. 
 This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
@@ -111,6 +113,11 @@ This calculation is carried by another sensitivity method (finite differences, A
 \subsubsection{Sensitivity equation}
 
 \subsubsection{Solving the adjoint}
+
+% Distinctio between discrete and continuous
+% Discrete are the exact gradient of the computer program, continuous are not. 
+% There is no flexibilty in discrete adjoitns, but there is in continuous
+% Human effort required to compute discrete adjoints is large \cite{FATODE2014}
 
 An equal important consideration when working with adjoints is when these are numerically stable. 
 Some works had shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
@@ -190,4 +197,5 @@ Weights and knots are obtained in order to maximize the order of which polynomia
 
 \subsubsection{Further considerations}
 
-In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
+% In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
+% In FATODE, these can be computed with finite differences, AD or provides by the user.
