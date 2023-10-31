@@ -1,4 +1,4 @@
-Also know as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
+Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
 This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
 
@@ -14,7 +14,7 @@ This approach follows the discretize-optimize approach, meaning that we first di
 
 The first step in order to derive the adjoint equation is to discretize the ODE in Equation \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
 Given the sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
-Some common numerical solver consists in linear multisteps methods of the form 
+Some common numerical solver consists in linear multistep methods of the form 
 \begin{equation}
     \sum_{i=0}^{K_1} \alpha_{n,i} u_{n-i} 
     +
@@ -23,7 +23,7 @@ Some common numerical solver consists in linear multisteps methods of the form
     0.
 \end{equation}
 The method is called linear because is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
-Explicit methods are characterize by $\beta_{n, 0} = 0$, otherwise the method is implicit. 
+Explicit methods are characterized by $\beta_{n, 0} = 0$, otherwise, the method is implicit. 
 
 For simplicity, let us consider an explicit numerical solver of the form 
 \begin{equation}
@@ -36,7 +36,7 @@ Solving the differential equation then implies to be able to solve the system of
 \end{equation}
 for all $i=0, 1, \ldots, N-1$. 
 For most cases, this system can be solved sequentially, by solving for $u_i$ in increasing order of index. 
-If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations in into one single system of linear equations 
+If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of linear equations 
 \begin{equation}
     A(\theta) U 
     = 
@@ -69,7 +69,7 @@ with $\I_{n \times n}$ the identity matrix of size $n \times n$.
 It is usually convenient to write this system of linear equations in the residual form $G(U; \theta) = 0$, where $G(U; \theta) = A(\theta) U - b(\theta)$ is the residual between both sides of the equation. 
 Different numerical schemes will lead to different design matrix $A(\theta)$ and vector $b(\theta)$, but ultimately every numerical method will lead to a system of linear equations with the form $G(U; \theta) = A(\theta) U - b(\theta) = 0$ after being discretized. 
 It is important to notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
-If well this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
+If this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
 
 \vspace*{10px}
 \noindent \textbf{\textit{Adjoint state equations}}

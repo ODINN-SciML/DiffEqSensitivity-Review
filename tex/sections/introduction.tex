@@ -1,9 +1,9 @@
 % General statement: why gradients are important?
-Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, uncertainty quantification, among many. 
+Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, and uncertainty quantification, among many. 
 Modern machine learning applications require the use of gradients to explore and exploit more efficiently the space of parameters. 
-When optimizing a loss function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than than gradient-free methods.
+When optimizing a loss function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies converge faster to the posterior distribution than gradient-free methods. 
-Second derivatives further help to improve convergence rates of these algorithms and enable uncertainty quantification around parameter values.
+Second derivatives further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values.
 \textit{A gradient serves as a compass in modern data science: it tells us in which direction in the open wide ocean of parameters we should move towards in order to increase our chances of success}.  
 
 % Differential Programming
@@ -19,8 +19,8 @@ The first goal of this work is to introduce some of the applications of this eme
 \end{quote}
 
 % Some examples
-Sensitivity analysis correspond to any method aiming to calculate the how much the output of a function or program changes when we vary one of the model parameters. 
-This task is perform in different ways by different communities when working with dynamical systems. 
+Sensitivity analysis corresponds to any method aiming to calculate how much the output of a function or program changes when we vary one of the model parameters. 
+This task is performed in different ways by different communities when working with dynamical systems. 
 In statistics, the sensitivity equations enable the computation of gradients of the likelihood of the model with respect to the parameters of the dynamical system, which can be later used for inference \cite{ramsay2017dynamic}. 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
 This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
@@ -33,10 +33,10 @@ Furthermore, numerical solvers are used as forward models in the case of Neural 
 % Differentiation 
 However, when working with differential equations, the computation of gradients is not an easy task, both regarding the mathematical framework and software implementation involved. 
 Except for a small set of particular cases, most differential equations require numerical methods to calculate their solution and cannot be differentiated analytically. 
-This means that solutions cannot be directly differentiated and require special treatment if, besides the numerical solution, we also want to compute first or second order derivatives. 
+This means that solutions cannot be directly differentiated and require special treatment if, besides the numerical solution, we also want to compute first or second-order derivatives. 
 Furthermore, numerical solutions introduce approximation errors. 
 These errors can be propagated and amplified during the computation of the gradient. 
-Alternatively, there is a broad literature in numerical methods for solving differential equations. 
+Alternatively, there is a broad literature on numerical methods for solving differential equations. 
 Although each method provides different guarantees and advantages depending on the use case, this means that the tools developed to compute gradients when using a solver need to be universal enough in order to be applied to all or 
 at least to a large set of them. 
 The second goal of this article is to review different methods that exist to achieve this goal.
@@ -50,7 +50,7 @@ The second goal of this article is to review different methods that exist to ach
 % AD
 The broader set of tools known as Automatic Differentiation (AD) aims at computing derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program. 
 The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of simple algebraic operations (addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule. 
-Although many modern differentiation tools use AD to some extend, there is also a family of methods that compute the gradient by relying on a auxiliary set of differential equations. 
+Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations. 
 We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
 
 The differences between methods arise both from their mathematical formulation and their computational implementations. 

@@ -85,17 +85,17 @@ This is possible because in forward mode the term $\frac{\partial w}{\partial v_
 
 \subsubsection{Backward mode}
 
-Backward mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. 
+Backward mode AD is also known as the adjoint of cotangent linear mode or backpropagation in the field of machine learning. 
 The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that do not depend of the number of parameters to differentiate \cite{Griewack-on-AD, Wolfe_1982}, a point known as \textit{cheap gradient principle} \cite{griewank2012invented}.  
 Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in backwards mode as
 \begin{equation}
  \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
-Here we have introduce the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ to indicate that the partial derivative is always of the final loss function with respect to the different program variables. 
+Here we have introduced the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ to indicate that the partial derivative is always of the final loss function with respect to the different program variables. 
 Since in backwards AD the values of $\bar \omega$ are being updated in reverse order, in order to evaluate the terms $\frac{\partial \omega}{\partial v}$ we need to know the state value of all the argument variables $v$ of $\omega$, which need to be stored in memory during the evaluation of the function in order to be able to apply backward AD.
 
 Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
-In the backward step, this executes a series of functions calls, one for each elementary operation.
+In the backward step, this executes a series of function calls, one for each elementary operation.
 If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
 Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
 \begin{equation}
@@ -112,7 +112,7 @@ which is equivalent to using the chain rule as
 
 When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters \cite{Giering_Kaminski_1998}.
 When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVP).
-As their name indicate, the difference between them regards the fact if the quantity we are interested in computing is described by the product of a Jacobian by a vector on the left side (VJP) or the right (JVP).
+As their name indicates, the difference between them regards the fact that the quantity we are interested in computing is described by the product of a Jacobian by a vector on the left side (VJP) or the right (JVP).
 
 For nested functions, the Jacobian is described as the product of multiple Jacobian using the chain rule.
 In this case, the full gradient is computed as the chain product of vectors and Jacobians. 
@@ -121,10 +121,10 @@ Now, using the chain rule, we can calculate the gradient of the final loss funct
 \begin{equation}
  \nabla_\theta L = \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1, 
 \end{equation}
-with $Dg_i$ the Jacobians of each neasted function. 
+with $Dg_i$ the Jacobians of each nested function. 
 Notice that in the last equation, $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
 In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiple the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
-The important aspect of this last case is that we will always been computing VJPs, since $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
+The important aspect of this last case is that we will always be computing VJPs, since $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
 Since VJPs are easier to evaluate than full Jacobians, the backward mode will be in general faster (see Figure \ref{fig:vjp-jvp}). 
 For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$ (more efficient algorithms exist but this does not impact these results). This implies that forward AD requires a total of
 \begin{equation}
@@ -136,15 +136,15 @@ operations, while backwards mode AD requires
 \end{equation}
 operations, where the $\mathcal O$ is with respect to the variable $p$. 
 
-When the function to differentiate has a larger input space than output, AD in backward mode is more efficient as it propagates the chain rule by computing VJPs, reason why backwards AD is more used in modern machine learning.
+When the function to differentiate has a larger input space than output, AD in backward mode is more efficient as it propagates the chain rule by computing VJPs, the reason why backwards AD is more used in modern machine learning.
 % On the other side, when the output dimension is larger than the input space dimension, forwards AD is more efficient.
 % This is the reason why in most machine learning application people use backwards AD. 
-However, notice that backwards mode AD requires us to save the solution thought the forward run in order to run backwards afterwards \cite{Bennett_1973}, while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
+However, notice that backwards mode AD requires us to save the solution through the forward run in order to run backwards afterwards \cite{Bennett_1973}, while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
 This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.95\textwidth]{figures/VJP-JVP.png}
-    \caption{Comparison between forward and backward AD. Changing the order how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. However, backwards mode requires to store in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
+    \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
     \label{fig:vjp-jvp}
 \end{figure}
