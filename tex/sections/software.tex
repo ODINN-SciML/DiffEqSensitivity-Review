@@ -1,23 +1,19 @@
 % Giles (2000) has a good discussion on this.
 % \cite{ma_comparison_2021}. 
 
-In this section, we are going to address how these tools are computationally implemented and how to decide which method to use depending on the problem. 
-One factor that drives this decision is are the details of the numerical solver used to solve the ODEs. 
-% While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
-The total number of equations and parameters is the main limiting factor depending on the available computational resources. 
-The most important considerations that modern software needs to deal with in order to compute sensitivities are 
-\begin{enumerate}
-    \item How to handle matrix/Jacobian-vector products
-    \item Numerical stability
-    \item Memory and runtime tradeoff
-\end{enumerate}
-These considerations also vary depending on the sensitivity method directly depends on the differential equation and the numerical solver used to solve it or if instead, the gradient is computed independently of the internals of the solver. 
+In this section, we are going to address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
+In order to address this point, it is important to make one more further distinction of the methods introduced in Section \ref{section:methods} between those that apply direct differentiation at algorithmic level or those that are based on numerical solvers.  
+The first are easier to implement since their are agnostic with respect to the details of the ODE and its numerical solution; however, they tend to be either inaccurate, memory expensive, or unfeasible for large models. 
+The family of methods that are based on numerical solvers include the sensitivity equations and the adjoin methods, both discrete and continuous; they are more difficult to implement and for real case application require complex software implementations, but they are also more accurate and adequate. 
 
+\subsection{Direct methods}
 
-\subsection{Solver-free methods}
+Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
 
-Let us start comparing how finite differences and complex-step differentiation perform for a simple problem with one single parameter. 
-Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$.
+Finite differences is easy to implement manually, do not require much software support, and provides a direct way of approximating a gradient. 
+In Julia these methods are directly implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use stablish libraries than implementing it yourself, since these already include subroutines to determine step-sizes.
+However, finite differences is less accurate and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
+Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$ using finite differences and complex-step differentiation.
 
 \begin{figure}[tbh]
     \centering
@@ -26,9 +22,10 @@ Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of 
     \label{fig:finite-diff}
 \end{figure}
 
-In general, finite differences are very easy to implement since it does not require any type of software support, but it is less accurate and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
-Implementing these last types in a programming language implies defining what it means to perform basic operations and then combining them using the chain rule provided by the dual number properties.
-In Julia, we can create a dual number by defining an object with two values, and then extend the definition of algebraic operations and functions, a process known as \textit{operator overloading} \cite{Neuenhofen_2018}, by relying on multiple dispatch:
+Implementing forward AD using dual numbers is usually carried using \textit{operator overloading} \cite{Neuenhofen_2018}. 
+This means expanding the object associated to a numerical value to include its dual components (derivative) and extending the definition of atomic algebraic functions. 
+In Julia, this can be done by relying on multiple dispatch. 
+The following example illustrates how to define a dual number and its associated binary addition and multiplication extensions. 
 \begin{jllisting}
 using Base: @kwdef
 
@@ -43,19 +40,18 @@ Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value + b.value, 
 # Binary product 
 Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value * b.value, derivative = a.value*b.derivative + a.derivative*b.value)
 \end{jllisting}
-and then we can simply evaluate derivatives by evaluating the derivative component of the dual number that results from the combination of operations
-\begin{jllisting}
-a = DualNumber(value=1.0, derivative=1.0)
+% and then we can simply evaluate derivatives by evaluating the derivative component of the dual number that results from the combination of operations
+% \begin{jllisting}
+% a = DualNumber(value=1.0, derivative=1.0)
 
-b = DualNumber(value=2.0, derivative=0.0)
-c = DualNumber(value=3.0, derivative=0.0)
+% b = DualNumber(value=2.0, derivative=0.0)
+% c = DualNumber(value=3.0, derivative=0.0)
 
-result = a * b * c
-println("The derivative of a*b*c with respect to a is: ", result.derivative)
-\end{jllisting}
-Notice that in this last example the dual numbers \texttt{b} and \texttt{c} were initialized with a derivative value equal to zero, while \texttt{a} with a value equal to one. 
-This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
-
+% result = a * b * c
+% println("The derivative of a*b*c with respect to a is: ", result.derivative)
+% \end{jllisting}
+% Notice that in this last example the dual numbers \texttt{b} and \texttt{c} were initialized with a derivative value equal to zero, while \texttt{a} with a value equal to one. 
+% This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
 We can also extend the definition of standard functions by simply applying the chain rule and storing the derivative in the dual variable following Equation \eqref{eq:dual-number-function}:
 \begin{jllisting}
 function Base.:(sin)(a::DualNumber)
@@ -64,18 +60,16 @@ function Base.:(sin)(a::DualNumber)
     return DualNumber(value=value, derivative=derivative)
 end
 \end{jllisting}
-With all these pieces together, we are able to propagate forward the value of a single-valued derivative through a series of algebraic operations. 
-
+% With all these pieces together, we are able to propagate forward the value of a single-valued derivative through a series of algebraic operations. 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
 Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
-This consideration applies to most forward methods. 
+This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models inefficient when differentiating with respect to many parameters. 
 
-Notice that both AD based in dual number and complex-step differentiation are based on defining and extended variable that carries information about the gradient. 
-% Another important point of comparison is the one existing between forward mode AD implemented with dual numbers and complex step differentiation. 
-Both methods introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the extender value that carries forward the numerical value of the gradient. 
-This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
-However, although these methods seem very similar, it is important to remark that AD gives the exact gradient, while complex step differentiation relies on numerical approximations that are valid just when the stepsize $\varepsilon$ is small. 
+
+Notice that both AD based in dual number and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the extender value that carries forward the numerical value of the gradient.
+% This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
+Although these methods seem similar, it is important to remark that AD gives the exact gradient, while complex step differentiation relies on numerical approximations that are valid just when the stepsize $\varepsilon$ is small. 
 The next example shows how the calculation of the gradient of $\sin (x^2)$ is performed by these two methods:
 \begin{equation}
 \renewcommand{\arraystretch}{1.5}
@@ -103,10 +97,15 @@ The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to co
 
 \subsection{Solver-based methods}
 
+Sensitivity methods based on numerical solvers tend to be better adapted to the structure and properties of the underlying ODE (stiffness, stability, accuracy) but also more difficult to implement.  
+This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerantions, including how to handle matrix/Jacobian-vector products; numerical stability of the forward/backward solver; and memory-time tradeoff. 
+These factors are further exacerbated by the number of ODEs and parameters in the model. 
+% While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
 Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
 The include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}. 
-On the other hand, it is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylow mode. 
-This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
+
+It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylow mode. 
+% This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
 This calculation is carried out by another sensitivity method (finite differences, AD) and this also plays a central role at the moment of analyzing the accuracy and stability of the adjoint method. 
 
