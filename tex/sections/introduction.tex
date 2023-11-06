@@ -53,7 +53,7 @@ The premise is simple: every computer program, including a numerical solver, is 
 Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations. 
 We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
 
-The differences between methods arise both from their mathematical formulation and their computational implementations. 
+The differences between methods arise both from their mathematical formulation and their computational implementation. 
 The first provides different guarantees on the method returning the actual gradient or a good approximation of it. 
 The second involves how theory is translated to software, and what are the data structures and algorithms used to implement it. 
 Different methods have different computational complexities depending on the number of parameters and differential equations, and these complexities are also balanced between total execution time and required memory. 

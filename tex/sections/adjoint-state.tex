@@ -12,30 +12,39 @@ This approach follows the discretize-optimize approach, meaning that we first di
 
 % reference: Sensitivity theory of non-linear systems
 
-The first step in order to derive the adjoint equation is to discretize the ODE in Equation \eqref{eq:original_ODE} into finite evaluations of the function $u(t; \theta)$. 
-Given the sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
-Some common numerical solver consists in linear multistep methods of the form 
+The derivation of the discrete adjoint equations is carried once the numerical scheme for solving Equation \eqref{eq:original_ODE} has been specified.  
+Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
+Some of the most common numerical solvers include multistep linear solvers of the form 
 \begin{equation}
-    \sum_{i=0}^{K_1} \alpha_{n,i} u_{n-i} 
+    \sum_{i=0}^{K_1} \alpha_{ni} u_{n-i} 
     +
-    h_n \sum_{i=0}^{K_2} \beta_{n,i} f(u_{n-i}, \theta, t_{n-i})
+    h_n \sum_{i=0}^{K_2} \beta_{ni} f(u_{n-i}, \theta, t_{n-i})
     = 
     0.
 \end{equation}
-The method is called linear because is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
-Explicit methods are characterized by $\beta_{n, 0} = 0$, otherwise, the method is implicit. 
-For simplicity, let us consider an explicit numerical solver of the form 
+and Runge-Kutta methods with 
+\begin{align}
+    u_{n+1} 
+    &= 
+    u_n 
+    + 
+    h \sum_{i=1}^s b_i k_i \\
+    k_i 
+    &= 
+    f \left(u_n + \sum_{j=1}^s a_{ij} k_j , \theta ,  t_n + c_n h \right) \qquad i=1,2, \ldots, s.
+\end{align}
+The former is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
+Explicit methods are characterized by $\beta_{n, 0} = 0$ for the multistep and $a_{ij}=0$ if $i \leq j$ for Runge-Kutta methods, otherwise, the method is implicit. 
+
+For multistep methods, solving the differential equation implies to be able to solve the system of constraints
 \begin{equation}
-    u_{i+1} = A_i (\theta) \, u_i + b_i
+    g_i(u_i; \theta) = u_i - h \beta_{n0} f(u_i, \theta, t_i) - \alpha_i = 0
 \end{equation}
-with $A_i \in \R^{n \times n}$ a squared matrix defined by the numerical solver. 
-Solving the differential equation then implies to be able to solve the system of constraints 
-\begin{equation}
-    g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i = 0
-\end{equation}
-for all $i=0, 1, \ldots, N-1$. 
-For most cases, this system can be solved sequentially, by solving for $u_i$ in increasing order of index. 
-If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of linear equations 
+where $\alpha_i$ has includes the information of all the past iterations. 
+This system can be solved sequentially, by solving for $u_i$ in increasing order of index using Newton method. 
+If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of equations $G(U) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$.
+
+In the simplest case where the algebraic set of equations is linear and we can write $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i$ with $A_i \in \R^{n \times n}$ and $b_i \in \R^n$ defined by the numerical solver, the condition $G(U)=0$ simplifies to the linear system of equations 
 \begin{equation}
     A(\theta) U 
     = 
@@ -65,8 +74,8 @@ If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can co
     b(\theta), 
 \end{equation}
 with $\I_{n \times n}$ the identity matrix of size $n \times n$.
-It is usually convenient to write this system of linear equations in the residual form $G(U; \theta) = 0$, where $G(U; \theta) = A(\theta) U - b(\theta)$ is the residual between both sides of the equation. 
-Different numerical schemes will lead to different design matrix $A(\theta)$ and vector $b(\theta)$, but ultimately every numerical method will lead to a system of linear equations with the form $G(U; \theta) = A(\theta) U - b(\theta) = 0$ after being discretized. 
+% It is usually convenient to write this system of linear equations in the residual form $G(U; \theta) = 0$, where $G(U; \theta) = A(\theta) U - b(\theta)$ is the residual between both sides of the equation. 
+% Different numerical schemes will lead to different design matrix $A(\theta)$ and vector $b(\theta)$, but ultimately every numerical method will lead to a system of linear equations with the form $G(U; \theta) = A(\theta) U - b(\theta) = 0$ after being discretized. 
 It is important to notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
 If this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
 
@@ -130,7 +139,7 @@ This is what leads to the definition of the adjoint $\lambda \in \R^{nN}$ as the
 \end{equation}
 that is,
 \begin{equation}
-    \lambda^T = \frac{\partial L}{\partial U} \left( \frac{\partial g}{\partial U} \right)^{-1}.
+    \lambda^T = \frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}.
     \label{eq:def_adjoint}
 \end{equation}
 Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta}, we obtain 
@@ -144,7 +153,8 @@ Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta},
 \end{equation}
 The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
 
-For the linear system of discrete equations $G(U; \theta)=0$, we have \cite{Johnson}
+Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U)=0$ was not necessarily linear in $U$.
+For the linear system of discrete equations $G(U; \theta)=A(\theta) U - b(\theta)=0$, we have \cite{Johnson}
 \begin{equation}
     \frac{\partial G}{\partial \theta} 
     = 
@@ -193,13 +203,13 @@ This is a linear system of equations with the same size of the original $A(\thet
 Computationally this also means that if we can solve the original system of discretized equations then we can also solve the adjoint. 
 One way of doing this is relying on matrix factorization. 
 Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrices $A (\theta) = LU$, which then can be also used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
-Another more natural way of finding the adjoins $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the iterative scheme
+Another more natural way of finding the adjoints $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the iterative scheme
 \begin{equation}
     \lambda_{i} = A_{i}^T \lambda_{i+1} + (u_i - u_i^\text{obs})
 \end{equation}
 with initial condition $\lambda_N$. 
 This means that we can solve the adjoint equation in backwards mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
-In principle, notice that in order to do this we need to know the value of $u_i$ at any given timestep. 
+Notice that this procedure requires to know the value of $u_i$ at any given timestep. 
 % When do we solve this backwards and when forward?
 
 

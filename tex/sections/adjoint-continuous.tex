@@ -9,7 +9,7 @@ Consider an integrated loss function of the form
 \begin{equation}
     L(u; \theta) = \inttime h(u(t;\theta), \theta) dt
 \end{equation}
-and its derivative with respect to the parameter $\theta$ given by
+and its derivative with respect to the parameter $\theta$ given by the following integral involving the sensitivity matrix $s(t)$:
 \begin{equation}
     \frac{dL}{d\theta}
     = 
@@ -26,7 +26,7 @@ The adjoint equation is obtained by writing the sensitivity equation in the form
     0,
     \label{eq:integrated-sensitivity-equation}
 \end{equation}
-where this equation must be satisfied for every function $\lambda(t)$ in order to Equation \eqref{eq:continuous-adjoint} to be true. 
+where this equation must be satisfied for every function $\lambda(t)$ in order for Equation \eqref{eq:continuous-adjoint} to be true. 
 The next step is to get rid of all time derivative applied to the sensitivity $s(t)$ using integration by parts: 
 \begin{equation}
     \inttime \lambda(t)^T \frac{ds}{dt} dt
