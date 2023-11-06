@@ -39,6 +39,7 @@ The goal of this review is to revisit all this methods and compare them.
       <td align="center" valign="top" width="14.28%"><a href="http://frankschae.github.io"><img src="https://avatars.githubusercontent.com/u/42201748?v=4?s=100" width="100px;" alt="frankschae"/><br /><sub><b>frankschae</b></sub></a><br /><a href="#code-frankschae" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://bgroenke.com"><img src="https://avatars.githubusercontent.com/u/841306?v=4?s=100" width="100px;" alt="Brian Groenke"/><br /><sub><b>Brian Groenke</b></sub></a><br /><a href="#code-bgroenks96" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://www.chrisrackauckas.com"><img src="https://avatars.githubusercontent.com/u/1814174?v=4?s=100" width="100px;" alt="Christopher Rackauckas"/><br /><sub><b>Christopher Rackauckas</b></sub></a><br /><a href="#ideas-ChrisRackauckas" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gileshooker"><img src="https://avatars.githubusercontent.com/u/12737775?v=4?s=100" width="100px;" alt="gileshooker"/><br /><sub><b>gileshooker</b></sub></a><br /><a href="#ideas-gileshooker" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-gileshooker" title="Mentoring">🧑‍🏫</a></td>
     </tr>
   </tbody>
 </table>
