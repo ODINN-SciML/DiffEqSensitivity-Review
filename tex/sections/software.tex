@@ -90,6 +90,7 @@ While the second component of the dual number has the exact derivative of $\sin(
 \end{equation}
 The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
 This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
+It is also important to remark that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
 \subsubsection{Backpropagation}
 
