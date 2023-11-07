@@ -95,6 +95,10 @@ repository. You can add changes and explore new things in your own fork of this 
 
 If you have any questions or want to reach out, feel free to send us an email to `fsapienza@berkeley.edu`.
 
+## License 
+
+The content of this project itself is licensed under the [Creative Commons Attribution 3.0 Unported license](https://creativecommons.org/licenses/by/3.0/), and the underlying source code used to format and display that content is licensed under the [MIT license](LICENSE).
+
 <!-- ## Reference
 
 If you find this article useful, you can cite it as follows 
