@@ -1,16 +1,16 @@
 % General statement: why gradients are important?
-Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, and uncertainty quantification, among many. 
-Modern machine learning applications require the use of gradients to explore and exploit more efficiently the space of parameters. 
+Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many. 
+Modern machine learning applications require the use of gradients to explore and exploit more efficiently the space of parameters (e.g., weight of a neural network). 
 When optimizing a loss function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies converge faster to the posterior distribution than gradient-free methods. 
-Second derivatives further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values.
+Hessians further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values.
 \textit{A gradient serves as a compass in modern data science: it tells us in which direction in the open wide ocean of parameters we should move towards in order to increase our chances of success}.  
 
 % Differential Programming
 Dynamical systems governed by differential equations are not an exception to the rule.
 Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
 Some authors have recently suggested differentiable programming as the bridge between modern machine learning methods and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth}. 
-Being able to compute gradients and sensitivities of dynamical systems opens the door to more complex models.
+Being able to compute gradients or sensitivities of dynamical systems opens the door to more complex models.
 This is very appealing in geophysical models, where there is a broad literature on physical models and a long tradition in numerical methods. 
 The first goal of this work is to introduce some of the applications of this emerging technology and to motivate its incorporation for the modelling of complex systems in the natural and social sciences. 
 \begin{quote}
@@ -25,8 +25,9 @@ In statistics, the sensitivity equations enable the computation of gradients of 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
 This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
 In recent years, there has been an increasing interest in designing machine learning workflows that include constraints in the form of differential equations. 
-Examples of this include Physics-Informed Neural Networks (PINNs) \cite{PINNs_2019} and Universal Differential Equations (UDEs) \cite{rackauckas2020universal}.  
-Furthermore, numerical solvers are used as forward models in the case of Neural ordinary differential equations \cite{chen_neural_2019}.
+Examples of this include methods that numerical solve differential equations \cite{PINNs_2019}, as well as methods that augment and learn parts of the differential equation \cite{rackauckas2020universal, Dandekar_2020}.
+% Examples of this include Physics-Informed Neural Networks (PINNs) \cite{PINNs_2019} and Universal Differential Equations (UDEs) \cite{rackauckas2020universal}.  
+Furthermore, numerical solvers are used as forward models in the case of neural ordinary differential equations \cite{chen_neural_2019}.
 
 % soft / hard constrains
 
@@ -63,11 +64,11 @@ The third goal of this work is then to illustrate the different strengths and we
     \textit{What are the advantages and disadvantages of different differentiation methods and how can I incorporate them in my research?}
 \end{quote}
 Despite the fact that these methods can be (in principle) implemented in different programming languages, here we decided to use the Julia programming language for the different examples. 
-Julia is a recently new but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Julialang_2017}. 
+Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}. 
 
-% The need to introduce all this methods in a common framework
+% The need to introduce all these methods in a common framework
 Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
-Differentiable programming is opening new ways of doing research across sciences. 
+Differentiable programming is opening new ways of doing research across sciences, and we need close collaboration between domain scientists, methodological scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real-worlds applications.
 As we make progress in the use of these tools, new methodological questions start to emerge. 
 How do these methods compare? How can their been improved? 
 We also hope this paper serves as a gateway to new questions regarding advances in these methods. 

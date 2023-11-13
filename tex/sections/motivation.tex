@@ -15,15 +15,19 @@ However, there has been an increasing interest in making mechanistic models more
 % If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
 
 A key way to achieve this is through differentiable programming, i.e. being able to compute derivatives of any computer program describing a scientific model.
-During the last decades, the backpropagation algorithm has enabled the fast growing of deep learning by efficiently computing gradients of large and complex neural networks with many parameters \cite{griewank2012invented}.
+During the last decades, the backpropagation algorithm has enabled the fast-growing of deep learning by efficiently computing gradients of large and complex neural networks with many parameters \cite{griewank2012invented}.
 Nowadays, the differentiation of hybrid models comprising data-driven models (e.g. neural networks, gaussian processes) with differential equations poses complex technical problems, which are only starting to be explored in recent years \cite{ma_comparison_2021}. 
 Being able to accurately estimate model parameters, ranging from a few ones in classic inversion problems to millions of them in large neural networks, opens many new possibilities. 
 Differentiable programming has the potential to revolutionize the way we approach and design scientific models and even the way we discover governing laws from data. 
 
 \subsection{Domain-specific applications}
 
-Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (eg, neural networks, Gaussian processes, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
+Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g. neural networks, Gaussian processes, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
+
+\subsubsection{Computational Fluid Dynamics}
+
+\subsubsection{Electromagnetism}
 
 \subsubsection{Geosciences}
 
@@ -38,3 +42,8 @@ Glaciers act as slow fluids, flowing down-slope through the effects of gravity, 
 These rheological processes and their dependency on key large-scale environmental variables, such as the local climate or topography, are still not well understood.
 The use of differentiable programming, combined with Universal Differential Equations, holds great potential to learn new empirical laws of these physical processes from large-scale remote sensing datasets. 
 A recent study showed how Julia's differentiable programming capabilities can be used to optimize the parameters of a neural network, learning a function of the nonlinear ice diffusivity in a glacier ice flow PDE, to match observations \cite{bolibar_universal_2023}.
+
+\subsubsection{Biology and Ecology}
+
+
+\subsubsection{Quantum Physics}

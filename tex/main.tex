@@ -34,9 +34,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[
-backend=biber,
-style=numeric, 
-sorting=none
+    backend=biber,
+    style=ieee, 
+    sorting=nyt
 ]{biblatex}
 
 \addbibresource{bibliography.bib}
@@ -115,17 +115,15 @@ sorting=none
 \label{sec:computational-implementation}
 \input{sections/software}
 
-\section{Recommendations}
-\input{sections/recommendations}
+% \section{Extensions}
 
-\section{Conclusions}
-\input{sections/conclusions}
+% \section{Recommendations}
+% \input{sections/recommendations}
+
+% \section{Conclusions}
+% \input{sections/conclusions}
 
 % \section{Do we need full gradients?}
-
-% \section{Generalization to PDEs}
-
-% \section{Open science from scratch}
 
 % \section{Notation}
 % \input{sections/notation}
@@ -138,6 +136,9 @@ sorting=none
 
 \subsection{Lagrangian derivation of adjoints}
 \input{appendix/lagrangian}
+
+\subsection{Supplementaty code}
+\input{appendix/code}
 
 % \section{Glossary} 
 
