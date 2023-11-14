@@ -8,10 +8,10 @@ Depending on the number of parameters and the complexity of the differential equ
 These methods can be roughly classified as:
 \begin{itemize}
     \item \textit{Discrete} vs \textit{continuous} methods
-    \item \textit{Forward} vs \textit{backwards} methods
+    \item \textit{Forward} vs \textit{backward} methods
 \end{itemize}
 The first difference regards the fact that the method for computing the gradient can be either based on the manipulation of atomic operations that are easy to differentiate using the chain rule several times (discrete), in opposition to the approach of approximating the gradient as the numerical solution of a new set of differential equations (continuous).
-Another way of conceptualizing this difference is by comparing them with the discretize-differentiate and differentiate-discretize approaches \cite{bradley2013pde, Onken_Ruthotto_2020, FATODE2014}.   
+Another way of conceptualizing this difference is by comparing them with the discretize-differentiate and differentiate-discretize approaches \cite{bradley2013pde, Onken_Ruthotto_2020, FATODE2014, Sirkes_Tziperman_1997}.   
 We can either discretize the original system of ODEs in order to numerically solve it and then define the set of adjoint equations on top of the numerical scheme; or instead define the adjoint equation directly using the differential equation and then discretize both in order to solve \cite{Giles_Pierce_2000}.
 
 The second distinction is related to the fact that some methods compute gradients by resolving a new sequential problem that may move in the same direction as the original numerical solver - i.e. moving forward in time - or, instead, they solve a new system that goes backwards in time. 

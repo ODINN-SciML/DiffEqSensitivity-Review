@@ -14,12 +14,17 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
 \begin{itemize}
     \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the accuracy or prediction power of a given model. Examples of loss functions include the squared error
     \begin{equation}
-     L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}(t_1)} \|_2^2,
-     \label{eq:quadratic-loss-function}
+         L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}(t_1)} \|_2^2,
+         \label{eq:quadratic-loss-function}
     \end{equation}
-    where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$; and
+    where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$.
+    More generally, we can evaluate the loss function at points of the time series for which we have observations, 
     \begin{equation}
-     L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+        L(u(\cdot, \theta)) = \frac{1}{2} \sum_{i=1}^N \| u(t_i; \theta) - u^{\text{target}(t_i)} \|_2^2.
+    \end{equation}
+    We can also consider the continuous evaluated loss function of the form
+    \begin{equation}
+         L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
     \end{equation}
     with $h$ being a function that quantifies the contribution of the error term at every time $t \in [t_0, t_1]$. 
     Defining a loss function where just the empirical error is penalized is known as trajectory matching. 
@@ -46,8 +51,8 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
     \end{equation}
     In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}.
-    \item \textbf{Summary of the solution.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
-    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
+    \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
+    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
 \end{itemize}
 
 We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
@@ -55,6 +60,7 @@ We are interested in computing the gradient of the loss function with respect to
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
 \end{equation} 
+Notice that this includes also the case where we want to compute the gradient of $L$ with respect to the initial condition of the system.
 The first term on the right-hand side is usually easy to evaluate since it just involves the partial derivative of the scalar loss function with respect to the solution.
 For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
 \begin{equation}

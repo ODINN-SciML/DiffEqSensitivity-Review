@@ -2,17 +2,19 @@
 % \cite{ma_comparison_2021}. 
 
 In this section, we are going to address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
-In order to address this point, it is important to make one more further distinction of the methods introduced in Section \ref{section:methods} between those that apply direct differentiation at algorithmic level or those that are based on numerical solvers.  
-The first are easier to implement since their are agnostic with respect to the details of the ODE and its numerical solution; however, they tend to be either inaccurate, memory expensive, or unfeasible for large models. 
-The family of methods that are based on numerical solvers include the sensitivity equations and the adjoin methods, both discrete and continuous; they are more difficult to implement and for real case application require complex software implementations, but they are also more accurate and adequate. 
+In order to address this point, it is important to make one further distinction of the methods introduced in Section \ref{section:methods} between those that apply direct differentiation at the algorithmic level or those that are based on numerical solvers.  
+The first is easier to implement since they are agnostic with respect to the details of the ODE and its numerical solution; however, they tend to be either inaccurate, memory-expensive, or unfeasible for large models. 
+The family of methods that are based on numerical solvers include the sensitivity equations and the adjoint methods, both discrete and continuous; they are more difficult to implement and for real case applications require complex software implementations, but they are also more accurate and adequate. 
 
 \subsection{Direct methods}
 
 Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
 
-Finite differences is easy to implement manually, do not require much software support, and provides a direct way of approximating a gradient. 
-In Julia these methods are directly implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use stablish libraries than implementing it yourself, since these already include subroutines to determine step-sizes.
-However, finite differences is less accurate and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
+\subsubsection{Finite differences}
+
+Finite differences are easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
+In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use establish libraries than implementing it yourself, since these already include subroutines to determine step-sizes.
+However, finite differences are less accurate and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
 Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$ using finite differences and complex-step differentiation.
 
 \begin{figure}[tbh]
@@ -22,7 +24,9 @@ Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of 
     \label{fig:finite-diff}
 \end{figure}
 
-Implementing forward AD using dual numbers is usually carried using \textit{operator overloading} \cite{Neuenhofen_2018}. 
+\subsubsection{Forward-mode AD}
+
+Implementing forward AD using dual numbers is usually carried out using \textit{operator overloading} \cite{Neuenhofen_2018}. 
 This means expanding the object associated to a numerical value to include its dual components (derivative) and extending the definition of atomic algebraic functions. 
 In Julia, this can be done by relying on multiple dispatch. 
 The following example illustrates how to define a dual number and its associated binary addition and multiplication extensions. 
@@ -90,15 +94,19 @@ While the second component of the dual number has the exact derivative of $\sin(
 \end{equation}
 The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
 This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
+It is also important to remark that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
-\subsubsection{Backpropagation}
+\subsubsection{Reverse-mode AD}
 
-The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
+The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. 
+When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
+
+\cite{Baydin_Pearlmutter_Radul_Siskind_2015}
 
 \subsection{Solver-based methods}
 
 Sensitivity methods based on numerical solvers tend to be better adapted to the structure and properties of the underlying ODE (stiffness, stability, accuracy) but also more difficult to implement.  
-This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerantions, including how to handle matrix/Jacobian-vector products; numerical stability of the forward/backward solver; and memory-time tradeoff. 
+This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerations, including how to handle matrix/Jacobian-vector products; numerical stability of the forward/backward solver; and memory-time tradeoff. 
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
 Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
@@ -183,7 +191,7 @@ This method also will have complexity $\mathcal O (n^3 + p)$.
 \vspace*{5px}
 
 Another computational challenge in the computation of the continuous adjoint is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
-Some methods save computation by noticing that the last step in the continuous adjoint method of evaluating $\frac{dL}{d\theta}$ is an integral instead of an ODE, and then can be evaluated as such without the need to include it in the tolerance calculation inside the numerical solver \cite{that-is-not-an-ode}.
+Some methods save computation by noticing that the last step in the continuous adjoint method of evaluating $\frac{dL}{d\theta}$ is an integral instead of an ODE, and then can be evaluated as such without the need to include it in the tolerance calculation inside the numerical solver \autocite{that-is-not-an-ode}.
 
 Numerical solutions of the integral 
 \begin{equation}
