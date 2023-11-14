@@ -1,0 +1,19 @@
+\ProvidesPackage{mybib}
+
+\usepackage[
+    backend=biber,
+    style=numeric-comp, 
+    sorting=nyt,
+    autocite=superscript
+]{biblatex}
+
+% prints author names as small caps
+\renewcommand{\mkbibnamefirst}[1]{\textsc{#1}}
+\renewcommand{\mkbibnamelast}[1]{\textsc{#1}}
+\renewcommand{\mkbibnameprefix}[1]{\textsc{#1}}
+\renewcommand{\mkbibnameaffix}[1]{\textsc{#1}}
+
+% Redefinde cite command to be based on autocite with superscript
+\renewcommand{\cite}[1]{\autocite{#1}}
+
+\DeclareFieldFormat{labelnumberwidth}{{#1\adddot}}
