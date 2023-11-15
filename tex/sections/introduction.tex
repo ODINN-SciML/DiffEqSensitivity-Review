@@ -25,7 +25,7 @@ In statistics, the sensitivity equations enable the computation of gradients of 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
 This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
 In recent years, there has been an increasing interest in designing machine learning workflows that include constraints in the form of differential equations. 
-Examples of this include methods that numerical solve differential equations \cite{PINNs_2019}, as well as methods that augment and learn parts of the differential equation \cite{rackauckas2020universal, Dandekar_2020}.
+Examples of this include methods that numerical solve differential equations like physics-informed neural networks \cite{PINNs_2019}, as well as methods that augment and learn parts of the differential equation, such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also includes the case of neural ODEs \cite{chen_neural_2019} and neural SDEs \cite{li2020scalable}.
 % Examples of this include Physics-Informed Neural Networks (PINNs) \cite{PINNs_2019} and Universal Differential Equations (UDEs) \cite{rackauckas2020universal}.  
 Furthermore, numerical solvers are used as forward models in the case of neural ordinary differential equations \cite{chen_neural_2019}.
 

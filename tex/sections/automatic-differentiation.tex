@@ -58,11 +58,11 @@ We will explore how this is carried in Section \ref{sec:computational-implementa
 \vspace*{5px}
 
 An useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
-Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical}. 
+Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical} or Wengert trace/tape\cite{Wengert_1964, Bauer_1974}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
 We can define $v_1, v_2, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
-Once the graph is constructed, we can compute the derivative of every node with respect to other using Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
+Once the graph is constructed, we can compute the derivative of every node with respect to other (a quantity known as the tangent) using Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
@@ -82,6 +82,7 @@ Instead of evaluating the last expression for all possible path, a simplificatio
 \end{equation}
 Since every variable node $w$ such that $w \rightarrow v_j$ is an edge of the computational graph have index less than $j$, we can iterate this procedure as we run the computer program and solve for both the function and its gradient.
 This is possible because in forward mode the term $\frac{\partial w}{\partial v_i}$ has been computed in a previous iteration, while $\frac{\partial v_j}{\partial w}$ can be evaluated at the same time the node $v_j$ is computed based on only the value of the parent variable nodes. 
+The only requirement for differentiation is being able to compute the derivative/tangent of each edge/primitive and combine these using the recursion \eqref{eq:AD-graph-recursion}.
 
 \subsubsection{Backward mode}
 
@@ -91,7 +92,7 @@ Given a directional graph of operations defined by a Wengert list \cite{Wengert_
 \begin{equation}
  \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
-Here we have introduced the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ to indicate that the partial derivative is always of the final loss function with respect to the different program variables. 
+Here we have introduced the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ to indicate that the partial derivative is always of the final loss function with respect to the different program variables, a quantity sometimes refers as adjoint (do not confuse with the adjoint method of later sections) or cotangent. 
 Since in backwards AD the values of $\bar \omega$ are being updated in reverse order, in order to evaluate the terms $\frac{\partial \omega}{\partial v}$ we need to know the state value of all the argument variables $v$ of $\omega$, which need to be stored in memory during the evaluation of the function in order to be able to apply backward AD.
 
 Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.

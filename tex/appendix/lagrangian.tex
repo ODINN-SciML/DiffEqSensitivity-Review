@@ -3,7 +3,7 @@
 In this section we are going to derive the adjoint equation for both discrete and continuous methods using the Lagrange multiplier trick. 
 Conceptually, the method is the same in both discrete and continuous case, with the difference that we manipulate linear algebra objects for the former and continuous operators for the later. 
 
-For the continuous adjoint method, we proceed the same way by writing a new loss function $I(\theta)$ identical to $L(\theta)$ as 
+For the continuous adjoint method, we proceed the same way by writing a new loss function $I(\theta)$, sometimes known as the \textit{Lagrangian}, identical to $L(\theta)$ as 
 \begin{equation}
     I(\theta) = L(\theta) - \inttime \lambda(t)^T \left( \frac{du}{dt} - f(u, \theta, t) \right) dt
 \end{equation}
@@ -33,3 +33,5 @@ Now, we can force some of the terms in the last equation to be zero by solving t
     \label{eq:continuous-adjoint}
 \end{equation}
 with final condition $\lambda(t_1) = 0$. 
+
+It is easy to see that this derivation is equivalent to solving the Karush-Kuhn-Tucker (KKT) conditions. 

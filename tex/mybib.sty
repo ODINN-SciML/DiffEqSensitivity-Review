@@ -4,7 +4,8 @@
     backend=biber,
     style=numeric-comp, 
     sorting=nyt,
-    autocite=superscript
+    autocite=superscript,
+    firstinits=true
 ]{biblatex}
 
 % prints author names as small caps
@@ -17,3 +18,5 @@
 \renewcommand{\cite}[1]{\autocite{#1}}
 
 \DeclareFieldFormat{labelnumberwidth}{{#1\adddot}}
+
+\DeclareNameAlias{author}{last-first}

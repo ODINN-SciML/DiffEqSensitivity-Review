@@ -50,17 +50,29 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \begin{equation}
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
     \end{equation}
-    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}.
+    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}. being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC. 
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
     \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
 \end{itemize}
 
-We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
+Notice that these cases also include sensitivities of $L$ with respect to the initial condition of the system.
+In the context of optimization, being able to compute sensitivities allows to perform gradient-based updates on the parameter $\theta$ by 
+\begin{equation}
+    \theta^{k+1} 
+    = 
+    \theta^k 
+    - 
+    \alpha_k 
+    \frac{dL}{d\theta^k}.
+\end{equation}
+There exists different variants of gradient descent methods\cite{ruder2016overview-gradient-descent}, and in general they outperform gradient-free optimization schemes.
+Furthermore, gradient-free methods (also known as global optimization techniques) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
+
+Using the chain rule we can derive
 \begin{equation} 
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
 \end{equation} 
-Notice that this includes also the case where we want to compute the gradient of $L$ with respect to the initial condition of the system.
 The first term on the right-hand side is usually easy to evaluate since it just involves the partial derivative of the scalar loss function with respect to the solution.
 For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
 \begin{equation}

@@ -10,7 +10,7 @@ The family of methods that are based on numerical solvers include the sensitivit
 
 Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
 
-\subsubsection{Finite differences}
+% \subsubsection{Finite differences}
 
 Finite differences are easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
 In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use establish libraries than implementing it yourself, since these already include subroutines to determine step-sizes.
@@ -24,7 +24,7 @@ Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of 
     \label{fig:finite-diff}
 \end{figure}
 
-\subsubsection{Forward-mode AD}
+% \subsubsection{Forward-mode AD}
 
 Implementing forward AD using dual numbers is usually carried out using \textit{operator overloading} \cite{Neuenhofen_2018}. 
 This means expanding the object associated to a numerical value to include its dual components (derivative) and extending the definition of atomic algebraic functions. 
@@ -96,12 +96,19 @@ The stepsize dependence of the complex step differentiation method makes it rese
 This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
 It is also important to remark that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
-\subsubsection{Reverse-mode AD}
+% \subsubsection{Reverse-mode AD}
 
 The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. 
 When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
 
 \cite{Baydin_Pearlmutter_Radul_Siskind_2015}
+
+Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver. 
+Furthermore, when reverse AD is applied on the numerical solver, the step-size needs to be adapted to ensure the stability of the backward stesps, further increasing the computational complexity. 
+
+\subsubsection{Further remarks}
+
+A crucial distinction between AD implementations based on computational graphs is between static and dynamical graphs\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
 
 \subsection{Solver-based methods}
 
@@ -190,20 +197,30 @@ This method also will have complexity $\mathcal O (n^3 + p)$.
 \noindent \textbf{\textit{Solving the quadrature}}
 \vspace*{5px}
 
-Another computational challenge in the computation of the continuous adjoint is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
+Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
 Some methods save computation by noticing that the last step in the continuous adjoint method of evaluating $\frac{dL}{d\theta}$ is an integral instead of an ODE, and then can be evaluated as such without the need to include it in the tolerance calculation inside the numerical solver \autocite{that-is-not-an-ode}.
-
+Numerical integration, also known as quadrature integration, consists in approximating integrals by finite sums of the form
 Numerical solutions of the integral 
 \begin{equation}
     \int_{t_0}^{t_1} 
+    F(t) dt
     \approx
-    \sum 
+    \sum_{i=1}^K \omega_i \, F(\tau_i),
 \end{equation}
-Gaussian quadrature is the faster method to evaluate one-dimensional integrals \cite{Norcliffe_gaussquadrature_2023}.
-
+where the evaluation of the function occurs in certain knots $t_0 \leq \tau_1 < \ldots < \tau_K \leq t_1$, and $\omega_i$ are weights. 
 Weights and knots are obtained in order to maximize the order in which polynomials are exactly integrated \cite{stoer2002-numerical}. 
 
-\subsubsection{Further considerations}
+Different quadrature methods are based on different choices of the knots and associated weights.
+Between these methods, the Gaussian quadrature is the faster method to evaluate one-dimensional integrals \cite{Norcliffe_gaussquadrature_2023}.
 
-% In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
-% In FATODE, these can be computed with finite differences, AD or provides by the user.
+\subsubsection{Computing VJPs}
+
+All the methods analized in this section need to deal with the calculation of VJPs.  
+The choice of the specific algorithm to compute VJPs can have significant impact in the overall performance of the sensitivity method. 
+
+In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
+In FATODE, these can be computed with finite differences, AD or provides by the user.
+
+In the Julia ecosystem, different AD packages are available for this task, including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, \texttt{Tracker.jl}.
+Each one of these have different advantages depending on scientific problem, computational features, and hardware resources.
+This lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
