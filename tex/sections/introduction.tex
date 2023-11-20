@@ -1,10 +1,13 @@
 % General statement: why gradients are important?
-Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many. 
-Modern machine learning applications require the use of gradients to explore and exploit more efficiently the space of parameters (e.g., weight of a neural network). 
-When optimizing a loss function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods.
+Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many (e.g.,  \cite{Razavi.2021}). 
+Modern machine learning applications require the use of gradients to efficiently exploit  the high-dimensional space of parameters to be inferred or learned (e.g., weights of a neural network). 
+The same is true for partial differential equation (PDE) constrained optimization, which infers uncertain (or unknown) parameters from (generally sparse) data  \cite{Ghattas.2021}.
+When optimizing an objective function (loss function in machine learning or cost function in inverse modeling), gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods
+(the ``curse of dimensionality'' renders pure sampling methods computationally intractable for most large-scale problems \cite{Oden:2010tv})
+.
 When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies converge faster to the posterior distribution than gradient-free methods. 
-Hessians further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values.
-\textit{A gradient serves as a compass in modern data science: it tells us in which direction in the open wide ocean of parameters we should move towards in order to increase our chances of success}.  
+Hessians further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values \cite{BuiThanh:2012ul}.
+\textit{A gradient serves as a compass in modern data science: it tells us in which direction in the vast, open ocean of parameters we should move towards in order to increase our chances of success}.  
 
 % Differential Programming
 Dynamical systems governed by differential equations are not an exception to the rule.
@@ -19,13 +22,13 @@ The first goal of this work is to introduce some of the applications of this eme
 \end{quote}
 
 % Some examples
-Sensitivity analysis corresponds to any method aiming to calculate how much the output of a function or program changes when we vary one of the model parameters. 
+Sensitivity analysis corresponds to any method aiming to calculate how much the output of a function or program changes when we vary one of the function (or model) parameters. 
 This task is performed in different ways by different communities when working with dynamical systems. 
 In statistics, the sensitivity equations enable the computation of gradients of the likelihood of the model with respect to the parameters of the dynamical system, which can be later used for inference \cite{ramsay2017dynamic}. 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
 This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
 In recent years, there has been an increasing interest in designing machine learning workflows that include constraints in the form of differential equations. 
-Examples of this include methods that numerical solve differential equations like physics-informed neural networks \cite{PINNs_2019}, as well as methods that augment and learn parts of the differential equation, such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also includes the case of neural ODEs \cite{chen_neural_2019} and neural SDEs \cite{li2020scalable}.
+Examples of this include methods that numerically solve differential equations, such as physics-informed neural networks \cite{PINNs_2019}, as well as methods that augment and learn parts of the differential equation, such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also includes the case of neural ODEs \cite{chen_neural_2019} and neural SDEs \cite{li2020scalable}.
 % Examples of this include Physics-Informed Neural Networks (PINNs) \cite{PINNs_2019} and Universal Differential Equations (UDEs) \cite{rackauckas2020universal}.  
 Furthermore, numerical solvers are used as forward models in the case of neural ordinary differential equations \cite{chen_neural_2019}.
 
@@ -49,28 +52,31 @@ The second goal of this article is to review different methods that exist to ach
 %This is certainly the case in machine learning and optimization where the goal is to minimize a loss function that depends of some predicted and target responses. 
 
 % AD
-The broader set of tools known as Automatic Differentiation (AD) aims at computing derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program. 
-The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of simple algebraic operations (addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule. 
+The broader set of tools known as Automatic (or Algorithmic) Differentiation (AD) aims at computing derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program (e.g., \cite{Griewank:2008kh, Naumann.2011}). 
+The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of elementary algebraic operations (addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule (e.g., \cite{Giering:1998in}). 
 Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations. 
 We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
+We emphasize that AD is merely a \emph{tool} for generating derivatives of computer code. Alternatively, such code can be (and often has been) generated ``by hand'', e.g., to avoid restrictions incurred by the available AD tool.
+Down-sides of hand-written derivative code are, (i) it is error-prone, (ii) it is difficult to keep pace with the development of the parent code, and (iii) [I need to remember ...].
 
 The differences between methods arise both from their mathematical formulation and their computational implementation. 
-The first provides different guarantees on the method returning the actual gradient or a good approximation of it. 
+The first provides different guarantees on the method returning the actual gradient or a good approximation thereof. 
 The second involves how theory is translated to software, and what are the data structures and algorithms used to implement it. 
 Different methods have different computational complexities depending on the number of parameters and differential equations, and these complexities are also balanced between total execution time and required memory. 
-The third goal of this work is then to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
+The third goal of this work, then, is to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
 \begin{quote}
     \textbf{Question 3. }
     \textit{What are the advantages and disadvantages of different differentiation methods and how can I incorporate them in my research?}
 \end{quote}
 Despite the fact that these methods can be (in principle) implemented in different programming languages, here we decided to use the Julia programming language for the different examples. 
-Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}. 
+Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}
+(nevertheless, in reviewing existing work, we'll also point to applications developed in other programming languages).
 
 % The need to introduce all these methods in a common framework
 Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
-Differentiable programming is opening new ways of doing research across sciences, and we need close collaboration between domain scientists, methodological scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real-worlds applications.
+Differentiable programming is opening new ways of doing research across sciences, and we need close collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real-worlds applications.
 As we make progress in the use of these tools, new methodological questions start to emerge. 
-How do these methods compare? How can their been improved? 
+How do these methods compare? How can they be improved? 
 We also hope this paper serves as a gateway to new questions regarding advances in these methods. 
 
 % \begin{quote}

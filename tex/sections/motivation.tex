@@ -1,17 +1,18 @@
 \subsection{On the importance of differentiable programming}
 
 Scientific models from many domains have often been based on mechanistic models, represented as differential equations, involving the use of numerical methods to solve them. 
-Among many, this lead to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them. 
+Among many, this lead to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them
+(e.g., \cite{Wigner.1960, Rude:2018jv}). 
 Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
 
-Alternatively, the field of statistics experienced a boom following the massive growth of data, signaling the era of data science and machine learning.
+Alternatively, the field of statistics experienced a boom following the massive growth of data, signaling the era of data science and machine learning \cite{Cox:2017hv}.
 With the advent of machine learning methods, it is possible to learn and capture extremely complex nonlinear patterns and information hidden in huge datasets. 
 Machine learning models can be seen as the opposite of mechanistic models: they are flexible, data-driven and they do not necessarily respect domain-specific constraints.
 
 At first sight, these two modelling philosophies can be seen as antagonistic, and this is more or less the way they have evolved in the last decades \cite{zdeborova_understanding_2020}. 
-On the one hand, domain scientists have often struggled to adopt machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge. 
+On the one hand, domain scientists have often been sceptical of adopting machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}.
 On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any \textit{a priori} physical knowledge. 
-However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models. 
+However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models (e.g., \cite{Molnar.2020sisk,Rudin.2022}).
 % If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
 
 A key way to achieve this is through differentiable programming, i.e. being able to compute derivatives of any computer program describing a scientific model.
@@ -22,7 +23,7 @@ Differentiable programming has the potential to revolutionize the way we approac
 
 \subsection{Domain-specific applications}
 
-Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g. neural networks, Gaussian processes, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
+Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
 
 \subsubsection{Computational Fluid Dynamics}
@@ -31,17 +32,59 @@ This combined flexibility can be exploited by many different domain-specific pro
 
 \subsubsection{Geosciences}
 
-In geosciences, partial differential equations (PDEs) are often used to simulate fluid dynamics, describing geophysical properties of many Earth systems, such as the atmosphere, oceans, or glaciers.
-In such models, calibrating model parameters is extremely challenging, due to datasets being sparse in both space and time and noisy.
-Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or badly parametrized. 
-The use of differentiable programming, combining PDEs and data-driven models (i.e. Universal Differential Equations) can add flexibility to mechanistic models in order to incorporate new governing laws from data \cite{rackauckas2020universal}.
+Many geoscientific phenomena are governed by global and local conservation laws (conservation of mass, momentum, energy, tracers, etc.) along with a set of empirical constitutive laws and subgrid-scale parameterization schemes. Together, they enable efficient description of the system's spatio-temporal evolution in terms of a set of partial differential equations (PDEs).
+Example are geophysical fluid dynamics \cite{Vallis:2016kv}, describing geophysical properties of many Earth systems, such as the atmosphere, oceans, or glaciers.
+In such models, calibrating model parameters is extremely challenging, due to datasets being sparse in both space and time, heterogeneous, and noisy.
+Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
+The use of differentiable programming, combining PDEs and data-driven models (i.e. Universal Differential Equations) may add flexibility to mechanistic models in order to incorporate new governing laws from data (from either measurement or simulations) \cite{rackauckas2020universal}.
+
+Arguably, the notion of ``differentiable programming'' has a long tradition in the geosciences in the context of solving large-scale geophysical inverse problems.
+The overarching goal of such problems is to find a set of optimal model parameters that minimize a (usually weighted least-squares) objective or cost function quantifying the misfit between (usually sparse) observations and the simulated state, subject to the constraint that the model equations be fulfilled. The constrained optimization problem is transformed into an unconstrained problem by way of \emph{Lagrange multiplier method}, also referred to as the \emph{adjoint method}. 
+The corresponding \textit{adjoint model} computes the gradient of the objective function with respect to all inputs. Gradient-based nonlinear optimization then enables us to
+``invert'' for optimal values of the unknown or uncertain inputs.
+Depending on the nature of the inputs, we may distinguish the following cases:
+%
+\begin{itemize}
+\item \emph{Initial conditions:} Inverting for uncertain initial conditions, which, when integrated using the model, lead to an optimal match of the observations; variants thereof are used for optimal forecasting (see below);
+\item \emph{Boundary conditions:} Inverting for uncertain surface, bottom, or lateral boundaries (e.g., open boundaries of a limited domain), which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle;
+\item \emph{Model parameters:} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a ''learning of optimal parameters from data'' problem, it is the closest to machine learning applications.
+\end{itemize}
+%
+In addition to the use of gradients or derivative information for optimization, inversion, estimation, or ``learning'', gradients have also proven powerful tools for 
+\begin{itemize}
+\item
+computing \emph{comprehensive sensitivities} of quantities of interest,
+\item 
+computing \emph{optimal perturbations} (in initial or boundary conditions) that lead to maximum amplification of specific norms of interest,
+\item
+characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
+\end{itemize}
+%
+Within the framework of gradient-based inversion, all of these cases rely on the availability of an adjoint model of the (in general nonlinear) geophysical parent model to efficiently compute the gradient of the objective function with respect to a usually very high-dimensional (typically $O(10^3) - O(10^8)$) space of inputs.
+In the following, we sketch how differentiable programming - from the perspective of adjoint modeling - has been used in different disciplines of geosciences, and how new concepts are emerging of combining inverse modeling and machine learning approaches where differentiable programming provides a key computational enabling framework. (Note that some authors have used the notion of ``scientific machine learning'' to capture some aspects of the latter approach [REFS]).
 
 % Add oceanography example
 
+\paragraph{Meteorology}
+...
+
+\paragraph{Oceanography}
+...
+
+\paragraph{Climate science}
+...
+
+\paragraph{Flux inversion}
+...
+
+\paragraph{Glaciology}
 Glaciers act as slow fluids, flowing down-slope through the effects of gravity, and the understanding of their rheological properties (e.g. ice viscosity affecting internal deformation or sliding at the glacier-bedrock interface) is key to assessing their contribution to water resources and sea-level rise \cite{cuffey_physics_2010}. 
 These rheological processes and their dependency on key large-scale environmental variables, such as the local climate or topography, are still not well understood.
 The use of differentiable programming, combined with Universal Differential Equations, holds great potential to learn new empirical laws of these physical processes from large-scale remote sensing datasets. 
 A recent study showed how Julia's differentiable programming capabilities can be used to optimize the parameters of a neural network, learning a function of the nonlinear ice diffusivity in a glacier ice flow PDE, to match observations \cite{bolibar_universal_2023}.
+
+\paragraph{Solid Earth geophysics}
+...
 
 \subsubsection{Biology and Ecology}
 
