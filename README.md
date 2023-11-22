@@ -65,10 +65,12 @@ This repository is organized in a way that contains most of the important elemen
 - `CI`: Continuous integration with GitHub actions to automatically compile and commit the manuscript. 
 - `Makefile`: make file that automatizes all the commands that can be executed within this repository.
 
-### Continuous integrations
+### Continuous integration
 
 This repository has a [workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/blob/main/.github/workflows/latex.yml) implemented that automatically compiles the latex files into the file `main.pdf` and then commits this file directy to the repository. 
 If you are working from your fork, this action should also work and you should be able to generate the pdf file automatically using GitHub actions. 
+In order to trigger the GitHub action to compile and commit the Latex file, you just need to inclide the word `latex` in your commit message. 
+This repository also includes an action to automatically merge all `*.bib` files into one single bibliography file `tex/bibliography.bib` that includes just the references that are cited in any of the `*.tex` files. 	
 
 ### Makefile
 
