@@ -4,7 +4,7 @@ jobs:
   build_latex:
     runs-on: ubuntu-latest
     # Just run action when the word "docs" is in the commit message
-    if: "contains(github.event.head_commit.message, 'bib')"
+    if: "contains(github.event.head_commit.message, 'bib-merge')"
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
@@ -24,19 +24,19 @@ jobs:
           pip install pybtex
       - name: Create merged biblatex file 
         run: |
-          python .utils/biblatex_merger.py . tex/bibliography_CI.bib
+          python .utils/biblatex_merger.py . tex/bibliography.bib
       - name: Upload biblatex file
         uses: actions/upload-artifact@v3
         with:
           name: Merged biblatex file
-          path: tex/bibliography_CI.bib
+          path: tex/bibliography.bib
           if-no-files-found: error
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 📚 Automated biblatex merge
+          commit_message: 📁 Automated biblatex merge
           branch: main
-          file_pattern: tex/bibliography_CI.bib
+          file_pattern: tex/bibliography.bib
           commit_options: '--no-verify --signoff'
           commit_user_name: My GitHub Actions Bot
           commit_author: Author <actions@github.com>
