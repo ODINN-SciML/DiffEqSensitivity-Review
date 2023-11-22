@@ -5,14 +5,12 @@ on:
       - main
   workflow_run:
     workflows: ["Build BibLaTeX file"]
-    types:
-      - completed
       
 jobs:
   build_latex:
     runs-on: ubuntu-latest
     # Just run action when the word "docs" is in the commit message
-    if: "contains(github.event.head_commit.message, 'latex')"
+    if: "contains(github.event.head_commit.message, 'build-latex')"
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
