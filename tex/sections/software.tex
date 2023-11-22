@@ -198,7 +198,7 @@ This method also will have complexity $\mathcal O (n^3 + p)$.
 \vspace*{5px}
 
 Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
-Some methods save computation by noticing that the last step in the continuous adjoint method of evaluating $\frac{dL}{d\theta}$ is an integral instead of an ODE, and then can be evaluated as such without the need to include it in the tolerance calculation inside the numerical solver \autocite{that-is-not-an-ode}.
+Some methods save computation by noticing that the last step in the continuous adjoint method of evaluating $\frac{dL}{d\theta}$ is an integral instead of an ODE, and then can be evaluated as such without the need to include it in the tolerance calculation inside the numerical solver \cite{that-is-not-an-ode}.
 Numerical integration, also known as quadrature integration, consists in approximating integrals by finite sums of the form
 Numerical solutions of the integral 
 \begin{equation}
