@@ -1,5 +1,13 @@
 name: Build LaTeX PDF document
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  workflow_run:
+    workflows: ["Build BibLaTeX file"]
+    types:
+      - completed
+      
 jobs:
   build_latex:
     runs-on: ubuntu-latest
