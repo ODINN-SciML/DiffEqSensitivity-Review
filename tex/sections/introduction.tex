@@ -3,7 +3,7 @@ Evaluating how the value of a function changes with respect to its arguments and
 Modern machine learning applications require the use of gradients to efficiently exploit  the high-dimensional space of parameters to be inferred or learned (e.g., weights of a neural network). 
 The same is true for partial differential equation (PDE) constrained optimization, which infers uncertain (or unknown) parameters from (generally sparse) data  \cite{Ghattas.2021}.
 When optimizing an objective function (loss function in machine learning or cost function in inverse modeling), gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods
-(the ``curse of dimensionality'' renders pure sampling methods computationally intractable for most large-scale problems \cite{Oden:2010tv})
+Furthermore, the \textit{curse of dimensionality} renders gradient-free optimization and sampling methods computationally intractable for most large-scale problems \cite{Oden:2010tv})
 .
 When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies converge faster to the posterior distribution than gradient-free methods. 
 Hessians further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values \cite{BuiThanh:2012ul}.

@@ -14,15 +14,14 @@ Forward mode AD can be implemented in different ways depending on the data struc
 \noindent \textbf{\textit{Dual numbers}}
 \vspace*{5px}
 
-Let us first consider the case of dual numbers.
-The idea is to extend the definition of a numerical variable that takes a certain value to also carry information about its derivative with respect to certain scalar parameter $\theta \in \R$. 
+Dual numbers extend the definition of a numerical variable that takes a certain value to also carry information about its derivative with respect to certain parameter \cite{clifford1871dualnumbers}. 
 We can define an abstract type, defined as a dual number, composed of two elements: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
-Just as complex number, we can represent dual numbers in the vectorial form $(x_1, x_2)$ or in the rectangular form 
+Just as complex number, we can represent dual numbers as an ordered pair $(x_1, x_2)$, sometimes known as Argand pair, or in the rectangular form 
 \begin{equation}
  x_\epsilon = x_1 + \epsilon \, x_2
 \end{equation}
-where $\epsilon$ is an abstract number with the properties $\epsilon^2 = 0$ and $\epsilon \neq 0$.
-This last representation is quite convenient since it naturally allow us to extend algebraic operations, like addition and multiplication, to dual numbers. 
+where $\epsilon$ is an abstract number called a perturbation or tangent, with the properties $\epsilon^2 = 0$ and $\epsilon \neq 0$.
+This last representation is quite convenient since it naturally allow us to extend algebraic operations, like addition and multiplication, to dual numbers \cite{Karczmarczuk2001}. 
 For example, given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\epsilon = y_1 + \epsilon y_2$, it is easy to derive using the fact $\epsilon^2=0$ that
 \begin{equation}
  x_\epsilon + y_\epsilon = (x_1 + y_1) + \epsilon \, (x_2 + y_2)
@@ -144,7 +143,7 @@ However, notice that backwards mode AD requires us to save the solution through 
 This problem can be overcome with a good checkpointing scheme, somewhat we will discuss later. 
 This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 
-\begin{figure}
+\begin{figure}[t]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/VJP-JVP.png}
     \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
