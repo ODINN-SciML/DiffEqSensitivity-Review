@@ -34,7 +34,7 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 📁 [latex] Automated biblatex merge
+          commit_message: 📁 Automated biblatex merge [build-latex]
           branch: main
           file_pattern: tex/bibliography.bib
           commit_options: '--no-verify --signoff'
