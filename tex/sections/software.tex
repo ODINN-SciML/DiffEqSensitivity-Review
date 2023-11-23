@@ -44,19 +44,7 @@ Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value + b.value, 
 # Binary product 
 Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value = a.value * b.value, derivative = a.value*b.derivative + a.derivative*b.value)
 \end{jllisting}
-% and then we can simply evaluate derivatives by evaluating the derivative component of the dual number that results from the combination of operations
-% \begin{jllisting}
-% a = DualNumber(value=1.0, derivative=1.0)
-
-% b = DualNumber(value=2.0, derivative=0.0)
-% c = DualNumber(value=3.0, derivative=0.0)
-
-% result = a * b * c
-% println("The derivative of a*b*c with respect to a is: ", result.derivative)
-% \end{jllisting}
-% Notice that in this last example the dual numbers \texttt{b} and \texttt{c} were initialized with a derivative value equal to zero, while \texttt{a} with a value equal to one. 
-% This is because we were interested in computing the derivative with respect to \texttt{a}, and then $\frac{\partial a}{\partial a} = 1$, while $\frac{\partial b}{\partial a} = \frac{\partial c}{\partial a} = 0$. 
-We can also extend the definition of standard functions by simply applying the chain rule and storing the derivative in the dual variable following Equation \eqref{eq:dual-number-function}:
+We further overload base operations for this new type to extend the definition of standard functions by simply applying the chain rule and storing the derivative in the dual variable following Equation \eqref{eq:dual-number-function}:
 \begin{jllisting}
 function Base.:(sin)(a::DualNumber)
     value = sin(a.value)
@@ -70,6 +58,7 @@ Notice that a major limitation of the dual number approach is that we need a dua
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models inefficient when differentiating with respect to many parameters. 
 
+One of the main challenges in forward AD is how to handle \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}.
 
 Notice that both AD based in dual number and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the extender value that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
