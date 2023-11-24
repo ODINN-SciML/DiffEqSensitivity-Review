@@ -55,10 +55,10 @@ end
 % With all these pieces together, we are able to propagate forward the value of a single-valued derivative through a series of algebraic operations. 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
 Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
+Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, a existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, specially in the case of nested functions \cite{manzyuk2019perturbation}.   
+
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models inefficient when differentiating with respect to many parameters. 
-
-One of the main challenges in forward AD is how to handle \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}.
 
 Notice that both AD based in dual number and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the extender value that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
