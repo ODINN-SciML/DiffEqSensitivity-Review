@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/latex.yml/badge.svg)
+![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/biblatex.yml/badge.svg)
 [![All Contributors](https://img.shields.io/github/all-contributors/ODINN-SciML/DiffEqSensitivity-Review?color=ee8449&style=flat-square)](#contributors)
 
 
