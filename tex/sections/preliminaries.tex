@@ -50,7 +50,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \begin{equation}
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
     \end{equation}
-    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}. being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC. 
+    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}. being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}. 
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
     \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
 \end{itemize}
