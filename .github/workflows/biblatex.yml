@@ -1,0 +1,46 @@
+name: Build BibLaTeX file
+on: [push]
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    # Just run action when the word "docs" is in the commit message
+    if: "contains(github.event.head_commit.message, 'build-bib')"
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+      
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install pybtex
+      - name: Create merged biblatex file 
+        run: |
+          python .utils/biblatex_merger.py . tex/bibliography.bib
+      - name: Upload biblatex file
+        uses: actions/upload-artifact@v3
+        with:
+          name: Merged biblatex file
+          path: tex/bibliography.bib
+          if-no-files-found: error
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 📁 Automated biblatex merge [build-latex]
+          branch: main
+          file_pattern: tex/bibliography.bib
+          commit_options: '--no-verify --signoff'
+          commit_user_name: My GitHub Actions Bot
+          commit_author: Author <actions@github.com>
+          status_options: '--untracked-files=no'
+          skip_dirty_check: true
+          # Force push since we are adding a pdf file
+          # push_options: '--force'

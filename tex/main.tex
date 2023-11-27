@@ -6,7 +6,7 @@
 \setlength{\textheight}{9in}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% General packages %%%%%
+%%%%%%%%% General packages %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{graphicx} % Include figure files
@@ -17,6 +17,7 @@
 \usepackage[hidelinks]{hyperref} % hidelinks added to not display red box for links
 \usepackage{algorithm}
 \usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
+\usepackage{todonotes} % Taking notes
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Customized packages %%%%%%%%
@@ -24,16 +25,24 @@
 
 % Authors information
 \usepackage{contributors}
+
 % Julia code
 \usepackage{jlcode}
+
 % Math 
 \usepackage{mymath}
+
 % Bibliography %
 \usepackage{mybib}
+% All the bib files are centralized here, but feel free to 
+% add a new custom bib file inside ./bibs/
 \addbibresource{bibliography.bib}
+% Alternative bib source
+% \addbibresource{bibs/bibliography-heimbach.bib}
+% \addbibresource{bibs/bibliography-facu.bib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Document %%%%%
+%%%%%%%%%%%%% Document %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{A Review of Sensitivity Methods \\ for Differential Equations}
@@ -51,7 +60,7 @@
 \input{sections/abstract}
 \end{abstract}
 
-\vspace{300px}
+\vspace{250px}
 \input{sections/community-statement}
 
 \normalsize
@@ -108,8 +117,8 @@
 
 % \section{Extensions}
 
-% \section{Recommendations}
-% \input{sections/recommendations}
+\section{Recommendations}
+\input{sections/recommendations}
 
 % \section{Conclusions}
 % \input{sections/conclusions}
@@ -134,6 +143,7 @@
 % \section{Glossary} 
 
 \newpage
+
 \printbibliography[heading=bibintoc, title={References}]
 
 \end{document}
