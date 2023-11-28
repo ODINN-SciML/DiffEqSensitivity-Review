@@ -48,6 +48,11 @@ def merge_bib(path):
     tex_files = find_extension(".tex", ".")
     bib_files = find_extension(".bib", ".")
 
+    # Filter .ipynb files
+    bib_files = list(filter(lambda x : '.ipynb' not in x, bib_files))
+    # Put output file at the end to avoid backslash plague
+    bib_files = sorted(bib_files, key = lambda x : 'bibliography.bib' in x)
+
     # Attach all the text in files to a single string
     latex = ""
     authors = []
