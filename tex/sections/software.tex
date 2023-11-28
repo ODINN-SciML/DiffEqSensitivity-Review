@@ -83,6 +83,7 @@ This difference between the methods also makes the complex step method sometimes
 It is also important to remark that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
 \subsubsection{Reverse-mode AD}
+\label{sec:software-reverse-AD}
 
 In opposition to finite differences, forward AD and complex-step differentiation, reverse AD is the only of these family of methods that propagates the gradient in backwards mode. 
 Since this requires the evaluation intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
@@ -233,4 +234,4 @@ The choice of the specific algorithm to compute VJPs can have significant impact
 In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In FATODE, these can be computed with finite differences, AD or provides by the user.
 
-In the Julia ecosystem, different AD packages are available for this task (see Section ), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, \texttt{Tracker.jl}.
+In the Julia ecosystem, different AD packages are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, \texttt{Tracker.jl}.
