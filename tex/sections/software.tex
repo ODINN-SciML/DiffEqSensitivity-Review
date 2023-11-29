@@ -85,7 +85,7 @@ It is also important to remark that many modern software already have support fo
 \subsubsection{Reverse-mode AD}
 \label{sec:software-reverse-AD}
 
-In opposition to finite differences, forward AD and complex-step differentiation, reverse AD is the only of these family of methods that propagates the gradient in backwards mode. 
+In opposition to finite differences, forward AD and complex-step differentiation, reverse AD is the only of these family of methods that propagates the gradient in backwards mode by relying in analytical derivatives of primitive functions, which in Julia are available via \texttt{ChainRules.jl}.
 Since this requires the evaluation intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
 
 Backwards AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.

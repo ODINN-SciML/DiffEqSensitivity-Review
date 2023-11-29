@@ -56,13 +56,14 @@ The broader set of tools known as Automatic (or Algorithmic) Differentiation (AD
 The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of elementary algebraic operations (addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule\cite{Giering:1998in}. 
 Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations. 
 We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
-We emphasize that AD is merely a \emph{tool} for generating derivatives of computer code. Alternatively, such code can be (and often has been) generated ``by hand'', e.g., to avoid restrictions incurred by the available AD tool.
-Down-sides of hand-written derivative code are, (i) it is error-prone, (ii) it is difficult to keep pace with the development of the parent code, and (iii) [I need to remember ...].
+%We emphasize that AD is merely a \emph{tool} for generating derivatives of computer code. Alternatively, such code can be (and often has been) generated ``by hand'', e.g., to avoid restrictions incurred by the available AD tool.
+%Down-sides of hand-written derivative code are, (i) it is error-prone, (ii) it is difficult to keep pace with the development of the parent code, and (iii) [I need to remember ...].
 
 The differences between methods arise both from their mathematical formulation and their computational implementation. 
 The first provides different guarantees on the method returning the actual gradient or a good approximation thereof. 
 The second involves how theory is translated to software, and what are the data structures and algorithms used to implement it. 
 Different methods have different computational complexities depending on the number of parameters and differential equations, and these complexities are also balanced between total execution time and required memory. 
+As coined by Uwe Naumann, \textit{the automatic generation of optimal (in terms of robustness and efficiency) adjoint versions of large-scale simulation code is one of the great open challenges in the field of High-Performance Scientific Computing}\cite{Naumann.2011}.
 The third goal of this work, then, is to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
 \begin{quote}
     \textbf{Question 3. }
