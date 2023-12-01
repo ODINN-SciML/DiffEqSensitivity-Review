@@ -1,0 +1,76 @@
+% this is an alternative variant of the "preliminaries" section, which attempts to formalize the inverse modelling problem within a statistical framework. 
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\by}{\textbf{y}}
+\def\E{\mathbb{E}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\subsection{Models and data}
+System of ordinary differential equations (ODEs) can generally be described as
+\begin{equation}\label{eq:prob_statement}
+    \begin{split}
+        &\dot{x}(t) = f(t, x(t), p)\\
+        &x(0) = x_0\\
+        &y(t) = h(x(t)) + \epsilon(t)\\
+    \end{split}
+\end{equation}
+%
+where $x(t) \in \R^m $ is a vector of state variables that might represent XXX, $y(t) \in \R^d$ is a vector of observables that contains a subset or aggregates of the state variables, and $p \in \R^q$ is the model parameter vector.
+% 
+$h$ is a function that maps the state variables to the observables, which may be contaminated with noise $\epsilon$, here of Gaussian type, with zero mean and variance--covariance matrix $\Sigma_y$.
+%
+Denoting by $\theta = (x_0, p)$ the vector containing the ICs and the parameters, the model may be viewed as a map $\M$ parametrized by time $t$ that takes the parameters $\theta$ to the state variables $x$
+\begin{equation}
+\begin{split}
+        \M(t,\theta) &= x(t) \\
+            &= \int_0^t f(s, x(s), p) ds + x_0
+\end{split}
+\end{equation}
+
+\subsection{Maximum likelihood estimation and loss function}
+% The following text could be mixed with the "empirical loss functions" bullet point of the "preliminiary", so that we show the connection between maximum likelihood estimation and the minimization of the RSS.
+
+Taking expectations over the noise realizations yields $ \E [y(t)] = h(\M(t,\theta))$, and it follows that the conditional likelihood of each observation $y_k \equiv y(t_k)$, given the parameters $\theta$ and the model $\M$ denoted by $p( y_k | \theta, \M )$, follows the distribution of the residuals $\epsilon_k \equiv \epsilon(t_k) = y(t_k) - h\left(\M(t_k, \theta)\right)$, which corresponds to the multivariate normal distribution $\mathcal{N}_{0, \Sigma_y}$.
+%
+Following a Bayesian approach, the calibration of the model can be performed on the basis of the parameter and model posterior probability $p(\theta, \M | \by_{1:K})$, i.e. the conditional probability density of the parameter values $\theta$ and the model $\M$ given the data, given by 
+\begin{equation}
+    p(\theta, \M | \by_{1:K}) \propto p(\by_{1:K} | \theta, \M) p(\theta, \M)
+\end{equation}
+where $\by_{1:K} = (y_1,\dots,y_K)$, $p(\by_{1:K} | \theta, \M)$ is the product of the conditional likelihood of each observation $y_k$
+\begin{equation}\label{eq:likelihood-std}
+\begin{split}
+    p(\by_{1:K} | \theta, \M) &= \prod_{i=1}^K p(y_{i} | \theta, \M)\\
+                        &= \prod_{k=1}^K \frac{1}{\sqrt{(2\pi)^d|\Sigma_y|}} \exp \left(-\frac{1}{2} \epsilon_k^{T} \Sigma_y^{-1} \epsilon_k \right)
+\end{split}
+\end{equation}
+and $p(\theta,\M)$ is the prior distribution of the model and its associated parameter values. The model $\M$ is included in the probabilistic quantities in order to accommodate multiple candidate models (see \cref{sec:model_comparision}).
+
+A variational method to obtain a Bayesian estimate of $\theta$ involves maximizing $p(\theta, \M | \by_{1:k})$ to obtain the maximum a posteriori (MAP) estimator \cite{Bocquet2019}, which is equivalent to a maximum likelihood approach under a uniform prior distribution of the parameters, i.e. when no prior information on the parameter values is used \cite{Schartau2017}. Observing that maximizing $p(\theta, \M | \by_{1:K})$ is equivalent to minimizing $- \log p(\theta | \by_{1:K}, \M)$ and assuming a normal prior distribution of the parameters $\mathcal{N}_{p_b, \Sigma_p}$, one can obtain the MAP $\hat{\theta}$
+\begin{equation}\label{eq:argmin_xi}
+    \hat{\theta} = \argmin_\theta  L_{\M}(\theta)
+\end{equation}
+%
+where $L_{\M}$ is referred to as the loss function and defined as
+\begin{equation}\label{eq:loss_fn}
+    \begin{split}
+    L_{\M}(\theta) &= \frac{1}{2} \left[ \sum_{k=1}^{K-1} \|y_k - h\left(\M(t_k,\theta)\right)\|_{\Sigma_y}^2 + \|p - p_b\|_{\Sigma_p}^2 \right] \\
+   \end{split}
+\end{equation}
+\cite{Schneider2017,Raue2009} and where we use the notation $\|y\|_\Sigma^2 = y \Sigma^{-1}y^{\textbf{T}}$.
+%
+\cref{eq:loss_fn} is similar to a traditional least squares function commonly used in regression, where the second summand is the analogue of a regularization term for the weights and biases of e.g. a neural network.
+
+%
+Gradient-based optimizers can then be used to efficiently obtain $\hat{\theta}$ in \cref{eq:argmin_xi}, iteratively updating the parameter vector $\theta_m$ given the gradient of the loss function, denoted by $\nabla_\theta L_{\M}$, to navigate the surface defined by $L_\M$ with the aim to find the global minimum where $\nabla_\theta L_{\M}(\hat{\theta}) = 0$. 
+% 
+As an example, the plain vanilla gradient descent algorithm is given by
+\begin{equation}\label{eq:SDG}
+    \theta_{m+1} = \theta_{m} - \gamma \nabla_\theta L_\M({\theta_m})
+\end{equation}
+where $\gamma$ is the learning rate. Other gradient-based algorithms, such as the ADAM optimizer used in the section below, employ more advanced updating strategies to avoid convergence to local minima but stay in the spirit of \cref{eq:SDG}.
+
+
+\subsection{Likelihood profiles}
+
+\subsection{Quantity of interest}
+
+\subsection{Diagnosis of the solution}
