@@ -2,7 +2,6 @@
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\by}{\textbf{y}}
 \def\E{\mathbb{E}}
-\DeclareMathOperator*{\argmin}{arg\,min}
 
 \subsection{Models and data}
 System of ordinary differential equations (ODEs) can generally be described as
@@ -42,11 +41,11 @@ where $\by_{1:K} = (y_1,\dots,y_K)$, $p(\by_{1:K} | \theta, \M)$ is the product 
                         &= \prod_{k=1}^K \frac{1}{\sqrt{(2\pi)^d|\Sigma_y|}} \exp \left(-\frac{1}{2} \epsilon_k^{T} \Sigma_y^{-1} \epsilon_k \right)
 \end{split}
 \end{equation}
-and $p(\theta,\M)$ is the prior distribution of the model and its associated parameter values. The model $\M$ is included in the probabilistic quantities in order to accommodate multiple candidate models (see \cref{sec:model_comparision}).
+and $p(\theta,\M)$ is the prior distribution of the model and its associated parameter values. The model $\M$ is included in the probabilistic quantities in order to accommodate multiple candidate models.
 
 A variational method to obtain a Bayesian estimate of $\theta$ involves maximizing $p(\theta, \M | \by_{1:k})$ to obtain the maximum a posteriori (MAP) estimator \cite{Bocquet2019}, which is equivalent to a maximum likelihood approach under a uniform prior distribution of the parameters, i.e. when no prior information on the parameter values is used \cite{Schartau2017}. Observing that maximizing $p(\theta, \M | \by_{1:K})$ is equivalent to minimizing $- \log p(\theta | \by_{1:K}, \M)$ and assuming a normal prior distribution of the parameters $\mathcal{N}_{p_b, \Sigma_p}$, one can obtain the MAP $\hat{\theta}$
 \begin{equation}\label{eq:argmin_xi}
-    \hat{\theta} = \argmin_\theta  L_{\M}(\theta)
+    \hat{\theta} = \argmin{\theta} L_{\M}(\theta)
 \end{equation}
 %
 where $L_{\M}$ is referred to as the loss function and defined as
@@ -57,16 +56,16 @@ where $L_{\M}$ is referred to as the loss function and defined as
 \end{equation}
 \cite{Schneider2017,Raue2009} and where we use the notation $\|y\|_\Sigma^2 = y \Sigma^{-1}y^{\textbf{T}}$.
 %
-\cref{eq:loss_fn} is similar to a traditional least squares function commonly used in regression, where the second summand is the analogue of a regularization term for the weights and biases of e.g. a neural network.
+Eq. \ref{eq:loss_fn} is similar to a traditional least squares function commonly used in regression, where the second summand is the analogue of a regularization term for the weights and biases of e.g. a neural network.
 
 %
-Gradient-based optimizers can then be used to efficiently obtain $\hat{\theta}$ in \cref{eq:argmin_xi}, iteratively updating the parameter vector $\theta_m$ given the gradient of the loss function, denoted by $\nabla_\theta L_{\M}$, to navigate the surface defined by $L_\M$ with the aim to find the global minimum where $\nabla_\theta L_{\M}(\hat{\theta}) = 0$. 
+Gradient-based optimizers can then be used to efficiently obtain $\hat{\theta}$ in Eq. \ref{eq:argmin_xi}, iteratively updating the parameter vector $\theta_m$ given the gradient of the loss function, denoted by $\nabla_\theta L_{\M}$, to navigate the surface defined by $L_\M$ with the aim to find the global minimum where $\nabla_\theta L_{\M}(\hat{\theta}) = 0$. 
 % 
 As an example, the plain vanilla gradient descent algorithm is given by
 \begin{equation}\label{eq:SDG}
     \theta_{m+1} = \theta_{m} - \gamma \nabla_\theta L_\M({\theta_m})
 \end{equation}
-where $\gamma$ is the learning rate. Other gradient-based algorithms, such as the ADAM optimizer used in the section below, employ more advanced updating strategies to avoid convergence to local minima but stay in the spirit of \cref{eq:SDG}.
+where $\gamma$ is the learning rate. Other gradient-based algorithms, such as the ADAM optimizer used in the section below, employ more advanced updating strategies to avoid convergence to local minima but stay in the spirit of Eq. \ref{eq:SDG}.
 
 
 \subsection{Likelihood profiles}
