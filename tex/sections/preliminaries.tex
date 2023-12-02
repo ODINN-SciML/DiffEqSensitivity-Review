@@ -46,7 +46,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
         \argmin{\theta} \, \left \{ - \log \ell (y | \theta) \right \}
         = 
         \argmin{\theta} \, \sum_{i=1}^n \left( y_i - u(t_i; \theta) \right)^2 .
-    \end{equation} \todo{There is a correspondance between this equation and the empirical loss function above, which would be nice to show. See the proposed section "Maximum likelihood estimation and loss function". This is also discussed in e.g. https://www.deeplearningbook.org/contents/prob.html}
+    \end{equation} \todo[inline]{There is a correspondance between this equation and the empirical loss function above, which would be nice to show. See the proposed section "Maximum likelihood estimation and loss function". This is also discussed in e.g. https://www.deeplearningbook.org/contents/prob.html}
     Provided with a prior distribution $p(\theta)$ for the parameter $\theta$, we can further compute a posterior distribution for $\theta$ given the observations $y_1, y_2, \ldots, y_n$ following Bayes theorem 
     \begin{equation}
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
