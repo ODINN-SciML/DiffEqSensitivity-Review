@@ -127,7 +127,7 @@ When the function to differentiate has a larger input space than output, AD in b
 % On the other side, when the output dimension is larger than the input space dimension, forwards AD is more efficient.
 % This is the reason why in most machine learning application people use backwards AD. 
 However, notice that backwards mode AD requires us to save the solution through the forward run in order to run backwards afterwards \cite{Bennett_1973}, while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
-This problem can be overcome with a good checkpointing scheme, somewhat we will discuss later. 
+This problem can be mitigated, to some extent, with a good checkpointing scheme we will discuss later. 
 This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 
 \begin{figure}[t]

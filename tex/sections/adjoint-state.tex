@@ -44,7 +44,7 @@ where $\alpha_i$ has includes the information of all the past iterations.
 This system can be solved sequentially, by solving for $u_i$ in increasing order of index using Newton method. 
 If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of equations $G(U) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$.
 
-In the simplest case where the algebraic set of equations is linear and we can write $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i$ with $A_i \in \R^{n \times n}$ and $b_i \in \R^n$ defined by the numerical solver, the condition $G(U)=0$ simplifies to the linear system of equations 
+In the simplest case of linear one-step methods with $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i$ with $A_i \in \R^{n \times n}$ and $b_i \in \R^n$ defined by the numerical solver, the condition $G(U)=0$ simplifies to the linear system of equations 
 \begin{equation}
     A(\theta) U 
     = 
