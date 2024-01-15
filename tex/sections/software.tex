@@ -6,13 +6,21 @@ In order to address this point, it is important to make one further distinction 
 The first are easier to implement since they are agnostic with respect to the mathematical and numerical properties of the ODE; however, they tend to be either inaccurate, memory-expensive, or unfeasible for large models. 
 The family of methods that are based on numerical solvers include the sensitivity equations and the adjoint methods, both discrete and continuous; they are more difficult to implement and for real case applications require complex software implementations, but they are also more accurate and adequate. 
 
+Despite the fact that these methods can be (in principle) implemented in different programming languages, here we decided to use the Julia programming language for the different examples. 
+Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}.
+Nevertheless, in reviewing existing work, we will also point to applications developed in other programming languages.
+
 \subsection{Direct methods}
 
 Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
 Finite differences are easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
 In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use establish libraries than implementing it yourself, since these already include subroutines to determine step-sizes.
 However, finite differences are less accurate and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
+
 Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$ using finite differences and complex-step differentiation.
+We can see that finite differences is inaccurate when the stepsize is both small and large, with the precision also depending of the numerical solver tolerance.
+On the other side, complex-step differentiation do not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small. 
+
 
 \begin{figure}[tbh]
     \centering
@@ -132,7 +140,7 @@ These factors are further exacerbated by the number of ODEs and parameters in th
 Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
 The include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}. 
 
-It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylow mode. 
+It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
 This calculation is carried out by another sensitivity method (finite differences, AD) and this also plays a central role at the moment of analyzing the accuracy and stability of the adjoint method. 

@@ -1,6 +1,6 @@
 Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
-This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
+This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000, allaire2015review}. 
 
 % Just as in the case of automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
 
@@ -154,6 +154,7 @@ Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta},
 The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
 
 Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U)=0$ was not necessarily linear in $U$.
+This means that while the forward mode may required multiple iterations calls in order to solve the non-linear system $G(U) = 0$ using Krylov methods, the backwards step to compute the adjoint is one single linear system of equations. 
 For the linear system of discrete equations $G(U; \theta)=A(\theta) U - b(\theta)=0$, we have \cite{Johnson}
 \begin{equation}
     \frac{\partial G}{\partial \theta} 
