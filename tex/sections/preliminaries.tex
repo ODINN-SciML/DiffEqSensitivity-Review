@@ -5,7 +5,7 @@ Consider a system of ordinary differential equations (ODEs) given by
 \end{equation}
 where $u \in \mathbb{R}^n$ is the unknown solution; $f$ is a function that depends on the state $u$, some parameter $\theta \in \mathbb R^p$, and an independent variable $t$ which we will refer as time, but it can represent another quantity; and with initial condition $u(t_0) = u_0$.
 Here $n$ denotes the total number of ODEs and $p$ the size of a parameter embedded in the functional form of the differential equation.
-Although here we consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended of the case of partial differential equations (for example, via the method of lines \cite{ascher2008numerical}) and algebraic differential equations (ADE).
+Although here we consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended of the case of partial differential equations (for example, via the method of lines \cite{ascher2008numerical}) and differential algebraic equations (DAE).
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
 Except for a minority of functions $f(u,\theta, t)$, solutions of the Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
 
@@ -14,13 +14,13 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
 \begin{itemize}
     \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the accuracy or prediction power of a given model. Examples of loss functions include the squared error
     \begin{equation}
-         L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}(t_1)} \|_2^2,
+         L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}}(t_1) \|_2^2,
          \label{eq:quadratic-loss-function}
     \end{equation}
-    where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$.
+    where $u^{\text{target}}(t_1)$ is the desired target observation at some later time $t_1$.
     More generally, we can evaluate the loss function at points of the time series for which we have observations, 
     \begin{equation}
-        L(u(\cdot, \theta)) = \frac{1}{2} \sum_{i=1}^N \| u(t_i; \theta) - u^{\text{target}(t_i)} \|_2^2.
+        L(u(\cdot, \theta)) = \frac{1}{2} \sum_{i=1}^N \| u(t_i; \theta) - u^{\text{target}}(t_i) \|_2^2.
     \end{equation}
     We can also consider the continuous evaluated loss function of the form
     \begin{equation}
@@ -65,7 +65,7 @@ In the context of optimization, being able to compute sensitivities allows to pe
     \alpha_k 
     \frac{dL}{d\theta^k}.
 \end{equation}
-There exists different variants of gradient descent methods\cite{ruder2016overview-gradient-descent}, and in general they outperform gradient-free optimization schemes.
+There exist different variants of gradient descent methods\cite{ruder2016overview-gradient-descent}, and in general they outperform gradient-free optimization schemes.
 Furthermore, gradient-free methods (also known as global optimization techniques) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
 
 Using the chain rule we can derive
@@ -76,7 +76,7 @@ Using the chain rule we can derive
 The first term on the right-hand side is usually easy to evaluate since it just involves the partial derivative of the scalar loss function with respect to the solution.
 For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
 \begin{equation}
-    \frac{dL}{du} = u - u^{\text{target}(t_1)}.
+    \frac{dL}{du} = u - u^{\text{target}}(t_1).
     \label{eq:dLdu}
 \end{equation}
 The second term on the right-hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity},

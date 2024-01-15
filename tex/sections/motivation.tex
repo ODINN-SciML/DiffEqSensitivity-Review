@@ -15,20 +15,39 @@ On the other hand, the field of machine learning has mainly been developed aroun
 However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models \cite{Molnar.2020sisk,Rudin.2022}.
 % If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
 
-A key way to achieve this is through differentiable programming, i.e. being able to compute derivatives of any computer program describing a scientific model.
-During the last decades, the backpropagation algorithm has enabled the fast-growing of deep learning by efficiently computing gradients of large and complex neural networks with many parameters \cite{griewank2012invented}.
-Nowadays, the differentiation of hybrid models comprising data-driven models (e.g. neural networks, gaussian processes) with differential equations poses complex technical problems, which are only starting to be explored in recent years \cite{ma_comparison_2021}. 
-Being able to accurately estimate model parameters, ranging from a few ones in classic inversion problems to millions of them in large neural networks, opens many new possibilities. 
-Differentiable programming has the potential to revolutionize the way we approach and design scientific models and even the way we discover governing laws from data. 
+% A key way to achieve this is through differentiable programming, i.e., being able to compute derivatives of any computer program describing a scientific model.
+% During the last decades, the backpropagation algorithm has enabled the fast growth of deep learning by efficiently computing gradients of large and complex neural networks with many parameters \cite{griewank2012invented}.
+% Nowadays, the differentiation of hybrid models comprising data-driven models (e.g., neural networks, gaussian processes) with differential equations poses complex technical problems, which are only starting to be explored in recent years \cite{ma_comparison_2021}. 
+% Being able to accurately estimate model parameters, ranging from a few ones in classic inversion problems to millions of them in 
+% % \todo{I disagree, many geophysical inversions involve millions of parmeters; it's not specific to NNs.}
+% large neural networks, opens many new possibilities. 
+% Differentiable programming has the potential to revolutionize the way we approach and design scientific models and even the way we discover governing laws from data. 
 
 \subsection{Domain-specific applications}
 
 Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
 
-\subsubsection{Computational Fluid Dynamics}
 
-\subsubsection{Electromagnetism}
+
+\subsubsection{Computational Physics}
+
+There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines. 
+These include examples in 
+
+particle physics \cite{Dorigo.2022}
+
+\subsubsection{Optimal design}
+
+There is a long tradition of computational models based on sensitivity methods for optimal design and optimal control \cite{lions1971optimal, pironneau2005optimal, allaire2014shape}.
+This includes applications to 
+stellarator coil design \cite{McGreivy_stellarator_2021}; 
+fluid dynamics \cite{Giles_Pierce_2000, mohammadi2009applied};
+
+
+% \subsubsection{Computational Fluid Dynamics}
+% \subsubsection{Electromagnetism}
+% \subsubsection{Quantum Physics}
 
 \subsubsection{Geosciences}
 
@@ -41,15 +60,14 @@ The use of differentiable programming, combining PDEs and data-driven models (i.
 
 Arguably, the notion of differentiable programming has a long tradition in the geosciences in the context of solving large-scale geophysical inverse problems.
 The overarching goal of such problems is to find a set of optimal model parameters that minimize a (usually weighted least-squares) objective or cost function quantifying the misfit between observations and the simulated state, subject to the constraint that the model equations be fulfilled. 
-The constrained optimization problem is transformed into an unconstrained problem by way of \emph{Lagrange multiplier method}, also referred to as the \emph{adjoint method}. 
+The constrained optimization problem is transformed into an unconstrained problem by way of \emph{Lagrange multiplier method}\cite{Vadlamani.2020}, also referred to as the \emph{adjoint method}. 
 The corresponding \textit{adjoint model} computes the gradient of the objective function with respect to all inputs. 
-Gradient-based nonlinear optimization then enables us to
-``invert'' for optimal values of the unknown or uncertain inputs.
+Gradient-based nonlinear optimization, then, enables us to invert for optimal values of the unknown or uncertain inputs.
 Depending on the nature of the inputs, we may distinguish the following cases:
 %
 \begin{itemize}
 \item \emph{Initial conditions:} Inverting for uncertain initial conditions, which, when integrated using the model, lead to an optimal match of the observations; variants thereof are used for optimal forecasting (see below);
-\item \emph{Boundary conditions:} Inverting for uncertain surface, bottom, or lateral boundaries (e.g., open boundaries of a limited domain), which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle;
+\item \emph{Boundary conditions:} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle;
 \item \emph{Model parameters:} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a ''learning of optimal parameters from data'' problem, it is the closest to machine learning applications.
 \end{itemize}
 %
@@ -58,7 +76,7 @@ In addition to the use of gradients or derivative information for optimization, 
 \item
 computing \emph{comprehensive sensitivities} of quantities of interest,
 \item 
-computing \emph{optimal perturbations} (in initial or boundary conditions) that lead to maximum amplification of specific norms of interest,
+computing \emph{optimal perturbations} (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest,
 \item
 characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 \end{itemize}
@@ -66,21 +84,28 @@ characterizing and quantifying uncertainties by way of second derivative (Hessia
 Within the framework of gradient-based inversion, all of these cases rely on the availability of an adjoint model of the (in general nonlinear) geophysical parent model to efficiently compute the gradient of the objective function with respect to a usually very high-dimensional (typically $O(10^3) - O(10^8)$) space of inputs.
 In the following, we sketch how differentiable programming - from the perspective of adjoint modeling - has been used in different disciplines of geosciences, and how new concepts are emerging of combining inverse modeling and machine learning approaches where differentiable programming provides a key computational enabling framework. (Note that some authors have used the notion of ``scientific machine learning'' to capture some aspects of the latter approach [REFS]).
 
-% Add oceanography example
+\paragraph{Meteorology.}
+Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have plaid an important role. 
+The work by \cite{Talagrand.1987,Courtier.1987} introduced the use of adjoint methods to infer initial conditions that minimize the misfit between simulations and weather observations. 
+This led to the development of the so-called \textit{four-dimensional variational} (4D-Var) data assimilation (DA) technique \cite{Rabier.1992,Rabier:2000uu} at the European Centre for Medium-Range Weather Forecasts (ECMWF) as one the most advanced DA approaches, and which contributed substantially to the \textit{quiet revolution} in NWP \cite{Bauer.2015}.
+Related, the adjoint method has been used extensively to infer patterns in initial conditions that over time contribute to maximum uncertainty growth in forecasts Gelaro -- \cite{REFS}, and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
+Except in very few instances and for experimental purposes \cite{Giering.2006}, automatic differentiation has not been used in the development of adjoint models in NWP.
+Instead, the adjoint code was derived and implemented manually.
 
-\paragraph{Meteorology}
-...
+\paragraph{Oceanography.}
+The recognition of the benefit of adjoint methods for use in gradient-based optimization or data assimilation in the ocean coincided roughly with that in meteorology, with some of the foundational work by \cite{Thacker:1988kp,Thacker:1988ed}. 
+The first application appeared soon thereafter in the context of a basin-scale general circulation model \cite{Tziperman.1989,Tziperman:1992hg,Tziperman:1992jw}. 
+An important detail is that their work already differed from the NWP applications in that sensitivities we computed not only with respect to initial conditions but also with respect to surface boundary conditions, i.e., air-sea fluxes of buoyancy and momentum.
+Also, the role of the second-derivative, i.e., the Hessian for uncertainty quantification was readily realized \cite{Thacker:1989jf}.
+Similar to the work on calculating singular vectors in the atmosphere based on tangent linear and adjoint versions of a GCM to solve a generalized eigenvalue problem, the question of El Niño predictability invited model-based singular vector computations in models of the Tropical Pacific Ocean \cite{Moore:1997ci,Moore:1997fp}.
 
-\paragraph{Oceanography}
-...
 
-\paragraph{Climate science}
-...
+\paragraph{Climate science.}
 
-\paragraph{Flux inversion}
-...
+\paragraph{Transport modeling \& flux inversion.}
+% ... GEOS-Chem , Kaminski, ...
 
-\paragraph{Glaciology}
+\paragraph{Glaciology.}
 
 Glaciers act as slow fluids, flowing down-slope through the effects of gravity, and the understanding of their rheological properties (e.g. ice viscosity affecting internal deformation or sliding at the glacier-bedrock interface) is key to assessing their contribution to water resources and sea-level rise \cite{cuffey_physics_2010}. 
 These rheological processes and their dependency on key large-scale environmental variables, such as the local climate or topography, are still not well understood.
@@ -94,4 +119,3 @@ Recent studies had showed how neural networks integrated with differential equat
 \subsubsection{Biology and Ecology}
 
 
-\subsubsection{Quantum Physics}
