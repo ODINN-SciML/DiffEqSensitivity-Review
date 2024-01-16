@@ -90,6 +90,17 @@ The stepsize dependence of the complex step differentiation method makes it rese
 This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
 It is also important to remark that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
+\subsubsection{Special considerations}
+
+If well this methods are implemented, in principle, independent of the differential equation and numerical solver involved. 
+However, special consideration needs to be taken into account when using automatic differentiation thought a numerical solver, since the computed gradient can be exact but numerically unstable. 
+Consider the following example of ordinary differential equation
+\begin{align}
+    \frac{du_1}{dt} &= a u_1 - u_1 u_2 & \quad u_1(0) = 1 \\
+    \frac{du_2}{dt} &= - a u_2 + u_1 u_2 & \quad u_2(0) = 1.
+\end{align}
+when $a=1$, the solutions are given by $u_1(t) \equiv u_2(t) \equiv 0$. 
+
 \subsubsection{Reverse-mode AD}
 \label{sec:software-reverse-AD}
 

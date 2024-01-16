@@ -26,5 +26,22 @@ However, notice that the term $\frac{\partial f}{\partial u} s $ is in general d
 
 It is important to remark that the sensitivity equations can be also solved in discrete forward mode by numerically discretizing the original ODE and later deriving the discrete sensitivity equations. 
 For most cases, this leads to the same result that in the continuous case \cite{FATODE2014}.
+To illustrate this, consider the simple forward Euler method applied to the original ODE given by $u_{t+1} = u_t + \Delta t \, f(u_t, \theta, t)$ where we implement forward mode AD by introducing the dual numbers $u_t + \epsilon s_t$ and $\theta + \epsilon$, where $\epsilon$ is the dual variable associated to derivatives with respect to the parameter $\theta$.
+This leads to the following equation involving dual numbers
+\begin{align}
+    u_{t+1} + \epsilon \, s_{t+1}
+    &= 
+    u_t + \epsilon \, u_t + \Delta t \, f (u_t + \epsilon \, s_t, \theta + \epsilon, t) \nonumber \\
+    &= 
+    u_t + f(u_t, \theta, t) 
+    + 
+    \epsilon \, \Delta t 
+    \left( 
+    \frac{\partial f}{\partial u} s_t + 
+    \frac{\partial f}{\partial \theta}
+    \right).
+\end{align}
+The dual component corresponds to the forward Euler discretization of the sensitivity equation \eqref{eq:sensitivity_equations}, with $s_t$ the temporal discretization of the sensitivity $s(t)$.
+
 
 %Notice that since $s(t)$ is a matrix of size $n \times p$, the complexity of solving the sensitivity equation scales as $\mathcal O(np)$. From a computational perspective, the sensitivity $s$ appears in the sensitivity equation as a VJP, meaning the the term $\frac{\partial f}{\partial u} s$ can be efficiently computed using backwards automatic differentiation. 
