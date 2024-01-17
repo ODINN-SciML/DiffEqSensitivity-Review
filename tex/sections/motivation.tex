@@ -107,15 +107,12 @@ Similar to the work on calculating singular vectors in the atmosphere based on t
 
 \paragraph{Glaciology.}
 
-Glaciers act as slow fluids, flowing down-slope through the effects of gravity, and the understanding of their rheological properties (e.g. ice viscosity affecting internal deformation or sliding at the glacier-bedrock interface) is key to assessing their contribution to water resources and sea-level rise \cite{cuffey_physics_2010}. Due difficulty of having direct observations of internal and basal rheological processes of glaciers, adjoint methods have been used for some time to invert them, with a first study by \cite{macayeal1992basal} three decades ago. Since then, the adjoint method has been applied to many different studies investigating the dynamics of glaciers, with parameter and state estimation
-Recent studies had showed how neural networks integrated with differential equations can be used to solve ice flow equations\cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, Jouvet_2022} and invert rheological properties at the same time \cite{bolibar_universal_2023, wang2022discovering}.  
-% The use of differentiable programming, combined with Universal Differential Equations, holds great potential to learn new empirical laws of these physical processes from large-scale remote sensing datasets. 
-% A recent study showed how Julia's differentiable programming capabilities can be used to optimize the parameters of a neural network, learning a function of the nonlinear ice diffusivity in a glacier ice flow PDE, to match observations \cite{bolibar_universal_2023}.
+Due to the difficulty of having direct observations of internal and basal rheological processes of glaciers, adjoint methods have been widely used to study them, with a first paper by \cite{macayeal1992basal} three decades ago. Since then, the adjoint method has been applied to many different studies investigating parameter and state estimation \cite{goldberg2013parameter}, ice volume sensitivity to basal, surface and initial conditions \cite{heimbach2009greenland}, inversion of initial conditions \cite{mosbeux2016comparison} or inversion of basal friction \cite{morlighem2013inversion}. All these studies derived the adjoint with a manual implementation. Additionally, the use of AD has become increasingly widespread in glaciology, paving the way for more complex modelling frameworks \cite{hascoet2018source, logan2020sicopolis}. Recently, AD has also facilitated the development of hybrid frameworks, combining numerical methods with data-driven models by means of Universal Differential Equations \cite{BolibarSapienza_UDEs}. Alternatively, some other approaches have dropped the use of numerical solvers in favour of different flavours of physics-informed neural networks, exploring the inversion of rheological properties of glaciers \cite{wang2022discovering} and to accelerate ice thickness inversions and simulations by leveraging GPUs \cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, jouvet2023inversion}. 
 
 \paragraph{Solid Earth geophysics}
 ...
 
-\subsubsection{Biology and Ecology}
+\paragraph{Biology and Ecology}
 
 
 \paragraph{Quantum Physics}
