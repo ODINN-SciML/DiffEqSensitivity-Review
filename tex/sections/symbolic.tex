@@ -1,4 +1,15 @@
-Exponentially large symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}
+Symbolic differentiation is refer to the ... 
+Symbolic differentiation is based on computer algebraic systems (CAS)
+Usually, modern symbolic differentiation libraries also include subroutines to simplify numerical expressions for derivatives, making multiple executions of symbolic expressions very efficient. 
 
-Sometimes AD is compared against symbolic differentiation.
-According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.
+The final result of symbolic differentiation can lead to \textit{expression swell}, that is, exponentially large or complex symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+An important piece of CAS is simplification routines to reduce the size and complexity of algebraic expressions by finding common sub-expressions.  
+This can make symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 
+
+It is important to remark the close relationship between automatic and symbolic differentiation.
+Both method compute are equivalent in the sense that they perform the same operations but the underlying data structure is different \cite{Laue2020}. 
+Here, expression swell is a consequence of the underlying representation when this does not allow for common subexpressions. 
+This can also been understood as if AD is symbolic differentiation performed by a compiler \cite{Elliott_2018}.
+This means that the mathematical calculations involved are the same, but they need to be interpreted by the compiler at the moment of computing the derivative. 
+Something like $x + 2$ needs to be understood as an \textit{expression} composed by a variable $x$, a literal $2$, and a binary operation $+$ binding them. 
+

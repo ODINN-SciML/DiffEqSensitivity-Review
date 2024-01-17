@@ -1,6 +1,6 @@
 % General statement: why gradients are important?
 Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many\cite{Razavi.2021}. 
-Modern machine learning applications require the use of gradients to efficiently exploit  the high-dimensional space of parameters to be inferred or learned (e.g., weights of a neural network). 
+Modern machine learning applications require the use of gradients to efficiently exploit the high-dimensional space of parameters to be inferred or learned (e.g., weights of a neural network). 
 The same is true for partial differential equation (PDE) constrained optimization, which infers uncertain (or unknown) parameters from (generally sparse) data  \cite{Ghattas.2021}.
 When optimizing an objective function (loss function in machine learning or cost function in inverse modeling), gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient and converge faster than gradient-free methods.
 Furthermore, the \textit{curse of dimensionality} renders gradient-free optimization and sampling methods computationally intractable for most large-scale problems \cite{Oden:2010tv}.

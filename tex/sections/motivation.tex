@@ -1,7 +1,7 @@
 \subsection{On the importance of differentiable programming}
 
 Scientific models from many domains have often been based on mechanistic models, represented as differential equations, involving the use of numerical methods to solve them. 
-Among many, this lead to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them
+Among many, this led to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them
 \cite{Wigner.1960, Rude:2018jv}. 
 Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
 
@@ -119,3 +119,6 @@ Recent studies had showed how neural networks integrated with differential equat
 \subsubsection{Biology and Ecology}
 
 
+\paragraph{Quantum Physics}
+
+Quantum optimal control has diverse applications spanning a broad spectrum of quantum systems. Optimal control methods have been used to optimize pulse sequences, enabling the design of high-fidelity quantum gates and the preparation of complex entangled quantum states. Typically, the objective is to maximize the fidelity to a target state or unitary operation, accompanied by additional constraints or costs specific to experimental demands. The predominant control algorithms are gradient-based optimization methods, such as gradient ascent pulse engineering (GRAPE), and rely on the computation of derivatives for solutions of the differential equations modeling the time evolution of the quantum system. In cases where the analytical calculation of a gradient is impractical, numerical evaluation using AD becomes a viable alternative~\cite{jirari:2009, leung:2017, abdelhafez:2019, jirari2019quantum, abdelhafez:2020, schaefer:2020, goerz:2022}. Specifically, AD streamlines the adjustment to diverse objectives or constraints, and its efficiency can be enhanced by employing custom derivative rules for the time propagation of quantum states as governed by solutions to the Schrödinger equation~\cite{goerz:2022}. Moreover, sensitivity methods for differential equations facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations~\cite{schaefer:2021}.
