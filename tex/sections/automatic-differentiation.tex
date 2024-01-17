@@ -1,11 +1,12 @@
 % I think I need some historical reference here.
 Automatic differentiation (AD) is a technology that allows computing gradients thought a computer program \cite{griewank2008evaluatingderivatives}. 
-The main idea is that every computer program manipulating numbers can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation.
+The basis of all AD system is the notion that complicated functions included in any computer program can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation \cite{juedes1991taxonomy}.
 The derivatives of the outputs of the computer program with respect to their inputs are then combined using the chain rule.
 One advantage of AD systems is that we can automatically differentiate programs that include control flow, such as branching, loops or recursions. 
 This is because at the end of the day, any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
 Depending if the concatenation of these gradients is done as we execute the program (from input to output) or in a later instance were we trace-back the calculation from the end (from output to input), we are going to talk about \textit{forward} or \textit{reverse} AD, respectively.
+Neither forward or reverse mode is more efficient in all cases \cite{Griewank_1989}, as we will discuss in Section \ref{sec:vjp-jvp}.
 
 \subsubsection{Forward mode}
 
@@ -97,6 +98,7 @@ Since in backwards AD the values of $\bar \omega$ are being updated in reverse o
 
 
 \subsubsection{AD connection with JVPs and VJPs}
+\label{sec:vjp-jvp}
 
 When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters \cite{Giering_Kaminski_1998}.
 When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVP).
@@ -129,7 +131,8 @@ When the function to differentiate has a larger input space than output, AD in b
 % This is the reason why in most machine learning application people use backwards AD. 
 However, notice that backwards mode AD requires us to save the solution through the forward run in order to run backwards afterwards \cite{Bennett_1973}, while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
 This problem can be mitigated, to some extent, with a good checkpointing scheme we will discuss later. 
-This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
+On the other hand, when the goal is to compute the gradient of many function outputs with respect to a few parameters, forward mode AD is more efficient \cite{Griewank_1989}.
+% This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 
 \begin{figure}[t]
     \centering
