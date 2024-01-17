@@ -1,4 +1,4 @@
-\subsection{On the importance of differentiable programming}
+% \subsection{On the importance of differentiable programming}
 
 Scientific models from many domains have often been based on mechanistic models, represented as differential equations, involving the use of numerical methods to solve them. 
 Among many, this led to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them
@@ -27,7 +27,6 @@ However, there has been an increasing interest in making mechanistic models more
 
 Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
-
 
 
 \subsubsection{Computational Physics}
@@ -107,20 +106,20 @@ Similar to the work on calculating singular vectors in the atmosphere based on t
 
 \paragraph{Glaciology.}
 
-Due to the difficulty of having direct observations of internal and basal rheological processes of glaciers, adjoint methods have been widely used to study them, with a first paper by \cite{macayeal1992basal} three decades ago. 
+Due to the difficulty of having direct observations of internal and basal rheological processes of glaciers, adjoint methods have been widely used to study them, with a first paper three decades ago \cite{macayeal1992basal}. 
 Since then, the adjoint method has been applied to many different studies investigating parameter and state estimation \cite{goldberg2013parameter}, ice volume sensitivity to basal, surface and initial conditions \cite{heimbach2009greenland}, inversion of initial conditions \cite{mosbeux2016comparison} or inversion of basal friction \cite{morlighem2013inversion}.
 All these studies derived the adjoint with a manual implementation. 
 Additionally, the use of AD has become increasingly widespread in glaciology, paving the way for more complex modelling frameworks \cite{hascoet2018source, logan2020sicopolis}. 
-Recently, AD has also facilitated the development of hybrid frameworks, combining numerical methods with data-driven models by means of Universal Differential Equations \cite{BolibarSapienza_UDEs}. 
+Recently, differentiable programming has also facilitated the development of hybrid frameworks, combining numerical methods with data-driven models by means of universal differential equations \cite{BolibarSapienza_UDEs}. 
 Alternatively, some other approaches have dropped the use of numerical solvers in favour of different flavours of physics-informed neural networks, exploring the inversion of rheological properties of glaciers \cite{wang2022discovering} and to accelerate ice thickness inversions and simulations by leveraging GPUs \cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, jouvet2023inversion}. 
 
-\paragraph{Solid Earth geophysics}
-...
+% \paragraph{Solid Earth geophysics}
+% ...
 
-\paragraph{Biology and Ecology}
+\subsubsection{Biology and Ecology}
 
 
-\paragraph{Quantum Physics}
+\subsubsection{Quantum Physics}
 
 Quantum optimal control has diverse applications spanning a broad spectrum of quantum systems. 
 Optimal control methods have been used to optimize pulse sequences, enabling the design of high-fidelity quantum gates and the preparation of complex entangled quantum states. 
