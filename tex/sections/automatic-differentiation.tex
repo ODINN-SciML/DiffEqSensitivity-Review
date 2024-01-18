@@ -140,8 +140,8 @@ This problem can be mitigated, to some extent, with a good checkpointing scheme 
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/VJP-JVP.png}
-    \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. When the multiplication is carried from the right side of the mathematical expression for $\nabla_\theta L$, each matrix simplification has cost $\mathcal O (p)$, in opposition of what happens when we carried the VJP from the left side of the expression, where the matrix of size $d_1 \times p$ has not affect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$. }
+    \includegraphics[width=0.95\textwidth]{tex/figures/VJP-AD.pdf}
+    \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. When the multiplication is carried from the right side of the mathematical expression for $\nabla_\theta L$, each matrix simplification involves a matrix with size $p$, giving a total complexity of $\mathcal O (kp)$. This is the opposite of what happens when we carried the VJP from the left side of the expression, where the matrix of size $d_1 \times p$ has not affect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$ and a total complexity of $\mathcal O (k + p)$. }
     % However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
     \label{fig:vjp-jvp}
 \end{figure}
