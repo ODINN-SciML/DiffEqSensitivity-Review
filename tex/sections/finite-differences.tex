@@ -1,13 +1,16 @@
 The simplest way of evaluating a derivative is by computing the difference between the evaluation of the function at a given point and a small perturbation of the function. 
-In the case of a loss function, we can approximate
+In the case of the function $L : \R^p \mapsto \R$, we can approximate
 \begin{equation}
- \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon},
+ \frac{dL}{d\theta_i} (\theta) = \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon} + \mathcal O (\varepsilon),
  \label{eq:finite_diff}
 \end{equation}
 with $e_i$ the $i$-th canonical vector and $\varepsilon$ the stepsize. 
 Even better, it is easy to see that the centered difference scheme
 \begin{equation}
- \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon},
+ \frac{dL}{d\theta_i} (\theta) 
+ =
+ \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon}
+ + \mathcal O (\varepsilon^2),
  \label{eq:finite_diff2}
 \end{equation}
 leads also to a more precise estimation of the derivative. 

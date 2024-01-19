@@ -117,7 +117,9 @@ In order to compute $\nabla_\theta L$, we can solve the multiplication starting 
 The important aspect of the backwards case is that we will always be computing VJPs, since $\nabla \ell$ is a vector.
 Since VJPs are easier to evaluate than full Jacobians, the backward mode will be in general faster when $1 \ll p$.
 To illustrate this, let us consider the following example displayed in Figure \ref{fig:vjp-jvp}. 
-For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$ (more efficient algorithms exist but this does not impact this comparison). This implies that forward AD requires a total of
+For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$.
+It is worth noticing that if well more efficient methods for matrix-matrix multiplication based on Strassen’s recursive algorithm and its variants exist, these are not extensively used in most scientific applications \cite{Silva_Gustafson_Wong_2018, Huang_Smith_Henry_Geijn_2016}.
+This implies that forward AD requires a total of
 \begin{equation}
  d_2 d_1 p + d_3 d_2 p + \ldots + d_k d_{k-1} p + d_k p = \mathcal O (kp)
 \end{equation}
