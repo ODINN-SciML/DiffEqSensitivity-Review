@@ -1,7 +1,4 @@
 The continuous adjoint method, also known as continuous adjoint sensitivity analysis (CASA), operates by defining a convenient set of new differential equations for the adjoint variable and using this to compute the gradient in a more efficient manner. 
-Mathematically speaking, the adjoint equations can be derived from a duality or Lagrangian point of view \cite{Giles_Pierce_2000}.
-We prefer to derive the equation using the former methods since we believe it gives better insights to how the method works and also allow to generalize to other user cases. 
-The derivation of both the discrete and continuous adjoint methods using Lagrangian multipliers can be found in Appendix \ref{appendix:lagrangian}.
 We encourage the interested reader to make the effort of following how the continuous adjoint method follows the same logic than the discrete methods, but where the discretization of the differential equation does not happen until the very last step, when the solutions of the differential equations involved need to be numerically evaluated. 
 %\footnote{Based on slides of Chris Rackauckas about "Data Efficient model discovery with Scientific Machine Learning", Neural ODE paper, video "The use and practice of scientific machine learning". Paper comparing CSA and DSA} 
 
@@ -85,3 +82,17 @@ The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be desc
     \item Solve the backwards adjoint differential equation \eqref{eq:casa-adjoint-equation};
     \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.
 \end{enumerate}
+
+
+\subsubsection{Are discrete and continuous adjoint the same?}
+
+As we explored in the previous sections, discrete adjoints can be derived by discrediting the continuous adjoint. 
+The difference between the two is which one between discretization and differentiation happens first. 
+A natural question then is if these two methods effectively compute the same sensitivity, meaning that the discrete adjoint consistently approximate its continuous counterpart. 
+Different works exist regarding the consistency or inconsistency between the two approaches, and this usually depends on the ODE and equation.  
+Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods have been provided in \cite{sandu2006properties, sandu2011solution}.
+Depending on the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.
+Furthermore, adjoint methods can be completely fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
+
+In the more general case, both methods can give different computational results \cite{Sirkes_Tziperman_1997}.
+In \cite{Sirkes_Tziperman_1997} it is shown that discrete adjoints can lead to unstabilites and wrong gradients.

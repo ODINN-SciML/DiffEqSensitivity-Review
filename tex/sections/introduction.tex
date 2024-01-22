@@ -9,7 +9,7 @@ Hessians further help to improve the convergence rates of these algorithms and e
 
 % Differential Programming
 Models based in differential equations are not an exception to the rule\cite{Ghattas.2021}.
-Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
+Differential equations arising in simulation-based science play a central role in describing the behaviour of systems in natural and social sciences. 
 Some authors have recently suggested differentiable programming as the bridge between modern machine learning methods and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth}. 
 Being able to compute gradients or sensitivities of dynamical systems opens the door to more complex models.
 This is very appealing in fields like computational physics, geophysics, and biology ,to mention a few, where there is a broad literature on physical models and a long tradition in numerical methods. 
@@ -44,14 +44,14 @@ at least to a large set of them.
 The second goal of this article is to review different methods that exist to achieve this goal.
 \begin{quote}
     \textbf{Question 2. }
-    \textit{How can I compute the gradient of a function that depends on the numerical solution of a differential equation?}
+    \textit{How can I efficiently compute the gradient of a function that depends on the numerical solution of a differential equation?}
 \end{quote}
 %Notice here the phrase \textit{the gradient of a function that depends}, emphasizing the fact that in many cases we may be interested in computing the gradient of a function that depends on the solution of the differential equation.
 %This is certainly the case in machine learning and optimization where the goal is to minimize a loss function that depends of some predicted and target responses. 
 
 % AD
-The broader set of tools known as Automatic (or Algorithmic) Differentiation (AD) aims at computing derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program\cite{Griewank:2008kh, Naumann.2011}. 
-The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of elementary algebraic operations (e.g. addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule\cite{Giering:1998in}. 
+The broader set of tools known as Automatic (or Algorithmic) Differentiation (AD) aims at computing derivatives by sequentially applying the chain (and product) rule to the sequence of unit operations that constitute a computer program\cite{Griewank:2008kh, Naumann.2011}. 
+The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of elementary algebraic operations (e.g. addition, multiplication) that are easy to differentiate and their composition is easy to differentiate by using the chain rule\cite{Giering:1998in}. 
 More broadly than AD, differentiable programming encapsulates a set of software tools that allows to compute efficient and robust gradients though complex algorithms, including numerical solvers \cite{Innes_Zygote}. 
 Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations and/or compute an intermediate adjoint. 
 % We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
@@ -71,7 +71,7 @@ The third goal of this work, then, is to illustrate the different strengths and 
 
 % The need to introduce all these methods in a common framework
 % Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
-Differentiable programming is opening new ways of doing research across sciences, and we need close collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real world applications.
+Differentiable programming is opening new ways of doing research across sciences. Arguably, its potential has so far been under-explored but is being rediscovered in the age of data-driven science. In order to realize its full potential, we need close collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real world applications.
 As we make progress in the use of these tools, new methodological questions start to emerge. 
 How do these methods compare? How can they be improved? 
 We also hope this paper serves as a gateway to new questions regarding advances in these methods. 

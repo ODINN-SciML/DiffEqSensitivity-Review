@@ -1,9 +1,9 @@
-For complex and large systems, computing the gradient directly on top of the numerical solver (for example, using AD) can be memory expensive since the large number of function evaluations required by the solver and the later store of the intermediate states. 
-For these cases, the adjoint-based method allows us to compute the gradients of a loss function by instead computing an intermediate variable (the adjoint) that serves as a bridge between the solution of the ODE and the final sensitivity. 
+The first works on adjoint methods for sensitivity analysis can be traced back to ... and they had been broadly applied in the computational sciences. 
+In the context of differential equations, the idea of the adjoint method is to treat the differential equation as a constrained and then differentiate an objective function subject to that constraint. 
+Mathematically speaking, this can be treated both from a duality or Lagrangian perspective \cite{Giles_Pierce_2000}.
+We prefer to derive the equation using the former since we believe it gives better insights to how the method works and also allow to generalize to other user cases. 
+The derivation of adjoint methods using Lagrangian multipliers can be found in Appendix \ref{appendix:lagrangian}.
 
 There is a large family of adjoint methods that in first order we can classify them between discrete and continuous adjoints. 
-The former usually arises as the numerical discretization of the latter, and in general, these two give different different computational results \cite{Sirkes_Tziperman_1997}.
-Different results exist regarding the consistency or inconsistency between the two approaches, and this usually depends on the ODE and equation.  
-Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods have been provided in \cite{sandu2006properties, sandu2011solution}.
-Depending on the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.
-Furthermore, adjoint methods can be completely fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
+The difference between these is that the former follows follows the discretize-differentiate approach (also known as finite difference of adjoints \cite{Sirkes_Tziperman_1997}, ...), meaning that we first discretize the system of continuous ODEs before applying any sensitivity strategy to compute gradients \cite{Giles_Pierce_2000, allaire2015review}. 
+On the contrary, continuous adjoint equations are derived by directly operating on the differential equation, without a priori consideration of the numerical scheme used to solve it. 

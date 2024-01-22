@@ -1,14 +1,9 @@
 Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
-This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000, allaire2015review}. 
-
-% Just as in the case of automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
 
 % Mathematically, reverse mode AD is related to the adjoint differential equations \cite{Griewack-on-AD}
 
-\vspace*{10px}
-\noindent \textbf{\textit{Discrete differential equation}}
-\vspace*{5px}
+\paragraph{Discrete differential equation}
 
 % reference: Sensitivity theory of non-linear systems
 
@@ -79,9 +74,7 @@ with $\I_{n \times n}$ the identity matrix of size $n \times n$.
 It is important to notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
 If this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
 
-\vspace*{10px}
-\noindent \textbf{\textit{Adjoint state equations}}
-\vspace*{5px}
+\paragraph{Adjoint state equations}
 
 We are interested in differentiating a function $L(U, \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solution, examples of loss functions now include 

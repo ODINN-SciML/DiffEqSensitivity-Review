@@ -12,9 +12,10 @@ Neither forward or reverse mode is more efficient in all cases \cite{Griewank_19
 
 Forward mode AD can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists (see \cite{Baydin_Pearlmutter_Radul_Siskind_2015} for a good review on these methods). 
 
-\vspace*{10px}
-\noindent \textbf{\textit{Dual numbers}}
-\vspace*{5px}
+\paragraph{Dual numbers}
+% \vspace*{10px}
+% \noindent \textbf{\textit{Dual numbers}}
+% \vspace*{5px}
 
 Dual numbers extend the definition of a numerical variable that takes a certain value to also carry information about its derivative with respect to certain parameter \cite{clifford1871dualnumbers}. 
 We can define an abstract type, defined as a dual number, composed of two elements: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
@@ -54,9 +55,10 @@ When computing first order derivatives, we can ignore everything of order $\epsi
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
 In Section \ref{sec:computational-implementation} we will explore how this is implemented and compare this approach with complex-step differentiation. 
 
-\vspace*{10px}
-\noindent \textbf{\textit{Computational graph}}
-\vspace*{5px}
+\paragraph{Computational graph}
+% \vspace*{10px}
+% \noindent \textbf{\textit{Computational graph}}
+% \vspace*{5px}
 
 A useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
 Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical} or Wengert trace/tape\cite{Wengert_1964, Bauer_1974}. 
@@ -143,7 +145,7 @@ This problem can be mitigated, to some extent, with a good checkpointing scheme 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.95\textwidth]{tex/figures/VJP-AD.pdf}
-    \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. When the multiplication is carried from the right side of the mathematical expression for $\nabla_\theta L$, each matrix simplification involves a matrix with size $p$, giving a total complexity of $\mathcal O (kp)$. This is the opposite of what happens when we carried the VJP from the left side of the expression, where the matrix of size $d_1 \times p$ has not affect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$ and a total complexity of $\mathcal O (k + p)$. }
+    \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians changes the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. When the multiplication is carried from the right side of the mathematical expression for $\nabla_\theta L$, each matrix simplification involves a matrix with size $p$, giving a total complexity of $\mathcal O (kp)$. This is the opposite of what happens when we carried the VJP from the left side of the expression, where the matrix of size $d_1 \times p$ has no effect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$ and a total complexity of $\mathcal O (k + p)$. }
     % However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
     \label{fig:vjp-jvp}
 \end{figure}
