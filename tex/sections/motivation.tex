@@ -1,18 +1,31 @@
-\subsection{On the importance of differentiable programming}
-
-Scientific models from many domains have often been based on mechanistic models, represented as differential equations, involving the use of numerical methods to solve them. 
-Among many, this lead to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them
-\cite{Wigner.1960, Rude:2018jv}. 
+\subsection{On the importance of DP and its applications to inverse modelling}
+% \todo[inline]{here I would focus on the philosophy of mechanistic vs data-driven models}
+Scientific models from many domains have often been based on mechanistic (or process-based) models, represented as differential equations, involving the use of numerical methods to solve them. 
+% \todo{I would include this part in the introduction}.
+% \todo[inline,caption={}]{
+%     \begin{itemize}
+%         \item Albert Einstein once said DEs are the most important conceptual advance ever made in human history
+%         \item Differential Equations start in 17th century with with Isaac Newton
+%     \end{itemize}}
+From predictions of population growth (Malthus) to permitting the prediction of black holes (Einstein field equations), differential equations have provided huge scientific contributions since Newton.
+% 
+The parameters and processes within process-based models have traditionally been determined independently of the model, with empirical data for model validation and comparison \cite{hartig2012}. Independent estimation of parameters and processes rapidly becomes impossible as the number of state variables modelled increases, especially when considering highly non-linear processes. 
+% the term "inverse modelling" seems actually missing
+Inverse modelling, which consists in using observation data to recover the parameters of a model that can best explain the data, allows the bridging of this gap \cite{Wigner.1960, Rude:2018jv}. 
+% 
+The process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
+% 
 Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
 
-Alternatively, the field of statistics experienced a boom following the massive growth of data, signaling the era of data science and machine learning \cite{Cox:2017hv}.
+In parallel, the field of statistics experienced a boom following the massive growth of data, signaling the era of data science and machine learning \cite{Cox:2017hv}.
 With the advent of machine learning methods, it is possible to learn and capture extremely complex nonlinear patterns and information hidden in huge datasets. 
-Machine learning models can be seen as the opposite of mechanistic models: they are flexible, data-driven and they do not necessarily respect domain-specific constraints.
+Contrasting with mechanistic models, machine learning models are inherently flexible and data-driven, often operating without adhering to domain-specific constraints. 
+A significant characteristic of contemporary machine learning, particularly deep learning models, is their ability to autonomously learn at multiple levels of abstraction, efficiently extracting pertinent features from large datasets \cite{LeCun2015}}.
 
 At first sight, these two modelling philosophies can be seen as antagonistic, and this is more or less the way they have evolved in the last decades \cite{zdeborova_understanding_2020}. 
-On the one hand, domain scientists have often been sceptical of adopting machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}.
+On the one hand, domain scientists have often been sceptical of adopting machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. Predictions with correlative models assume that patterns contained in data can be extrapolated \cite{dormann2007}. However, they may fail to disentangle the respective impact of the numerous ecological processes at play and may fail to predict dramatic shifts in dynamics \cite{Barnosky2012}.
 On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any \textit{a priori} physical knowledge. 
-However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models \cite{Molnar.2020sisk,Rudin.2022}.
+However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models \cite{Molnar.2020sisk,Rudin.2022,Schneider2017,rasp2018,Yazdani2020,Abarbanel2018,Carrassi2018,Bocquet2019,Gabor2015,Gharamti2017,Curtsdotter2019,Rosenbaum2019,Toms2020,Brajard2021}.
 % If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
 
 % A key way to achieve this is through differentiable programming, i.e., being able to compute derivatives of any computer program describing a scientific model.
@@ -25,7 +38,7 @@ However, there has been an increasing interest in making mechanistic models more
 
 \subsection{Domain-specific applications}
 
-Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, virtually learning any possible function if enough data is available \cite{gorban_1998}. 
+Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning any possible function if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
 
 
@@ -118,4 +131,5 @@ Recent studies had showed how neural networks integrated with differential equat
 
 \subsubsection{Biology and Ecology}
 
+\subsubsection{Quantum Physics}
 
