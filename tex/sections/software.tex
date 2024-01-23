@@ -3,20 +3,25 @@
 
 In this section, we address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
 In order to address this point, it is important to make one further distinction of the methods introduced in Section \ref{section:methods} between those that apply direct differentiation at the algorithmic level or those that are based on numerical solvers.  
-The first is easier to implement since they are agnostic with respect to the details of the ODE and its numerical solution; however, they tend to be either inaccurate, memory-expensive, or unfeasible for large models. 
-The family of methods that are based on numerical solvers include the sensitivity equations and the adjoint methods, both discrete and continuous; they are more difficult to implement and for real case applications require complex software implementations, but they are also more efficient. 
+
+The first are easier to implement since they are agnostic with respect to the mathematical and numerical properties of the ODE; however, they tend to be either inaccurate, memory-expensive, or unfeasible for large models. 
+The family of methods that are based on numerical solvers include the sensitivity equations and the adjoint methods, both discrete and continuous; they are more difficult to implement and for real case applications require complex software implementations, but they are also more accurate and adequate. 
+
+Despite the fact that these methods can be (in principle) implemented in different programming languages, here we decided to use the Julia programming language for the different examples. 
+Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}.
+Nevertheless, in reviewing existing work, we will also point to applications developed in other programming languages.
 
 \subsection{Direct methods}
 
-Direct methods are implemented independently of the structure of the ODE and the numerical solver used to solve it. 
 
-% \subsubsection{Finite differences}
-
+Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
 Finite differences are easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
-In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use establish libraries than implementing it yourself, since these already include subroutines to determine step-sizes. \todo{There is sort of a contradiction between these two sentences}
-However, finite differences are less accurate (see section XXX) and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
+In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl} and it is recommended to use establish libraries than implementing it yourself, since these already include subroutines to determine step-sizes.
+However, finite differences are less accurate and as costly as forward AD \cite{Griewack-on-AD} and complex-step differentiation. 
+
 Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$ using finite differences and complex-step differentiation.
-The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. 
+We can see that finite differences is inaccurate when the stepsize is both small and large, with the precision also depending of the numerical solver tolerance.
+On the other side, complex-step differentiation do not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small. 
 
 \begin{figure}[tbh]
     \centering
@@ -28,8 +33,8 @@ The error when using a numerical solver is larger and it is dependent on the num
 % \subsubsection{Forward-mode AD}
 
 Implementing forward AD using dual numbers is usually carried out using \textit{operator overloading} \cite{Neuenhofen_2018}. 
-This means expanding the object associated to a numerical value to include its dual components (derivative) and extending the definition of atomic algebraic functions. 
-In Julia, this can be done by relying on multiple dispatch. 
+This means expanding the object associated to a numerical value to include the tangent and extending the definition of atomic algebraic functions. 
+In Julia, this can be done by relying on multiple dispatch \cite{Julialang_2017}. 
 The following example illustrates how to define a dual number and its associated binary addition and multiplication extensions. 
 \begin{jllisting}
 using Base: @kwdef
@@ -55,8 +60,9 @@ end
 \end{jllisting}
 % With all these pieces together, we are able to propagate forward the value of a single-valued derivative through a series of algebraic operations. 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
-Notice that a major limitation of the dual number approach is that a dual variable is required for each variable to differentiate. 
-Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables become indistinguishable, specially in the case of nested functions \cite{manzyuk2019perturbation}.   
+
+Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
+Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, specially in the case of nested functions \cite{manzyuk2019perturbation}.   
 
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewack-on-AD}. 
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models inefficient when differentiating with respect to many parameters. \todo{can we talk about the curse of dimensionality?}
@@ -86,19 +92,46 @@ The dependence of the complex step differentiation method on the step size gives
 This difference between the methods also makes the complex step method sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column of \eqref{eq:AD-complex-comparision}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
 It is also important to remark \todo{Repetition} that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
-% \subsubsection{Reverse-mode AD}
+\subsubsection{Reverse-mode AD}
+\label{sec:software-reverse-AD}
 
-The libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use callbacks to compute gradients. \todo{We need to define what are callbacks}
-When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
+In opposition to finite differences, forward AD and complex-step differentiation, reverse AD is the only of these family of methods that propagates the gradient in backwards mode by relying in analytical derivatives of primitive functions, which in Julia are available via \texttt{ChainRules.jl}.
+Since this requires the evaluation intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
 
-\cite{Baydin_Pearlmutter_Radul_Siskind_2015}
+Backwards AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
+In the backward step, this executes a series of function calls, one for each elementary operation.
+If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
+Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
+\begin{equation}
+ \bar v_1, \bar v_2 = v_2 \times \bar w , \quad
+ v_1 \times \bar w = \mathcal{B}_w (\bar w),
+\end{equation}
+which is equivalent to using the chain rule as
+\begin{equation}
+ \frac{\partial \ell}{\partial v_1} = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}.
+\end{equation}
+% There are many libraries that implement reverse AD acroos programming languages \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+% In Julia, the libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use pullbacks to compute gradients \cite{Innes_2018}. 
+% When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
 
-Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver.
+
+
+% \subsubsection{Further remarks}
+
+A crucial distinction between AD implementations based on computational graphs is between static and dynamical methods\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
+In the case of a static implementations, the computational graph is constructed before any code is executed, which are encoded and optimized for performance within the graph language. 
+For static structures such as neural networks, this is ideal \cite{abadi-tensorflow}. 
+However, two major drawbacks of static methods are composability with existing code, including support of custom types, and adaptive control flow, which is a common feature of numerical solvers. 
+These issues are addressed in reverse AD implementations using \textit{tracing}, where the program structure is transformed into a list of pullback functions that built the graph dynamically at runtime. 
+Popular libraries in this category are \texttt{Tracker.jl} and \texttt{ReverseDiff.jl}.
+There also exist source-to-source AD system that achive highest performance at the same time they support arbitrary control flow structure. 
+These include \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, and \texttt{Difractor.jl}.
+The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
+
+% Since perturbation confusion also affects reverse mode AD, maybe is better to cover that here.
+
+Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver. 
 Furthermore, when reverse AD is applied on the numerical solver, the step-size needs to be adapted to ensure the stability of the backward stesps, further increasing the computational complexity. 
-
-\subsubsection{Further remarks}
-
-A crucial distinction between AD implementations based on computational graphs is between static and dynamical graphs\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
 
 \subsection{Solver-based methods}
 
@@ -109,7 +142,7 @@ These factors are further exacerbated by the number of ODEs and parameters in th
 Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
 These include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}. 
 
-It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylow mode. 
+It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
 This calculation is carried out by another sensitivity method (finite differences, AD) which plays a central role when analyzing the accuracy and stability of the adjoint method. 
@@ -211,6 +244,4 @@ The choice of the specific algorithm to compute VJPs can have significant impact
 In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In FATODE, these can be computed with finite differences, AD or provides by the user.
 
-In the Julia ecosystem, different AD packages are available for this task, including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, \texttt{Tracker.jl}.
-Each one of these have different advantages depending on scientific problem, computational features, and hardware resources.
-This lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
+In the Julia ecosystem, different AD packages are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, \texttt{Tracker.jl}.

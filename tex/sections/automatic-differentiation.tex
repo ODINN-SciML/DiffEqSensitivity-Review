@@ -50,7 +50,7 @@ Intuitively, we can think about $\epsilon$ as being a differential in the Taylor
 \end{align}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
-We will explore how this is carried in Section \ref{sec:computational-implementation}.
+In Section \ref{sec:computational-implementation} we will explore how this is implemented and compare this approach with complex-step differentiation. 
 
 \vspace*{10px}
 \noindent \textbf{\textit{Computational graph}}
@@ -96,19 +96,6 @@ In this context, the notation $\bar{\omega} = \frac{\partial \ell}{\partial \ome
 
 Since in backwards AD the values of $\bar \omega$ are being updated in reverse order, in order to evaluate the terms $\frac{\partial \omega}{\partial v}$ we need to know the state value of all the argument variables $v$ of $\omega$, which need to be stored in memory during the evaluation of the function in order to be able to apply backward AD.
 
-Another way of implementing backwards AD is by defining a \textit{pullback} function \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
-In the backward step, this executes a series of function calls, one for each elementary operation.
-If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
-Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
-\begin{equation}
- \bar v_1, \bar v_2 = v_2 \times \bar w , \quad
- v_1 \times \bar w = \mathcal{B}_w (\bar w),
-\end{equation}
-which is equivalent to using the chain rule as
-\begin{equation}
- \frac{\partial \ell}{\partial v_1} = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}.
-\end{equation}
-
 
 \subsubsection{AD connection with JVPs and VJPs}
 
@@ -142,7 +129,9 @@ When the function to differentiate has a larger input space than output, AD in b
 % On the other side, when the output dimension is larger than the input space dimension, forwards AD is more efficient.
 % This is the reason why in most machine learning application people use backwards AD. 
 However, notice that backwards mode AD requires us to save the solution through the forward run in order to run backwards afterwards \cite{Bennett_1973}, while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
+
 We discuss in section XXX how this problem can be overcome with a good checkpointing scheme. 
+
 This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 
 % awesome figure!
