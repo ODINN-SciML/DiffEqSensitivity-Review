@@ -9,6 +9,8 @@ Although here we consider the case of ODEs, that is, when the derivatives are ju
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
 Except for a minority of functions $f(u,\theta, t)$, solutions of the Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
 
+\subsection{Derivatives and optimization}
+
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
 Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a broader class of functions. 
 % Maybe organize this in sections, like 
@@ -74,7 +76,8 @@ ADAM is less prone to converging to a local minimum, while (L-)BFGS has a faster
 Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 
 % Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
 
-% \subsubsection{Sensitivity matrix}
+\subsubsection{Sensitivity matrix}
+
 Using the chain rule we can derive
 \begin{equation} 
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
@@ -104,6 +107,8 @@ Notice here the distinction between the total derivative (indicated with the $d$
 When a function depends on more than one argument, we use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
 On the other side, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
 Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
+
+\subsubsection{Numerical solvers for differential equations}
 
 % In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
 % Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.

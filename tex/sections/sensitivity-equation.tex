@@ -22,6 +22,8 @@ Notice also that the obtained sensitivity $s(t)$ can be evaluated at any given t
 This method can be labeled as forward, since we solve both $u(t)$ and $s(t)$ as we solve the differential equation forward in time, without the need of backtracking any operation though the solver.
 By solving the sensitivity equation at the same time we solve the original differential equation for $u(t)$, we ensure that by the end of the forward step we have calculated both $u(t)$ and $s(t)$. 
 
+\subsubsection{Forward AD as the discretization of the sensitivity equations}
+
 It is important to remark that the sensitivity equations can be also solved in discrete forward mode by numerically discretizing the original ODE and later deriving the discrete sensitivity equations. 
 For most cases, this leads to the same result that in the continuous case \cite{FATODE2014}.
 To illustrate this, consider the simple forward Euler method applied to the original ODE given by $u_{t+1} = u_t + \Delta t \, f(u_t, \theta, t)$ where we implement forward mode AD by introducing the dual numbers $u_t + \epsilon s_t$ and $\theta + \epsilon$, where $\epsilon$ is the dual variable associated to derivatives with respect to the parameter $\theta$.
