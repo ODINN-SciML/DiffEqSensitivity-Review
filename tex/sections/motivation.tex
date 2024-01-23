@@ -104,14 +104,10 @@ There is enormous potential to seamlessly integrate the inverse-modeling and mac
 The same goals that have driven the use of sensitivity information in numerical weather prediction (optimal initial conditions for forecasts) or ocean science (state and parameter estimation) apply in the world of climate modeling.
 The recognition that ``good'' initial conditions (e.g., such that are closest to the real or observed system) will lead to improved forecasts on subseasonal, seasonal, interannual, or even decadal time scales has driven major community efforts (e.g., \cite{Meehl.2021}). However, there has been a lack so far in exploiting the use of gradient information to achieve optimal initialization for coupled Earth system models \cite{Frolov.2023}. 
 One conceptual challenge is the presence of multiple timescales in the coupled system and the utility of gradient information beyond many synoptic time scales in the atmosphere and ocean \cite{Lea:2000gv,Lea:2002cv}.
-
-TBD:
-
-Coupled GCM adjoint:
-\cite{Blessing.2014,Lyu.2018,Stammer:2018de}
-
-Neural AGCM:
-\cite{Kochkov.2023}
+Nevertheless, efforts are underway to enable adjoint-based parameter estimation of coupled atmosphere-ocean climate models, with AD again playing a crucial role in generating the corresponding adjoint model
+\cite{Blessing.2014,Lyu.2018,Stammer:2018de}.
+Complementary, recognizing the power of differentiable programming, efforts are also targeting the development of ``neural atmospheric general circulation models'' in JAX, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
+\cite{Kochkov.2023}.
 
 \paragraph{Transport modeling and flux inversion.}
 % ... GEOS-Chem , Kaminski, ...
