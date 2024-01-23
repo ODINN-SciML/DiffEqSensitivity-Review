@@ -4,6 +4,6 @@ Mathematically speaking, this can be treated both from a duality or Lagrangian p
 We prefer to derive the equation using the former since we believe it gives better insights to how the method works and also allow to generalize to other user cases. 
 The derivation of adjoint methods using Lagrangian multipliers can be found in Appendix \ref{appendix:lagrangian}.
 
-There is a large family of adjoint methods that in first order we can classify them between discrete and continuous adjoints. 
+There is a large family of adjoint methods that in first order can be classified as discrete and continuous adjoints. 
 The difference between these is that the former follows follows the discretize-differentiate approach (also known as finite difference of adjoints \cite{Sirkes_Tziperman_1997}, ...), meaning that we first discretize the system of continuous ODEs before applying any sensitivity strategy to compute gradients \cite{Giles_Pierce_2000, allaire2015review}. 
 On the contrary, continuous adjoint equations are derived by directly operating on the differential equation, without a priori consideration of the numerical scheme used to solve it. 

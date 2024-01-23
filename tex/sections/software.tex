@@ -1,5 +1,9 @@
-In this section, we are going to address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
+% Giles (2000) has a good discussion on this.
+% \cite{ma_comparison_2021}. 
+
+In this section, we address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
 In order to address this point, it is important to make one further distinction of the methods introduced in Section \ref{section:methods} between those that apply direct differentiation at the algorithmic level or those that are based on numerical solvers.  
+
 The first are easier to implement since they are agnostic with respect to the mathematical and numerical properties of the ODE; however, they tend to be either inaccurate, memory-expensive, or unfeasible for large models. 
 The family of methods that are based on numerical solvers include the sensitivity equations and the adjoint methods, both discrete and continuous; they are more difficult to implement and for real case applications require complex software implementations, but they are also more accurate and adequate. 
 This section is then going to be split in the following way.
@@ -17,6 +21,7 @@ Nevertheless, in reviewing existing work, we will also point to applications dev
 
 \subsection{Direct methods}
 \label{section:direct-methods}
+
 
 Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
 These include finite differences, complex step differentiation, and both forward and backward AD. 
@@ -42,7 +47,7 @@ This effect is dependent on the numerical solver tolerance.
 \begin{figure}[tbh]
     \centering
     \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
-    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where this is computed with finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. }
+    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where the relative error is computed with finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. }
     \label{fig:finite-diff}
 \end{figure}
 
@@ -86,11 +91,12 @@ end
 \end{jllisting}
 % With all these pieces together, we are able to propagate forward the value of a single-valued derivative through a series of algebraic operations. 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
+
 Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
 Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, specially in the case of nested functions \cite{manzyuk2019perturbation}.   
 
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewank_1989}. 
-This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models inefficient when differentiating with respect to many parameters. 
+This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered.
 
 % If well forward AD is implemented independently of the differential equation and numerical solver, the careless combination of both can lead to disastrous numerical errors. 
 If well AD is always algorithmicly correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations. 
@@ -106,7 +112,6 @@ with $a$ the parameter which respect we want to differentiate.
 In the simple case of $a=1$, the solutions of the ODE are constant functions $u_1(t) \equiv u_2(t) \equiv 1$. 
 As it is explain in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are design to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
 This leads to wrong gradient calculations that propagate thought the numerical solver without further warning. 
-
 
 \subsubsection{Reverse-mode AD}
 \label{sec:software-reverse-AD}
@@ -131,6 +136,7 @@ which is equivalent to using the chain rule as
 % When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
 
 
+
 % \subsubsection{Further remarks}
 
 A crucial distinction between AD implementations based on computational graphs is between static and dynamical methods\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
@@ -143,7 +149,6 @@ There also exist source-to-source AD system that achive highest performance at t
 These include \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, and \texttt{Difractor.jl}.
 The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
-
 % Since perturbation confusion also affects reverse mode AD, maybe is better to cover that here.
 
 Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver. 
@@ -151,17 +156,17 @@ Furthermore, when reverse AD is applied on the numerical solver, the step-size n
 
 \subsection{Solver-based methods}
 
-Sensitivity methods based on numerical solvers tend to be better adapted to the structure and properties of the underlying ODE (stiffness, stability, accuracy) but also more difficult to implement.  
+Sensitivity methods based on numerical solvers tend to be better adapted to the structure and properties of the underlying ODE (stiffness, stability, accuracy) but are also more difficult to implement.  
 This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerations, including how to handle matrix/Jacobian-vector products; numerical stability of the forward/backward solver; and memory-time tradeoff. 
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
 Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
-The include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}; and \texttt{Diffrax} \cite{kidger2021on} in Python. 
+These include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}; and \texttt{Diffrax} \cite{kidger2021on} in Python. 
 
 It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
-This calculation is carried out by another sensitivity method (finite differences, AD) and this also plays a central role at the moment of analyzing the accuracy and stability of the adjoint method. 
+This calculation is carried out by another sensitivity method (finite differences, AD) which plays a central role when analyzing the accuracy and stability of the adjoint method. 
 
 \subsubsection{Sensitivity equation}
 \label{section:computing-sensitivity-equations}
@@ -198,7 +203,7 @@ For complex and large systems, direct methods for computing the gradient on top 
 For these cases, the adjoint-based method allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final sensitivity. 
 If well the adjoint method offers considerate advantages when working with complex systems, since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability
 Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
-Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. 
+% Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. \todo{not clear}
 
 ...
 
@@ -251,11 +256,10 @@ There are different ways of addressing the evaluation of $u(t)$ during the backw
 
 One way of solving this system of equations that ensures stability is by using implicit methods. 
 However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method.
-Two alternatives are proposed in \cite{kim_stiff_2021}. 
-The first one called \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, and then it solves for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
+Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, then solve for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
 This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. 
 A second but similar approach is to use an implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. 
-This method also will have complexity $\mathcal O (n^3 + p)$.
+This method also has a complexity of $\mathcal O (n^3 + p)$.
 
 \paragraph{Solving the quadrature}
 
