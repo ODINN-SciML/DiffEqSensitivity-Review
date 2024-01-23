@@ -1,4 +1,3 @@
-% the subsubsections of this subsections are quite long and mathematically involved, compared to the previous sections. May be that some of this material could be moved to SI?
 
 For complex and large systems, computing the gradient directly on top of the numerical solver (for example, using AD) can be memory expensive since the large number of function evaluations required by the solver and the later store of the intermediate states. 
 For these cases, the adjoint-based method allows to compute the gradients of a loss function by instead computing an intermediate variable (the adjoint) that serves as a bridge between the solution of the ODE and the final sensitivity. 
