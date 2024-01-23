@@ -1,4 +1,14 @@
-Exponentially large symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}
+In symbolic differentiation, functions are represented algebraically instead of algorithmically, reason why many symbolic differentiation tools are included inside computer algebra systems (CAS)\cite{Symbolics_jl_2022}. 
+Instead of numerically evaluating the final value of a derivative, symbolic systems define \textit{algebraic} objects, including variable names, expressions, operations, and literals. 
+For example, the relation $y = x^2$ is interpreted as expression with two variables, $x$ and $y$, and the symbolic system need to generate the derivative $y' = 2 \times x$ with $2$ a numeric literal, $\times$ a binary operation, and $x$ the same variable assignment than in the original expression.
+When the function to differentiate is large, symbolic differentiation can lead to \textit{expression swell}, that is, exponentially large or complex symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+Here, an important piece of CAS is simplification routines that reduce the size and complexity of algebraic expressions by finding common sub-expressions.  
+This can make symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 
 
-Sometimes AD is compared against symbolic differentiation.
-According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.
+It is important to remark the close relationship between AD and symbolic differentiation.
+There is not agreement weather symbolic differentiation should be classified as AD\cite{juedes1991taxonomy, Elliott_2018, Laue2020} or as a different method \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.  
+Both are equivalent in the sense that they perform the same operations but the underlying data structure is different \cite{Laue2020}. 
+Here, expression swell is a consequence of the underlying representation when this does not allow for common sub-expressions. 
+This can also been understood as if AD is symbolic differentiation performed by a compiler \cite{Elliott_2018}, meaning that different AD can be classified based in the level of integration with the underlying source language \cite{juedes1991taxonomy}.
+% This means that the mathematical calculations involved are the same, but they need to be interpreted by the compiler at the moment of computing the derivative. 
+% Something like $x + 2$ needs to be understood as an \textit{expression} composed by a variable $x$, a literal $2$, and a binary operation $+$ binding them. 

@@ -19,6 +19,16 @@
 \usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
 \usepackage{todonotes} % Taking notes
 
+\usepackage{titlesec}
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Customized packages %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,16 +100,17 @@
 \subsection{Finite differences}
 \input{sections/finite-differences}
 
-\subsection{Complex step differentiation}
-\input{sections/complex-step}
-
 \subsection{Automatic differentiation}
 \input{sections/automatic-differentiation}
+
+\subsection{Complex step differentiation}
+\input{sections/complex-step}
 
 \subsection{Symbolic differentiation}
 \input{sections/symbolic}
 
 \subsection{Sensitivity equations}
+\label{section:sensitivity-equation}
 \input{sections/sensitivity-equation}
 
 \subsection{Adjoint methods}
@@ -141,8 +152,11 @@
 
 \subsection{Lagrangian derivation of adjoints}
 \input{appendix/lagrangian}
-
-\subsection{Supplementaty code}
+\newpage
+\subsection{When AD is algorithmically correct but numerically wrong}
+\input{appendix/AD-norm}
+\newpage
+\subsection{Supplementary code}
 \input{appendix/code}
 
 % \section{Glossary} 
