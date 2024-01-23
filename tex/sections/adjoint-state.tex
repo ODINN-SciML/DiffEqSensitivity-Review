@@ -1,14 +1,9 @@
-Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that we solve the original system of linear equations defined by the numerical solver. 
+Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, at the same time that the original system of linear equations defined by the numerical solver is solved. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
-This approach follows the discretize-optimize approach, meaning that we first discretize the system of continuous ODEs and then solve on top of these linear equations \cite{Giles_Pierce_2000}. 
-
-% Just as in the case of automatic differentiation, the adjoint state method evaluates the gradient by moving forward in time and applying the chain rule sequentially over a discrete set of operations that dictate the updates by the numerical scheme for solving the differential equation. However, it does so by directly computing the gradient by solving a new system of equations.
 
 % Mathematically, reverse mode AD is related to the adjoint differential equations \cite{Griewack-on-AD}
 
-\vspace*{10px}
-\noindent \textbf{\textit{Discrete differential equation}}
-\vspace*{5px}
+\paragraph{Discrete differential equation}
 
 % reference: Sensitivity theory of non-linear systems
 
@@ -44,7 +39,7 @@ where $\alpha_i$ has includes the information of all the past iterations.
 This system can be solved sequentially, by solving for $u_i$ in increasing order of index using Newton method. 
 If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of equations $G(U) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$.
 
-In the simplest case where the algebraic set of equations is linear and we can write $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i$ with $A_i \in \R^{n \times n}$ and $b_i \in \R^n$ defined by the numerical solver, the condition $G(U)=0$ simplifies to the linear system of equations 
+In the simplest case of linear one-step methods with $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i$ with $A_i \in \R^{n \times n}$ and $b_i \in \R^n$ defined by the numerical solver, the condition $G(U)=0$ simplifies to the linear system of equations 
 \begin{equation}
     A(\theta) U 
     = 
@@ -79,9 +74,7 @@ with $\I_{n \times n}$ the identity matrix of size $n \times n$.
 It is important to notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
 If this representation of the discrete differential equation is quite convenient for mathematical manipulations, at the moment of solving the system we will rely in iterative solvers that save memory and computation. 
 
-\vspace*{10px}
-\noindent \textbf{\textit{Adjoint state equations}}
-\vspace*{5px}
+\paragraph{Adjoint state equations}
 
 We are interested in differentiating a function $L(U, \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solution, examples of loss functions now include 
@@ -151,9 +144,22 @@ Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta},
     \lambda^T \frac{\partial G}{\partial \theta}.
     \label{eq:gradient-adjoint-state-method}
 \end{equation}
-The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. Computing the full Jacobian/sensitivity $\partial u / \partial \theta$ will be computationally expensive and involves the product of two matrices. However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. By rearranging these terms, we can make the same computation more efficient. 
+The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
+Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices. 
+However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
+By rearranging these terms and relying in the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
+These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, where we can also see an interesting interpretation of the adjoint as being equivalent to $\lambda^T = - \frac{\partial L}{\partial G}$. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/discrete_adjoint.pdf}
+    \caption{Diagram showing how gradients are computed using discrete adjoints. On the left, we see how gradients will be computed if we use the chain rule applied to the directed triangle defined by the variables $\theta$, $U$, and $L$ (blue arrows). However, we can define the intermediate variable $G(U; \theta) = 0$ (defined by the discrete system of differential equations) and apply the chain rule instead to the triangle defined by $\theta$, $G$, and $L$ (red arrows). In the red diagram, the calculation of $\frac{\partial L}{\partial G}$ is done by pivoting in $U$ as its is shown in the right diagram (shaded area). Notice that the use of adjoints avoids the calculation of the sensitivity $\frac{\partial U}{\partial \theta}$. The adjoint is defined as the partial derivative $\lambda^T = - \frac{\partial L}{\partial G}$ representing changes in the lost function due to variations in the discrete equation $G(U; \theta) = 0$. 
+    }
+    \label{fig:discrete-adjoint}
+\end{figure}
 
 Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U)=0$ was not necessarily linear in $U$.
+This means that while the forward mode may required multiple iterations calls in order to solve the non-linear system $G(U) = 0$ using Krylov methods, the backwards step to compute the adjoint is one single linear system of equations. 
 For the linear system of discrete equations $G(U; \theta)=A(\theta) U - b(\theta)=0$, we have \cite{Johnson}
 \begin{equation}
     \frac{\partial G}{\partial \theta} 
