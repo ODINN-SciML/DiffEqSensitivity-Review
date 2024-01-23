@@ -16,7 +16,7 @@ We are interested in computing the gradient of a given function $L(u(\cdot, \the
 In the context of optimization and inverse modelling, $L$ expresses a distance between the ODE model simulation and some data. 
 
 \begin{itemize}
-    \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the distance between the model prediction and the data. Examples of loss functions include the squared error
+    \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and the data. Examples of loss functions include the squared error
     \begin{equation}
          L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}}(t_1) \|_2^2,
          \label{eq:quadratic-loss-function}
