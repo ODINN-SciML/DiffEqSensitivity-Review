@@ -82,7 +82,7 @@ In the following, we sketch how differentiable programming based on  adjoint mod
 Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have played an important role \cite{Errico_1997}. 
 The work by \cite{Talagrand.1987,Courtier.1987} introduced the use of adjoint methods to infer initial conditions that minimize the misfit between simulations and weather observations, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
 This led to the development of the so-called \textit{four-dimensional variational} (4D-Var) data assimilation (DA) technique \cite{Rabier.1992,Rabier:2000uu} at the European Centre for Medium-Range Weather Forecasts (ECMWF) as one the most advanced DA approaches, and which contributed substantially to the \textit{quiet revolution} in NWP \cite{Bauer.2015}.
-Related, within the framework of transient non-normal amplification or optimal excitation \ref{Farrell.1988,Farrell:1996jx}, the adjoint method has been used extensively to infer patterns in initial conditions that over time contribute to maximum uncertainty growth in forecasts \ref{Palmer:1994br,Buizza:1995in} 
+Related, within the framework of transient non-normal amplification or optimal excitation \cite{Farrell.1988,Farrell:1996jx}, the adjoint method has been used extensively to infer patterns in initial conditions that over time contribute to maximum uncertainty growth in forecasts \cite{Palmer:1994br,Buizza:1995in} 
 and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
 Except in very few instances and for experimental purposes \cite{Giering.2006}, automatic differentiation has not been used in the development of adjoint models in NWP.
 Instead, the adjoint code was derived and implemented manually.
@@ -92,10 +92,26 @@ The recognition of the benefit of adjoint methods for use in gradient-based opti
 The first application appeared soon thereafter in the context of a basin-scale general circulation model \cite{Tziperman.1989,Tziperman:1992hg,Tziperman:1992jw}. 
 An important detail is that their work already differed from the ``4D-Var'' problem of NWP in that sensitivities were computed not only with respect to initial conditions but also with respect to surface boundary conditions, i.e., air-sea fluxes of buoyancy and momentum.
 Again, the role of the second-derivative, i.e., the Hessian for uncertainty quantification was readily realized \cite{Thacker:1989jf}.
-Similar to the work on calculating singular vectors in the atmosphere based on tangent linear and adjoint versions of a GCM to solve a generalized eigenvalue problem, the question of El Ni\~no predictability invited model-based singular vector computations in models of the Tropical Pacific Ocean \cite{Moore:1997ci,Moore:1997fp}. Such model-based singular vectors were also later computed for optimal excitations of the North Atlantic thermohalince circulation \cit{Zanna.2010,Zanna:2011ge,Zanna:2012dw}.
-Notably in the context of this review, the consortium for ``Estimating the Circulation and Climate of the Ocean'' (ECCO) set out in around 1999 to develop a parameter and state estimation framework, whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient. Importantly, the adjoint model is generated using source-to-source automatic differentiation \ref{REF}
+Similar to the work on calculating singular vectors in the atmosphere based on tangent linear and adjoint versions of a GCM to solve a generalized eigenvalue problem, the question of El Ni\~no predictability invited model-based singular vector computations in models of the Tropical Pacific Ocean \cite{Moore:1997ci,Moore:1997fp}. Such model-based singular vectors were also later computed for optimal excitations of the North Atlantic thermohalince circulation \cite{Zanna.2010,Zanna:2011ge,Zanna:2012dw}.
+Notably in the context of this review, the consortium for ``Estimating the Circulation and Climate of the Ocean'' (ECCO) \cite{Stammer.2002} set out in around 1999 to develop a parameter and state estimation framework, whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient. Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using source-to-source automatic differentiation \cite{Marotzke:1999wc,Heimbach.2005}, initially using the ``Tangent linear and Adjoint Model Compiler'' (TAMC, \cite{Giering:1998in}) and then its commercial successor ``Transformation of Algorithms in Fortran'' (TAF, \cite{Giering.2006}).
+Rigorous exploitation of AD enabled the simulation framework to be significantly extended over time in terms of vastly improved model numerics \cite{Forget.2015m9i} and coupling other Earth system components, including biogeochemistry \cite{Dutkiewicz:2006gw}, sea-ice \cite{Heimbach:2010fz}, and sub-ice shelf cavities \cite{Heimbach:2012iu}.
+Unlike NWP-type 4D-Var, the use of AD also enabled extension of the framework to the problem of parameter calibration (or, ``learning parameters'' in today's speak) from observations, e.g., \cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. Arguably, this work heralded much of today's efforts in ``online'' learning of parameterization schemes, where the functional representation between the parameters and the learning data are provided by the numerical implementation of a PDF rather than by a neural network.
+Th desire to make AD for Earth system models written in Fortran (to date the vast majority) has also spurned the development of alternative AD tools with powerful reverse modes, notably OpenAD \cite{Utke:2008ko} and most recently Tapenade \cite{Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
+There is enormous potential to seamlessly integrate the inverse-modeling and machine-learning based approaches through the concept of differentiable programming.
 
 \paragraph{Climate science}
+
+The same goals that have driven the use of sensitivity information in numerical weather prediction (optimal initial conditions for forecasts) or ocean science (state and parameter estimation) apply in the world of climate modeling.
+The recognition that ``good'' initial conditions (e.g., such that are closest to the real or observed system) will lead to improved forecasts on subseasonal, seasonal, interannual, or even decadal time scales has driven major community efforts (e.g., \cite{Meehl.2021}). However, there has been a lack so far in exploiting the use of gradient information to achieve optimal initialization for coupled Earth system models \cite{Frolov.2023}. 
+One conceptual challenge is the presence of multiple timescales in the coupled system and the utility of gradient information beyond many synoptic time scales in the atmosphere and ocean \cite{Lea:2000gv,Lea:2002cv}.
+
+TBD:
+
+Coupled GCM adjoint:
+\cite{Blessing.2014,Lyu.2018,Stammer:2018de}
+
+Neural AGCM:
+\cite{Kochkov.2023}
 
 \paragraph{Transport modeling and flux inversion.}
 % ... GEOS-Chem , Kaminski, ...

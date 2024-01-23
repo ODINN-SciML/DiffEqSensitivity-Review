@@ -92,17 +92,21 @@ Incorrect implementations of this aspect can lead to \textit{perturbation confus
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewank_1989}. 
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models inefficient when differentiating with respect to many parameters. 
 
-If well forward AD is implemented independent of the differential equation and numerical solver involved, it is important to be aware of numerical stability and precision considerations.
-Contrary to common folk, AD is not always \textit{numerically} correct and can lead to wrong gradients. 
-To illustrate this point, consider the following example of ordinary differential equation
+% If well forward AD is implemented independently of the differential equation and numerical solver, the careless combination of both can lead to disastrous numerical errors. 
+If well AD is always algorithmicly correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations. 
+% Contrary to common folk, AD is not always \textit{numerically} correct and can lead to wrong gradients. 
+To illustrate this point, consider the following example of a symple system of ODEs
 \begin{equation}
 \begin{cases}
  \frac{du_1}{dt} = a u_1 - u_1 u_2 & \quad u_1(0) = 1  \\ 
  \frac{du_2}{dt} = - a u_2 + u_1 u_2 & \quad u_2(0) = 1
 \end{cases}
 \end{equation}
-when $a=1$, the solutions are given by $u_1(t) \equiv u_2(t) \equiv 1$. 
-This connection between numerical stability and dual numbers can be also understood by looking at how the sensitivity equations are derived. 
+with $a$ the parameter which respect we want to differentiate. 
+In the simple case of $a=1$, the solutions of the ODE are constant functions $u_1(t) \equiv u_2(t) \equiv 1$. 
+As it is explain in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are design to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
+This leads to wrong gradient calculations that propagate thought the numerical solver without further warning. 
+
 
 \subsubsection{Reverse-mode AD}
 \label{sec:software-reverse-AD}
