@@ -9,8 +9,12 @@ Although here we consider the case of ODEs, that is, when the derivatives are ju
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
 Except for a minority of functions $f(u,\theta, t)$, solutions of the Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
 
-We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
-Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a broader class of functions. 
+We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$, which can be useful within different contexts, which we present in the next subsections.
+
+\subsubsection{Inverse modelling and optimization}
+
+In the context of optimization and inverse modelling, $L$ expresses a distance between the ODE model simulation and some data. 
+
 \begin{itemize}
     \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the distance between the model prediction and the data. Examples of loss functions include the squared error
     \begin{equation}
@@ -52,18 +56,9 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
     \end{equation}
     In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}. being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}. 
-
-
-    \item \textbf{Quantity of interest.} \todo{consider: model sensitivity to parameters}
-    % 
-    Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
-    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
 \end{itemize}
 
-Notice that these cases also include sensitivities of $L$ with respect to the initial condition of the system.
-
-
-In the context of optimization, being able to compute sensitivities allows to perform gradient-based updates on the parameter $\theta$ by 
+In this context, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
 \begin{equation}
     \theta^{k+1} 
     = 
@@ -72,9 +67,26 @@ In the context of optimization, being able to compute sensitivities allows to pe
     \alpha_k 
     \frac{dL}{d\theta^k}.
 \end{equation}
-There exists different variants of gradient descent methods\cite{ruder2016overview-gradient-descent}, and in general they outperform gradient-free optimization schemes [REF].
-Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
 
+Gradient-based methods tend to outperform gradient-free optimization schemes, as they are not prone to the curse of dimensionality \cite{Schartau2017}. While a direct implementation of gradient descent is prone to converge to a local minimum and slow down in a neighborhood of saddle points, variants employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent} to avoid convergence to local minima, and are widely adopted in the field of artificial intelligence to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}). For instance, Adam \cite{Kingma2014} is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update, reducing the risk to converge to local minima. Other broadly employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. ADAM is less prone to converging to a local minimum, while (L-)BFGS has a faster converge rate. Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 
+
+
+
+% Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
+
+
+
+    \subsubsection{Model sensitivity to parameters}
+    % 
+    Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
+    \subsubsection{Diagnosis of the solution}
+    
+    In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
+
+Notice that these cases also include sensitivities of $L$ with respect to the initial condition of the system.
+
+
+\subsubsection{Sensitivity matrix}
 Using the chain rule we can derive
 \begin{equation} 
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.

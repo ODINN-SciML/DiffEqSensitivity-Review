@@ -93,7 +93,7 @@ When gradients are being computed with less than $\sim 100$ parameters, the form
 
 \cite{Baydin_Pearlmutter_Radul_Siskind_2015}
 
-Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver. \todo{I think that we should introduce checkpointing before}
+Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver.
 Furthermore, when reverse AD is applied on the numerical solver, the step-size needs to be adapted to ensure the stability of the backward stesps, further increasing the computational complexity. 
 
 \subsubsection{Further remarks}
@@ -114,7 +114,7 @@ It is important to remark that the underlying machinery of all solvers relies on
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
 This calculation is carried out by another sensitivity method (finite differences, AD) which plays a central role when analyzing the accuracy and stability of the adjoint method. 
 
-\subsubsection{Sensitivity equation}\todo{seems like a repetition}
+\subsubsection{Sensitivity equation}
 
 \subsubsection{Solving the adjoint}
 
@@ -125,7 +125,7 @@ This calculation is carried out by another sensitivity method (finite difference
 
 An equally important consideration when working with adjoints is when these are numerically stable. 
 Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
-Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. \todo{not clear}
+% Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. \todo{not clear}
 
 \vspace*{10px}
 \noindent \textbf{\textit{Solving the backwards mode}}
