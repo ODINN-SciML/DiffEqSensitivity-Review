@@ -36,7 +36,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
     % \todo{this is unclear}
     \item \textbf{Likelihood profiles.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, 
-    \todo{\tiny See my earlier comment: in general, y = H u, with H the state-to-obs operator}
+    \todo{\tiny See my earlier comment: in general, $y_i = H u - \epsilon$, with $H$ the state-to-obs operator, and eps the noise in observation space}
     $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
     If $p(y | t , \theta)$ is the probability distribution of $y$, maximum likelihood estimation consists in finding the parameter $\theta$ as
     \begin{equation}
