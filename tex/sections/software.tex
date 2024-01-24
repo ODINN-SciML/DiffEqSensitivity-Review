@@ -35,8 +35,8 @@ Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of 
 Here we consider the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$, which has analytical solution $u(t) = \sin(\omega t) / \omega$ and can be numerically solved as the solution of the system of ODEs
 \begin{equation}
 \begin{cases}
-    \frac{du}{dt} = v  & \quadd u(0) = 0 \\
-    \frac{dv}{dt} = - \omega^2 u  & \quadd v(0) = 1
+    \frac{du}{dt} = v  & \qquad u(0) = 0 \\
+    \frac{dv}{dt} = - \omega^2 u  & \qquad v(0) = 1
 \end{cases}
 \end{equation}
 using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl}
@@ -176,8 +176,10 @@ Furthermore, this is a forward method and it does not required saving the soluti
 The simplicity of the sensitivity method makes it available in most software for sensitivity analysis, including ... 
 
 However, for stiff systems of ODEs the use of the sensitivity equations is unfeasible \cite{kim_stiff_2021}.
-For systems of stiff-ODEs, the cost of numerically stable solvers is cubic in the number of ODEs, making the complexity of the sensitivity method $\mathcal{O}(n^3p^3)$. 
+For systems of stiff-ODEs, the cost of numerically stable solvers is cubic in the number of ODEs\cite{hairer-solving-2}, making the complexity of the sensitivity method $\mathcal{O}(n^3p^3)$. 
 This complexity makes this method useless for models with many ODEs and/or parameters. 
+
+% Implemented as CSA in Julia
 
 \paragraph{Computing VJPs inside the solver}
 

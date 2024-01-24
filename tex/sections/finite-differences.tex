@@ -27,7 +27,7 @@ Equations \eqref{eq:finite_diff} and \eqref{eq:finite_diff2} involve the subtrac
 On the other hand, large values of the stepsize give inaccurate estimations of the gradient. 
 Finding the optimal value of $\varepsilon$ that trade-offs these two effects is sometimes called the \textit{stepsize dilemma} \cite{mathur2012stepsize-finitediff}. 
 % \todo{Would be nice to show more formally the effect of the round-off error, see e.g. https://book.sciml.ai/notes/08-Forward-Mode_Automatic_Differentiation_(AD)_via_High_Dimensional_Algebras/}
-Due to this, some heuristics and algorithms have been introduced in order to pick the value of $\varepsilon$ \cite{mathur2012stepsize-finitediff, BARTON_1992_finite_diff, SUNDIALS-hindmarsh2005sundials}, 
+Due to this, some heuristics and algorithms have been introduced in order to pick the value of $\varepsilon$ \cite{mathur2012stepsize-finitediff, BARTON_1992_finite_diff, SUNDIALS-hindmarsh2005sundials}. 
 Some of these methods require some a priori knowledge about the function to be differentiated, and others are based on arbitrary historical rules. 
 If many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
 We will further emphasize this point in Section \ref{sec:computational-implementation}.
@@ -37,7 +37,6 @@ Given a Jacobian matrix $J = \frac{\partial f}{\partial u}$ (or the sensitivity 
 \begin{equation}
     Jv \approx \frac{f(u + \varepsilon v, \theta, t) - f(u, \theta, t)}{\varepsilon}
 \end{equation}
-
 This approach is used in numerical solvers based on Krylov methods, where linear systems are solved by iteratively solving matrix-vectors products \cite{Ipsen_Meyer_1998}.
 
 % Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines} \cite{ascher2008numerical}. 

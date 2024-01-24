@@ -3,7 +3,8 @@
 \newcommand{\by}{\textbf{y}}
 \def\E{\mathbb{E}}
 
-\subsection{Models and data}
+\subsubsection{Models and data}
+
 System of ordinary differential equations (ODEs) can generally be described as
 \begin{equation}\label{eq:prob_statement}
     \begin{split}
@@ -25,7 +26,8 @@ Denoting by $\theta = (x_0, p)$ the vector containing the ICs and the parameters
 \end{split}
 \end{equation}
 
-\subsection{Maximum likelihood estimate, maximum a priori and loss function}
+\subsubsection{Maximum likelihood estimate, maximum a priori and loss function}
+
 \todo[inline]{The following text could be mixed with the "empirical loss functions" bullet point of the "preliminiary", so that we show the connection between maximum likelihood estimation and the minimization of the RSS.}
 
 Taking expectations over the noise realizations yields $ \E [y(t)] = h(\M(t,\theta))$, and it follows that the conditional likelihood of each observation $y_k \equiv y(t_k)$, given the parameters $\theta$ and the model $\M$ denoted by $p( y_k | \theta, \M )$, follows the distribution of the residuals $\epsilon_k \equiv \epsilon(t_k) = y(t_k) - h\left(\M(t_k, \theta)\right)$, which corresponds to the multivariate normal distribution $\mathcal{N}_{0, \Sigma_y}$.
@@ -68,8 +70,8 @@ As an example, the plain vanilla gradient descent algorithm is given by
 where $\gamma$ is the learning rate. Other gradient-based algorithms, such as the ADAM optimizer used in the section below, employ more advanced updating strategies to avoid convergence to local minima but stay in the spirit of Eq. \ref{eq:SDG}.
 
 
-\subsection{Bayesian inference with Markov Chain Monte Carlo methods}
+% \subsection{Bayesian inference with Markov Chain Monte Carlo methods}
 
-\subsection{Model sensitivity to parameters}
+% \subsection{Model sensitivity to parameters}
 
-\subsection{Diagnosis of the solution}
+% \subsection{Diagnosis of the solution}

@@ -1,37 +1,43 @@
 \label{appendix:dual-number-solver}
 
-In this section, we are going to consider certain errors that can potentially show up when combining AD with numerical solver. 
-Numerical solvers for differential equations usually define an error term computed as \cite{hairer-solving-1, Rackauckas_Nie_2016}
+In this section, we are going to consider certain errors that can potentially show up when combining AD with a numerical solver. 
+Numerical solvers for differential equations usually evaluate internally an estimated scaled error computed as 
+define an error term computed as \cite{hairer-solving-1, Rackauckas_Nie_2016}
 \begin{equation}
     \text{Err}_\text{scaled}^{n+1}
     =
-    \left( \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{n+1}}{atol + rtol \max (u_i^{n_1}, \hat u_i^{n+1})} \right)^2 \right)^{\frac{1}{2}}
+    \left( \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \, \times \, M} \right)^2 \right)^{\frac{1}{2}}
     \label{eq:internal-norm-wrong}
 \end{equation}
-where $\text{err}_i^{n+1} = u_i^{n+1} - \hat u_i^{n+1}$ is the estimated local error.
-Different strategies for computing the error exist, for example they can be based on two approximation to the solution or in theoretical upper bounds provided by the numerical solver. 
-The choice of the norm $\| \cdot \|_2 / length(\cdot)$ has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that if we increase the size of the systems of ODEs this should not affect the stepsize choice (imagine for example if we just duplicate the equations), but other options can be considered \cite{hairer-solving-1}.   
-% cite Ranocha, 
+with $\mathfrak{abstol}$ and $\mathfrak{reltol}$ the absolute and relative solver tolerances (customize), respectively; $M$ is the maximum expected value of the numerical solution; and $\text{err}_i^{n+1}$ is an estimation of the numerical error at step $n+1$. 
+Common choices for these include $M = \max (u_i^{n+1}, \hat u_i^{n+1})$ and $\text{err}_i^{n+1} = u_i^{n+1} - \hat u_i^{n+1}$, but these can vary between solvers. 
+Estimations of the local error $\text{err}_i^{n+1}$ can be based on two approximation to the solution or in theoretical upper bounds provided by the numerical solver. 
+The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a mere increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
 % Chris on https://discourse.julialang.org/t/default-norm-used-in-ode-error-control/70995/4 mention to this norm to be the defaul since 70s
 
 The goal of a good stepize controller is to pick $\Delta t_{n+1}$ as large as possible (so the solver requires less total steps) at the same time that $\text{Err}_\text{scaled} \leq 1$. 
-One of the most used methods is the proportional-integral controller (PIC) that updates the stepsize according to \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022}
+One of the most used methods to archive this is the proportional-integral controller (PIC) that updates the stepsize according to \cite{hairer-solving-2, Ranocha_Dalcin_Parsani_Ketcheson_2022}
 \begin{equation}
     \Delta t_{n+1} = \eta \, \Delta t_n
     \qquad 
-    \eta = w_{n+1}^{\beta_1 / k} w_n^{\beta_2 / k} w_{n-1}^{\beta_3 / k}
+    \eta = w_{n+1}^{\beta_1 / q} w_n^{\beta_2 / q} w_{n-1}^{\beta_3 / q}
     \label{eq:PIC}
 \end{equation}
-with $w_{n+1} = 1 / \text{Err}_\text{scaled}^{n+1}$ the inverse of the scaled error estimates, and ...
+with $w_{n+1} = 1 / \text{Err}_\text{scaled}^{n+1}$ the inverse of the scaled error estimates; $\beta_1$, $\beta_2$, and $\beta_3$ numerical coefficients defined by the controller; and $q$ the order of the numerical solver. 
 If the stepsize $\Delta t_{n+1}$ proposed in Equation \eqref{eq:PIC} to update from $u^{n+1}$ to $u^{n+2}$ does not satisfy $\text{Err}_\text{scaled}^{n+2} \leq 1$, a new smaller stepsize is proposed. 
 When $\eta < 1$ (which is the case for simple controllers with $\beta_2 = \beta_3 = 0$), Equation \eqref{eq:PIC} can be used for the local update. 
 It is also common to restrict $\eta \in [\eta_\text{min}, \eta_\text{max}]$ so the stepsize does not change abruptly \cite{hairer-solving-1}. 
 
-When performing forward AD on top of a numerical solver, the error used in the stepsize controller needs to naturally account for the errors induced in the numerical solution of the original ODE and also the errors in the dual component carrying the value of the derivative. 
+When performing forward AD thought numerical solver, the error used in the stepsize controller needs to naturally account for both the errors induced in the numerical solution of the original ODE and the errors in the dual component carrying the value of the sensitivity. 
 This relation between the numerical solver and AD has been made explicit when we presented the relationship between forward AD and the sensitivity equations (Section \ref{section:sensitivity-equation}, Equation \eqref{eq:sensitivity-equation-AD}). 
 To illustrate this, let us consider the simple ODE example from Section \ref{section:software-Forward-AD}, consisting in the system of equations 
-... 
-Notice that this ODE has a simple analytical solution $u_1(t) = u_2(t) = 0$ for all times $t$, making this problem very simple to solve numerically.
+\begin{equation}
+\begin{cases}
+ \frac{du_1}{dt} = a u_1 - u_1 u_2 & \quad u_1(0) = 1  \\ 
+ \frac{du_2}{dt} = - a u_2 + u_1 u_2 & \quad u_2(0) = 1.
+\end{cases}
+\end{equation}
+Notice that for $a = 1$ this ODE admits a simple analytical solution $u_1(t) = u_2(t) = 0$ for all times $t$, making this problem very simple to solve numerically.
 The following code solves for the derivative with respect to the parameter $a$ using two different methods \footnote{Full code available at ...}. 
 The second method using forward AD with dual numbers declares the \texttt{internalnorm} argument according to Equation \eqref{eq:internal-norm-wrong}.
 \begin{jllisting}
@@ -55,16 +61,16 @@ grad1 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = Forwa
 # grad1 = ([6278.15677493293],)
 \end{jllisting}
 The reason why the two methods give different answers is because the error estimation by the stepsize controller is ignoring numerical errors in the dual component. 
-In the later case, the stepsize controller is drastically underestimating the errors to $\text{err}_i^{n+1} = 0$, which makes the stepsize $\Delta t_{n+1}$ to increase exponentially at every step. 
-This can be fixed by instead considering 
+In the later case, the local estimated error is drastically underestimated to $\text{err}_i^{n+1} = 0$, which makes the stepsize $\Delta t_{n+1}$ to increase by a multiplicative factor at evary step. 
+This can be fixed by instead considering a norm that accounts for both the primal and dual components in the forward pass, 
 \begin{align}
     \text{Err}_\text{scaled}^{n+1}
     =
     \Bigg[ \frac{1}{n(p+1)} \Bigg( 
-    &\sum_{i=1}^n \left( \frac{u_i^{n+1} - \hat u_i^{n+1}}{atol + rtol \max (u_i^{n_1}, \hat u_i^{n+1})} \right)^2 \nonumber \\
+    &\sum_{i=1}^n \left( \frac{u_i^{n+1} - \hat u_i^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \max (u_i^{n_1}, \hat u_i^{n+1})} \right)^2 \nonumber \\
     + 
     &\sum_{i=1}^n \sum_{j=1}^p  
-    \left( \frac{s_{ij}^{n+1} - \hat s_{ij}^{n+1}}{atol + rtol \max (s_{ij}^{n_1}, \hat s_{ij}^{n+1})} \Bigg)^2 \right)
+    \left( \frac{s_{ij}^{n+1} - \hat s_{ij}^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \max (s_{ij}^{n_1}, \hat s_{ij}^{n+1})} \Bigg)^2 \right)
     \Bigg]^{\frac{1}{2}},
     \label{eq:internal-norm-correct} 
 \end{align}

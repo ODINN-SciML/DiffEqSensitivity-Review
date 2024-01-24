@@ -55,13 +55,15 @@ When computing first order derivatives, we can ignore everything of order $\epsi
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
 In Section \ref{sec:computational-implementation} we will explore how this is implemented and compare this approach with complex-step differentiation. 
 
+% Here we need to say that for p > 1 the dual component is carrying the value of the sensitivity!!! This will make the connection with sensitivity equations more explicit. 
+
 \paragraph{Computational graph}
 % \vspace*{10px}
 % \noindent \textbf{\textit{Computational graph}}
 % \vspace*{5px}
 
 A useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
-Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical} or Wengert trace/tape\cite{Wengert_1964, Bauer_1974}. 
+Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or Wengert trace/tape\cite{Wengert_1964, Bauer_1974}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
 We can define $v_1, v_2, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
@@ -90,7 +92,7 @@ The only requirement for differentiation is being able to compute the derivative
 \subsubsection{Backward mode}
 
 Backward mode AD is also known as the adjoint of cotangent linear mode or backpropagation in the field of machine learning. 
-The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that do not depend of the number of parameters to differentiate \cite{Griewack-on-AD, Wolfe_1982}, a point known as \textit{cheap gradient principle} \cite{griewank2012invented}.  
+The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that do not depend of the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as \textit{cheap gradient principle} \cite{griewank2012invented}.  
 Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in backwards mode as
 \begin{equation}
  \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
