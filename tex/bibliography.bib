@@ -1,44 +1,284 @@
-@article{Vadlamani_Xiao_Yablonovitch_2020,
-    author = "Vadlamani, Sri Krishna and Xiao, Tianyao Patrick and Yablonovitch, Eli",
-    title = "Physics successfully implements Lagrange multiplier optimization",
-    volume = "117",
-    ISSN = "0027-8424",
-    DOI = "10.1073/pnas.2015192117",
-    number = "43",
-    journal = "Proceedings of the National Academy of Sciences of the United States of America",
+@article{Elliott_Peraire_1996,
+    author = "Elliott, Jonathan and Peraire, Jaime",
+    title = "Aerodynamic design using unstructured meshes",
+    DOI = "10.2514/6.1996-1941",
+    note = "This has an example of the hardcore adjoint method implemented for aerodynamics. It may help to read this to see how the adjoint equations is being solved and the size of the problem.",
+    journal = "Fluid Dynamics Conference",
+    year = "1996"
+}
+
+@article{Giles_Pierce_2000,
+    author = "Giles, Michael B. and Pierce, Niles A.",
+    title = "An Introduction to the Adjoint Approach to Design",
+    volume = "65",
+    ISSN = "1386-6184",
+    DOI = "10.1023/a:1011430410075",
+    number = "3–4",
+    journal = "Flow, Turbulence and Combustion",
+    year = "2000",
+    pages = "393–415"
+}
+
+@book{ascher2008numerical,
+    author = "Ascher, Uri M",
+    title = "Numerical methods for evolutionary differential equations",
+    year = "2008",
+    publisher = "SIAM"
+}
+
+@inproceedings{Johnson,
+    author = "Johnson, Steven G.",
+    title = "Notes on Adjoint Methods for 18.335",
+    year = "2012"
+}
+
+@article{Bocquet2019,
+    author = "Bocquet, Marc and Brajard, Julien and Carrassi, Alberto and Bertino, Laurent",
+    title = "Data Assimilation as a Learning Tool to Infer Ordinary Differential Equation Representations of Dynamical Models",
+    date = "2019-07-10",
+    journaltitle = "Nonlinear Processes in Geophysics",
+    volume = "26",
+    number = "3",
+    pages = "143--162",
+    issn = "1607-7946",
+    doi = "10.5194/npg-26-143-2019",
+    url = "https://npg.copernicus.org/articles/26/143/2019/",
+    abstract = "Abstract. Recent progress in machine learning has shown how to forecast and, to some extent, learn the dynamics of a model from its output, resorting in particular to neural networks and deep learning techniques. We will show how the same goal can be directly achieved using data assimilation techniques without leveraging on machine learning software libraries, with a view to high-dimensional models. The dynamics of a model are learned from its observation and an ordinary differential equation (ODE) representation of this model is inferred using a recursive nonlinear regression. Because the method is embedded in a Bayesian data assimilation framework, it can learn from partial and noisy observations of a state trajectory of the physical model. Moreover, a space-wise local representation of the ODE system is introduced and is key to coping with high-dimensional models. It has recently been suggested that neural network architectures could be interpreted as dynamical systems. Reciprocally, we show that our ODE representations are reminiscent of deep learning architectures. Furthermore, numerical analysis considerations of stability shed light on the assets and limitations of the method. The method is illustrated on several chaotic discrete and continuous models of various dimensions, with or without noisy observations, with the goal of identifying or improving the model dynamics, building a surrogate or reduced model, or producing forecasts solely from observations of the physical model.",
+    keywords = "inference,parameter-estimation"
+}
+
+@article{Schartau2017,
+    author = "Schartau, Markus and Wallhead, Philip and Hemmings, John and Löptien, Ulrike and Kriest, Iris and Krishna, Shubham and Ward, Ben A. and Slawig, Thomas and Oschlies, Andreas",
+    title = "Reviews and Syntheses: Parameter Identification in Marine Planktonic Ecosystem Modelling",
+    date = "2017-03-29",
+    journaltitle = "Biogeosciences",
+    volume = "14",
+    number = "6",
+    pages = "1647--1701",
+    issn = "1726-4189",
+    doi = "10.5194/bg-14-1647-2017",
+    url = "https://bg.copernicus.org/articles/14/1647/2017/",
+    abstract = "Abstract. To describe the underlying processes involved in oceanic plankton dynamics is crucial for the determination of energy and mass flux through an ecosystem and for the estimation of biogeochemical element cycling. Many planktonic ecosystem models were developed to resolve major processes so that flux estimates can be derived from numerical simulations. These results depend on the type and number of parameterizations incorporated as model equations. Furthermore, the values assigned to respective parameters specify a model's solution. Representative model results are those that can explain data; therefore, data assimilation methods are utilized to yield optimal estimates of parameter values while fitting model results to match data. Central difficulties are (1) planktonic ecosystem models are imperfect and (2) data are often too sparse to constrain all model parameters. In this review we explore how problems in parameter identification are approached in marine planktonic ecosystem modelling. We provide background information about model uncertainties and estimation methods, and how these are considered for assessing misfits between observations and model results. We explain differences in evaluating uncertainties in parameter estimation, thereby also discussing issues of parameter identifiability. Aspects of model complexity are addressed and we describe how results from cross-validation studies provide much insight in this respect. Moreover, approaches are discussed that consider time- and space-dependent parameter values. We further discuss the use of dynamical/statistical emulator approaches, and we elucidate issues of parameter identification in global biogeochemical models. Our review discloses many facets of parameter identification, as we found many commonalities between the objectives of different approaches, but scientific insight differed between studies. To learn more from results of planktonic ecosystem models we recommend finding a good balance in the level of sophistication between mechanistic modelling and statistical data assimilation treatment for parameter estimation.",
+    keywords = "ecosystem-models"
+}
+
+@article{Schneider2017,
+    author = "Schneider, Tapio and Lan, Shiwei and Stuart, Andrew and Teixeira, João",
+    title = "Earth {{System Modeling}} 2.0: {{A Blueprint}} for {{Models That Learn From Observations}} and {{Targeted High}}‐{{Resolution Simulations}}",
+    date = "2017-12-28",
+    journaltitle = "Geophysical Research Letters",
+    volume = "44",
+    number = "24",
+    eprint = "1709.00037",
+    eprinttype = "arxiv",
+    pages = "12,396--12,417",
+    issn = "0094-8276",
+    doi = "10.1002/2017GL076101",
+    url = "https://onlinelibrary.wiley.com/doi/10.1002/2017GL076101",
+    abstract = "Climate projections continue to be marred by large uncertainties, which originate in processes that need to be parameterized, such as clouds, convection, and ecosystems. But rapid progress is now within reach. New computational tools and methods from data assimilation and machine learning make it possible to integrate global observations and local high-resolution simulations in an Earth system model (ESM) that systematically learns from both and quantifies uncertainties. Here we propose a blueprint for such an ESM. We outline how parameterization schemes can learn from global observations and targeted high-resolution simulations, for example, of clouds and convection, through matching low-order statistics between ESMs, observations, and high-resolution simulations. We illustrate learning algorithms for ESMs with a simple dynamical system that shares characteristics of the climate system; and we discuss the opportunities the proposed framework presents and the challenges that remain to realize it.",
+    keywords = "climate,DL,inference,machinelearning,parameter-estimation,sciml"
+}
+
+@article{Razavi.2021,
+    author = "Razavi, Saman and Jakeman, Anthony and Saltelli, Andrea and Prieur, Clémentine and Iooss, Bertrand and Borgonovo, Emanuele and Plischke, Elmar and Piano, Samuele Lo and Iwanaga, Takuya and Becker, William and Tarantola, Stefano and Guillaume, Joseph H A and Jakeman, John and Gupta, Hoshin and Melillo, Nicola and Rabitti, Giovanni and Chabridon, Vincent and Duan, Qingyun and Sun, Xifu and Smith, Stefán and Sheikholeslami, Razi and Hosseini, Nasim and Asadzadeh, Masoud and Puy, Arnald and Kucherenko, Sergei and Maier, Holger R",
+    year = "2021",
+    rating = "0",
+    title = "{The Future of Sensitivity Analysis: An essential discipline for systems modeling and policy support}",
+    journal = "Environmental Modelling \\& Software",
+    doi = "10.1016/j.envsoft.2020.104954",
+    url = "http://doi.org/10.1016/j.envsoft.2020.104954",
+    abstract = "{Environmental Modelling and Software, 137 (2021) 104954. doi:10.1016/j.envsoft.2020.104954}",
+    pages = "104954",
+    volume = "137",
+    keywords = "",
+    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2021/2021-Razavi-Environmental\%20Modelling\%20\&\%20Software.pdf"
+}
+
+@article{ruder2016overview-gradient-descent,
+    author = "Ruder, Sebastian",
+    title = "An overview of gradient descent optimization algorithms",
+    journal = "arXiv preprint arXiv:1609.04747",
+    year = "2016"
+}
+
+@article{Oden:2010tv,
+    author = "Oden, J Tinsley and Moser, Robert and Ghattas, Omar",
+    year = "2010",
+    rating = "0",
+    title = "{Computer Predictions with Quantified Uncertainty, Part II}",
+    journal = "SIAM News",
+    pages = "1 -- 4",
+    number = "10",
+    volume = "43",
+    keywords = "",
+    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2010/2010-Oden-SIAM\%20News\_1.pdf"
+}
+
+@article{BuiThanh:2012ul,
+    author = "Bui-Thanh, Tan and Burstedde, Carsten and Ghattas, Omar and Martin, James and Stadler, Georg and Wilcox, Lucas C",
+    year = "2012",
+    rating = "0",
+    title = "{Extreme-scale UQ for Bayesian inverse problems governed by PDEs}",
+    journal = "IEEE Computer Society Press",
+    url = "https://dl.acm.org/citation.cfm?id=2389000",
+    abstract = "{Quantifying uncertainties in large-scale simulations has emerged as the central challenge facing CS\\&E. When the simulations require supercomputers, and uncertain parameter dimensions are large, conventional UQ methods fail. Here we address uncertainty quantification for large-scale inverse problems in a Bayesian inference framework: given data and model uncertainties, find the pdf describing parameter uncertainties. To overcome the curse of dimensionality of conventional methods, we exploit the fact that the data are …}",
+    pages = "3",
+    keywords = "",
+    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2012/2012-Bui-Thanh-IEEE\%20Computer\%20Society\%20Press\_1.pdf"
+}
+
+@article{Ghattas.2021,
+    author = "Ghattas, Omar and Willcox, Karen",
+    year = "2021",
+    title = "{Learning physics-based models from data: perspectives from inverse problems and model reduction}",
+    journal = "Acta Numerica",
+    issn = "0962-4929",
+    doi = "10.1017/s0962492921000064",
+    abstract = "{This article addresses the inference of physics models from data, from the perspectives of inverse problems and model reduction. These fields develop formulations that integrate data into physics-based models while exploiting the fact that many mathematical models of natural and engineered systems exhibit an intrinsically low-dimensional solution manifold. In inverse problems, we seek to infer uncertain components of the inputs from observations of the outputs, while in model reduction we seek low-dimensional models that explicitly capture the salient features of the input–output map through approximation in a low-dimensional subspace. In both cases, the result is a predictive model that reflects data-driven learning yet deeply embeds the underlying physics, and thus can be used for design, control and decision-making, often with quantified uncertainties. We highlight recent developments in scalable and efficient algorithms for inverse problems and model reduction governed by large-scale models in the form of partial differential equations. Several illustrative applications to large-scale complex problems across different domains of science and engineering are provided.}",
+    pages = "445--554",
+    volume = "30",
+    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2021/2021-Ghattas-Acta\%20Numerica.pdf"
+}
+
+@article{Ramsundar_Krishnamurthy_Viswanathan_2021,
+    author = "Ramsundar, Bharath and Krishnamurthy, Dilip and Viswanathan, Venkatasubramanian",
+    title = "Differentiable Physics: A Position Piece",
+    DOI = "10.48550/arxiv.2109.07573",
+    journal = "arXiv",
+    year = "2021"
+}
+
+@article{Shen_diff_modelling,
+    author = "Shen, Chaopeng and Appling, Alison P. and Gentine, Pierre and Bandai, Toshiyuki and Gupta, Hoshin and Tartakovsky, Alexandre and Baity-Jesi, Marco and Fenicia, Fabrizio and Kifer, Daniel and Li, Li and Liu, Xiaofeng and Ren, Wei and Zheng, Yi and Harman, Ciaran J. and Clark, Martyn and Farthing, Matthew and Feng, Dapeng and Kumar, Praveen and Aboelyazeed, Doaa and Rahmani, Farshid and Song, Yalan and Beck, Hylke E. and Bindas, Tadd and Dwivedi, Dipankar and Fang, Kuai and Höge, Marvin and Rackauckas, Chris and Mohanty, Binayak and Roy, Tirthankar and Xu, Chonggang and Lawson, Kathryn",
+    title = "Differentiable modelling to unify machine learning and physical models for geosciences",
+    DOI = "10.1038/s43017-023-00450-9",
+    journal = "Nature Reviews Earth \\& Environment",
+    year = "2023",
+    pages = "1–16"
+}
+
+@article{Gelbrecht-differential-programming-Earth,
+    author = "Gelbrecht, M. and White, A. and Bathiany, S. and Boers, N.",
+    title = "Differentiable programming for Earth system modeling",
+    journal = "Geoscientific Model Development",
+    volume = "16",
+    year = "2023",
+    number = "11",
+    pages = "3123--3135",
+    url = "https://gmd.copernicus.org/articles/16/3123/2023/",
+    doi = "10.5194/gmd-16-3123-2023"
+}
+
+@book{ramsay2017dynamic,
+    author = "Ramsay, James and Hooker, Giles",
+    title = "Dynamic data analysis",
+    year = "2017",
+    publisher = "Springer"
+}
+
+@article{PINNs_2019,
+    author = "Raissi, M. and Perdikaris, P. and Karniadakis, G.E.",
+    title = "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
+    volume = "378",
+    ISSN = "0021-9991",
+    DOI = "10.1016/j.jcp.2018.10.045",
+    journal = "Journal of Computational Physics",
+    year = "2019",
+    pages = "686–707"
+}
+
+@article{rackauckas2020universal,
+    author = "Rackauckas, Christopher and Ma, Yingbo and Martensen, Julius and Warner, Collin and Zubov, Kirill and Supekar, Rohit and Skinner, Dominic and Ramadhan, Ali and Edelman, Alan",
+    title = "Universal differential equations for scientific machine learning",
+    journal = "arXiv preprint arXiv:2001.04385",
+    year = "2020"
+}
+
+@article{Dandekar_2020,
+    author = "Dandekar, Raj and Rackauckas, Chris and Barbastathis, George",
+    title = "A Machine Learning-Aided Global Diagnostic and Comparative Tool to Assess Effect of Quarantine Control in COVID-19 Spread",
+    volume = "1",
+    ISSN = "2666-3899",
+    DOI = "10.1016/j.patter.2020.100145",
+    number = "9",
+    journal = "Patterns",
     year = "2020",
-    pages = "26639–26650"
+    pages = "100145"
+}
+
+@article{chen_neural_2019,
+    author = "Chen, Ricky TQ and Rubanova, Yulia and Bettencourt, Jesse and Duvenaud, David K",
+    title = "Neural ordinary differential equations",
+    journal = "Advances in neural information processing systems",
+    volume = "31",
+    year = "2018"
+}
+
+@inproceedings{li2020scalable,
+    author = "Li, Xuechen and Wong, Ting-Kam Leonard and Chen, Ricky TQ and Duvenaud, David",
+    title = "Scalable gradients for stochastic differential equations",
+    booktitle = "International Conference on Artificial Intelligence and Statistics",
+    pages = "3870--3882",
+    year = "2020",
+    organization = "PMLR"
 }
 
 @book{hairer-solving-1,
-  title={Solving ordinary differential equations I},
-  author={Hairer, Ernst and Wanner, Gerhard and Nørsett, Syvert },
-  publisher={Springer Berlin Heidelberg New York}
+    author = "Hairer, Ernst and Wanner, Gerhard and Nørsett, Syvert",
+    title = "Solving ordinary differential equations I",
+    publisher = "Springer Berlin Heidelberg New York"
 }
 
-@article{Rackauckas_Nie_2016,
-    author = "Rackauckas, Christopher and Nie, Qing",
-    title = "DifferentialEquations.jl – A Performant and Feature-Rich Ecosystem for Solving Differential Equations in Julia",
-    volume = "5",
-    ISSN = "2049-9647",
-    DOI = "10.5334/jors.151",
-    number = "1",
-    journal = "Journal of Open Research Software",
-    year = "2016",
-    pages = "15"
+@book{hairer-solving-2,
+    author = "Wanner, Gerhard and Hairer, Ernst",
+    title = "Solving ordinary differential equations II",
+    publisher = "Springer Berlin Heidelberg New York"
 }
 
-@article{Ranocha_Dalcin_Parsani_Ketcheson_2022,
-    author = "Ranocha, Hendrik and Dalcin, Lisandro and Parsani, Matteo and Ketcheson, David I.",
-    title = "Optimized Runge-Kutta Methods with Automatic Step Size Control for Compressible Computational Fluid Dynamics",
-    volume = "4",
-    ISSN = "2096-6385",
-    DOI = "10.1007/s42967-021-00159-w",
-    note = "Paper with the RDPK3Sp35 method",
+@book{Griewank:2008kh,
+    author = "Griewank, Andreas and Walther, Andrea",
+    year = "2008",
+    rating = "0",
+    title = "{Evaluating Derivatives}",
+    isbn = "978-0-89871-659-7",
+    url = "https://doi.org/10.1137/1.9780898717761",
+    keywords = "",
+    doi = "10.1137/1.9780898717761",
+    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2008/2008-Griewank-.pdf"
+}
+
+@book{Naumann.2011,
+    author = "Naumann, Uwe",
+    year = "2011",
+    title = "{The Art of Differentiating Computer Programs}",
+    isbn = "9781611972061",
+    url = "https://epubs.siam.org/doi/10.1137/1.9781611972078",
+    publisher = "SIAM",
+    doi = "10.1137/1.9781611972078"
+}
+
+@article{Giering:1998in,
+    author = "Giering, Ralf and Kaminski, Thomas",
+    year = "1998",
+    rating = "0",
+    title = "{Recipes for adjoint code construction}",
+    journal = "ACM Trans Math Softw",
+    issn = "0098-3500",
+    doi = "10.1145/293686.293695",
+    url = "https://doi.org/10.1145/293686.293695",
+    pages = "437 -- 474",
     number = "4",
-    journal = "Communications on Applied Mathematics and Computation",
-    year = "2022",
-    pages = "1191–1228"
+    volume = "24",
+    keywords = "",
+    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/1998/1998-Giering-ACM\%20Trans\%20Math\%20Softw.pdf"
+}
+
+@article{Innes_Zygote,
+    author = "Innes, Mike and Edelman, Alan and Fischer, Keno and Rackauckas, Chris and Saba, Elliot and Shah, Viral B and Tebbutt, Will",
+    title = "A Differentiable Programming System to Bridge Machine Learning and Scientific Computing",
+    DOI = "10.48550/arxiv.1907.07587",
+    journal = "arXiv",
+    year = "2019"
 }
 
 @techreport{bradley2013pde,
@@ -79,6 +319,419 @@
     pages = "3373–3378"
 }
 
+@article{Lyness_1967,
+    author = "Lyness, J N",
+    title = "Numerical algorithms based on the theory of complex variable",
+    DOI = "10.1145/800196.805983",
+    journal = "Proceedings of the 1967 22nd national conference on -",
+    year = "1967",
+    pages = "125–133"
+}
+
+@article{Lyness_Moler_1967,
+    author = "Lyness, J N and Moler, C B",
+    title = "Numerical Differentiation of Analytic Functions",
+    volume = "4",
+    ISSN = "0036-1429",
+    DOI = "10.1137/0704019",
+    number = "2",
+    journal = "SIAM Journal on Numerical Analysis",
+    year = "1967",
+    pages = "202–210"
+}
+
+@article{Squire_Trapp_1998_complex_diff,
+    author = "Squire, William and Trapp, George",
+    title = "Using Complex Variables to Estimate Derivatives of Real Functions",
+    volume = "40",
+    ISSN = "0036-1445",
+    DOI = "10.1137/s003614459631241x",
+    year = "1998",
+    pages = "110–112"
+}
+
+@article{Martins_Sturdza_Alonso_2003_complex_differentiation,
+    author = "Martins, Joaquim R. R. A. and Sturdza, Peter and Alonso, Juan J.",
+    title = "The complex-step derivative approximation",
+    volume = "29",
+    ISSN = "0098-3500",
+    DOI = "10.1145/838250.838251",
+    journal = "ACM Transactions on Mathematical Software (TOMS)",
+    year = "2003",
+    pages = "245–262"
+}
+
+@article{Lantoine_Russell_Dargent_2012,
+    author = "Lantoine, Gregory and Russell, Ryan P. and Dargent, Thierry",
+    title = "Using Multicomplex Variables for Automatic Computation of High-Order Derivatives",
+    volume = "38",
+    ISSN = "0098-3500",
+    DOI = "10.1145/2168773.2168774",
+    number = "3",
+    journal = "ACM Transactions on Mathematical Software (TOMS)",
+    year = "2012",
+    pages = "16"
+}
+
+@book{ascher2008-numerical-methods,
+    author = "Ascher, Uri M. and Greif, Chen",
+    title = "A First Course in Numerical Methods",
+    publisher = "Society for Industrial and Applied Mathematics",
+    year = "2011",
+    doi = "10.1137/9780898719987",
+    address = "Philadelphia, PA",
+    edition = ""
+}
+
+@article{Goldberg_1991_floatingpoint,
+    author = "Goldberg, David",
+    title = "What every computer scientist should know about floating-point arithmetic",
+    volume = "23",
+    ISSN = "0360-0300",
+    DOI = "10.1145/103162.103163",
+    number = "1",
+    journal = "ACM Computing Surveys (CSUR)",
+    year = "1991",
+    pages = "5–48"
+}
+
+@phdthesis{mathur2012stepsize-finitediff,
+    author = "Mathur, Ravishankar",
+    title = "An analytical approach to computing step sizes for finite-difference derivatives",
+    year = "2012"
+}
+
+@article{BARTON_1992_finite_diff,
+    author = "Barton, Russell R.",
+    title = "Computing Forward Difference Derivatives In Engineering Optimization",
+    volume = "20",
+    ISSN = "0305-215X",
+    DOI = "10.1080/03052159208941281",
+    number = "3",
+    journal = "Engineering Optimization",
+    year = "1992",
+    pages = "205–224"
+}
+
+@article{SUNDIALS-hindmarsh2005sundials,
+    author = "Hindmarsh, Alan C and Brown, Peter N and Grant, Keith E and Lee, Steven L and Serban, Radu and Shumaker, Dan E and Woodward, Carol S",
+    title = "SUNDIALS: Suite of nonlinear and differential/algebraic equation solvers",
+    journal = "ACM Transactions on Mathematical Software (TOMS)",
+    volume = "31",
+    number = "3",
+    pages = "363--396",
+    year = "2005",
+    publisher = "ACM New York, NY, USA"
+}
+
+@article{Ipsen_Meyer_1998,
+    author = "Ipsen, Ilse C. F. and Meyer, Carl D.",
+    title = "The Idea Behind Krylov Methods",
+    volume = "105",
+    ISSN = "0002-9890",
+    DOI = "10.1080/00029890.1998.12004985",
+    number = "10",
+    journal = "The American Mathematical Monthly",
+    year = "1998",
+    pages = "889–899"
+}
+
+@article{ma_comparison_2021,
+    author = "Ma, Yingbo and Dixit, Vaibhav and Innes, Mike and Guo, Xingjian and Rackauckas, Christopher",
+    title = "A {Comparison} of {Automatic} {Differentiation} and {Continuous} {Sensitivity} {Analysis} for {Derivatives} of {Differential} {Equation} {Solutions}",
+    url = "http://arxiv.org/abs/1812.01892",
+    urldate = "2022-02-25",
+    journal = "arXiv:1812.01892 [cs]",
+    month = "July",
+    year = "2021",
+    note = "arXiv: 1812.01892",
+    keywords = "Mathematics - Numerical Analysis",
+    annote = "Comment: 13 pages, 3 figures, 2 tables",
+    file = "arXiv Fulltext PDF:/Users/Bolib001/Zotero/storage/7SPFK4KS/Ma et al. - 2021 - A Comparison of Automatic Differentiation and Cont.pdf:application/pdf;arXiv.org Snapshot:/Users/Bolib001/Zotero/storage/RJJ872XV/1812.html:text/html"
+}
+
+@article{Bezanson_Karpinski_Shah_Edelman_2012,
+    author = "Bezanson, Jeff and Karpinski, Stefan and Shah, Viral B and Edelman, Alan",
+    title = "Julia: A Fast Dynamic Language for Technical Computing",
+    DOI = "10.48550/arxiv.1209.5145",
+    journal = "arXiv",
+    year = "2012"
+}
+
+@article{Julialang_2017,
+    author = "Bezanson, Jeff and Edelman, Alan and Karpinski, Stefan and Shah, Viral B.",
+    title = "Julia: A Fresh Approach to Numerical Computing",
+    volume = "59",
+    ISSN = "0036-1445",
+    DOI = "10.1137/141000671",
+    number = "1",
+    journal = "SIAM Review",
+    year = "2017",
+    pages = "65–98"
+}
+
+@article{Griewank_1989,
+    author = "Griewank, Andreas",
+    title = "On Automatic Differentiation",
+    journal = "Mathematical Programming: Recent Developments and Applications",
+    year = "1989"
+}
+
+@article{Tsitouras_2011,
+    author = "Tsitouras, Ch.",
+    title = "Runge–Kutta pairs of order 5(4) satisfying only the first column simplifying assumption",
+    volume = "62",
+    ISSN = "0898-1221",
+    DOI = "10.1016/j.camwa.2011.06.002",
+    number = "2",
+    journal = "Computers \& Mathematics with Applications",
+    year = "2011",
+    pages = "770–775"
+}
+
+@article{Neuenhofen_2018,
+    author = "Neuenhofen, Martin",
+    title = "Review of theory and implementation of hyper-dual numbers for first and second order automatic differentiation",
+    DOI = "10.48550/arxiv.1801.03614",
+    journal = "arXiv",
+    year = "2018"
+}
+
+@article{RevelsLubinPapamarkou2016,
+    author = "{Revels}, J. and {Lubin}, M. and {Papamarkou}, T.",
+    title = "Forward-Mode Automatic Differentiation in {J}ulia",
+    journal = "arXiv:1607.07892 [cs.MS]",
+    year = "2016",
+    url = "https://arxiv.org/abs/1607.07892"
+}
+
+@article{siskind2005perturbation,
+    author = "Siskind, Jeffrey Mark and Pearlmutter, Barak A",
+    title = "Perturbation confusion and referential transparency: Correct functional implementation of forward-mode AD",
+    year = "2005",
+    publisher = "Springer"
+}
+
+@article{manzyuk2019perturbation,
+    author = "Manzyuk, Oleksandr and Pearlmutter, Barak A and Radul, Alexey Andreyevich and Rush, David R and Siskind, Jeffrey Mark",
+    title = "Perturbation confusion in forward automatic differentiation of higher-order functions",
+    journal = "Journal of Functional Programming",
+    volume = "29",
+    pages = "e12",
+    year = "2019",
+    publisher = "Cambridge University Press"
+}
+
+@article{Innes_2018,
+    author = "Innes, Michael",
+    title = "Don’t Unroll Adjoint: Differentiating SSA-Form Programs",
+    journal = "arXiv",
+    year = "2018"
+}
+
+@article{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019,
+    author = "Wang, Fei and Zheng, Daniel and Decker, James and Wu, Xilun and Essertel, Grégory M. and Rompf, Tiark",
+    title = "Backpropagation with Continuation Callbacks:Foundations for Efficient and ExpressiveDifferentiable Programming",
+    volume = "3",
+    DOI = "10.1145/3341700",
+    abstractNote = "An abstract is not available.",
+    number = "ICFP",
+    journal = "Proceedings of the ACM on Programming Languages",
+    year = "2019",
+    pages = "96"
+}
+
+@article{Baydin_Pearlmutter_Radul_Siskind_2015,
+    author = {Baydin, At\i{}l\i{}m G\"{u}nes and Pearlmutter, Barak A. and Radul, Alexey Andreyevich and Siskind, Jeffrey Mark},
+    title = "Automatic Differentiation in Machine Learning: A Survey",
+    year = "2017",
+    issue_date = "January 2017",
+    publisher = "JMLR.org",
+    volume = "18",
+    number = "1",
+    issn = "1532-4435",
+    journal = "J. Mach. Learn. Res.",
+    month = "jan",
+    pages = "5595–5637",
+    numpages = "43",
+    keywords = "backpropagation, differentiable programming"
+}
+
+@inproceedings{abadi-tensorflow,
+    author = "Abadi, Mart\'{\i}n and Barham, Paul and Chen, Jianmin and Chen, Zhifeng and Davis, Andy and Dean, Jeffrey and Devin, Matthieu and Ghemawat, Sanjay and Irving, Geoffrey and Isard, Michael and Kudlur, Manjunath and Levenberg, Josh and Monga, Rajat and Moore, Sherry and Murray, Derek G. and Steiner, Benoit and Tucker, Paul and Vasudevan, Vijay and Warden, Pete and Wicke, Martin and Yu, Yuan and Zheng, Xiaoqiang",
+    title = "TensorFlow: A System for Large-Scale Machine Learning",
+    year = "2016",
+    isbn = "9781931971331",
+    publisher = "USENIX Association",
+    address = "USA",
+    booktitle = "Proceedings of the 12th USENIX Conference on Operating Systems Design and Implementation",
+    pages = "265–283",
+    numpages = "19",
+    location = "Savannah, GA, USA",
+    series = "OSDI'16"
+}
+
+@inproceedings{moses_Enzyme,
+    author = "Moses, William and Churavy, Valentin",
+    editor = "Larochelle, H. and Ranzato, M. and Hadsell, R. and Balcan, M. F. and Lin, H.",
+    booktitle = "Advances in Neural Information Processing Systems",
+    pages = "12472--12485",
+    publisher = "Curran Associates, Inc.",
+    title = "Instead of Rewriting Foreign Code for Machine Learning, Automatically Synthesize Fast Gradients",
+    url = "https://proceedings.neurips.cc/paper/2020/file/9332c513ef44b682e9347822c2e457ac-Paper.pdf",
+    volume = "33",
+    year = "2020"
+}
+
+@article{Schäfer_Tarek_White_Rackauckas_2021,
+    author = "Schäfer, Frank and Tarek, Mohamed and White, Lyndon and Rackauckas, Chris",
+    title = "AbstractDifferentiation.jl: Backend-Agnostic Differentiable Programming in Julia",
+    DOI = "10.48550/arxiv.2109.12449",
+    journal = "arXiv",
+    year = "2021"
+}
+
+@inproceedings{serban2005cvodes,
+    author = "Serban, Radu and Hindmarsh, Alan C",
+    title = "CVODES: the sensitivity-enabled ODE solver in SUNDIALS",
+    booktitle = "International Design Engineering Technical Conferences and Computers and Information in Engineering Conference",
+    volume = "47438",
+    pages = "257--269",
+    year = "2005"
+}
+
+@article{ODESSA,
+    author = "Leis, Jorge R. and Kramer, Mark A.",
+    title = "Algorithm 658: ODESSA–an Ordinary Differential Equation Solver with Explicit Simultaneous Sensitivity Analysis",
+    year = "1988",
+    issue_date = "March 1988",
+    publisher = "Association for Computing Machinery",
+    address = "New York, NY, USA",
+    volume = "14",
+    number = "1",
+    issn = "0098-3500",
+    url = "https://doi.org/10.1145/42288.214371",
+    doi = "10.1145/42288.214371",
+    journal = "ACM Trans. Math. Softw.",
+    month = "mar",
+    pages = "61–67",
+    numpages = "7",
+    keywords = "model error, sensitivity analysis, parameter variation, model prediction uncertainty"
+}
+
+@article{dolfin2013,
+    author = "Farrell, P. E. and Ham, D. A. and Funke, S. W. and Rognes, M. E.",
+    title = "Automated Derivation of the Adjoint of High-Level Transient Finite Element Programs",
+    journal = "SIAM Journal on Scientific Computing",
+    volume = "35",
+    number = "4",
+    pages = "C369-C393",
+    year = "2013",
+    doi = "10.1137/120873558",
+    URL = "https://doi.org/10.1137/120873558",
+    eprint = "https://doi.org/10.1137/120873558"
+}
+
+@article{dolfin2018,
+    author = "Mitusch, Sebastian K. and Funke, Simon W. and Dokken, Jørgen S.",
+    doi = "10.21105/joss.01292",
+    url = "https://doi.org/10.21105/joss.01292",
+    year = "2019",
+    publisher = "The Open Journal",
+    volume = "4",
+    number = "38",
+    pages = "1292",
+    title = "dolfin-adjoint 2018.1: automated adjoints for FEniCS and Firedrake",
+    journal = "Journal of Open Source Software"
+}
+
+@article{kim_stiff_2021,
+    author = "Kim, Suyong and Ji, Weiqi and Deng, Sili and Ma, Yingbo and Rackauckas, Christopher",
+    title = "Stiff neural ordinary differential equations",
+    volume = "31",
+    issn = "1054-1500, 1089-7682",
+    url = "https://aip.scitation.org/doi/10.1063/5.0060697",
+    doi = "10.1063/5.0060697",
+    language = "en",
+    number = "9",
+    urldate = "2022-02-25",
+    journal = "Chaos: An Interdisciplinary Journal of Nonlinear Science",
+    month = "September",
+    year = "2021",
+    pages = "093122",
+    file = "Versió enviada:/Users/Bolib001/Zotero/storage/J3MCWRAP/Kim et al. - 2021 - Stiff neural ordinary differential equations.pdf:application/pdf"
+}
+
+@article{Jensen_Nakshatrala_Tortorelli_2014,
+    author = "Jensen, Jakob S. and Nakshatrala, Praveen B. and Tortorelli, Daniel A.",
+    title = "On the consistency of adjoint sensitivity analysis for structural optimization of linear dynamic problems",
+    volume = "49",
+    ISSN = "1615-147X",
+    DOI = "10.1007/s00158-013-1024-4",
+    number = "5",
+    journal = "Structural and Multidisciplinary Optimization",
+    year = "2014",
+    pages = "831–837"
+}
+
+@article{Zhuang_2020,
+    author = "Zhuang, Juntang and Dvornek, Nicha and Li, Xiaoxiao and Tatikonda, Sekhar and Papademetris, Xenophon and Duncan, James",
+    title = "Adaptive Checkpoint Adjoint Method for Gradient Estimation in Neural ODE.",
+    volume = "119",
+    journal = "Proceedings of machine learning research",
+    year = "2020",
+    pages = "11639–11649"
+}
+
+@article{Checkpoiting_2023,
+    author = "Schanen, Michel and Narayanan, Sri Hari Krishna and Williamson, Sarah and Churavy, Valentin and Moses, William S. and Paehler, Ludger",
+    editor = "Miky{\v{s}}ka, Ji{\v{r}}{\'i} and de Mulatier, Cl{\'e}lia and Paszynski, Maciej and Krzhizhanovskaya, Valeria V. and Dongarra, Jack J. and Sloot, Peter M.A.",
+    title = "Transparent Checkpointing for Automatic Differentiation of Program Loops Through Expression Transformations",
+    booktitle = "Computational Science -- ICCS 2023",
+    year = "2023",
+    publisher = "Springer Nature Switzerland",
+    address = "Cham",
+    pages = "483--497",
+    isbn = "978-3-031-36024-4"
+}
+
+@book{griewank2008evaluatingderivatives,
+    author = "Griewank, Andreas and Walther, Andrea",
+    title = "Evaluating derivatives: principles and techniques of algorithmic differentiation",
+    year = "2008",
+    publisher = "SIAM"
+}
+
+@InProceedings{that-is-not-an-ode,
+    author = "Kidger, Patrick and Chen, Ricky T. Q. and Lyons, Terry J",
+    editor = "Meila, Marina and Zhang, Tong",
+    title = {"Hey, that’s not an ODE": Faster ODE Adjoints via Seminorms},
+    booktitle = "Proceedings of the 38th International Conference on Machine Learning",
+    pages = "5443--5452",
+    year = "2021",
+    volume = "139",
+    series = "Proceedings of Machine Learning Research",
+    month = "18--24 Jul",
+    publisher = "PMLR",
+    pdf = "http://proceedings.mlr.press/v139/kidger21a/kidger21a.pdf",
+    url = "https://proceedings.mlr.press/v139/kidger21a.html"
+}
+
+@book{stoer2002-numerical,
+    author = "Stoer, Josef and Bulirsch, Roland",
+    title = "Introduction to numerical analysis",
+    year = "2002",
+    publisher = "Springer"
+}
+
+@article{Norcliffe_gaussquadrature_2023,
+    author = "Norcliffe, Alexander and Deisenroth, Marc Peter",
+    title = "Faster Training of Neural ODEs Using Gau{\ss}-Legendre Quadrature",
+    DOI = "10.48550/arxiv.2308.10644",
+    journal = "arXiv",
+    year = "2023"
+}
+
 @article{Wigner.1960,
     author = "Wigner, Eugene P",
     year = "1960",
@@ -110,6 +763,25 @@
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2018/2018-Rüde-SIAM\%20Review.pdf"
 }
 
+@article{hartig2012,
+    author = "Hartig, Florian and Dyke, James and Hickler, Thomas and Higgins, Steven I. and O’Hara, Robert B. and Scheiter, Simon and Huth, Andreas",
+    title = "Connecting Dynamic Vegetation Models to Data - an Inverse Perspective: {{Dynamic}} Vegetation Models - an Inverse Perspective",
+    shorttitle = "Connecting Dynamic Vegetation Models to Data - an Inverse Perspective",
+    date = "2012-12",
+    journaltitle = "Journal of Biogeography",
+    shortjournal = "J. Biogeogr.",
+    volume = "39",
+    number = "12",
+    pages = "2240--2252",
+    issn = "03050270",
+    doi = "10.1111/j.1365-2699.2012.02745.x",
+    url = "https://onlinelibrary.wiley.com/doi/10.1111/j.1365-2699.2012.02745.x",
+    urldate = "2022-11-30",
+    abstract = "Dynamic vegetation models provide process-based explanations of the dynamics and the distribution of plant ecosystems. They offer significant advantages over static, correlative modelling approaches, particularly for ecosystems that are outside their equilibrium due to global change or climate change. A persistent problem, however, is their parameterization. Parameters and processes of dynamic vegetation models (DVMs) are traditionally determined independently of the model, while model outputs are compared to empirical data for validation and informal model comparison only. But field data for such independent estimates of parameters and processes are often difficult to obtain, and the desire to include better descriptions of processes such as biotic interactions, dispersal, phenotypic plasticity and evolution in future vegetation models aggravates limitations related to the current parameterization paradigm. In this paper, we discuss the use of Bayesian methods to bridge this gap. We explain how Bayesian methods allow direct estimates of parameters and processes, encoded in prior distributions, to be combined with inverse estimates, encoded in likelihood functions. The combination of direct and inverse estimation of parameters and processes allows a much wider range of vegetation data to be used simultaneously, including vegetation inventories, species traits, species distributions, remote sensing, eddy flux measurements and palaeorecords. The possible reduction of uncertainty regarding structure, parameters and predictions of DVMs may not only foster scientific progress, but will also increase the relevance of these models for policy advice.",
+    langid = "english",
+    keywords = "ecosystem-models,inference,vegetation-model"
+}
+
 @article{Cox:2017hv,
     author = "Cox, D R and Efron, Bradley",
     year = "2017",
@@ -123,6 +795,22 @@
     volume = "3",
     keywords = "",
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2017/2017-Cox-Science\%20Advances.pdf"
+}
+
+@article{LeCun2015,
+    author = "LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey",
+    title = "Deep Learning",
+    date = "2015-05-27",
+    journaltitle = "Nature",
+    volume = "521",
+    number = "7553",
+    eprint = "26017442",
+    eprinttype = "pmid",
+    pages = "436--444",
+    issn = "0028-0836",
+    doi = "10.1038/nature14539",
+    url = "http://www.nature.com/articles/nature14539",
+    abstract = "Deep learning allows computational models that are composed of multiple processing layers to learn representations of data with multiple levels of abstraction. These methods have dramatically improved the state-of-the-art in speech recognition, visual object recognition, object detection and many other domains such as drug discovery and genomics. Deep learning discovers intricate structure in large data sets by using the backpropagation algorithm to indicate how a machine should change its internal parameters that are used to compute the representation in each layer from the representation in the previous layer. Deep convolutional nets have brought about breakthroughs in processing images, video, speech and audio, whereas recurrent nets have shone light on sequential data such as text and speech."
 }
 
 @article{zdeborova_understanding_2020,
@@ -154,6 +842,43 @@
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2016/2016-Coveney-Philosophical\%20Transactions\%20of\%20the\%20Royal\%20Society\%20of\%20London.\%20Series\%20A-\%20Physical\%20and\%20Engineering\%20Sciences.pdf"
 }
 
+@article{dormann2007,
+    author = "Dormann, Carsten F.",
+    title = "Promising the Future? {{Global}} Change Projections of Species Distributions",
+    shorttitle = "Promising the Future?",
+    date = "2007-09-03",
+    journaltitle = "Basic and Applied Ecology",
+    shortjournal = "Basic and Applied Ecology",
+    volume = "8",
+    number = "5",
+    pages = "387--397",
+    issn = "1439-1791",
+    doi = "10.1016/j.baae.2006.11.001",
+    url = "https://www.sciencedirect.com/science/article/pii/S143917910600106X",
+    urldate = "2023-10-05",
+    abstract = "Projections of species’ distribution under global change (climatic and environmental) are of great scientific and societal relevance. They rely on a proper understanding of how environmental drivers determine species occurrence patterns. This understanding is usually derived from an analysis of the species’ present distribution by statistical means (species distribution models). Projections based on species distribution models make several assumptions (such as constancy of limiting factors, no evolutionary adaptation to drivers, global dispersal), some of which are ecologically untenable. Also, methodological issues muddy the waters (e.g. spatial autocorrelation, collinearity of drivers). Here, I review the main shortcomings of species distribution models and species distribution projections, identify limits to their use and open a perspective on how to overcome some current obstacles. As a consequence, I caution biogeographers against making projections too light-heartedly and conservation ecologists and policy makers to be aware that there are several unresolved problems. Zusammenfassung Die Auswirkungen von Umweltveränderungen (Klima und Landnutzung) auf die zukünftige Verbreitung von Tier- und Pflanzenarten ist ein aktueller und gesellschaftlich relevanter Forschungsgegenstand. Solche Vorhersagen fußen auf einer sicheren Kenntnis der für die Verteilung relevanten Umweltfaktoren, gewonnen aus der statistischen Analyse der gegenwärtigen Verbreitung. Vorhersagen auf Grundlage einer Verbreitungsanalyse unterliegen verschiedenen Annahmen (z.B.: limitierende Faktoren bleiben limitierend; keine genetische Anpassung an veränderte Umweltbedingungen; keine Ausbreitungsbeschränkung), von denen einige ökologisch unhaltbar sind. Zudem gibt es eine Vielzahl statistischer Probleme (z.B.: räumliche Autokorrelation; Kollinearität von Umweltparametern). In diesem Beitrag stelle ich die wichtigsten Probleme von Verbreitungsanalysen und Verbreitungsvorhersagen vor, zeige die Grenzen dieser Methodik auf und weise auf Lösungsansätze hin. Schlussfolgerung dieser Erörterung ist, dass wir es uns mit Vorhersagen nicht zu leicht machen sollten, und dass Umweltschützer und Politiker sich der methodischen Unsicherheiten bewusst sein sollten.",
+    keywords = "forecast,globalchangebiology,SDM"
+}
+
+@article{Barnosky2012,
+    author = "Barnosky, Anthony D. and Hadly, Elizabeth A. and Bascompte, Jordi and Berlow, Eric L. and Brown, James H. and Fortelius, Mikael and Getz, Wayne M. and Harte, John and Hastings, Alan and Marquet, Pablo A. and Martinez, Neo D. and Mooers, Arne and Roopnarine, Peter and Vermeij, Geerat and Williams, John W. and Gillespie, Rosemary and Kitzes, Justin and Marshall, Charles and Matzke, Nicholas and Mindell, David P. and Revilla, Eloy and Smith, Adam B.",
+    title = "Approaching a State Shift in {{Earth}}'s Biosphere",
+    date = "2012",
+    journaltitle = "Nature",
+    volume = "486",
+    number = "7401",
+    eprint = "22678279",
+    eprinttype = "pmid",
+    pages = "52--58",
+    publisher = "{Nature Publishing Group}",
+    issn = "00280836",
+    doi = "10.1038/nature11018",
+    url = "http://dx.doi.org/10.1038/nature11018",
+    abstract = "Localized ecological systems are known to shift abruptly and irreversibly from one state to another when they are forced across critical thresholds. Here we review evidence that the global ecosystem as a whole can react in the same way and is approaching a planetary-scale critical transition as a result of human influence. The plausibility of a planetary-scale ‘tipping point’ highlights the need to improve biological forecasting by detecting early warning signs of critical transitions on global as well as local scales, and by detecting feedbacks that promote such transitions. It is also necessary to address root causes of how humans are forcing biological changes.",
+    isbn = "1476-4687 (Electronic)\textbackslash r0028-0836 (Linking)",
+    keywords = "biodiversity,climatechangebiodiversity,tippingpoints"
+}
+
 @article{Molnar.2020sisk,
     author = "Molnar, Christoph and Casalicchio, Giuseppe and Bischl, Bernd",
     year = "2020",
@@ -177,6 +902,173 @@
     number = "none",
     volume = "16",
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2022/2022-Rudin-Statistic\%20Surveys.pdf"
+}
+
+@article{rasp2018,
+    author = "Rasp, Stephan and Pritchard, Michael S. and Gentine, Pierre",
+    title = "Deep Learning to Represent Subgrid Processes in Climate Models",
+    date = "2018-09-25",
+    journaltitle = "Proceedings of the National Academy of Sciences",
+    volume = "115",
+    number = "39",
+    pages = "9684--9689",
+    publisher = "{Proceedings of the National Academy of Sciences}",
+    doi = "10.1073/pnas.1810286115",
+    url = "https://www.pnas.org/doi/abs/10.1073/pnas.1810286115",
+    urldate = "2023-01-30",
+    abstract = "The representation of nonlinear subgrid processes, especially clouds, has been a major source of uncertainty in climate models for decades. Cloud-resolving models better represent many of these processes and can now be run globally but only for short-term simulations of at most a few years because of computational limitations. Here we demonstrate that deep learning can be used to capture many advantages of cloud-resolving modeling at a fraction of the computational cost. We train a deep neural network to represent all atmospheric subgrid processes in a climate model by learning from a multiscale model in which convection is treated explicitly. The trained neural network then replaces the traditional subgrid parameterizations in a global general circulation model in which it freely interacts with the resolved dynamics and the surface-flux scheme. The prognostic multiyear simulations are stable and closely reproduce not only the mean climate of the cloud-resolving simulation but also key aspects of variability, including precipitation extremes and the equatorial wave spectrum. Furthermore, the neural network approximately conserves energy despite not being explicitly instructed to. Finally, we show that the neural network parameterization generalizes to new surface forcing patterns but struggles to cope with temperatures far outside its training manifold. Our results show the feasibility of using deep learning for climate model parameterization. In a broader context, we anticipate that data-driven Earth system model development could play a key role in reducing climate prediction uncertainty in the coming decade.",
+    keywords = "climate,DL,machinelearning,sciml"
+}
+
+@article{Yazdani2020,
+    author = "Yazdani, Alireza and Lu, Lu and Raissi, Maziar and Karniadakis, George Em",
+    editor = "Hatzimanikatis, Vassily",
+    title = "Systems Biology Informed Deep Learning for Inferring Parameters and Hidden Dynamics",
+    date = "2020-11-18",
+    journaltitle = "PLOS Computational Biology",
+    volume = "16",
+    number = "11",
+    eprint = "33206658",
+    eprinttype = "pmid",
+    pages = "e1007575",
+    issn = "1553-7358",
+    doi = "10.1371/journal.pcbi.1007575",
+    url = "http://dx.doi.org/10.1371/journal.pcbi.1007575",
+    abstract = "Mathematical models of biological reactions at the system-level lead to a set of ordinary differential equations with many unknown parameters that need to be inferred using relatively few experimental measurements. Having a reliable and robust algorithm for parameter inference and prediction of the hidden dynamics has been one of the core subjects in systems biology, and is the focus of this study. We have developed a new systems-biology-informed deep learning algorithm that incorporates the system of ordinary differential equations into the neural networks. Enforcing these equations effectively adds constraints to the optimization procedure that manifests itself as an imposed structure on the observational data. Using few scattered and noisy measurements, we are able to infer the dynamics of unobserved species, external forcing, and the unknown model parameters. We have successfully tested the algorithm for three different benchmark problems.",
+    isbn = "1111111111",
+    keywords = "ai-ecology,bayesianinference,parameter-estimation"
+}
+
+@article{Abarbanel2018,
+    author = "Abarbanel, Henry D. I. and Rozdeba, Paul J. and Shirman, Sasha",
+    title = "Machine Learning: Deepest Learning as Statistical Data Assimilation Problems",
+    date = "2018-08",
+    journaltitle = "Neural Computation",
+    volume = "30",
+    number = "8",
+    eprint = "29894650",
+    eprinttype = "pmid",
+    pages = "2025--2055",
+    issn = "0899-7667",
+    doi = "10.1162/neco\_a\_01094",
+    url = "https://direct.mit.edu/neco/article/30/8/2025-2055/8382",
+    abstract = "We formulate an equivalence between machine learning and the formulation of statistical data assimilation as used widely in physical and biological sciences. The correspondence is that layer number in a feedforward artificial network setting is the analog of time in the data assimilation setting. This connection has been noted in the machine learning literature. We add a perspective that expands on how methods from statistical physics and aspects of Lagrangian and Hamiltonian dynamics play a role in how networks can be trained and designed. Within the discussion of this equivalence, we show that adding more layers (making the network deeper) is analogous to adding temporal resolution in a data assimilation framework. Extending this equivalence to recurrent networks is also discussed.",
+    keywords = "data-assimilation,DL"
+}
+
+@article{Carrassi2018,
+    author = "Carrassi, Alberto and Bocquet, Marc and Bertino, Laurent and Evensen, Geir",
+    title = "Data Assimilation in the Geosciences: {{An}} Overview of Methods, Issues, and Perspectives",
+    date = "2018-09-09",
+    journaltitle = "WIREs Climate Change",
+    volume = "9",
+    number = "5",
+    eprint = "1709.02798",
+    eprinttype = "arxiv",
+    pages = "1--50",
+    issn = "1757-7780",
+    doi = "10.1002/wcc.535",
+    url = "https://onlinelibrary.wiley.com/doi/10.1002/wcc.535",
+    abstract = "We commonly refer to state estimation theory in geosciences as data assimilation (DA). This term encompasses the entire sequence of operations that, starting from the observations of a system, and from additional statistical and dynamical information (such as a dynamical evolution model), provides an estimate of its state. DA is standard practice in numerical weather prediction, but its application is becoming widespread in many other areas of climate, atmosphere, ocean, and environment modeling; in all circumstances where one intends to estimate the state of a large dynamical system based on limited information. While the complexity of DA, and of the methods thereof, stands on its interdisciplinary nature across statistics, dynamical systems, and numerical optimization, when applied to geosciences, an additional difficulty arises by the continually increasing sophistication of the environmental models. Thus, in spite of DA being nowadays ubiquitous in geosciences, it has so far remained a topic mostly reserved to experts. We aim this overview article at geoscientists with a background in mathematical and physical modeling, who are interested in the rapid development of DA and its growing domains of application in environmental science, but so far have not delved into its conceptual and methodological complexities. This article is categorized under: Climate Models and Modeling {$>$} Knowledge Generation with Models.",
+    keywords = "data-assimilation"
+}
+
+@article{Gabor2015,
+    author = "Gábor, Attila and Banga, Julio R.",
+    title = "Robust and Efficient Parameter Estimation in Dynamic Models of Biological Systems",
+    date = "2015-12-29",
+    journaltitle = "BMC Systems Biology",
+    volume = "9",
+    number = "1",
+    eprint = "26515482",
+    eprinttype = "pmid",
+    pages = "74",
+    publisher = "{BMC Systems Biology}",
+    issn = "1752-0509",
+    doi = "10.1186/s12918-015-0219-2",
+    url = "http://dx.doi.org/10.1186/s12918-015-0219-2",
+    abstract = "Background: Dynamic modelling provides a systematic framework to understand function in biological systems. Parameter estimation in nonlinear dynamic models remains a very challenging inverse problem due to its nonconvexity and ill-conditioning. Associated issues like overfitting and local solutions are usually not properly addressed in the systems biology literature despite their importance. Here we present a method for robust and efficient parameter estimation which uses two main strategies to surmount the aforementioned difficulties: (i) efficient global optimization to deal with nonconvexity, and (ii) proper regularization methods to handle ill-conditioning. In the case of regularization, we present a detailed critical comparison of methods and guidelines for properly tuning them. Further, we show how regularized estimations ensure the best trade-offs between bias and variance, reducing overfitting, and allowing the incorporation of prior knowledge in a systematic way. Results: We illustrate the performance of the presented method with seven case studies of different nature and increasing complexity, considering several scenarios of data availability, measurement noise and prior knowledge. We show how our method ensures improved estimations with faster and more stable convergence. We also show how the calibrated models are more generalizable. Finally, we give a set of simple guidelines to apply this strategy to a wide variety of calibration problems. Conclusions: Here we provide a parameter estimation strategy which combines efficient global optimization with a regularization scheme. This method is able to calibrate dynamic models in an efficient and robust way, effectively fighting overfitting and allowing the incorporation of prior information.",
+    isbn = "1291801502",
+    keywords = "inference,parameter-estimation"
+}
+
+@article{Gharamti2017,
+    author = "Gharamti, M.E. and Tjiputra, J. and Bethke, I. and Samuelsen, A. and Skjelvan, I. and Bentsen, M. and Bertino, L.",
+    title = "Ensemble Data Assimilation for Ocean Biogeochemical State and Parameter Estimation at Different Sites",
+    date = "2017-04",
+    journaltitle = "Ocean Modelling",
+    volume = "112",
+    pages = "65--89",
+    publisher = "{Elsevier Ltd}",
+    issn = "14635003",
+    doi = "10.1016/j.ocemod.2017.02.006",
+    url = "https://linkinghub.elsevier.com/retrieve/pii/S1463500317300215",
+    abstract = "We develop an efficient data assimilation system that aims at quantifying the uncertainties of various biogeochemical states and parameters. We explore the use of four different ensemble estimation techniques for tuning poorly constrained ecosystem parameters using a one-dimensional configuration of the Ocean Biogeochemical General Circulation Model. The schemes are all EnKF-based operating sequentially in time but have different correction equations. The 1D model is used to simulate the biogeochemical cycle at three different stations in mid and high latitudes. We assimilate monthly climatological profiles of nitrate, silicate, phosphate and oxygen in addition to seasonal surface pCO2 data, between 2006 and 2010. We use the data to optimize eleven ecosystem parameters in addition to all state variables of the model, describing the dynamical processes of the water column. Our assimilation results suggest the following: (1) Among all tested schemes, the one-step-ahead smoothing-based ensemble Kalman filter (OSA-EnKF) is robust and the most accurate, providing consistent and reliable state-parameter ensemble realizations. (2) Given the large uncertainties associated with the ecosystem parameters, estimating only the state variables is generally inconclusive and biased. (3) The OSA-EnKF successfully recovers the observed seasonal variability of the ecosystem dynamics at all stations and helps optimizing the parameters, eventually reducing the prediction errors of the nutrients’ concentrations. (4) The estimates of the parameters may have some temporally correlated features and they can also vary spatially between different regions depending on the magnitude of the bias in the observed variables and other factors such as the intensity of the bloom period. We further show that the presented assimilation system has the potential to be used in global models.",
+    keywords = "parameter-estimation"
+}
+
+@article{Curtsdotter2019,
+    author = "Curtsdotter, Alva and Banks, H. Thomas and Banks, John E. and Jonsson, Mattias and Jonsson, Tomas and Laubmeier, Amanda N. and Traugott, Michael and Bommarco, Riccardo",
+    editor = "Stouffer, Daniel",
+    title = "Ecosystem Function in Predator–Prey Food Webs—Confronting Dynamic Models with Empirical Data",
+    date = "2019-02-07",
+    journaltitle = "Journal of Animal Ecology",
+    volume = "88",
+    number = "2",
+    eprint = "30079547",
+    eprinttype = "pmid",
+    pages = "196--210",
+    issn = "0021-8790",
+    doi = "10.1111/1365-2656.12892",
+    url = "https://onlinelibrary.wiley.com/doi/10.1111/1365-2656.12892",
+    abstract = "Most ecosystem functions and related services involve species interactions across trophic levels, for example, pollination and biological pest control. Despite this, our understanding of ecosystem function in multitrophic communities is poor, and research has been limited to either manipulation in small communities or statistical descriptions in larger ones. Recent advances in food web ecology may allow us to overcome the trade-off between mechanistic insight and ecological realism. Molecular tools now simplify the detection of feeding interactions, and trait-based approaches allow the application of dynamic food web models to real ecosystems. We performed the first test of an allometric food web model's ability to replicate temporally nonaggregated abundance data from the field and to provide mechanistic insight into the function of predation. We aimed to reproduce and explore the drivers of the population dynamics of the aphid herbivore Rhopalosiphum padi observed in ten Swedish barley fields. We used a dynamic food web model, taking observed interactions and abundances of predators and alternative prey as input data, allowing us to examine the role of predation in aphid population control. The inverse problem methods were used for simultaneous model fit optimization and model parameterization. The model captured {$>$}70\\% of the variation in aphid abundance in five of ten fields, supporting the model-embodied hypothesis that body size can be an important determinant of predation in the arthropod community. We further demonstrate how in-depth model analysis can disentangle the likely drivers of function, such as the community's abundance and trait composition. Analysing the variability in model performance revealed knowledge gaps, such as the source of episodic aphid mortality, and general method development needs that, if addressed, would further increase model success and enable stronger inference about ecosystem function. The results demonstrate that confronting dynamic food web models with abundance data from the field is a viable approach to evaluate ecological theory and to aid our understanding of function in real ecosystems. However, to realize the full potential of food web models, in ecosystem function research and beyond, trait-based parameterization must be refined and extended to include more traits than body size.",
+    keywords = "parameter-estimation"
+}
+
+@article{Rosenbaum2019,
+    author = "Rosenbaum, Benjamin and Raatz, Michael and Weithoff, Guntram and Fussmann, Gregor F. and Gaedke, Ursula",
+    title = "Estimating {{Parameters From Multiple Time Series}} of {{Population Dynamics Using Bayesian Inference}}",
+    date = "2019-01-22",
+    journaltitle = "Frontiers in Ecology and Evolution",
+    volume = "6",
+    issn = "2296-701X",
+    doi = "10.3389/fevo.2018.00234",
+    url = "https://www.frontiersin.org/article/10.3389/fevo.2018.00234/full",
+    abstract = "Empirical time series of interacting entities, e.g., species abundances, are highly useful to study ecological mechanisms. Mathematical models are valuable tools to further elucidate those mechanisms and underlying processes. However, obtaining an agreement between model predictions and experimental observations remains a demanding task. As models always abstract from reality one parameter often summarizes several properties. Parameter measurements are performed in additional experiments independent of the ones delivering the time series. Transferring these parameter values to different settings may result in incorrect parametrizations. On top of that, the properties of organisms and thus the respective parameter values may vary considerably. These issues limit the use of a priori model parametrizations. In this study, we present a method suited for a direct estimation of model parameters and their variability from experimental time series data. We combine numerical simulations of a continuous-time dynamical population model with Bayesian inference, using a hierarchical framework that allows for variability of individual parameters. The method is applied to a comprehensive set of time series from a laboratory predator-prey system that features both steady states and cyclic population dynamics. Our model predictions are able to reproduce both steady states and cyclic dynamics of the data. Additionally to the direct estimates of the parameter values, the Bayesian approach also provides their uncertainties. We found that fitting cyclic population dynamics, which contain more information on the process rates than steady states, yields more precise parameter estimates. We detected significant variability among parameters of different time series and identified the variation in the maximum growth rate of the prey as a source for the transition from steady states to cyclic dynamics. By lending more flexibility to the model, our approach facilitates parametrizations and shows more easily which patterns in time series can be explained also by simple models. Applying Bayesian inference and dynamical population models in conjunction may help to quantify the profound variability in organismal properties in nature.",
+    issue = "JAN",
+    keywords = "parameter-estimation",
+    file = "/Users/victorboussange/Zotero/storage/RBB856N4/fevo-06-00234.pdf"
+}
+
+@article{Toms2020,
+    author = "Toms, Benjamin A. and Barnes, Elizabeth A. and Ebert-Uphoff, Imme",
+    title = "Physically {{Interpretable Neural Networks}} for the {{Geosciences}}: {{Applications}} to {{Earth System Variability}}",
+    date = "2020",
+    journaltitle = "Journal of Advances in Modeling Earth Systems",
+    volume = "12",
+    number = "9",
+    eprint = "1912.01752",
+    eprinttype = "arxiv",
+    pages = "1--20",
+    issn = "19422466",
+    doi = "10.1029/2019MS002002",
+    abstract = "Neural networks have become increasingly prevalent within the geosciences, although a common limitation of their usage has been a lack of methods to interpret what the networks learn and how they make decisions. As such, neural networks have often been used within the geosciences to most accurately identify a desired output given a set of inputs, with the interpretation of what the network learns used as a secondary metric to ensure the network is making the right decision for the right reason. Neural network interpretation techniques have become more advanced in recent years, however, and we therefore propose that the ultimate objective of using a neural network can also be the interpretation of what the network has learned rather than the output itself. We show that the interpretation of neural networks can enable the discovery of scientifically meaningful connections within geoscientific data. In particular, we use two methods for neural network interpretation called backward optimization and layerwise relevance propagation, both of which project the decision pathways of a network back onto the original input dimensions. To the best of our knowledge, LRP has not yet been applied to geoscientific research, and we believe it has great potential in this area. We show how these interpretation techniques can be used to reliably infer scientifically meaningful information from neural networks by applying them to common climate patterns. These results suggest that combining interpretable neural networks with novel scientific hypotheses will open the door to many new avenues in neural network-related geoscience research.",
+    keywords = "sciml"
+}
+
+@article{Brajard2021,
+    author = "Brajard, Julien and Carrassi, Alberto and Bocquet, Marc and Bertino, Laurent",
+    title = "Combining Data Assimilation and Machine Learning to Infer Unresolved Scale Parametrization",
+    date = "2021",
+    journaltitle = "Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences",
+    volume = "379",
+    number = "2194",
+    eprint = "33583267",
+    eprinttype = "pmid",
+    issn = "1364503X",
+    doi = "10.1098/rsta.2020.0086",
+    abstract = "In recent years, machine learning (ML) has been proposed to devise data-driven parametrizations of unresolved processes in dynamical numerical models. In most cases, the ML training leverages high-resolution simulations to provide a dense, noiseless target state. Our goal is to go beyond the use of high-resolution simulations and train ML-based parametrization using direct data, in the realistic scenario of noisy and sparse observations. The algorithm proposed in this work is a two-step process. First, data assimilation (DA) techniques are applied to estimate the full state of the system from a truncated model. The unresolved part of the truncated model is viewed as a model error in the DA system. In a second step, ML is used to emulate the unresolved part, a predictor of model error given the state of the system. Finally, the ML-based parametrization model is added to the physical core truncated model to produce a hybrid model. The DA component of the proposed method relies on an ensemble Kalman filter while the ML parametrization is represented by a neural network. The approach is applied to the two-scale Lorenz model and to MAOOAM, a reduced-order coupled ocean-atmosphere model. We show that in both cases, the hybrid model yields forecasts with better skill than the truncated model. Moreover, the attractor of the system is significantly better represented by the hybrid model than by the truncated model. This article is part of the theme issue 'Machine learning for weather and climate modelling'.",
+    keywords = "climate,DL,machinelearning,sciml"
 }
 
 @INPROCEEDINGS{gorban_1998,
@@ -211,6 +1103,106 @@
     eprint = "2111.09967",
     abstract = "{This work describes the theoretical foundation for all quantum chemistry functionality in PennyLane, a quantum computing software library specializing in quantum differentiable programming. We provide an overview of fundamental concepts in quantum chemistry, including the basic principles of the Hartree-Fock method. A flagship feature in PennyLane is the differentiable Hartree-Fock solver, allowing users to compute exact gradients of molecular Hamiltonians with respect to nuclear coordinates and basis set parameters. PennyLane provides specialized operations for quantum chemistry, including excitation gates as Givens rotations and templates for quantum chemistry circuits. Moreover, built-in simulators exploit sparse matrix techniques for representing molecular Hamiltonians that lead to fast simulation for quantum chemistry applications. In combination with PennyLane's existing methods for constructing, optimizing, and executing circuits, these methods allow users to implement a wide range of quantum algorithms for quantum chemistry. We discuss how PennyLane can be used to implement variational algorithms for calculating ground-state energies, excited-state energies, and energy derivatives, all of which can be differentiated with respect to both circuit and Hamiltonian parameters. We provide an example workflow describing how to jointly optimize circuit parameters, nuclear coordinates, and basis set parameters for quantum chemistry algorithms. We discuss a functionality for reducing the number of qubits by using symmetries and explain how PennyLane can be used to estimate quantum resources needed to implement several quantum algorithms. By combining insights from quantum computing, computational chemistry, and machine learning, PennyLane is the first library for differentiable quantum computational chemistry.}",
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2021/2021-Arrazola-arXiv\_1.pdf"
+}
+
+@article{jirari:2009,
+    author = "Jirari, Hamza",
+    title = "Optimal control approach to dynamical suppression of decoherence of a qubit",
+    journal = "Europhysics Letters",
+    volume = "87",
+    number = "4",
+    pages = "40003",
+    year = "2009",
+    publisher = "IOP Publishing",
+    doi = "10.1209/0295-5075/87/40003"
+}
+
+@article{leung:2017,
+    author = "Leung, Nelson and Abdelhafez, Mohamed and Koch, Jens and Schuster, David",
+    title = "Speedup for quantum optimal control from automatic differentiation based on graphics processing units",
+    journal = "Physical Review A",
+    volume = "95",
+    number = "4",
+    pages = "042318",
+    year = "2017",
+    publisher = "APS",
+    doi = "10.1103/PhysRevA.95.042318",
+    url = "https://doi.org/10.1103/PhysRevA.95.042318"
+}
+
+@article{abdelhafez:2019,
+    author = "Abdelhafez, Mohamed and Schuster, David I and Koch, Jens",
+    title = "Gradient-based optimal control of open quantum systems using quantum trajectories and automatic differentiation",
+    journal = "Phys. Rev. A",
+    volume = "99",
+    number = "5",
+    pages = "052327",
+    year = "2019",
+    publisher = "APS",
+    url = "https://journals.aps.org/pra/abstract/10.1103/PhysRevA.99.052327",
+    doi = "10.1103/PhysRevA.99.052327"
+}
+
+@article{jirari2019quantum,
+    author = "Jirari, Hamza",
+    title = "From quantum optimal control theory to coherent destruction of tunneling",
+    journal = "The European Physical Journal B",
+    volume = "92",
+    pages = "1--8",
+    year = "2019",
+    publisher = "Springer",
+    url = "https://doi.org/10.1140/epjb/e2018-90231-5",
+    doi = "10.1140/epjb/e2018-90231-5"
+}
+
+@article{abdelhafez:2020,
+    author = "Abdelhafez, Mohamed and Baker, Brian and Gyenis, Andr{\'a}s and Mundada, Pranav and Houck, Andrew A and Schuster, David and Koch, Jens",
+    title = "Universal gates for protected superconducting qubits using optimal control",
+    journal = "Physical Review A",
+    volume = "101",
+    number = "2",
+    pages = "022321",
+    year = "2020",
+    publisher = "APS",
+    url = "https://doi.org/10.1103/PhysRevA.101.022321",
+    doi = "10.1103/PhysRevA.101.022321"
+}
+
+@article{schaefer:2020,
+    author = {Sch{\"a}fer, Frank and Kloc, Michal and Bruder, Christoph and L{\"o}rch, Niels},
+    title = "A differentiable programming method for quantum control",
+    journal = "Machine Learning: Science and Technology",
+    volume = "1",
+    number = "3",
+    pages = "035009",
+    year = "2020",
+    publisher = "IOP Publishing",
+    doi = "10.1088/2632-2153/ab9802",
+    url = "https://doi.org/10.1088/2632-2153/ab9802"
+}
+
+@article{goerz:2022,
+    author = "Goerz, Michael H and Carrasco, Sebasti{\'a}n C and Malinovsky, Vladimir S",
+    title = "Quantum optimal control via semi-automatic differentiation",
+    journal = "Quantum",
+    volume = "6",
+    pages = "871",
+    year = "2022",
+    publisher = {Verein zur F{\"o}rderung des Open Access Publizierens in den Quantenwissenschaften},
+    doi = "10.22331/q-2022-12-07-871"
+}
+
+@article{schaefer:2021,
+    author = {Sch{\"a}fer, Frank and Sekatski, Pavel and Koppenh{\"o}fer, Martin and Bruder, Christoph and Kloc, Michal},
+    title = "Control of stochastic quantum dynamics by differentiable programming",
+    journal = "Machine Learning: Science and Technology",
+    volume = "2",
+    number = "3",
+    pages = "035004",
+    year = "2021",
+    publisher = "IOP Publishing",
+    doi = "10.1088/2632-2153/abec22",
+    url = "https://doi.org/10.1088/2632-2153/abec22"
 }
 
 @book{lions1971optimal,
@@ -249,18 +1241,6 @@
     journal = "Nuclear Fusion",
     year = "2021",
     pages = "026020"
-}
-
-@article{Giles_Pierce_2000,
-    author = "Giles, Michael B. and Pierce, Niles A.",
-    title = "An Introduction to the Adjoint Approach to Design",
-    volume = "65",
-    ISSN = "1386-6184",
-    DOI = "10.1023/a:1011430410075",
-    number = "3–4",
-    journal = "Flow, Turbulence and Combustion",
-    year = "2000",
-    pages = "393–415"
 }
 
 @book{mohammadi2009applied,
@@ -705,22 +1685,6 @@
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2005/2005-Heimbach-Future\%20Generation\%20Computer\%20Systems.pdf"
 }
 
-@article{Giering:1998in,
-    author = "Giering, Ralf and Kaminski, Thomas",
-    year = "1998",
-    rating = "0",
-    title = "{Recipes for adjoint code construction}",
-    journal = "ACM Trans Math Softw",
-    issn = "0098-3500",
-    doi = "10.1145/293686.293695",
-    url = "https://doi.org/10.1145/293686.293695",
-    pages = "437 -- 474",
-    number = "4",
-    volume = "24",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/1998/1998-Giering-ACM\%20Trans\%20Math\%20Softw.pdf"
-}
-
 @article{Forget.2015m9i,
     author = "Forget, G. and Campin, J.-M. and Heimbach, P. and Hill, C. N. and Ponte, R. M. and Wunsch, C.",
     year = "2015",
@@ -997,6 +1961,95 @@
     local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2023/2023-Kochkov-arXiv.pdf"
 }
 
+@article{macayeal1992basal,
+    author = "MacAyeal, Douglas R",
+    title = "The basal stress distribution of Ice Stream E, Antarctica, inferred by control methods",
+    journal = "Journal of Geophysical Research: Solid Earth",
+    volume = "97",
+    number = "B1",
+    pages = "595--603",
+    year = "1992",
+    publisher = "Wiley Online Library"
+}
+
+@article{goldberg2013parameter,
+    author = "Goldberg, DN and Heimbach, Patrick",
+    title = "Parameter and state estimation with a time-dependent adjoint marine ice sheet model",
+    journal = "The Cryosphere",
+    volume = "7",
+    number = "6",
+    pages = "1659--1678",
+    year = "2013",
+    publisher = "Copernicus GmbH"
+}
+
+@article{heimbach2009greenland,
+    author = "Heimbach, Patrick and Bugnion, Veronique",
+    title = "Greenland ice-sheet volume sensitivity to basal, surface and initial conditions derived from an adjoint model",
+    journal = "Annals of Glaciology",
+    volume = "50",
+    number = "52",
+    pages = "67--80",
+    year = "2009",
+    publisher = "Cambridge University Press"
+}
+
+@article{mosbeux2016comparison,
+    author = "Mosbeux, Cyrille and Gillet-Chaulet, Fabien and Gagliardini, Olivier",
+    title = "Comparison of adjoint and nudging methods to initialise ice sheet model basal conditions",
+    journal = "Geoscientific Model Development",
+    volume = "9",
+    number = "7",
+    pages = "2549--2562",
+    year = "2016",
+    publisher = "Copernicus GmbH"
+}
+
+@article{morlighem2013inversion,
+    author = "Morlighem, M and Seroussi, H and Larour, E and Rignot, E",
+    title = "Inversion of basal friction in Antarctica using exact and incomplete adjoints of a higher-order model",
+    journal = "Journal of Geophysical Research: Earth Surface",
+    volume = "118",
+    number = "3",
+    pages = "1746--1753",
+    year = "2013",
+    publisher = "Wiley Online Library"
+}
+
+@article{hascoet2018source,
+    author = {Hasco{\"e}t, Laurent and Morlighem, Mathieu},
+    title = "Source-to-source adjoint Algorithmic Differentiation of an ice sheet model written in C",
+    journal = "Optimization Methods and Software",
+    volume = "33",
+    number = "4-6",
+    pages = "829--843",
+    year = "2018",
+    publisher = "Taylor \\\\\\& Francis"
+}
+
+@article{logan2020sicopolis,
+    author = "Logan, Liz C and Narayanan, Sri Hari Krishna and Greve, Ralf and Heimbach, Patrick",
+    title = "SICOPOLIS-AD v1: an open-source adjoint modeling framework for ice sheet simulation enabled by the algorithmic differentiation tool OpenAD",
+    journal = "Geoscientific Model Development",
+    volume = "13",
+    number = "4",
+    pages = "1845--1864",
+    year = "2020",
+    publisher = "Copernicus GmbH"
+}
+
+@Article{BolibarSapienza_UDEs,
+    AUTHOR = "Bolibar, J. and Sapienza, F. and Maussion, F. and Lguensat, R. and Wouters, B. and P\'erez, F.",
+    TITLE = "Universal differential equations for glacier ice flow modelling",
+    JOURNAL = "Geoscientific Model Development",
+    VOLUME = "16",
+    YEAR = "2023",
+    NUMBER = "22",
+    PAGES = "6671--6687",
+    URL = "https://gmd.copernicus.org/articles/16/6671/2023/",
+    DOI = "10.5194/gmd-16-6671-2023"
+}
+
 @article{wang2022discovering,
     author = "Wang, Yongji and Lai, Ching-Yao and Cowen-Breen, Charlie",
     title = "Discovering the rheology of Antarctic Ice Shelves via physics-informed deep learning",
@@ -1013,174 +2066,15 @@
     pages = "1–14"
 }
 
-@article{jirari:2009,
-    author = "Jirari, Hamza",
-    title = "Optimal control approach to dynamical suppression of decoherence of a qubit",
-    journal = "Europhysics Letters",
-    volume = "87",
-    number = "4",
-    pages = "40003",
-    year = "2009",
-    publisher = "IOP Publishing",
-    doi = "10.1209/0295-5075/87/40003"
-}
-
-@article{leung:2017,
-    author = "Leung, Nelson and Abdelhafez, Mohamed and Koch, Jens and Schuster, David",
-    title = "Speedup for quantum optimal control from automatic differentiation based on graphics processing units",
-    journal = "Physical Review A",
-    volume = "95",
-    number = "4",
-    pages = "042318",
-    year = "2017",
-    publisher = "APS",
-    doi = "10.1103/PhysRevA.95.042318",
-    url = "https://doi.org/10.1103/PhysRevA.95.042318"
-}
-
-@article{abdelhafez:2019,
-    author = "Abdelhafez, Mohamed and Schuster, David I and Koch, Jens",
-    title = "Gradient-based optimal control of open quantum systems using quantum trajectories and automatic differentiation",
-    journal = "Phys. Rev. A",
-    volume = "99",
-    number = "5",
-    pages = "052327",
-    year = "2019",
-    publisher = "APS",
-    url = "https://journals.aps.org/pra/abstract/10.1103/PhysRevA.99.052327",
-    doi = "10.1103/PhysRevA.99.052327"
-}
-
-@article{jirari2019quantum,
-    author = "Jirari, Hamza",
-    title = "From quantum optimal control theory to coherent destruction of tunneling",
-    journal = "The European Physical Journal B",
-    volume = "92",
-    pages = "1--8",
-    year = "2019",
-    publisher = "Springer",
-    url = "https://doi.org/10.1140/epjb/e2018-90231-5",
-    doi = "10.1140/epjb/e2018-90231-5"
-}
-
-@article{abdelhafez:2020,
-    author = "Abdelhafez, Mohamed and Baker, Brian and Gyenis, Andr{\'a}s and Mundada, Pranav and Houck, Andrew A and Schuster, David and Koch, Jens",
-    title = "Universal gates for protected superconducting qubits using optimal control",
-    journal = "Physical Review A",
-    volume = "101",
-    number = "2",
-    pages = "022321",
-    year = "2020",
-    publisher = "APS",
-    url = "https://doi.org/10.1103/PhysRevA.101.022321",
-    doi = "10.1103/PhysRevA.101.022321"
-}
-
-@article{schaefer:2020,
-    author = {Sch{\"a}fer, Frank and Kloc, Michal and Bruder, Christoph and L{\"o}rch, Niels},
-    title = "A differentiable programming method for quantum control",
-    journal = "Machine Learning: Science and Technology",
-    volume = "1",
-    number = "3",
-    pages = "035009",
-    year = "2020",
-    publisher = "IOP Publishing",
-    doi = "10.1088/2632-2153/ab9802",
-    url = "https://doi.org/10.1088/2632-2153/ab9802"
-}
-
-@article{goerz:2022,
-    author = "Goerz, Michael H and Carrasco, Sebasti{\'a}n C and Malinovsky, Vladimir S",
-    title = "Quantum optimal control via semi-automatic differentiation",
-    journal = "Quantum",
-    volume = "6",
-    pages = "871",
-    year = "2022",
-    publisher = {Verein zur F{\"o}rderung des Open Access Publizierens in den Quantenwissenschaften},
-    doi = "10.22331/q-2022-12-07-871"
-}
-
-@article{schaefer:2021,
-    author = {Sch{\"a}fer, Frank and Sekatski, Pavel and Koppenh{\"o}fer, Martin and Bruder, Christoph and Kloc, Michal},
-    title = "Control of stochastic quantum dynamics by differentiable programming",
-    journal = "Machine Learning: Science and Technology",
-    volume = "2",
-    number = "3",
-    pages = "035004",
-    year = "2021",
-    publisher = "IOP Publishing",
-    doi = "10.1088/2632-2153/abec22",
-    url = "https://doi.org/10.1088/2632-2153/abec22"
-}
-
-@book{ramsay2017dynamic,
-    author = "Ramsay, James and Hooker, Giles",
-    title = "Dynamic data analysis",
-    year = "2017",
-    publisher = "Springer"
-}
-
-@book{ascher2008-numerical-methods,
-    author = "Ascher, Uri M. and Greif, Chen",
-    title = "A First Course in Numerical Methods",
-    publisher = "Society for Industrial and Applied Mathematics",
-    year = "2011",
-    doi = "10.1137/9780898719987",
-    address = "Philadelphia, PA",
-    edition = ""
-}
-
-@article{Goldberg_1991_floatingpoint,
-    author = "Goldberg, David",
-    title = "What every computer scientist should know about floating-point arithmetic",
-    volume = "23",
-    ISSN = "0360-0300",
-    DOI = "10.1145/103162.103163",
-    number = "1",
-    journal = "ACM Computing Surveys (CSUR)",
-    year = "1991",
-    pages = "5–48"
-}
-
-@phdthesis{mathur2012stepsize-finitediff,
-    author = "Mathur, Ravishankar",
-    title = "An analytical approach to computing step sizes for finite-difference derivatives",
-    year = "2012"
-}
-
-@article{BARTON_1992_finite_diff,
-    author = "Barton, Russell R.",
-    title = "Computing Forward Difference Derivatives In Engineering Optimization",
-    volume = "20",
-    ISSN = "0305-215X",
-    DOI = "10.1080/03052159208941281",
-    number = "3",
-    journal = "Engineering Optimization",
-    year = "1992",
-    pages = "205–224"
-}
-
-@article{SUNDIALS-hindmarsh2005sundials,
-    author = "Hindmarsh, Alan C and Brown, Peter N and Grant, Keith E and Lee, Steven L and Serban, Radu and Shumaker, Dan E and Woodward, Carol S",
-    title = "SUNDIALS: Suite of nonlinear and differential/algebraic equation solvers",
-    journal = "ACM Transactions on Mathematical Software (TOMS)",
-    volume = "31",
-    number = "3",
-    pages = "363--396",
-    year = "2005",
-    publisher = "ACM New York, NY, USA"
-}
-
-@article{Ipsen_Meyer_1998,
-    author = "Ipsen, Ilse C. F. and Meyer, Carl D.",
-    title = "The Idea Behind Krylov Methods",
-    volume = "105",
-    ISSN = "0002-9890",
-    DOI = "10.1080/00029890.1998.12004985",
-    number = "10",
-    journal = "The American Mathematical Monthly",
-    year = "1998",
-    pages = "889–899"
+@article{jouvet2023inversion,
+    author = "Jouvet, Guillaume",
+    title = "Inversion of a Stokes glacier flow model emulated by deep learning",
+    journal = "Journal of Glaciology",
+    volume = "69",
+    number = "273",
+    pages = "13--26",
+    year = "2023",
+    publisher = "Cambridge University Press"
 }
 
 @inproceedings{sandu2006properties,
@@ -1225,150 +2119,11 @@
     url = "https://www.sciencedirect.com/science/article/pii/S0021999114001715"
 }
 
-@article{Lyness_1967,
-    author = "Lyness, J N",
-    title = "Numerical algorithms based on the theory of complex variable",
-    DOI = "10.1145/800196.805983",
-    journal = "Proceedings of the 1967 22nd national conference on -",
-    year = "1967",
-    pages = "125–133"
-}
-
-@article{Lyness_Moler_1967,
-    author = "Lyness, J N and Moler, C B",
-    title = "Numerical Differentiation of Analytic Functions",
-    volume = "4",
-    ISSN = "0036-1429",
-    DOI = "10.1137/0704019",
-    number = "2",
-    journal = "SIAM Journal on Numerical Analysis",
-    year = "1967",
-    pages = "202–210"
-}
-
-@article{Squire_Trapp_1998_complex_diff,
-    author = "Squire, William and Trapp, George",
-    title = "Using Complex Variables to Estimate Derivatives of Real Functions",
-    volume = "40",
-    ISSN = "0036-1445",
-    DOI = "10.1137/s003614459631241x",
-    year = "1998",
-    pages = "110–112"
-}
-
-@article{Martins_Sturdza_Alonso_2003_complex_differentiation,
-    author = "Martins, Joaquim R. R. A. and Sturdza, Peter and Alonso, Juan J.",
-    title = "The complex-step derivative approximation",
-    volume = "29",
-    ISSN = "0098-3500",
-    DOI = "10.1145/838250.838251",
-    journal = "ACM Transactions on Mathematical Software (TOMS)",
-    year = "2003",
-    pages = "245–262"
-}
-
-@article{Lantoine_Russell_Dargent_2012,
-    author = "Lantoine, Gregory and Russell, Ryan P. and Dargent, Thierry",
-    title = "Using Multicomplex Variables for Automatic Computation of High-Order Derivatives",
-    volume = "38",
-    ISSN = "0098-3500",
-    DOI = "10.1145/2168773.2168774",
-    number = "3",
-    journal = "ACM Transactions on Mathematical Software (TOMS)",
-    year = "2012",
-    pages = "16"
-}
-
-@article{allaire2015review,
-    author = "Allaire, Gr{\'e}goire",
-    title = "A review of adjoint methods for sensitivity analysis, uncertainty quantification and optimization in numerical codes",
-    journal = "Ing{\'e}nieurs de l'Automobile",
-    volume = "836",
-    pages = "33--36",
-    year = "2015"
-}
-
-@article{Symbolics_jl_2022,
-    author = "Gowda, Shashi and Ma, Yingbo and Cheli, Alessandro and Gwóźzdź, Maja and Shah, Viral B. and Edelman, Alan and Rackauckas, Christopher",
-    title = "High-performance symbolic-numerics via multiple dispatch",
-    volume = "55",
-    ISSN = "1932-2240",
-    DOI = "10.1145/3511528.3511535",
-    number = "3",
-    journal = "ACM Communications in Computer Algebra",
-    year = "2022",
-    pages = "92–96"
-}
-
-@article{Baydin_Pearlmutter_Radul_Siskind_2015,
-    author = {Baydin, At\i{}l\i{}m G\"{u}nes and Pearlmutter, Barak A. and Radul, Alexey Andreyevich and Siskind, Jeffrey Mark},
-    title = "Automatic Differentiation in Machine Learning: A Survey",
-    year = "2017",
-    issue_date = "January 2017",
-    publisher = "JMLR.org",
-    volume = "18",
-    number = "1",
-    issn = "1532-4435",
-    journal = "J. Mach. Learn. Res.",
-    month = "jan",
-    pages = "5595–5637",
-    numpages = "43",
-    keywords = "backpropagation, differentiable programming"
-}
-
-@article{Dürrbaum_Klier_Hahn_2002,
-    author = "Dürrbaum, Axel and Klier, Willy and Hahn, Hubert",
-    title = "Comparison of Automatic and Symbolic Differentiation in Mathematical Modeling and Computer Simulation of Rigid-Body Systems",
-    volume = "7",
-    ISSN = "1384-5640",
-    DOI = "10.1023/a:1015523018029",
-    number = "4",
-    journal = "Multibody System Dynamics",
-    year = "2002",
-    pages = "331–355"
-}
-
 @techreport{juedes1991taxonomy,
     author = "Juedes, David W",
     title = "A taxonomy of automatic differentiation tools",
     year = "1991",
     institution = "Argonne National Lab., IL (United States)"
-}
-
-@article{Elliott_2018,
-    author = "Elliott, Conal",
-    title = "The simple essence of automatic differentiation",
-    volume = "2",
-    DOI = "10.1145/3236765",
-    number = "ICFP",
-    journal = "Proceedings of the ACM on Programming Languages",
-    year = "2018",
-    pages = "70"
-}
-
-@misc{Laue2020,
-    author = "Laue, Soeren",
-    doi = "10.48550/ARXIV.1904.02990",
-    url = "https://arxiv.org/abs/1904.02990",
-    keywords = "Symbolic Computation (cs.SC), Machine Learning (cs.LG), FOS: Computer and information sciences, FOS: Computer and information sciences",
-    title = "On the Equivalence of Forward Mode Automatic Differentiation and Symbolic Differentiation",
-    publisher = "arXiv",
-    year = "2019",
-    copyright = "arXiv.org perpetual, non-exclusive license"
-}
-
-@book{griewank2008evaluatingderivatives,
-    author = "Griewank, Andreas and Walther, Andrea",
-    title = "Evaluating derivatives: principles and techniques of algorithmic differentiation",
-    year = "2008",
-    publisher = "SIAM"
-}
-
-@article{Griewank_1989,
-    author = "Griewank, Andreas",
-    title = "On Automatic Differentiation",
-    journal = "Mathematical Programming: Recent Developments and Applications",
-    year = "1989"
 }
 
 @article{clifford1871dualnumbers,
@@ -1514,445 +2269,59 @@
     year = "2018"
 }
 
-@article{Razavi.2021,
-    author = "Razavi, Saman and Jakeman, Anthony and Saltelli, Andrea and Prieur, Clémentine and Iooss, Bertrand and Borgonovo, Emanuele and Plischke, Elmar and Piano, Samuele Lo and Iwanaga, Takuya and Becker, William and Tarantola, Stefano and Guillaume, Joseph H A and Jakeman, John and Gupta, Hoshin and Melillo, Nicola and Rabitti, Giovanni and Chabridon, Vincent and Duan, Qingyun and Sun, Xifu and Smith, Stefán and Sheikholeslami, Razi and Hosseini, Nasim and Asadzadeh, Masoud and Puy, Arnald and Kucherenko, Sergei and Maier, Holger R",
-    year = "2021",
-    rating = "0",
-    title = "{The Future of Sensitivity Analysis: An essential discipline for systems modeling and policy support}",
-    journal = "Environmental Modelling \\& Software",
-    doi = "10.1016/j.envsoft.2020.104954",
-    url = "http://doi.org/10.1016/j.envsoft.2020.104954",
-    abstract = "{Environmental Modelling and Software, 137 (2021) 104954. doi:10.1016/j.envsoft.2020.104954}",
-    pages = "104954",
-    volume = "137",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2021/2021-Razavi-Environmental\%20Modelling\%20\&\%20Software.pdf"
+@article{allaire2015review,
+    author = "Allaire, Gr{\'e}goire",
+    title = "A review of adjoint methods for sensitivity analysis, uncertainty quantification and optimization in numerical codes",
+    journal = "Ing{\'e}nieurs de l'Automobile",
+    volume = "836",
+    pages = "33--36",
+    year = "2015"
 }
 
-@article{ruder2016overview-gradient-descent,
-    author = "Ruder, Sebastian",
-    title = "An overview of gradient descent optimization algorithms",
-    journal = "arXiv preprint arXiv:1609.04747",
-    year = "2016"
+@article{Symbolics_jl_2022,
+    author = "Gowda, Shashi and Ma, Yingbo and Cheli, Alessandro and Gwóźzdź, Maja and Shah, Viral B. and Edelman, Alan and Rackauckas, Christopher",
+    title = "High-performance symbolic-numerics via multiple dispatch",
+    volume = "55",
+    ISSN = "1932-2240",
+    DOI = "10.1145/3511528.3511535",
+    number = "3",
+    journal = "ACM Communications in Computer Algebra",
+    year = "2022",
+    pages = "92–96"
 }
 
-@article{Oden:2010tv,
-    author = "Oden, J Tinsley and Moser, Robert and Ghattas, Omar",
-    year = "2010",
-    rating = "0",
-    title = "{Computer Predictions with Quantified Uncertainty, Part II}",
-    journal = "SIAM News",
-    pages = "1 -- 4",
-    number = "10",
-    volume = "43",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2010/2010-Oden-SIAM\%20News\_1.pdf"
+@article{Dürrbaum_Klier_Hahn_2002,
+    author = "Dürrbaum, Axel and Klier, Willy and Hahn, Hubert",
+    title = "Comparison of Automatic and Symbolic Differentiation in Mathematical Modeling and Computer Simulation of Rigid-Body Systems",
+    volume = "7",
+    ISSN = "1384-5640",
+    DOI = "10.1023/a:1015523018029",
+    number = "4",
+    journal = "Multibody System Dynamics",
+    year = "2002",
+    pages = "331–355"
 }
 
-@article{BuiThanh:2012ul,
-    author = "Bui-Thanh, Tan and Burstedde, Carsten and Ghattas, Omar and Martin, James and Stadler, Georg and Wilcox, Lucas C",
-    year = "2012",
-    rating = "0",
-    title = "{Extreme-scale UQ for Bayesian inverse problems governed by PDEs}",
-    journal = "IEEE Computer Society Press",
-    url = "https://dl.acm.org/citation.cfm?id=2389000",
-    abstract = "{Quantifying uncertainties in large-scale simulations has emerged as the central challenge facing CS\\&E. When the simulations require supercomputers, and uncertain parameter dimensions are large, conventional UQ methods fail. Here we address uncertainty quantification for large-scale inverse problems in a Bayesian inference framework: given data and model uncertainties, find the pdf describing parameter uncertainties. To overcome the curse of dimensionality of conventional methods, we exploit the fact that the data are …}",
-    pages = "3",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2012/2012-Bui-Thanh-IEEE\%20Computer\%20Society\%20Press\_1.pdf"
-}
-
-@article{Ghattas.2021,
-    author = "Ghattas, Omar and Willcox, Karen",
-    year = "2021",
-    title = "{Learning physics-based models from data: perspectives from inverse problems and model reduction}",
-    journal = "Acta Numerica",
-    issn = "0962-4929",
-    doi = "10.1017/s0962492921000064",
-    abstract = "{This article addresses the inference of physics models from data, from the perspectives of inverse problems and model reduction. These fields develop formulations that integrate data into physics-based models while exploiting the fact that many mathematical models of natural and engineered systems exhibit an intrinsically low-dimensional solution manifold. In inverse problems, we seek to infer uncertain components of the inputs from observations of the outputs, while in model reduction we seek low-dimensional models that explicitly capture the salient features of the input–output map through approximation in a low-dimensional subspace. In both cases, the result is a predictive model that reflects data-driven learning yet deeply embeds the underlying physics, and thus can be used for design, control and decision-making, often with quantified uncertainties. We highlight recent developments in scalable and efficient algorithms for inverse problems and model reduction governed by large-scale models in the form of partial differential equations. Several illustrative applications to large-scale complex problems across different domains of science and engineering are provided.}",
-    pages = "445--554",
-    volume = "30",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2021/2021-Ghattas-Acta\%20Numerica.pdf"
-}
-
-@article{Ramsundar_Krishnamurthy_Viswanathan_2021,
-    author = "Ramsundar, Bharath and Krishnamurthy, Dilip and Viswanathan, Venkatasubramanian",
-    title = "Differentiable Physics: A Position Piece",
-    DOI = "10.48550/arxiv.2109.07573",
-    journal = "arXiv",
-    year = "2021"
-}
-
-@article{Shen_diff_modelling,
-    author = "Shen, Chaopeng and Appling, Alison P. and Gentine, Pierre and Bandai, Toshiyuki and Gupta, Hoshin and Tartakovsky, Alexandre and Baity-Jesi, Marco and Fenicia, Fabrizio and Kifer, Daniel and Li, Li and Liu, Xiaofeng and Ren, Wei and Zheng, Yi and Harman, Ciaran J. and Clark, Martyn and Farthing, Matthew and Feng, Dapeng and Kumar, Praveen and Aboelyazeed, Doaa and Rahmani, Farshid and Song, Yalan and Beck, Hylke E. and Bindas, Tadd and Dwivedi, Dipankar and Fang, Kuai and Höge, Marvin and Rackauckas, Chris and Mohanty, Binayak and Roy, Tirthankar and Xu, Chonggang and Lawson, Kathryn",
-    title = "Differentiable modelling to unify machine learning and physical models for geosciences",
-    DOI = "10.1038/s43017-023-00450-9",
-    journal = "Nature Reviews Earth \\& Environment",
-    year = "2023",
-    pages = "1–16"
-}
-
-@article{Gelbrecht-differential-programming-Earth,
-    author = "Gelbrecht, M. and White, A. and Bathiany, S. and Boers, N.",
-    title = "Differentiable programming for Earth system modeling",
-    journal = "Geoscientific Model Development",
-    volume = "16",
-    year = "2023",
-    number = "11",
-    pages = "3123--3135",
-    url = "https://gmd.copernicus.org/articles/16/3123/2023/",
-    doi = "10.5194/gmd-16-3123-2023"
-}
-
-@article{PINNs_2019,
-    author = "Raissi, M. and Perdikaris, P. and Karniadakis, G.E.",
-    title = "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations",
-    volume = "378",
-    ISSN = "0021-9991",
-    DOI = "10.1016/j.jcp.2018.10.045",
-    journal = "Journal of Computational Physics",
-    year = "2019",
-    pages = "686–707"
-}
-
-@article{rackauckas2020universal,
-    author = "Rackauckas, Christopher and Ma, Yingbo and Martensen, Julius and Warner, Collin and Zubov, Kirill and Supekar, Rohit and Skinner, Dominic and Ramadhan, Ali and Edelman, Alan",
-    title = "Universal differential equations for scientific machine learning",
-    journal = "arXiv preprint arXiv:2001.04385",
-    year = "2020"
-}
-
-@article{Dandekar_2020,
-    author = "Dandekar, Raj and Rackauckas, Chris and Barbastathis, George",
-    title = "A Machine Learning-Aided Global Diagnostic and Comparative Tool to Assess Effect of Quarantine Control in COVID-19 Spread",
-    volume = "1",
-    ISSN = "2666-3899",
-    DOI = "10.1016/j.patter.2020.100145",
-    number = "9",
-    journal = "Patterns",
-    year = "2020",
-    pages = "100145"
-}
-
-@article{chen_neural_2019,
-    author = "Chen, Ricky TQ and Rubanova, Yulia and Bettencourt, Jesse and Duvenaud, David K",
-    title = "Neural ordinary differential equations",
-    journal = "Advances in neural information processing systems",
-    volume = "31",
-    year = "2018"
-}
-
-@inproceedings{li2020scalable,
-    author = "Li, Xuechen and Wong, Ting-Kam Leonard and Chen, Ricky TQ and Duvenaud, David",
-    title = "Scalable gradients for stochastic differential equations",
-    booktitle = "International Conference on Artificial Intelligence and Statistics",
-    pages = "3870--3882",
-    year = "2020",
-    organization = "PMLR"
-}
-
-@book{Griewank:2008kh,
-    author = "Griewank, Andreas and Walther, Andrea",
-    year = "2008",
-    rating = "0",
-    title = "{Evaluating Derivatives}",
-    isbn = "978-0-89871-659-7",
-    url = "https://doi.org/10.1137/1.9780898717761",
-    keywords = "",
-    doi = "10.1137/1.9780898717761",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/2008/2008-Griewank-.pdf"
-}
-
-@book{Naumann.2011,
-    author = "Naumann, Uwe",
-    year = "2011",
-    title = "{The Art of Differentiating Computer Programs}",
-    isbn = "9781611972061",
-    url = "https://epubs.siam.org/doi/10.1137/1.9781611972078",
-    publisher = "SIAM",
-    doi = "10.1137/1.9781611972078"
-}
-
-@article{Innes_Zygote,
-    author = "Innes, Mike and Edelman, Alan and Fischer, Keno and Rackauckas, Chris and Saba, Elliot and Shah, Viral B and Tebbutt, Will",
-    title = "A Differentiable Programming System to Bridge Machine Learning and Scientific Computing",
-    DOI = "10.48550/arxiv.1907.07587",
-    journal = "arXiv",
-    year = "2019"
-}
-
-@article{Bezanson_Karpinski_Shah_Edelman_2012,
-    author = "Bezanson, Jeff and Karpinski, Stefan and Shah, Viral B and Edelman, Alan",
-    title = "Julia: A Fast Dynamic Language for Technical Computing",
-    DOI = "10.48550/arxiv.1209.5145",
-    journal = "arXiv",
-    year = "2012"
-}
-
-@article{Julialang_2017,
-    author = "Bezanson, Jeff and Edelman, Alan and Karpinski, Stefan and Shah, Viral B.",
-    title = "Julia: A Fresh Approach to Numerical Computing",
-    volume = "59",
-    ISSN = "0036-1445",
-    DOI = "10.1137/141000671",
-    number = "1",
-    journal = "SIAM Review",
-    year = "2017",
-    pages = "65–98"
-}
-
-@article{Tsitouras_2011,
-    author = "Tsitouras, Ch.",
-    title = "Runge–Kutta pairs of order 5(4) satisfying only the first column simplifying assumption",
-    volume = "62",
-    ISSN = "0898-1221",
-    DOI = "10.1016/j.camwa.2011.06.002",
-    number = "2",
-    journal = "Computers \& Mathematics with Applications",
-    year = "2011",
-    pages = "770–775"
-}
-
-@article{Neuenhofen_2018,
-    author = "Neuenhofen, Martin",
-    title = "Review of theory and implementation of hyper-dual numbers for first and second order automatic differentiation",
-    DOI = "10.48550/arxiv.1801.03614",
-    journal = "arXiv",
-    year = "2018"
-}
-
-@article{RevelsLubinPapamarkou2016,
-    author = "{Revels}, J. and {Lubin}, M. and {Papamarkou}, T.",
-    title = "Forward-Mode Automatic Differentiation in {J}ulia",
-    journal = "arXiv:1607.07892 [cs.MS]",
-    year = "2016",
-    url = "https://arxiv.org/abs/1607.07892"
-}
-
-@article{siskind2005perturbation,
-    author = "Siskind, Jeffrey Mark and Pearlmutter, Barak A",
-    title = "Perturbation confusion and referential transparency: Correct functional implementation of forward-mode AD",
-    year = "2005",
-    publisher = "Springer"
-}
-
-@article{manzyuk2019perturbation,
-    author = "Manzyuk, Oleksandr and Pearlmutter, Barak A and Radul, Alexey Andreyevich and Rush, David R and Siskind, Jeffrey Mark",
-    title = "Perturbation confusion in forward automatic differentiation of higher-order functions",
-    journal = "Journal of Functional Programming",
-    volume = "29",
-    pages = "e12",
-    year = "2019",
-    publisher = "Cambridge University Press"
-}
-
-@article{Innes_2018,
-    author = "Innes, Michael",
-    title = "Don’t Unroll Adjoint: Differentiating SSA-Form Programs",
-    journal = "arXiv",
-    year = "2018"
-}
-
-@article{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019,
-    author = "Wang, Fei and Zheng, Daniel and Decker, James and Wu, Xilun and Essertel, Grégory M. and Rompf, Tiark",
-    title = "Backpropagation with Continuation Callbacks:Foundations for Efficient and ExpressiveDifferentiable Programming",
-    volume = "3",
-    DOI = "10.1145/3341700",
-    abstractNote = "An abstract is not available.",
+@article{Elliott_2018,
+    author = "Elliott, Conal",
+    title = "The simple essence of automatic differentiation",
+    volume = "2",
+    DOI = "10.1145/3236765",
     number = "ICFP",
     journal = "Proceedings of the ACM on Programming Languages",
+    year = "2018",
+    pages = "70"
+}
+
+@misc{Laue2020,
+    author = "Laue, Soeren",
+    doi = "10.48550/ARXIV.1904.02990",
+    url = "https://arxiv.org/abs/1904.02990",
+    keywords = "Symbolic Computation (cs.SC), Machine Learning (cs.LG), FOS: Computer and information sciences, FOS: Computer and information sciences",
+    title = "On the Equivalence of Forward Mode Automatic Differentiation and Symbolic Differentiation",
+    publisher = "arXiv",
     year = "2019",
-    pages = "96"
-}
-
-@inproceedings{abadi-tensorflow,
-    author = "Abadi, Mart\'{\i}n and Barham, Paul and Chen, Jianmin and Chen, Zhifeng and Davis, Andy and Dean, Jeffrey and Devin, Matthieu and Ghemawat, Sanjay and Irving, Geoffrey and Isard, Michael and Kudlur, Manjunath and Levenberg, Josh and Monga, Rajat and Moore, Sherry and Murray, Derek G. and Steiner, Benoit and Tucker, Paul and Vasudevan, Vijay and Warden, Pete and Wicke, Martin and Yu, Yuan and Zheng, Xiaoqiang",
-    title = "TensorFlow: A System for Large-Scale Machine Learning",
-    year = "2016",
-    isbn = "9781931971331",
-    publisher = "USENIX Association",
-    address = "USA",
-    booktitle = "Proceedings of the 12th USENIX Conference on Operating Systems Design and Implementation",
-    pages = "265–283",
-    numpages = "19",
-    location = "Savannah, GA, USA",
-    series = "OSDI'16"
-}
-
-@inproceedings{moses_Enzyme,
-    author = "Moses, William and Churavy, Valentin",
-    editor = "Larochelle, H. and Ranzato, M. and Hadsell, R. and Balcan, M. F. and Lin, H.",
-    booktitle = "Advances in Neural Information Processing Systems",
-    pages = "12472--12485",
-    publisher = "Curran Associates, Inc.",
-    title = "Instead of Rewriting Foreign Code for Machine Learning, Automatically Synthesize Fast Gradients",
-    url = "https://proceedings.neurips.cc/paper/2020/file/9332c513ef44b682e9347822c2e457ac-Paper.pdf",
-    volume = "33",
-    year = "2020"
-}
-
-@article{Schäfer_Tarek_White_Rackauckas_2021,
-    author = "Schäfer, Frank and Tarek, Mohamed and White, Lyndon and Rackauckas, Chris",
-    title = "AbstractDifferentiation.jl: Backend-Agnostic Differentiable Programming in Julia",
-    DOI = "10.48550/arxiv.2109.12449",
-    journal = "arXiv",
-    year = "2021"
-}
-
-@inproceedings{serban2005cvodes,
-    author = "Serban, Radu and Hindmarsh, Alan C",
-    title = "CVODES: the sensitivity-enabled ODE solver in SUNDIALS",
-    booktitle = "International Design Engineering Technical Conferences and Computers and Information in Engineering Conference",
-    volume = "47438",
-    pages = "257--269",
-    year = "2005"
-}
-
-@article{ODESSA,
-    author = "Leis, Jorge R. and Kramer, Mark A.",
-    title = "Algorithm 658: ODESSA–an Ordinary Differential Equation Solver with Explicit Simultaneous Sensitivity Analysis",
-    year = "1988",
-    issue_date = "March 1988",
-    publisher = "Association for Computing Machinery",
-    address = "New York, NY, USA",
-    volume = "14",
-    number = "1",
-    issn = "0098-3500",
-    url = "https://doi.org/10.1145/42288.214371",
-    doi = "10.1145/42288.214371",
-    journal = "ACM Trans. Math. Softw.",
-    month = "mar",
-    pages = "61–67",
-    numpages = "7",
-    keywords = "model error, sensitivity analysis, parameter variation, model prediction uncertainty"
-}
-
-@article{dolfin2013,
-    author = "Farrell, P. E. and Ham, D. A. and Funke, S. W. and Rognes, M. E.",
-    title = "Automated Derivation of the Adjoint of High-Level Transient Finite Element Programs",
-    journal = "SIAM Journal on Scientific Computing",
-    volume = "35",
-    number = "4",
-    pages = "C369-C393",
-    year = "2013",
-    doi = "10.1137/120873558",
-    URL = "https://doi.org/10.1137/120873558",
-    eprint = "https://doi.org/10.1137/120873558"
-}
-
-@article{dolfin2018,
-    author = "Mitusch, Sebastian K. and Funke, Simon W. and Dokken, Jørgen S.",
-    doi = "10.21105/joss.01292",
-    url = "https://doi.org/10.21105/joss.01292",
-    year = "2019",
-    publisher = "The Open Journal",
-    volume = "4",
-    number = "38",
-    pages = "1292",
-    title = "dolfin-adjoint 2018.1: automated adjoints for FEniCS and Firedrake",
-    journal = "Journal of Open Source Software"
-}
-
-@article{kim_stiff_2021,
-    author = "Kim, Suyong and Ji, Weiqi and Deng, Sili and Ma, Yingbo and Rackauckas, Christopher",
-    title = "Stiff neural ordinary differential equations",
-    volume = "31",
-    issn = "1054-1500, 1089-7682",
-    url = "https://aip.scitation.org/doi/10.1063/5.0060697",
-    doi = "10.1063/5.0060697",
-    language = "en",
-    number = "9",
-    urldate = "2022-02-25",
-    journal = "Chaos: An Interdisciplinary Journal of Nonlinear Science",
-    month = "September",
-    year = "2021",
-    pages = "093122",
-    file = "Versió enviada:/Users/Bolib001/Zotero/storage/J3MCWRAP/Kim et al. - 2021 - Stiff neural ordinary differential equations.pdf:application/pdf"
-}
-
-@article{Jensen_Nakshatrala_Tortorelli_2014,
-    author = "Jensen, Jakob S. and Nakshatrala, Praveen B. and Tortorelli, Daniel A.",
-    title = "On the consistency of adjoint sensitivity analysis for structural optimization of linear dynamic problems",
-    volume = "49",
-    ISSN = "1615-147X",
-    DOI = "10.1007/s00158-013-1024-4",
-    number = "5",
-    journal = "Structural and Multidisciplinary Optimization",
-    year = "2014",
-    pages = "831–837"
-}
-
-@article{Zhuang_2020,
-    author = "Zhuang, Juntang and Dvornek, Nicha and Li, Xiaoxiao and Tatikonda, Sekhar and Papademetris, Xenophon and Duncan, James",
-    title = "Adaptive Checkpoint Adjoint Method for Gradient Estimation in Neural ODE.",
-    volume = "119",
-    journal = "Proceedings of machine learning research",
-    year = "2020",
-    pages = "11639–11649"
-}
-
-@article{Checkpoiting_2023,
-    author = "Schanen, Michel and Narayanan, Sri Hari Krishna and Williamson, Sarah and Churavy, Valentin and Moses, William S. and Paehler, Ludger",
-    editor = "Miky{\v{s}}ka, Ji{\v{r}}{\'i} and de Mulatier, Cl{\'e}lia and Paszynski, Maciej and Krzhizhanovskaya, Valeria V. and Dongarra, Jack J. and Sloot, Peter M.A.",
-    title = "Transparent Checkpointing for Automatic Differentiation of Program Loops Through Expression Transformations",
-    booktitle = "Computational Science -- ICCS 2023",
-    year = "2023",
-    publisher = "Springer Nature Switzerland",
-    address = "Cham",
-    pages = "483--497",
-    isbn = "978-3-031-36024-4"
-}
-
-@InProceedings{that-is-not-an-ode,
-    author = "Kidger, Patrick and Chen, Ricky T. Q. and Lyons, Terry J",
-    editor = "Meila, Marina and Zhang, Tong",
-    title = {"Hey, that’s not an ODE": Faster ODE Adjoints via Seminorms},
-    booktitle = "Proceedings of the 38th International Conference on Machine Learning",
-    pages = "5443--5452",
-    year = "2021",
-    volume = "139",
-    series = "Proceedings of Machine Learning Research",
-    month = "18--24 Jul",
-    publisher = "PMLR",
-    pdf = "http://proceedings.mlr.press/v139/kidger21a/kidger21a.pdf",
-    url = "https://proceedings.mlr.press/v139/kidger21a.html"
-}
-
-@book{stoer2002-numerical,
-    author = "Stoer, Josef and Bulirsch, Roland",
-    title = "Introduction to numerical analysis",
-    year = "2002",
-    publisher = "Springer"
-}
-
-@article{Norcliffe_gaussquadrature_2023,
-    author = "Norcliffe, Alexander and Deisenroth, Marc Peter",
-    title = "Faster Training of Neural ODEs Using Gau{\ss}-Legendre Quadrature",
-    DOI = "10.48550/arxiv.2308.10644",
-    journal = "arXiv",
-    year = "2023"
-}
-
-@article{Elliott_Peraire_1996,
-    author = "Elliott, Jonathan and Peraire, Jaime",
-    title = "Aerodynamic design using unstructured meshes",
-    DOI = "10.2514/6.1996-1941",
-    note = "This has an example of the hardcore adjoint method implemented for aerodynamics. It may help to read this to see how the adjoint equations is being solved and the size of the problem.",
-    journal = "Fluid Dynamics Conference",
-    year = "1996"
-}
-
-@book{ascher2008numerical,
-    author = "Ascher, Uri M",
-    title = "Numerical methods for evolutionary differential equations",
-    year = "2008",
-    publisher = "SIAM"
-}
-
-@inproceedings{Johnson,
-    author = "Johnson, Steven G.",
-    title = "Notes on Adjoint Methods for 18.335",
-    year = "2012"
+    copyright = "arXiv.org perpetual, non-exclusive license"
 }
 
 @book{gelman2013bayesian,
@@ -1980,4 +2349,64 @@
     journal = "Journal of Scientific Computing",
     year = "1988",
     pages = "233–260"
+}
+
+@inproceedings{NIPS2017_3f5ee243,
+    author = "Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, Łukasz and Polosukhin, Illia",
+    editor = "Guyon, I and Luxburg, U Von and Bengio, S and Wallach, H and Fergus, R and Vishwanathan, S and Garnett, R",
+    title = "Attention Is {{All}} You {{Need}}",
+    booktitle = "Advances in {{Neural Information Processing Systems}}",
+    date = "2017",
+    volume = "30",
+    publisher = "{Curran Associates, Inc.}",
+    keywords = "DL"
+}
+
+@unpublished{Kingma2014,
+    author = "Kingma, Diederik P. and Ba, Jimmy",
+    title = "Adam: {{A Method}} for {{Stochastic Optimization}}",
+    date = "2014-12-22",
+    eprint = "1412.6980",
+    eprinttype = "arxiv",
+    pages = "1--15",
+    url = "http://arxiv.org/abs/1412.6980",
+    abstract = "We introduce Adam, an algorithm for first-order gradient-based optimization of stochastic objective functions, based on adaptive estimates of lower-order moments. The method is straightforward to implement, is computationally efficient, has little memory requirements, is invariant to diagonal rescaling of the gradients, and is well suited for problems that are large in terms of data and/or parameters. The method is also appropriate for non-stationary objectives and problems with very noisy and/or sparse gradients. The hyper-parameters have intuitive interpretations and typically require little tuning. Some connections to related algorithms, on which Adam was inspired, are discussed. We also analyze the theoretical convergence properties of the algorithm and provide a regret bound on the convergence rate that is comparable to the best known results under the online convex optimization framework. Empirical results demonstrate that Adam works well in practice and compares favorably to other stochastic optimization methods. Finally, we discuss AdaMax, a variant of Adam based on the infinity norm.",
+    keywords = "deepsplitting,inference,parameter-estimation,PDE"
+}
+
+@article{Vadlamani_Xiao_Yablonovitch_2020,
+    author = "Vadlamani, Sri Krishna and Xiao, Tianyao Patrick and Yablonovitch, Eli",
+    title = "Physics successfully implements Lagrange multiplier optimization",
+    volume = "117",
+    ISSN = "0027-8424",
+    DOI = "10.1073/pnas.2015192117",
+    number = "43",
+    journal = "Proceedings of the National Academy of Sciences of the United States of America",
+    year = "2020",
+    pages = "26639–26650"
+}
+
+@article{Rackauckas_Nie_2016,
+    author = "Rackauckas, Christopher and Nie, Qing",
+    title = "DifferentialEquations.jl – A Performant and Feature-Rich Ecosystem for Solving Differential Equations in Julia",
+    volume = "5",
+    ISSN = "2049-9647",
+    DOI = "10.5334/jors.151",
+    number = "1",
+    journal = "Journal of Open Research Software",
+    year = "2016",
+    pages = "15"
+}
+
+@article{Ranocha_Dalcin_Parsani_Ketcheson_2022,
+    author = "Ranocha, Hendrik and Dalcin, Lisandro and Parsani, Matteo and Ketcheson, David I.",
+    title = "Optimized Runge-Kutta Methods with Automatic Step Size Control for Compressible Computational Fluid Dynamics",
+    volume = "4",
+    ISSN = "2096-6385",
+    DOI = "10.1007/s42967-021-00159-w",
+    note = "Paper with the RDPK3Sp35 method",
+    number = "4",
+    journal = "Communications on Applied Mathematics and Computation",
+    year = "2022",
+    pages = "1191–1228"
 }
