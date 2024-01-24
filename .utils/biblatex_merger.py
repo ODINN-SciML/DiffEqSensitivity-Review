@@ -80,7 +80,7 @@ def merge_bib(path):
     
     # Collect all bib data 
     for file in bib_files:
-        if file == "./bibliography.bib":
+        if file == "./tex/bibliography.bib":
             continue
         print("-----------> Processing bib file: ", file)
         parser = bibtex.Parser()
