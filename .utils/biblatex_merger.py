@@ -50,6 +50,10 @@ def merge_bib(path):
 
     # Filter .ipynb files
     bib_files = list(filter(lambda x : '.ipynb' not in x, bib_files))
+
+    # Filter certain bib files from the compilation proccess because of unknown induced errors 
+    bib_files = list(filter(lambda x : 'victor' not in x, bib_files))
+    
     # Put output file at the end to avoid backslash plague
     bib_files = sorted(bib_files, key = lambda x : 'bibliography.bib' in x)
 
