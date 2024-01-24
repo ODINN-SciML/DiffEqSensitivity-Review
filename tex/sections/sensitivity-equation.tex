@@ -24,25 +24,70 @@ By solving the sensitivity equation at the same time we solve the original diffe
 
 \subsubsection{Forward AD as the discretization of the sensitivity equations}
 
-It is important to remark that the sensitivity equations can be also solved in discrete forward mode by numerically discretizing the original ODE and later deriving the discrete sensitivity equations. 
+It is important to remark that the sensitivity equations can be also solved in discrete forward mode by numerically discretizing the original ODE and later deriving the discrete sensitivity equations \cite{ma2021comparison}. 
 For most cases, this leads to the same result that in the continuous case \cite{FATODE2014}.
-To illustrate this, consider the simple forward Euler method applied to the original ODE given by $u_{t+1} = u_t + \Delta t \, f(u_t, \theta, t)$ where we implement forward mode AD by introducing the dual numbers $u_t + \epsilon s_t$ and $\theta + \epsilon$, where $\epsilon$ is the dual variable associated to derivatives with respect to the parameter $\theta$.
-This leads to the following equation involving dual numbers
+% To illustrate this, consider the simple forward Euler method applied to the original ODE given by $u_{t+1} = u_t + \Delta t \, f(u_t, \theta, t)$.
+We can numerically solve for the sensitivity $s$ by extending the parameter $\theta$ to an multidimensional dual number \cite{Neuenhofen_2018, RevelsLubinPapamarkou2016}, 
+\begin{equation}
+    \theta =
+    \begin{bmatrix}
+    \theta_1 \\
+    \theta_2 \\
+    \vdots \\
+    \theta_p
+    \end{bmatrix}
+    \rightarrow
+    \begin{bmatrix}
+    \theta_1 + \epsilon_1 \\
+    \theta_2 + \epsilon_2 \\
+    \vdots \\
+    \theta_p + \epsilon_p
+    \end{bmatrix}
+\end{equation}
+where $\epsilon_i \epsilon_j = 0$ for all pairs of $i$ and $j$. 
+The dependency of the solution $u$ of the ODE with respect to the parameter $\theta$ is now expanded following Equation \eqref{eq:dual-number-function} as 
+\begin{equation}
+    u =
+    \begin{bmatrix}
+    u_1 \\
+    u_2 \\
+    \vdots \\
+    u_n
+    \end{bmatrix}
+    \rightarrow
+    \begin{bmatrix}
+    u_1 + \sum_{j=1}^p \frac{\partial u_1}{\partial \theta_j} \epsilon_j \\
+    u_2 + \sum_{j=1}^p \frac{\partial u_2}{\partial \theta_j} \epsilon_j \\
+    \vdots \\
+    u_p + \sum_{j=1}^p \frac{\partial u_n}{\partial \theta_j} \epsilon_j
+    \end{bmatrix}
+    = 
+    u \, + \, s \, 
+    \begin{bmatrix}
+    \epsilon_1 \\
+    \epsilon_2 \\
+    \vdots \\
+    \epsilon_p
+    \end{bmatrix},
+\end{equation}
+that is, the dual component of the vector $u$ corresponds exactly to the sensitivity matrix $s$. 
+This implies forward AD applied to any multistep linear solver will result in the application of the same solver on the sensitivity equations \eqref{eq:sensitivity_equations}.  
+For example, for the forward Euler method this gives 
 \begin{align}
-    u_{t+1} + \epsilon \, s_{t+1}
+    u^{t+1} + \epsilon \, s^{t+1}
     &= 
-    u_t + \epsilon \, u_t + \Delta t \, f (u_t + \epsilon \, s_t, \theta + \epsilon, t) \nonumber \\
+    u^t + \epsilon \, u^t + \Delta t \, f (u^t + \epsilon \, s^t, \theta + \epsilon, t) \nonumber \\
     &= 
-    u_t + f(u_t, \theta, t) 
+    u^t + f(u^t, \theta, t) 
     + 
     \epsilon \, \Delta t 
     \left( 
-    \frac{\partial f}{\partial u} s_t + 
+    \frac{\partial f}{\partial u} s^t + 
     \frac{\partial f}{\partial \theta}
     \right).
     \label{eq:sensitivity-equation-AD}
 \end{align}
-The dual component corresponds to the forward Euler discretization of the sensitivity equation \eqref{eq:sensitivity_equations}, with $s_t$ the temporal discretization of the sensitivity $s(t)$.
-
+The dual component corresponds to the forward Euler discretization of the sensitivity equation \eqref{eq:sensitivity_equations}, with $s^t$ the temporal discretization of the sensitivity $s(t)$.
+For non-linear numerical solver (e.g., Runge-Kutta methods), the discretization forward AD will lead to a different numerical solver for the sensitivity.  
 
 %Notice that since $s(t)$ is a matrix of size $n \times p$, the complexity of solving the sensitivity equation scales as $\mathcal O(np)$. From a computational perspective, the sensitivity $s$ appears in the sensitivity equation as a VJP, meaning the the term $\frac{\partial f}{\partial u} s$ can be efficiently computed using backwards automatic differentiation. 

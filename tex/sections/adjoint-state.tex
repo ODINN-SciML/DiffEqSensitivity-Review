@@ -11,22 +11,22 @@ The derivation of the discrete adjoint equations is carried once the numerical s
 Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
 Some of the most common numerical solvers include multistep linear solvers of the form 
 \begin{equation}
-    \sum_{i=0}^{K_1} \alpha_{ni} u_{n-i} 
+    \sum_{i=0}^{K_1} \alpha_{ni} u^{n-i} 
     +
-    h_n \sum_{i=0}^{K_2} \beta_{ni} f(u_{n-i}, \theta, t_{n-i})
+    \Delta t_n \sum_{i=0}^{K_2} \beta_{ni} f(u^{n-i}, \theta, t_{n-i})
     = 
     0.
 \end{equation}
 and Runge-Kutta methods with 
 \begin{align}
-    u_{n+1} 
+    u^{n+1} 
     &= 
-    u_n 
+    u^n 
     + 
-    h \sum_{i=1}^s b_i k_i \\
+    \Delta t_n \sum_{i=1}^s b_i k_i \\
     k_i 
     &= 
-    f \left(u_n + \sum_{j=1}^s a_{ij} k_j , \theta ,  t_n + c_n h \right) \qquad i=1,2, \ldots, s.
+    f \left(u^n + \sum_{j=1}^s a_{ij} k_j , \theta ,  t_n + c_i \Delta t_n \right) \qquad i=1,2, \ldots, s.
 \end{align}
 The former is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
 Explicit methods are characterized by $\beta_{n, 0} = 0$ for the multistep and $a_{ij}=0$ if $i \leq j$ for Runge-Kutta methods, otherwise, the method is implicit. 
@@ -226,4 +226,7 @@ Notice that this procedure requires to know the value of $u_i$ at any given time
 % Conection with duality
 % Conection with the adjoint operator
 % Different ways of deriving the adjoint equations: lagrangian
+
+\paragraph{Is the discrete adjoint method the same as backwards AD?}
+\label{section:is-discrete-adjoint-AD}
 % Is the adjoint the same than a gradient? Yes, but these are derivatives with respect to the state of the system, not with respect to the parameters! 

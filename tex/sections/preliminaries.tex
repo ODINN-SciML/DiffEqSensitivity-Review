@@ -4,15 +4,16 @@ Consider a system of ordinary differential equations (ODEs) given by
  \label{eq:original_ODE}
 \end{equation}
 where $u \in \mathbb{R}^n$ is the unknown solution; $f$ is a function that depends on the state $u$, some parameter $\theta \in \mathbb R^p$, and an independent variable $t$ which we will refer as time, but it can represent another quantity; and with initial condition $u(t_0) = u_0$.
-Here $n$ denotes the total number of ODEs and $p$ the size of a parameter embedded in the functional form of the differential equation.
-Although here we consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended of the case of partial differential equations (for example, via the method of lines \cite{ascher2008numerical}) and differential algebraic equations (DAE).
+Here $n$ denotes the total number of ODEs and $p$ the dimension of a parameter embedded in the functional form of the differential equation.
+Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to the case of partial differential equations (PDEs; for example, via the method of lines \cite{ascher2008numerical}) and differential algebraic equations (DAE).
+In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
-Except for a minority of functions $f(u,\theta, t)$, solutions of the Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
+Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
 
 \subsubsection{What to differentiate and why?}
 
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
-Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a broader class of functions. 
+Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a much broader class of functions. 
 % Maybe organize this in sections, like 
 \begin{itemize}
     \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and the data. Examples of loss functions include the squared error
@@ -25,6 +26,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \begin{equation}
         L(u(\cdot, \theta)) = \frac{1}{2} \sum_{i=1}^N \| u(t_i; \theta) - u^{\text{target}}(t_i) \|_2^2.
     \end{equation}
+    (even more generally, misfit functions used in optimal estimation and control problems map from the model's state space to the observation space, see e.g., Bryson and Ho, 1975).
     We can also consider the continuous evaluated loss function of the form
     \begin{equation}
          L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
@@ -33,7 +35,9 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     Defining a loss function where just the empirical error is penalized is known as trajectory matching. 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
     % \todo{this is unclear}
-    \item \textbf{Likelihood profiles.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
+    \item \textbf{Likelihood profiles.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, 
+    \todo{\tiny See my earlier comment: in general, y = H u, with H the state-to-obs operator}
+    $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
     If $p(y | t , \theta)$ is the probability distribution of $y$, maximum likelihood estimation consists in finding the parameter $\theta$ as
     \begin{equation}
         \theta^* 
@@ -111,6 +115,8 @@ On the other side, when this is not the case, we will use the total derivative s
 Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
 
 \subsubsection{Numerical solvers for differential equations}
+
+% Thinking about adding some simple intro to numerical solvers, which in any way we will need in order to treat adjoint methods. 
 
 % In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
 % Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.

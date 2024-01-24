@@ -1,12 +1,12 @@
 \label{appendix:dual-number-solver}
 
 In this section, we are going to consider certain errors that can potentially show up when combining AD with a numerical solver. 
-Numerical solvers for differential equations usually evaluate internally an estimated scaled error computed as 
+Numerical solvers for differential equations usually estimate internally a scaled error computed as 
 define an error term computed as \cite{hairer-solving-1, Rackauckas_Nie_2016}
 \begin{equation}
     \text{Err}_\text{scaled}^{n+1}
     =
-    \left( \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \, \times \, M} \right)^2 \right)^{\frac{1}{2}}
+    \left( \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \, \times \, M} \right)^2 \right)^{\frac{1}{2}},
     \label{eq:internal-norm-wrong}
 \end{equation}
 with $\mathfrak{abstol}$ and $\mathfrak{reltol}$ the absolute and relative solver tolerances (customize), respectively; $M$ is the maximum expected value of the numerical solution; and $\text{err}_i^{n+1}$ is an estimation of the numerical error at step $n+1$. 
@@ -15,7 +15,7 @@ Estimations of the local error $\text{err}_i^{n+1}$ can be based on two approxim
 The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a mere increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
 % Chris on https://discourse.julialang.org/t/default-norm-used-in-ode-error-control/70995/4 mention to this norm to be the defaul since 70s
 
-The goal of a good stepize controller is to pick $\Delta t_{n+1}$ as large as possible (so the solver requires less total steps) at the same time that $\text{Err}_\text{scaled} \leq 1$. 
+The goal of a stepize controller is to pick $\Delta t_{n+1}$ as large as possible (so the solver requires less total steps) at the same time that $\text{Err}_\text{scaled} \leq 1$. 
 One of the most used methods to archive this is the proportional-integral controller (PIC) that updates the stepsize according to \cite{hairer-solving-2, Ranocha_Dalcin_Parsani_Ketcheson_2022}
 \begin{equation}
     \Delta t_{n+1} = \eta \, \Delta t_n
@@ -37,8 +37,8 @@ To illustrate this, let us consider the simple ODE example from Section \ref{sec
  \frac{du_2}{dt} = - a u_2 + u_1 u_2 & \quad u_2(0) = 1.
 \end{cases}
 \end{equation}
-Notice that for $a = 1$ this ODE admits a simple analytical solution $u_1(t) = u_2(t) = 0$ for all times $t$, making this problem very simple to solve numerically.
-The following code solves for the derivative with respect to the parameter $a$ using two different methods \footnote{Full code available at ...}. 
+Notice that for $a = 1$ this ODE admits a simple analytical solution $u_1(t) = u_2(t) = 1$ for all times $t$, making this problem very simple to solve numerically.
+The following code solves for the derivative with respect to the parameter $a$ using two different methods\footnote{Full code available at ...}. 
 The second method using forward AD with dual numbers declares the \texttt{internalnorm} argument according to Equation \eqref{eq:internal-norm-wrong}.
 \begin{jllisting}
 using SciMLSensitivity, OrdinaryDiffEq, Zygote, ForwardDiff

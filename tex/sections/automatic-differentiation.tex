@@ -36,7 +36,7 @@ For example, given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\ep
 From these last examples, we can see that the derivative component of the dual number carries the information of the derivatives when combining operations.
 For example, suppose than in the last example the dual variables $x_2$ and $y_2$ carry the value of the derivative of $x_1$ and $x_2$ with respect to a parameter $\theta$, respectively. 
 
-Intuitively, we can think about $\epsilon$ as being a differential in the Taylor expansion:
+Intuitively, we can think about $\epsilon$ as being a differential in the Taylor expansion, fact that we can observe in how the output of any scalar functions is extended to a dual number output:
 \begin{align}
     f(x_1 + \epsilon x_2)
     &= 
@@ -98,8 +98,7 @@ Given a directional graph of operations defined by a Wengert list \cite{Wengert_
  \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
 In this context, the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ is introduced to signify the partial derivative of the final loss function with respect to various program variables. 
-This derivative is often referred to as the adjoint or cotangent, though it should not be confused with the adjoint method discussed in later sections.
-
+This derivative is often referred to as the adjoint or cotangent, and its connection with the discrete adjoint method will be made more explicitly in Section \ref{section:is-discrete-adjoint-AD}. 
 
 Since in backwards AD the values of $\bar \omega$ are being updated in reverse order, in order to evaluate the terms $\frac{\partial \omega}{\partial v}$ we need to know the state value of all the argument variables $v$ of $\omega$, which need to be stored in memory during the evaluation of the function in order to be able to apply backward AD.
 
