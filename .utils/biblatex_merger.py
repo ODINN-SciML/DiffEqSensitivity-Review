@@ -52,7 +52,7 @@ def merge_bib(path):
     bib_files = list(filter(lambda x : '.ipynb' not in x, bib_files))
 
     # Filter certain bib files from the compilation proccess because of unknown induced errors 
-    # bib_files = list(filter(lambda x : 'victor' not in x, bib_files))
+    bib_files = list(filter(lambda x : 'victor' not in x, bib_files))
     # bib_files = list(filter(lambda x : 'bibliography.bib' not in x, bib_files))
     
     # Put output file at the end to avoid backslash plague
