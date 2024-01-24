@@ -52,7 +52,8 @@ def merge_bib(path):
     bib_files = list(filter(lambda x : '.ipynb' not in x, bib_files))
 
     # Filter certain bib files from the compilation proccess because of unknown induced errors 
-    bib_files = list(filter(lambda x : 'victor' not in x, bib_files))
+    # bib_files = list(filter(lambda x : 'victor' not in x, bib_files))
+    # bib_files = list(filter(lambda x : 'bibliography.bib' not in x, bib_files))
     
     # Put output file at the end to avoid backslash plague
     bib_files = sorted(bib_files, key = lambda x : 'bibliography.bib' in x)
@@ -65,7 +66,6 @@ def merge_bib(path):
     filtered_bib_data = BibliographyData()
     
     for file in tex_files:
-        # with open("tex/sections/adjoint-state.tex", 'r') as f:
         with open(file, 'r') as f:
             latex += f.read()
     
@@ -80,9 +80,9 @@ def merge_bib(path):
     
     # Collect all bib data 
     for file in bib_files:
-        # print(file)
-        # if file == "./bib_test.bib":
-        #     continue
+        if file == "./bibliography.bib":
+            continue
+        print("-----------> Processing bib file: ", file)
         parser = bibtex.Parser()
         bib_data.append(parser.parse_file(file))
 
