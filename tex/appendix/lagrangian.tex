@@ -3,8 +3,16 @@
 %by the means of the \emph{Lagrange multiplier method}\cite{Vadlamani.2020}.
 % The introduction of the adjoint variable allows to reduce the computational complexity of sensitivity methods, as we will explore in this section and later in Section \ref{section:computing-adjoints}.
 
-In this section we are going to derive the adjoint equation for both discrete and continuous methods using the Lagrange multiplier trick \cite{Vadlamani_Xiao_Yablonovitch_2020}. 
+The adjoint equation can be derived directly from the 
+Following the analysis in \cite{Giles_Pierce_2000}, we decided to present both approaches here, although we prefer with the duality viewpoint introduced in the main text since we believe is more commonly used and easy to understand for newcomers. 
+
+In this section we are going to derive the adjoint equation for both discrete and continuous methods using the Lagrangian formulation of the adjoint. 
+It is important to mention that this is different than using the Lagrange multipliers approach, a common confusion in the literature\cite{Givoli_2021}.
 Conceptually, the method is the same in both discrete and continuous case, with the difference that we manipulate linear algebra objects for the former and continuous operators for the later. 
+
+\subsubsection{Discrete adjoint}
+
+\subsubsection{Continuous adjoint}
 
 For the continuous adjoint method, we proceed the same way by writing a new loss function $I(\theta)$, sometimes known as the \textit{Lagrangian}, identical to $L(\theta)$ as 
 \begin{equation}

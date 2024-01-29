@@ -6,7 +6,7 @@ Here, an important piece of CAS is simplification routines that reduce the size 
 This can make symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 
 
 It is important to remark the close relationship between AD and symbolic differentiation.
-There is not agreement weather symbolic differentiation should be classified as AD\cite{juedes1991taxonomy, Elliott_2018, Laue2020} or as a different method \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.  
+There is no agreement as to weather symbolic differentiation should be classified as AD\cite{juedes1991taxonomy, Elliott_2018, Laue2020} or as a different method \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.  
 Both are equivalent in the sense that they perform the same operations but the underlying data structure is different \cite{Laue2020}. 
 Here, expression swell is a consequence of the underlying representation when this does not allow for common sub-expressions. 
 This can also been understood as if AD is symbolic differentiation performed by a compiler \cite{Elliott_2018}, meaning that different AD can be classified based in the level of integration with the underlying source language \cite{juedes1991taxonomy}.

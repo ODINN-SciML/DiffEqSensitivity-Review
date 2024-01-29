@@ -17,77 +17,11 @@ which gives the \textit{sensitivity differential equation}
 Both the original system of $n$ ODEs and the sensitivity equation of $np$ ODEs are solved simultaneously, which is necessary since the sensitivity differential equation directly depends on the value of $u(t)$.  
 This implies that as we solve the ODEs, we can ensure the same level of numerical precision for the two of them.
 
-In opposition to the methods previously introduced, the sensitivity equations find the gradient by solving a new set of continuous differential equations.
+In contrast to the methods previously introduced, the sensitivity equations find the gradient by solving a new set of continuous differential equations.
 Notice also that the obtained sensitivity $s(t)$ can be evaluated at any given time $t$. 
 This method can be labeled as forward, since we solve both $u(t)$ and $s(t)$ as we solve the differential equation forward in time, without the need of backtracking any operation though the solver.
-By solving the sensitivity equation at the same time we solve the original differential equation for $u(t)$, we ensure that by the end of the forward step we have calculated both $u(t)$ and $s(t)$. 
+By solving the sensitivity equation and the original differential equation for $u(t)$ simultaneously, we ensure that by the end of the forward step we have calculated both $u(t)$ and $s(t)$. 
 
-\subsubsection{Forward AD as the discretization of the sensitivity equations}
-
-It is important to remark that the sensitivity equations can be also solved in discrete forward mode by numerically discretizing the original ODE and later deriving the discrete sensitivity equations \cite{ma2021comparison}. 
-For most cases, this leads to the same result that in the continuous case \cite{FATODE2014}.
-% To illustrate this, consider the simple forward Euler method applied to the original ODE given by $u_{t+1} = u_t + \Delta t \, f(u_t, \theta, t)$.
-We can numerically solve for the sensitivity $s$ by extending the parameter $\theta$ to an multidimensional dual number \cite{Neuenhofen_2018, RevelsLubinPapamarkou2016}, 
-\begin{equation}
-    \theta =
-    \begin{bmatrix}
-    \theta_1 \\
-    \theta_2 \\
-    \vdots \\
-    \theta_p
-    \end{bmatrix}
-    \rightarrow
-    \begin{bmatrix}
-    \theta_1 + \epsilon_1 \\
-    \theta_2 + \epsilon_2 \\
-    \vdots \\
-    \theta_p + \epsilon_p
-    \end{bmatrix}
-\end{equation}
-where $\epsilon_i \epsilon_j = 0$ for all pairs of $i$ and $j$. 
-The dependency of the solution $u$ of the ODE with respect to the parameter $\theta$ is now expanded following Equation \eqref{eq:dual-number-function} as 
-\begin{equation}
-    u =
-    \begin{bmatrix}
-    u_1 \\
-    u_2 \\
-    \vdots \\
-    u_n
-    \end{bmatrix}
-    \rightarrow
-    \begin{bmatrix}
-    u_1 + \sum_{j=1}^p \frac{\partial u_1}{\partial \theta_j} \epsilon_j \\
-    u_2 + \sum_{j=1}^p \frac{\partial u_2}{\partial \theta_j} \epsilon_j \\
-    \vdots \\
-    u_p + \sum_{j=1}^p \frac{\partial u_n}{\partial \theta_j} \epsilon_j
-    \end{bmatrix}
-    = 
-    u \, + \, s \, 
-    \begin{bmatrix}
-    \epsilon_1 \\
-    \epsilon_2 \\
-    \vdots \\
-    \epsilon_p
-    \end{bmatrix},
-\end{equation}
-that is, the dual component of the vector $u$ corresponds exactly to the sensitivity matrix $s$. 
-This implies forward AD applied to any multistep linear solver will result in the application of the same solver on the sensitivity equations \eqref{eq:sensitivity_equations}.  
-For example, for the forward Euler method this gives 
-\begin{align}
-    u^{t+1} + \epsilon \, s^{t+1}
-    &= 
-    u^t + \epsilon \, u^t + \Delta t \, f (u^t + \epsilon \, s^t, \theta + \epsilon, t) \nonumber \\
-    &= 
-    u^t + f(u^t, \theta, t) 
-    + 
-    \epsilon \, \Delta t 
-    \left( 
-    \frac{\partial f}{\partial u} s^t + 
-    \frac{\partial f}{\partial \theta}
-    \right).
-    \label{eq:sensitivity-equation-AD}
-\end{align}
-The dual component corresponds to the forward Euler discretization of the sensitivity equation \eqref{eq:sensitivity_equations}, with $s^t$ the temporal discretization of the sensitivity $s(t)$.
-For non-linear numerical solver (e.g., Runge-Kutta methods), the discretization forward AD will lead to a different numerical solver for the sensitivity.  
+% \subsubsection{Forward AD as the discretization of the sensitivity equations}
 
 %Notice that since $s(t)$ is a matrix of size $n \times p$, the complexity of solving the sensitivity equation scales as $\mathcal O(np)$. From a computational perspective, the sensitivity $s$ appears in the sensitivity equation as a VJP, meaning the the term $\frac{\partial f}{\partial u} s$ can be efficiently computed using backwards automatic differentiation. 

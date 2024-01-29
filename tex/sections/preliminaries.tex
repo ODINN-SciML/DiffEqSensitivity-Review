@@ -26,7 +26,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \begin{equation}
         L(u(\cdot, \theta)) = \frac{1}{2} \sum_{i=1}^N \| u(t_i; \theta) - u^{\text{target}}(t_i) \|_2^2.
     \end{equation}
-    (even more generally, misfit functions used in optimal estimation and control problems map from the model's state space to the observation space, see e.g., Bryson and Ho, 1975).
+    More generally, misfit functions used in optimal estimation and control problems map from the model's state space to the observation space \cite{1975-Bryson-Ho-optimal-control}. %, see e.g., Bryson and Ho, 1975).
     We can also consider the continuous evaluated loss function of the form
     \begin{equation}
          L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
@@ -38,7 +38,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \item \textbf{Likelihood profiles.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, 
     \todo{\tiny See my earlier comment: in general, $y_i = H u - \epsilon$, with $H$ the state-to-obs operator, and eps the noise in observation space}
     $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
-    If $p(y | t , \theta)$ is the probability distribution of $y$, maximum likelihood estimation consists in finding the parameter $\theta$ as
+    If $p(y | t , \theta)$ is the probability distribution of $y$, maximum likelihood estimation consists in finding the maximum a posteriori (MAP) estimate of the parameter $\theta$ as
     \begin{equation}
         \theta^* 
         = 
@@ -58,14 +58,14 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \begin{equation}
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
     \end{equation}
-    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}. being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}. 
+    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}. Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}. 
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
-    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
+    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
 \end{itemize}
 
 \subsubsection{Optimization}
 
-In this context, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
+In the context of optimization, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
 \begin{equation}
     \theta^{k+1} 
     = 
@@ -75,9 +75,9 @@ In this context, the gradient of the loss allows performing gradient-based updat
     \frac{dL}{d\theta^k}.
 \end{equation}
 Gradient-based methods tend to outperform gradient-free optimization schemes, as they are not prone to the curse of dimensionality \cite{Schartau2017}. 
-While a direct implementation of gradient descent is prone to converge to a local minimum and slow down in a neighborhood of saddle points, variants employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent} to avoid convergence to local minima, and are widely adopted in the field of artificial intelligence to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}). 
-For instance, Adam \cite{Kingma2014} is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update, reducing the risk to converge to local minima. 
-Other broadly employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
+While a direct implementation of gradient descent is prone to converge to a local minimum and slow down in a neighborhood of saddle points, variants employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent} to avoid convergence to local minima, and are widely adopted in the field of artificial intelligence to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}), as well as in the field of inverse methods for large-scale problems. 
+For instance, ADAM \cite{Kingma2014} is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update, reducing the risk to converge to local minima. 
+Other widely employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
 ADAM is less prone to converging to a local minimum, while (L-)BFGS has a faster converge rate. 
 Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 
 % Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
@@ -95,7 +95,7 @@ For example, for the loss function in Equation \eqref{eq:quadratic-loss-function
     \frac{dL}{du} = u - u^{\text{target}}(t_1).
     \label{eq:dLdu}
 \end{equation}
-The second term on the right-hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity},
+The second term on the right-hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
 \begin{equation}
  s 
  = 
@@ -109,14 +109,55 @@ The second term on the right-hand side is more difficult to compute and it is us
  \in \mathbb R^{n \times p}.
  \label{eq:sensitivity-definition}
 \end{equation}
+The sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
+Some of the methods we will discuss here will directly compute the sensitivity, while other will only deal with Jacobian-vector products (JVPs) of the form $\frac{\partial u}{\partial \theta} v$, for some vector $v \in \R^p$. 
+The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative of the function $u(\theta)$, that is, 
+\begin{equation}
+    \frac{\partial u}{\partial \theta} v 
+    = 
+    \lim_{h \rightarrow 0} \frac{u(\theta + h v) - u(\theta)}{h},
+\end{equation}
+representing how much the function $u$ changes when we perturb $\theta$ in the direction of $v$. 
+
 Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
 When a function depends on more than one argument, we use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
-On the other side, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
-Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
+On the other hand, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
+
 
 \subsubsection{Numerical solvers for differential equations}
+\label{section:intro-numerical-solvers}
+% Work in progress due to refactoring
 
-% Thinking about adding some simple intro to numerical solvers, which in any way we will need in order to treat adjoint methods. 
+Some of the most common numerical solvers include multistep linear solvers of the form 
+\begin{equation}
+    \sum_{i=0}^{K_1} \alpha_{ni} u^{n-i} 
+    +
+    \Delta t_n \sum_{i=0}^{K_2} \beta_{ni} f(u^{n-i}, \theta, t_{n-i})
+    = 
+    0.
+\end{equation}
+and Runge-Kutta methods with 
+\begin{align}
+    u^{n+1} 
+    &= 
+    u^n 
+    + 
+    \Delta t_n \sum_{i=1}^s b_i k_i \\
+    k_i 
+    &= 
+    f \left(u^n + \sum_{j=1}^s a_{ij} k_j , \theta ,  t_n + c_i \Delta t_n \right) \qquad i=1,2, \ldots, s.
+\end{align}
+The former is linear in $f$, which for example is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
+Explicit methods are characterized by $\beta_{n, 0} = 0$ for the multistep and $a_{ij}=0$ if $i \leq j$ for Runge-Kutta methods, otherwise, the method is implicit. 
+
+For multistep methods, solving the differential equation implies to be able to solve the system of constraints
+\begin{equation}
+    g_i(u_i; \theta) = u_i - h \beta_{n0} f(u_i, \theta, t_i) - \alpha_i = 0
+\end{equation}
+where $\alpha_i$ has includes the information of all the past iterations. 
+This system can be solved sequentially, by solving for $u_i$ in increasing order of index using Newton method. 
+If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of equations $G(U) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$.
+
 
 % In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
 % Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.

@@ -1,38 +1,38 @@
 Direct methods are implemented independent of the structure of the ODE and the numerical solver used to solve it. 
-These include finite differences, complex step differentiation, and both forward and backward AD. 
+These include finite differences, complex step differentiation, and both forward and reverse mode AD. 
 
 \subsubsection{Finite differences}
 
-Finite differences is easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
+Finite differences are easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
 In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl}, which already include subroutines to determine step-sizes.
 However, finite differences are less accurate and as costly as forward AD \cite{Griewank_1989} and complex-step differentiation. 
 Figure \ref{fig:finite-diff} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$ using finite differences.
 Here we consider the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$, which has analytical solution $u(t) = \sin(\omega t) / \omega$ and can be numerically solved as the solution of the system of ODEs
 \begin{equation}
 \begin{cases}
-    \frac{du}{dt} = v  & \qquad u(0) = 0 \\
-    \frac{dv}{dt} = - \omega^2 u  & \qquad v(0) = 1
+    \frac{du}{dt} = v \, ,  & \qquad u(0) = 0 \\
+    \frac{dv}{dt} = - \omega^2 u \, ,  & \qquad v(0) = 1
 \end{cases}
 \end{equation}
 using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl}
-We can see that finite differences is inaccurate of computing the derivative of ... with respect to $\omega$ when the stepsize is both too small and too large.
+We see that finite differences are inaccurate for computing the derivative of ... with respect to $\omega$ when the stepsize is both too small and too large.
 When $u(t)$ is instead computed with a numerical solver, the accuracy of the derivative further deteriorates due to approximation errors in the solver. 
 This effect is dependent on the numerical solver tolerance.
 
 \begin{figure}[tbh]
     \centering
     \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
-    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where the relative error is computed with finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. }
+    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\omega t)/\omega$ with respect to $\omega$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here, $u(t)$ corresponds to the solution of the differential equation $u'' + \omega^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where the relative error is computed with finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. }
     \label{fig:finite-diff}
 \end{figure}
 
 \subsubsection{Complex step differentiation}
 
-On the other side, complex-step differentiation do not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small (see Figure \ref{fig:finite-diff}). 
-As we mentioned in section ..., complex step differentiation has many points in common with finite differences and AD based in dual numbers. 
+Complex-step differentiation does not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small (see Figure \ref{fig:finite-diff}). 
+As we mentioned in section ..., complex step differentiation has many aspects in common with finite differences and AD based on dual numbers. 
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
 However, the difference between the methods also makes the complex step differentiation sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column in Figure \ref{fig:complex-step-AD}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
-It is also important to remark that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
+We note that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
 
 \subsubsection{Forward AD based on dual numbers}
@@ -67,9 +67,6 @@ end
 % With all these pieces together, we are able to propagate forward the value of a single-valued derivative through a series of algebraic operations. 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
 
-Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
-Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, specially in the case of nested functions \cite{manzyuk2019perturbation}.   
-
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewank_1989}. 
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered.
 
@@ -99,8 +96,12 @@ In the backward step, this executes a series of function calls, one for each ele
 If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
 Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
 \begin{equation}
- \bar v_1, \bar v_2 = v_2 \times \bar w , \quad
- v_1 \times \bar w = \mathcal{B}_w (\bar w),
+ \bar v_1, \bar v_2 
+ \,=\,
+ v_2 \times \bar w , 
+ v_1 \times \bar w 
+ \,=\,
+ \mathcal{B}_w (\bar w),
 \end{equation}
 which is equivalent to using the chain rule as
 \begin{equation}
@@ -109,8 +110,6 @@ which is equivalent to using the chain rule as
 % There are many libraries that implement reverse AD acroos programming languages \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 % In Julia, the libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use pullbacks to compute gradients \cite{Innes_2018}. 
 % When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
-
-
 
 % \subsubsection{Further remarks}
 
@@ -126,5 +125,11 @@ The existence of multiple AD packages lead to the development of \texttt{Abstrac
 
 % Since perturbation confusion also affects reverse mode AD, maybe is better to cover that here.
 
-Notice that the application of reverse AD on a numerical solver (without checkpointing) scales as $\mathcal O (n k)$, with $k$ the number of steps of the numerical solver. 
-Furthermore, when reverse AD is applied on the numerical solver, the step-size needs to be adapted to ensure the stability of the backward stesps, further increasing the computational complexity. 
+\paragraph{Checkpointing}
+\label{section:checkpointing}
+
+In opposition to forward AD, reverse AD requires to store in memory intermediate variables of the program. 
+For a numerical solver, the number of memory required can be very large, involving a total of at least $\mathcal O(nk)$ terms, with $k$ the number of steps of the numerical solver. 
+Checkpointing is a technique that can be used for all the backwards methods that avoids storing all the intermediate states by balancing  storing and recomputation to recover the required state exactly \cite{griewank2008evaluatingderivatives}.
+
+% To expand
