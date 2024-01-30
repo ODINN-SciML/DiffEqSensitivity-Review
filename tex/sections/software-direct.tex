@@ -130,6 +130,9 @@ The existence of multiple AD packages lead to the development of \texttt{Abstrac
 
 In opposition to forward AD, reverse AD requires to store in memory intermediate variables of the program. 
 For a numerical solver, the number of memory required can be very large, involving a total of at least $\mathcal O(nk)$ terms, with $k$ the number of steps of the numerical solver. 
-Checkpointing is a technique that can be used for all the backwards methods that avoids storing all the intermediate states by balancing  storing and recomputation to recover the required state exactly \cite{griewank2008evaluatingderivatives}.
+Checkpointing is a technique that can be used for all the backwards methods that avoids storing all the intermediate states by balancing  storing and recomputation to recover the required state exactly \cite{Griewank:2008kh}.
+
+% Read chapter in Griewank!!!
+% Margossian has a nice discussion on this topic
 
 % To expand

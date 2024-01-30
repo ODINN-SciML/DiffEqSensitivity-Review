@@ -12,13 +12,56 @@ Conceptually, the method is the same in both discrete and continuous case, with 
 
 \subsubsection{Discrete adjoint}
 
+Following the notation introduced in Section \ref{section:discrete-adjoint}, we first define the Lagrangian function $I(U, \theta)$ as 
+\begin{equation}
+    I(U, \theta) = L(u; \theta) + \lambda^T G(U; \theta),
+\end{equation}
+where $\lambda \in \R^{nk}$ is, in principle, any choice of vector. 
+Given that for every choice of the parameter $\theta$ we have $G(U; \theta) = 0$, we have that $I(U, \theta) = L(U, \theta)$.
+Then, the gradient of $L$ with respect to the vector parameter $\theta$ can be computed as 
+\begin{align}
+    \frac{dL}{d\theta}
+    = 
+    \frac{dI}{d\theta}
+    &= 
+    \frac{\partial L}{\partial \theta} + \frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}
+    + 
+    \lambda^T
+    \left( \frac{\partial G}{\partial U} + \frac{\partial G}{\partial U} \frac{\partial U}{\partial \theta} \right) \nonumber
+    \\ 
+    &= 
+    \frac{\partial L}{\partial \theta} + \lambda^T \frac{\partial G}{\partial U} 
+    + 
+    \left( \frac{\partial L}{\partial \theta} + \lambda^T \frac{\partial G}{\partial U} \right) \frac{\partial U}{\partial \theta}.
+    \label{eq:appendix-discrete-adjoint}
+\end{align}
+The important trick in the last term involved grouping all the terms involving the sensitivity $\frac{\partial U}{\partial \theta}$ together. 
+In order to avoid the computation of the sensitivity at all, we can define $\lambda$ as the vector that makes the last term in the right hand side of Equation \eqref{eq:appendix-discrete-adjoint} which results in the same results we obtained in Equation \eqref{eq:adjoint-state-equation} and \eqref{eq:def_adjoint}, that is, 
+\begin{equation}
+    \frac{\partial L}{\partial \theta} = - \lambda^T \frac{\partial G}{\partial U}.
+\end{equation}
+Finally, the gradient can be computed as 
+\begin{equation}
+    \frac{dL}{d\theta} 
+    = 
+    \frac{\partial L}{\partial \theta} + \lambda^T \frac{\partial G}{\partial U} .
+\end{equation}
+
 \subsubsection{Continuous adjoint}
 
-For the continuous adjoint method, we proceed the same way by writing a new loss function $I(\theta)$, sometimes known as the \textit{Lagrangian}, identical to $L(\theta)$ as 
+For the continuous adjoint method, we proceed the same way by defining the Lagrangian $I(\theta)$ as 
 \begin{equation}
     I(\theta) = L(\theta) - \inttime \lambda(t)^T \left( \frac{du}{dt} - f(u, \theta, t) \right) dt
 \end{equation}
-where $\lambda(t) \in \mathbb R^n$ is the Lagrange multiplier of the continuous constraint defined by the differential equation. Now, 
+where $\lambda(t) \in \mathbb R^n$ is any function. 
+It is important to mention that, in principle, there is connection yet between $\lambda (t)$ and the Lagrange multiplier associated to the constraint \cite{Givoli_2021}. 
+Instead, the condition 
+\begin{equation}
+    \inttime \lambda(t)^T \left( \frac{du}{dt} - f(u, \theta, t) \right) dt = 0 \qquad \text{for all function } \lambda : [t_0, t_1] \mapsto \R^n
+\end{equation}
+correspond to the weak formulation of the differential equation \eqref{eq:original_ODE} \cite{brezis2011functional}.
+As long as the differential equation is satisfyed, we have $I(\theta) = L(\theta)$ for all choices of the vector parameter $\theta$. 
+Now, 
 \begin{equation}
     \frac{dL}{d\theta} = \frac{dI}{d\theta} = 
     \inttime \left( \frac{\partial h}{\partial \theta} + \frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta} \right) dt
@@ -46,3 +89,5 @@ Now, we can force some of the terms in the last equation to be zero by solving t
 with final condition $\lambda(t_1) = 0$. 
 
 It is easy to see that this derivation is equivalent to solving the Karush-Kuhn-Tucker (KKT) conditions. 
+
+\subsubsection{The adjoint from a functional analysis perspective}
