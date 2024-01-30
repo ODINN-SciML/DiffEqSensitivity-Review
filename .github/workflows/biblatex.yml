@@ -1,5 +1,9 @@
 name: Build BibLaTeX file
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 jobs:
   build_latex:
     runs-on: ubuntu-latest

@@ -1,25 +1,31 @@
+% \todo[inline]{it would be useful to state here how this paper differs from \cite{FATODE2014}}.
+% 
 % General statement: why gradients are important?
 Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many\cite{Razavi.2021}. 
-Modern machine learning applications require the use of gradients to efficiently exploit  the high-dimensional space of parameters to be inferred or learned (e.g., weights of a neural network). 
-The same is true for partial differential equation (PDE) constrained optimization, which infers uncertain (or unknown) parameters from (generally sparse) data  \cite{Ghattas.2021}.
-When optimizing an objective function (loss function in machine learning or cost function in inverse modeling), gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient and converge faster than gradient-free methods.
+Modern machine learning applications require the use of gradients to efficiently exploit the high-dimensional space of parameters to be inferred or learned (e.g., the weights of a neural network). 
+When optimizing an objective function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 Furthermore, the \textit{curse of dimensionality} renders gradient-free optimization and sampling methods computationally intractable for most large-scale problems \cite{Oden:2010tv}.
-.
-When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies tend to converge faster to the posterior distribution than gradient-free methods. 
+When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies converge faster to the posterior distribution than gradient-free methods. 
 Hessians further help to improve the convergence rates of these algorithms and enable uncertainty quantification around parameter values \cite{BuiThanh:2012ul}.
 \textit{A gradient serves as a compass in modern data science: it tells us in which direction in the vast, open ocean of parameters we should move towards in order to increase our chances of success}.  
 
 % Differential Programming
-Dynamical systems governed by differential equations are not an exception to the rule.
-Differential equations play a central role in describing the behaviour of systems in natural and social sciences. 
+Models based in differential equations arising in simulation-based science playing a central role in describing the behaviour of systems in natural and social sciences are not an exception to the rule\cite{Ghattas.2021}.
+The solution of differential equations can be seen as functions which map parameter and initial conditions to state variables, similarly to machine learning models.
 Some authors have recently suggested differentiable programming as the bridge between modern machine learning methods and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth}. 
 Being able to compute gradients or sensitivities of dynamical systems opens the door to more complex models.
-This is very appealing in fields like computational physics, geophysics, and biology (to mention a few) where there is a broad literature on physical models and a long tradition in numerical methods. 
+This is very appealing in fields like computational physics, geophysics, and biology ,to mention a few, where there is a broad literature on physical models and a long tradition in numerical methods. 
 The first goal of this work is to introduce some of the applications of this emerging technology and to motivate its incorporation for the modelling of complex systems in the natural and social sciences. 
 \begin{quote}
     \textbf{Question 1. }
     \textit{What are the scientific applications of differentiable programming for complex dynamical systems?}
 \end{quote}
+% \todo[inline,caption={}]{
+% \begin{itemize}
+%     \item this paragraph that introduces sensitivity analysis and its challenges seems disconnected from the question, which relates to differentiable programming. the question seems more relevant to the second paragraph, which introduces AD
+%     \item I would first have a question on the usefulness of calculating parameter sensivitity, and then bring sensitivity analysis and its associated challenges 
+% \end{itemize}    
+% }
 
 % Some examples
 Sensitivity analysis corresponds to any method aiming to calculate how much the output of a function or program changes when we vary one of the function (or model) parameters. 
@@ -37,7 +43,8 @@ Furthermore, numerical solvers are used as forward models in the case of neural 
 % Differentiation 
 However, when working with differential equations, the computation of gradients is not an easy task, both regarding the mathematical framework and software implementation involved. 
 Except for a small set of particular cases, most differential equations require numerical methods to calculate their solution and cannot be differentiated analytically. 
-This means that solutions cannot be directly differentiated and require special treatment if, besides the numerical solution, we also want to compute first or second-order derivatives. 
+% reducing length of sentences improves the readability
+This means that solutions cannot be directly differentiated and require special treatment to compute first or second-order derivatives. 
 Furthermore, numerical solutions introduce approximation errors. 
 These errors can be propagated and amplified during the computation of the gradient. 
 Alternatively, there is a broad literature on numerical methods for solving differential equations. 
@@ -46,16 +53,17 @@ at least to a large set of them.
 The second goal of this article is to review different methods that exist to achieve this goal.
 \begin{quote}
     \textbf{Question 2. }
-    \textit{How can I compute the gradient of a function that depends on the numerical solution of a differential equation?}
+    \textit{How to efficiently compute the gradient of a function that depends on the numerical solution of a differential equation?}
 \end{quote}
 %Notice here the phrase \textit{the gradient of a function that depends}, emphasizing the fact that in many cases we may be interested in computing the gradient of a function that depends on the solution of the differential equation.
 %This is certainly the case in machine learning and optimization where the goal is to minimize a loss function that depends of some predicted and target responses. 
 
 % AD
-The broader set of tools known as Automatic (or Algorithmic) Differentiation (AD) aims at computing derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program\cite{Griewank:2008kh, Naumann.2011}. 
-The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of elementary algebraic operations (addition, multiplication) that are easy to differentiate and their combination is easy to differentiate by using the chain rule\cite{Giering:1998in}. 
-Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations. 
-We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
+The broader set of tools known as Automatic (or Algorithmic) Differentiation (AD) aims at computing derivatives by sequentially applying the chain (and product) rule to the sequence of unit operations that constitute a computer program\cite{Griewank:2008kh, Naumann.2011}. 
+The premise is simple: every computer program, including a numerical solver, is ultimately an algorithm described by a chain of elementary algebraic operations (e.g. addition, multiplication) that are easy to differentiate and their composition is easy to differentiate by using the chain rule\cite{Giering:1998in}. 
+More broadly than AD, differentiable programming encapsulates a set of software tools that allows to compute efficient and robust gradients though complex algorithms, including numerical solvers \cite{Innes_Zygote}. 
+Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations and/or compute an intermediate adjoint. 
+% We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
 %We emphasize that AD is merely a \emph{tool} for generating derivatives of computer code. Alternatively, such code can be (and often has been) generated ``by hand'', e.g., to avoid restrictions incurred by the available AD tool.
 %Down-sides of hand-written derivative code are, (i) it is error-prone, (ii) it is difficult to keep pace with the development of the parent code, and (iii) [I need to remember ...].
 
@@ -71,11 +79,13 @@ The third goal of this work, then, is to illustrate the different strengths and 
 \end{quote}
 
 % The need to introduce all these methods in a common framework
-Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
-Differentiable programming is opening new ways of doing research across sciences, and we need close collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real-worlds applications.
+% Without aiming at making an extensive and specialized review of the field, we believe this study will be useful to other researchers working on problems that combine optimization and sensitivity analysis with differential equations.
+Differentiable programming is opening new ways of doing research across sciences. Arguably, its potential has so far been under-explored but is being rediscovered in the age of data-driven science. In order to realize its full potential, we need close collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real world applications.
+% Differentiable programming is opening new ways of doing research across sciences, and we need close collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real-worlds applications \cite{Frank2022}.
 As we make progress in the use of these tools, new methodological questions start to emerge. 
 How do these methods compare? How can they be improved? 
-We also hope this paper serves as a gateway to new questions regarding advances in these methods. 
+% I do not think that this is required
+% We also hope this paper serves as a gateway to new questions regarding advances in these methods. 
 
 % \begin{quote}
 %     \textbf{Question 3. }

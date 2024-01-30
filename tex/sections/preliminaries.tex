@@ -11,8 +11,9 @@ Except for a minority of functions $f(u,\theta, t)$, solutions of the Equation \
 
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
 Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a broader class of functions. 
+% Maybe organize this in sections, like 
 \begin{itemize}
-    \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the accuracy or prediction power of a given model. Examples of loss functions include the squared error
+    \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and the data. Examples of loss functions include the squared error
     \begin{equation}
          L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}}(t_1) \|_2^2,
          \label{eq:quadratic-loss-function}
@@ -29,7 +30,8 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     with $h$ being a function that quantifies the contribution of the error term at every time $t \in [t_0, t_1]$. 
     Defining a loss function where just the empirical error is penalized is known as trajectory matching. 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
-    \item \textbf{Likelihood profiles.} In statistical models, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
+    % \todo{this is unclear}
+    \item \textbf{Likelihood profiles.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
     If $p(y | t , \theta)$ is the probability distribution of $y$, maximum likelihood estimation consists in finding the parameter $\theta$ as
     \begin{equation}
         \theta^* 
@@ -45,7 +47,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
         \argmin{\theta} \, \left \{ - \log \ell (y | \theta) \right \}
         = 
         \argmin{\theta} \, \sum_{i=1}^n \left( y_i - u(t_i; \theta) \right)^2 .
-    \end{equation}
+    \end{equation} % \todo[inline]{There is a correspondance between this equation and the empirical loss function above, which would be nice to show. See the proposed section "Maximum likelihood estimation and loss function". This is also discussed in e.g. https://www.deeplearningbook.org/contents/prob.html}
     Provided with a prior distribution $p(\theta)$ for the parameter $\theta$, we can further compute a posterior distribution for $\theta$ given the observations $y_1, y_2, \ldots, y_n$ following Bayes theorem 
     \begin{equation}
         p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
@@ -55,8 +57,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
 \end{itemize}
 
-Notice that these cases also include sensitivities of $L$ with respect to the initial condition of the system.
-In the context of optimization, being able to compute sensitivities allows to perform gradient-based updates on the parameter $\theta$ by 
+In this context, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
 \begin{equation}
     \theta^{k+1} 
     = 
@@ -65,9 +66,15 @@ In the context of optimization, being able to compute sensitivities allows to pe
     \alpha_k 
     \frac{dL}{d\theta^k}.
 \end{equation}
-There exist different variants of gradient descent methods\cite{ruder2016overview-gradient-descent}, and in general they outperform gradient-free optimization schemes.
-Furthermore, gradient-free methods (also known as global optimization techniques) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
+Gradient-based methods tend to outperform gradient-free optimization schemes, as they are not prone to the curse of dimensionality \cite{Schartau2017}. 
+While a direct implementation of gradient descent is prone to converge to a local minimum and slow down in a neighborhood of saddle points, variants employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent} to avoid convergence to local minima, and are widely adopted in the field of artificial intelligence to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}). 
+For instance, Adam \cite{Kingma2014} is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update, reducing the risk to converge to local minima. 
+Other broadly employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
+ADAM is less prone to converging to a local minimum, while (L-)BFGS has a faster converge rate. 
+Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 
+% Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
 
+% \subsubsection{Sensitivity matrix}
 Using the chain rule we can derive
 \begin{equation} 
  \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
@@ -94,7 +101,7 @@ The second term on the right-hand side is more difficult to compute and it is us
  \label{eq:sensitivity-definition}
 \end{equation}
 Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
-When a function depends on more than one argument, we are going to use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
+When a function depends on more than one argument, we use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
 On the other side, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
 Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
 

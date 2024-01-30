@@ -43,7 +43,8 @@ The goal of this review is to revisit all this methods and compare them.
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gileshooker"><img src="https://avatars.githubusercontent.com/u/12737775?v=4?s=100" width="100px;" alt="gileshooker"/><br /><sub><b>gileshooker</b></sub></a><br /><a href="#ideas-gileshooker" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-gileshooker" title="Mentoring">🧑‍🏫</a></td>
     </tr>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/heimbach"><img src="https://avatars.githubusercontent.com/u/5150349?v=4?s=100" width="100px;" alt="Patrick Heimbach"/><br /><sub><b>Patrick Heimbach</b></sub></a><br /><a href="#ideas-heimbach" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/heimbach"><img src="https://avatars.githubusercontent.com/u/5150349?v=4?s=100" width="100px;" alt="Patrick Heimbach"/><br /><sub><b>Patrick Heimbach</b></sub></a><br /><a href="#ideas-heimbach" title="Ideas, Planning, & Feedback">🤔</a> <a href="#doc-heimbach" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://vboussange.github.io"><img src="https://avatars.githubusercontent.com/u/28376122?v=4?s=100" width="100px;" alt="vboussange"/><br /><sub><b>vboussange</b></sub></a><br /><a href="#doc-vboussange" title="Documentation">📖</a> <a href="#ideas-vboussange" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>

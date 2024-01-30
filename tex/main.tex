@@ -17,7 +17,27 @@
 \usepackage[hidelinks]{hyperref} % hidelinks added to not display red box for links
 \usepackage{algorithm}
 \usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
-\usepackage{todonotes} % Taking notes
+% \usepackage{todonotes} % Taking notes
+
+\usepackage{titlesec}
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\usepackage{titlesec}
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Customized packages %%%%%%%%
@@ -38,8 +58,10 @@
 % add a new custom bib file inside ./bibs/
 \addbibresource{bibliography.bib}
 % Alternative bib source
-% \addbibresource{bibs/bibliography-heimbach.bib}
+% \addbibresource{bibs/bilbiography-victor.bib}
 % \addbibresource{bibs/bibliography-facu.bib}
+% \addbibresource{bibs/bibliography-heimbach.bib}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% Document %%%%%%%%%%%%
@@ -60,7 +82,7 @@
 \input{sections/abstract}
 \end{abstract}
 
-\vspace{250px}
+\vspace{200px}
 \input{sections/community-statement}
 
 \normalsize
@@ -89,16 +111,17 @@
 \subsection{Finite differences}
 \input{sections/finite-differences}
 
-\subsection{Complex step differentiation}
-\input{sections/complex-step}
-
 \subsection{Automatic differentiation}
 \input{sections/automatic-differentiation}
+
+\subsection{Complex step differentiation}
+\input{sections/complex-step}
 
 \subsection{Symbolic differentiation}
 \input{sections/symbolic}
 
 \subsection{Sensitivity equations}
+\label{section:sensitivity-equation}
 \input{sections/sensitivity-equation}
 
 \subsection{Adjoint methods}
@@ -111,9 +134,10 @@
 \subsubsection{Continuous adjoint method}
 \input{sections/adjoint-continuous}
 
-\section{Computational implementation}
+\section{Numerical implementation}
 \label{sec:computational-implementation}
 \input{sections/software}
+
 
 % \section{Extensions}
 
@@ -134,10 +158,17 @@
 \addcontentsline{toc}{section}{Appendices}
 \renewcommand{\thesubsection}{\Alph{subsection}}
 
+\subsection{Statistical foundations of inverse modelling}
+% Check how to do this input correctly
+% \input{sections/statistical-foundations}
+\newpage
 \subsection{Lagrangian derivation of adjoints}
 \input{appendix/lagrangian}
-
-\subsection{Supplementaty code}
+\newpage
+\subsection{When AD is algorithmically correct but numerically wrong}
+\input{appendix/AD-norm}
+\newpage
+\subsection{Supplementary code}
 \input{appendix/code}
 
 % \section{Glossary} 

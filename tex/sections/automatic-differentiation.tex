@@ -1,18 +1,21 @@
+% I think I need some historical reference here.
 Automatic differentiation (AD) is a technology that allows computing gradients thought a computer program \cite{griewank2008evaluatingderivatives}. 
-The main idea is that every computer program manipulating numbers can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation.
+The basis of all AD system is the notion that complicated functions included in any computer program can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation \cite{juedes1991taxonomy}.
 The derivatives of the outputs of the computer program with respect to their inputs are then combined using the chain rule.
-One advantage of AD systems is that we can automatically differentiate programs that include control flow, such as branching, loops or recursions. 
-This is because at the end of the day, any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+One advantage of AD systems is to automatically differentiate programs that include control flow, such as branching, loops or recursions. 
+This is because any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
-Depending if the concatenation of these gradients is done as we execute the program (from input to output) or in a later instance were we trace-back the calculation from the end (from output to input), we are going to talk about \textit{forward} or \textit{reverse} AD, respectively.
+Depending if the concatenation of these gradients is done as we execute the program (from input to output) or in a later instance were we trace-back the calculation from the end (from output to input), we refer to \textit{forward} or \textit{reverse} AD, respectively.
+Neither forward or reverse mode is more efficient in all cases \cite{Griewank_1989}, as we will discuss in Section \ref{sec:vjp-jvp}.
 
 \subsubsection{Forward mode}
 
 Forward mode AD can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists (see \cite{Baydin_Pearlmutter_Radul_Siskind_2015} for a good review on these methods). 
 
-\vspace*{10px}
-\noindent \textbf{\textit{Dual numbers}}
-\vspace*{5px}
+\paragraph{Dual numbers}
+% \vspace*{10px}
+% \noindent \textbf{\textit{Dual numbers}}
+% \vspace*{5px}
 
 Dual numbers extend the definition of a numerical variable that takes a certain value to also carry information about its derivative with respect to certain parameter \cite{clifford1871dualnumbers}. 
 We can define an abstract type, defined as a dual number, composed of two elements: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
@@ -52,11 +55,12 @@ When computing first order derivatives, we can ignore everything of order $\epsi
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
 In Section \ref{sec:computational-implementation} we will explore how this is implemented and compare this approach with complex-step differentiation. 
 
-\vspace*{10px}
-\noindent \textbf{\textit{Computational graph}}
-\vspace*{5px}
+\paragraph{Computational graph}
+% \vspace*{10px}
+% \noindent \textbf{\textit{Computational graph}}
+% \vspace*{5px}
 
-An useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
+A useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
 Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{griewank2008evaluatingderivatives, Griewack-on-AD}, known as Kantorovich graph \cite{kantorovich1957mathematical} or Wengert trace/tape\cite{Wengert_1964, Bauer_1974}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
 We can define $v_1, v_2, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
@@ -91,48 +95,60 @@ Given a directional graph of operations defined by a Wengert list \cite{Wengert_
 \begin{equation}
  \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
-Here we have introduced the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ to indicate that the partial derivative is always of the final loss function with respect to the different program variables, a quantity sometimes refers as adjoint (do not confuse with the adjoint method of later sections) or cotangent. 
+In this context, the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ is introduced to signify the partial derivative of the final loss function with respect to various program variables. 
+This derivative is often referred to as the adjoint or cotangent, though it should not be confused with the adjoint method discussed in later sections.
+
+
 Since in backwards AD the values of $\bar \omega$ are being updated in reverse order, in order to evaluate the terms $\frac{\partial \omega}{\partial v}$ we need to know the state value of all the argument variables $v$ of $\omega$, which need to be stored in memory during the evaluation of the function in order to be able to apply backward AD.
 
 
 \subsubsection{AD connection with JVPs and VJPs}
+\label{sec:vjp-jvp}
 
 When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters \cite{Giering_Kaminski_1998}.
 When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVP).
 As their name indicates, the difference between them regards the fact that the quantity we are interested in computing is described by the product of a Jacobian by a vector on the left side (VJP) or the right (JVP).
 
-For nested functions, the Jacobian is described as the product of multiple Jacobian using the chain rule.
+For nested functions, the Jacobian is described as the product of multiple Jacobians using the chain rule.
 In this case, the full gradient is computed as the chain product of vectors and Jacobians. 
-Let us consider for example the case of a loss function $L : \mathbb R^p \mapsto \mathbb R$ that can be decomposed as $L(\theta) = \ell \circ g_{k} \circ \ldots \circ g_2 \circ g_1(\theta)$, with $\ell : \mathbb R^{d_k} \mapsto \mathbb R$ the final evaluation of the loss function after we apply in order a sequence of intermediate functions $g_i : \mathbb R^{d_{i-1}} \mapsto \mathbb R^{d_i}$, $d_0 = p$. 
-Now, using the chain rule, we can calculate the gradient of the final loss function as
+Let us consider for example the case of a loss function $L : \mathbb R^p \mapsto \mathbb R$ taking a total of $p$ arguments as inputs that can be decomposed as $L(\theta) = \ell \circ g_{k} \circ \ldots \circ g_2 \circ g_1(\theta)$, with $\ell : \mathbb R^{d_k} \mapsto \mathbb R$ the final evaluation of the loss function after we apply in order a sequence of intermediate functions $g_i : \mathbb R^{d_{i-1}} \mapsto \mathbb R^{d_i}$, where we define $d_0 = p$ for simplicity. 
+Using the chain rule states that the gradient of the final loss function is
 \begin{equation}
  \nabla_\theta L = \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1, 
 \end{equation}
-with $Dg_i$ the Jacobians of each nested function. 
+with $Dg_i$ the Jacobians of each nested function evaluated at ... 
 Notice that in the last equation, $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
-In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiple the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
-The important aspect of this last case is that we will always be computing VJPs, since $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
-Since VJPs are easier to evaluate than full Jacobians, the backward mode will be in general faster (see Figure \ref{fig:vjp-jvp}). 
-For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$ (more efficient algorithms exist but this does not impact these results). This implies that forward AD requires a total of
+In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiplying the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
+The important aspect of the backwards case is that we will always be computing VJPs, since $\nabla \ell$ is a vector.
+Since VJPs are easier to evaluate than full Jacobians, the backward mode will be in general faster when $1 \ll p$.
+To illustrate this, let us consider the following example displayed in Figure \ref{fig:vjp-jvp}. 
+For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$.
+It is worth noticing that if well more efficient methods for matrix-matrix multiplication based on Strassen’s recursive algorithm and its variants exist, these are not extensively used in most scientific applications \cite{Silva_Gustafson_Wong_2018, Huang_Smith_Henry_Geijn_2016}.
+This implies that forward AD requires a total of
 \begin{equation}
- d_2 d_1 n + d_3 d_2 p + \ldots + d_k d_{k-1} p + d_k p = \mathcal O (p)
+ d_2 d_1 p + d_3 d_2 p + \ldots + d_k d_{k-1} p + d_k p = \mathcal O (kp)
 \end{equation}
 operations, while backwards mode AD requires
 \begin{equation}
- d_k d_{k-1} + d_{k-1} d_{k-2} + \ldots + d_2 d_1 + d_1 n = \mathcal O (1)
+ d_k d_{k-1} + d_{k-1} d_{k-2} + \ldots + d_2 d_1 + d_1 p = \mathcal O (k+p)
 \end{equation}
 operations, where the $\mathcal O$ is with respect to the variable $p$. 
 
-When the function to differentiate has a larger input space than output, AD in backward mode is more efficient as it propagates the chain rule by computing VJPs, the reason why backwards AD is more used in modern machine learning.
+In the general case of a function $L : \R^p \mapsto \R^q$ with multiple outputs and a total of $k$ intermediate functions, the cost of forward AD is $\mathcal O (pk + q)$ and the cost of reverse is $\mathcal O (p + kq)$.
+When the function to differentiate has a larger input space than output ($q \ll p$), AD in backward mode is more efficient as it propagates the chain rule by computing VJPs, the reason why backwards AD is more used in modern machine learning.
 % On the other side, when the output dimension is larger than the input space dimension, forwards AD is more efficient.
 % This is the reason why in most machine learning application people use backwards AD. 
-However, notice that backwards mode AD requires us to save the solution through the forward run in order to run backwards afterwards \cite{Bennett_1973}, while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
-This problem can be mitigated, to some extent, with a good checkpointing scheme we will discuss later. 
-This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
+However, notice that backwards mode AD requires us to save intermediate variables through the forward run in order to run backwards afterwards \cite{Bennett_1973}, leading to performance overhead that makes forward AD more efficient when $p \lesssim q$ \cite{Griewank_1989, Margossian_2018, Baydin_Pearlmutter_Radul_Siskind_2015}.  
+In other words, backwards AD is really more efficient when $q \ll p$. 
+% while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
+We discuss in section XXX how this problem can be overcome with a good checkpointing scheme. 
+% On the other hand, when the goal is to compute the gradient of many function outputs with respect to a few parameters, forward mode AD is more efficient \cite{Griewank_1989}.
+% This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/VJP-JVP.png}
-    \caption{Comparison between forward and backward AD. Changing the order of how we multiply the Jacobians change the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
+    \includegraphics[width=0.95\textwidth]{tex/figures/VJP-AD.pdf}
+    \caption{Comparison between forward and backward AD. Changing the order of Jacobian multiplications changes the total number of floating-point operations, which leads to different computational complexities between forward and backward mode. When the multiplication is carried from the right side of the mathematical expression for $\nabla_\theta L$, each matrix simplification involves a matrix with size $p$, giving a total complexity of $\mathcal O (kp)$. This is the opposite of what happens when we carried the VJP from the left side of the expression, where the matrix of size $d_1 \times p$ has no effect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$ and a total complexity of $\mathcal O (k + p)$. }
+    % However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
     \label{fig:vjp-jvp}
 \end{figure}
