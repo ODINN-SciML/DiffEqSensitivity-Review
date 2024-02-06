@@ -2,3 +2,18 @@ For sufficient small systems of less than 100 parameters and ODEs, Forward AD is
 % \todo[inline]{We should pay attention that this section does not overlap with \cite{ma_comparison_2021}.}
 
 % Mention to limit cases when working with chaotic systems
+\subsection{Chaotic systems}
+
+% Intro: why we take this average quantities in chaotic system? Need to motivate this in a sentense.
+Both forward and adjoint sensitivity analysis methods from the previous chapters encounter challenges and become less useful when applied to chaotic systems.
+To illustrate this, let us consider long-time-averaged quantities 
+\begin{equation}\label{eq:long_time_averaged_quantities}
+    \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T L(u(t), \theta) \, dt, 
+\end{equation}
+of chaotic systems, where $L(u(t), \theta)$ is the instantaneous objective and $u(t)$ denotes the state of the dynamical system at time $t$.
+For ergodic dynamical systems, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t)$. 
+In particular, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ does not depend on the initial condition. 
+Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$\cite{ruelle1997differentiation,ruelle2009review}. 
+However, computing derivatives using numerical methods of statistical quantities of the form \eqref{eq:long_time_averaged_quantities} with respect to the vector parameter $\theta$ in chaotic dynamical systems remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state. 
+As a consequence, the solutions of the forward and adjoint sensitivity equations blow up (exponentially fast) instead of converging to the actual derivative.
+To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.

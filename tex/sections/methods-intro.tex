@@ -1,7 +1,7 @@
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.80\textwidth]{figures/scheme-methods.pdf}
-    \caption{Schematic representation of the different methods available for differentiation involving differential equation solutions. These can be classified depending if they find the gradient by solving a new system of differential equations (\textit{continuous}) or if instead they manipulate unit algebraic operations (\textit{discrete}). Additionally, these methods can be categorized based on their alignment with the direction of the numerical solver. If they operate in the same direction as the solver, they are referred to as \textit{forward methods}. Conversely, if they function in the opposite direction, they are known as \textit{backward methods}.}
+    \caption{Schematic representation of the different methods available for differentiation involving differential equation solutions. These can be classified depending if they find the gradient by solving a new system of differential equations (\textit{continuous}) or if instead they manipulate unit algebraic operations (\textit{discrete}). Additionally, these methods can be categorized based on their alignment with the direction of the numerical solver. If they operate in the same direction as the solver, they are referred to as \textit{forward methods}. Conversely, if they function in the opposite direction, they are known as \textit{reverse methods}.}
     \label{fig:scheme-all-methods}
 \end{figure}
 
@@ -10,7 +10,7 @@ Depending on the number of parameters and the complexity of the differential equ
 These methods can be roughly classified as  follows\cite{ma2021comparison}. 
 \begin{itemize}
     \item \textit{Continuous} vs \textit{discrete}  methods
-    \item \textit{Forward} vs \textit{backward} methods
+    \item \textit{Forward} vs \textit{reverse} methods
 \end{itemize}
 Figure \ref{fig:scheme-all-methods} displays a classification of some methods under this two-fold classification. 
 
@@ -25,7 +25,7 @@ When using discrete methods, we may have a method that is algorithmically correc
 
 The \textit{forward} vs \textit{backward} distinction is related to the fact that some methods compute gradients by resolving a new sequential problem that may move in the same direction as the original numerical solver - i.e. moving \textit{forward} in time - or, instead, they solve a new system that goes \textit{backwards} in time. 
 As we will discuss in the following section, forward methods are very efficient for problems with a small number of parameters we want to differentiate with respect to, while backwards methods are more efficient for a large number of parameters 
-% \todo{A bit vague: the system might be large, but if you differentiate only wrt a scalar, then forward is still optimal.}
+\todo{A bit vague: the system might be large, but if you differentiate only wrt a scalar, then forward is still optimal.}
 but they came with a larger memory cost which needs to be overcome using different performance tricks. 
 With the exception of finite differences and complex step differentiation, the rest of the forward methods (i.e. forward AD, sensitivity equations, symbolic differentiation) compute the full sensitivity of the differential equation, that is, how the full solution of the ODEs changes when we change the parameters of the model. 
 \todo[inline]{Last sentence is also a bit vague: indeed, the forward method computes the impact of changes of the input on all outputs, but it only ever computes a directional derivative (i.e., in the direction of the input perturbation); that's an important distinction. Or I misunderstood something?}

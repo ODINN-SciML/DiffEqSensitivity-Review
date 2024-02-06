@@ -71,24 +71,26 @@ Implementations of forward AD using dual numbers and computational graphs requir
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered.
 
 % If well forward AD is implemented independently of the differential equation and numerical solver, the careless combination of both can lead to disastrous numerical errors. 
-If well AD is always algorithmicly correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations. 
+Although AD is always algorithmically correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations. 
 % Contrary to common folk, AD is not always \textit{numerically} correct and can lead to wrong gradients. 
-To illustrate this point, consider the following example of a symple system of ODEs
+To illustrate this point, consider the following example of a simple system of ODEs
 \begin{equation}
 \begin{cases}
  \frac{du_1}{dt} = a u_1 - u_1 u_2 & \quad u_1(0) = 1  \\ 
  \frac{du_2}{dt} = - a u_2 + u_1 u_2 & \quad u_2(0) = 1
 \end{cases}
 \end{equation}
-with $a$ the parameter which respect we want to differentiate. 
+with $a$ the parameter withrespect to which we want to differentiate. 
 In the simple case of $a=1$, the solutions of the ODE are constant functions $u_1(t) \equiv u_2(t) \equiv 1$. 
-As it is explain in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are design to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
-This leads to wrong gradient calculations that propagate thought the numerical solver without further warning. 
+As explained in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are designed to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
+This leads to wrong gradient calculations that propagate through the numerical solver without further warning. 
 
 \subsubsection{Reverse-mode AD}
 \label{sec:software-reverse-AD}
 
-In opposition to finite differences, forward AD and complex-step differentiation, reverse AD is the only of these family of methods that propagates the gradient in backwards mode by relying in analytical derivatives of primitive functions, which in Julia are available via \texttt{ChainRules.jl}.
+In contrast to finite differences, forward AD, and complex-step differentiation, reverse AD is the only of this family of methods that propagates the gradient in backwards mode by relying on analytical derivatives of primitive functions, which in Julia are available via 
+\todo{\tiny add here Enzyme.jl?}
+\texttt{ChainRules.jl}.
 Since this requires the evaluation intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
 
 Backwards AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.

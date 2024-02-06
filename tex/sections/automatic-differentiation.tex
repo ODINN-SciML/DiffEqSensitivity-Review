@@ -1,6 +1,8 @@
 % I think I need some historical reference here.
-Automatic differentiation (AD) is a technology that generates new code representing derivatives of a given parent code. Examples are code representing the tangent linear or adjoint operator of the parent code
+Automatic differentiation (AD) is a technology that generates new code representing derivatives of a given parent code. 
+Examples are code representing the tangent linear or adjoint operator of the parent code
 \cite{Griewank:2008kh}. 
+The names \textit{algorithmic} and \textit{computational} differentiation had also been used in the literature, emphasizing the algorithmic rather than automatic nature of AD \cite{Griewank:2008kh}. 
 The basis of all AD systems is the notion that complicated functions included in any computer program can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation \cite{juedes1991taxonomy}.
 The derivatives of the outputs of the computer program (dependent variables) with respect to their inputs (independent variables) are then combined using the chain rule.
 One advantage of AD systems is to automatically differentiate programs that include control flow, such as branching, loops or recursions. 
@@ -11,7 +13,7 @@ Neither forward nor reverse mode is more efficient in all cases \cite{Griewank_1
 
 \subsubsection{Forward mode}
 
-Forward mode AD amounts to computing directional derivatives. It can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists (see \cite{Baydin_Pearlmutter_Radul_Siskind_2015} for a good review on these methods). 
+Forward mode AD amounts to computing directional derivatives. It can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
 \paragraph{Dual numbers}
 \label{section:dual-numbers}
@@ -74,7 +76,7 @@ Most scalar functions of interest can be represented in this factorial form as a
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
 We can define $v_1, v_2, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
-Once the graph is constructed, we can compute the derivative of every node with respect to other (a quantity known as the tangent) using Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
+Once the graph is constructed, we can compute the derivative of every node with respect to other (a quantity known as the tangent) using the Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
@@ -99,17 +101,17 @@ The only requirement for differentiation is being able to compute the derivative
 \subsubsection{Reverse mode}
 
 Reverse mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. 
-The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that do not depend of the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as \textit{cheap gradient principle} \cite{griewank2012invented}.  
+The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that does not depend of the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
 Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
 \begin{equation}
  \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
 \end{equation}
 In this context, the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ is introduced to signify the partial derivative of the final loss function with respect to various program variables. 
-This derivative is often referred to as the adjoint, dual, or cotangent, and its connection with the discrete adjoint method will be made more explicitly in Section \ref{section:is-discrete-adjoint-AD}. 
+This derivative is often referred to as the adjoint, dual, or cotangent, and its connection with the discrete adjoint method will be made more explicitly in Section \ref{section:comparison-discrete-adjoint-AD}. 
 
-Since in reverse-mode AD the values of $\bar \omega$ are being updated in reverse order,
-in general, i.e., for nonlinear function evaluations or in the presence of complex flow graphs, we need to know the state value of all the argument variables $v$ of $\omega$
-in order to evaluate the terms $\frac{\partial \omega}{\partial v}$.
+Since in reverse-mode AD the values of $\bar \omega$ are being updated in reverse order, in general
+% , i.e., for nonlinear function evaluations or in the presence of complex flow graphs, 
+we need to know the state value of all the argument variables $v$ of $\omega$ in order to evaluate the terms $\frac{\partial \omega}{\partial v}$.
 These state values (required variables) need to be either stored in memory during the evaluation of the function or recomputed ``on the fly'' in order to be able to evaluate the derivative. 
 Checkpointing schemes exist to limit and balance the amount of soring versus recomputation (see section \ref{section:checkpointing}).
 
