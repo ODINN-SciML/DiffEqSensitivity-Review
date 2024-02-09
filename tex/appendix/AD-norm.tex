@@ -11,7 +11,7 @@ define an error term computed as \cite{hairer-solving-1, Rackauckas_Nie_2016}
 \end{equation}
 with $\mathfrak{abstol}$ and $\mathfrak{reltol}$ the absolute and relative solver tolerances (customize), respectively; $M$ is the maximum expected value of the numerical solution; and $\text{err}_i^{n+1}$ is an estimation of the numerical error at step $n+1$. 
 Common choices for these include $M = \max (u_i^{n+1}, \hat u_i^{n+1})$ and $\text{err}_i^{n+1} = u_i^{n+1} - \hat u_i^{n+1}$, but these can vary between solvers. 
-Estimations of the local error $\text{err}_i^{n+1}$ can be based on two approximation to the solution or in theoretical upper bounds provided by the numerical solver. 
+Estimations of the local error $\text{err}_i^{n+1}$ can be based on two approximation to the solution based on Runge-Kutta pairs   \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022, hairer-solving-1}; or in theoretical upper bounds provided by the numerical solver. 
 The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a mere increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
 % Chris on https://discourse.julialang.org/t/default-norm-used-in-ode-error-control/70995/4 mention to this norm to be the defaul since 70s
 

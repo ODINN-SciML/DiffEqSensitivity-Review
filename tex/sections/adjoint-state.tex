@@ -185,17 +185,17 @@ with $\lambda$ the discrete adjoint obtained by solving the linear system in Equ
     \label{eq:linea-adjoint-state-equation}
 \end{equation}
 This is a linear system of equations with the same size of the original $A(\theta) U = b(\theta)$, but involving the adjoint matrix $A^T$. 
-Computationally this also means that if we can solve the original system of discretized equations then we can also solve the adjoint. 
-One way of doing this is relying on matrix factorization. 
-Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrix, $A (\theta) = LU$, which then can be used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
-Another more natural way of finding the adjoints $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the iterative scheme
+Computationally this also means that if we can solve the original system of discretized equations then we can also solve the adjoint at the same computational cost (e.g., by using the LU factorization of $A(\theta)$). 
+% One way of doing this is relying on matrix factorization. 
+% Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrix, $A (\theta) = LU$, which then can be used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
+Another more natural way of finding the adjoints $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the final value problem 
 \begin{equation}
     \lambda_{i} = A_{i}^T \lambda_{i+1} + (u_i - u_i^\text{obs})
 \end{equation}
-with initial condition $\lambda_N$. 
+with final condition $\lambda_N$. 
 This means that we can solve the adjoint equation backwards, i.e., in reverse mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
-Notice that this procedure requires to know the value of $u_i$ at any given timestep. 
-\todo[inline]{Well, in this example it doesn't really because the problem is linear. The the linear misfit $u_i-u_i^{obs}$ could be precomputed when evaluating the forward model and instead of  reading the obs $u_i^{obs}$ from file, you could simply store the difference in forward and then restore the difference from file in the adjoint. Here, the need to restore only arises due to the nonlinearity of the loss function.}
+Unless the loss function $L$ is linear in $U$, this procedure requires to know the value of $u_i$ (or some equivalent form of it) at any given timestep. 
+% \todo[inline]{Well, in this example it doesn't really because the problem is linear. The the linear misfit $u_i-u_i^{obs}$ could be precomputed when evaluating the forward model and instead of  reading the obs $u_i^{obs}$ from file, you could simply store the difference in forward and then restore the difference from file in the adjoint. Here, the need to restore only arises due to the nonlinearity of the loss function.}
 % When do we solve this backwards and when forward?
 
 

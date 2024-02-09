@@ -20,6 +20,7 @@ where $\lambda \in \R^{nk}$ is, in principle, any choice of vector.
 Given that for every choice of the parameter $\theta$ we have $G(U; \theta) = 0$, we have that $I(U, \theta) = L(U, \theta)$.
 Then, the gradient of $L$ with respect to the vector parameter $\theta$ can be computed as 
 \begin{align}
+\begin{split}
     \frac{dL}{d\theta}
     = 
     \frac{dI}{d\theta}
@@ -33,7 +34,8 @@ Then, the gradient of $L$ with respect to the vector parameter $\theta$ can be c
     \frac{\partial L}{\partial \theta} + \lambda^T \frac{\partial G}{\partial U} 
     + 
     \left( \frac{\partial L}{\partial \theta} + \lambda^T \frac{\partial G}{\partial U} \right) \frac{\partial U}{\partial \theta}.
-    \label{eq:appendix-discrete-adjoint}
+\end{split}
+\label{eq:appendix-discrete-adjoint}
 \end{align}
 The important trick in the last term involved grouping all the terms involving the sensitivity $\frac{\partial U}{\partial \theta}$ together. 
 In order to avoid the computation of the sensitivity at all, we can define $\lambda$ as the vector that makes the last term in the right hand side of Equation \eqref{eq:appendix-discrete-adjoint} which results in the same results we obtained in Equation \eqref{eq:adjoint-state-equation} and \eqref{eq:def_adjoint}, that is, 

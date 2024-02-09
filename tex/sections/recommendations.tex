@@ -1,6 +1,11 @@
 For sufficient small systems of less than 100 parameters and ODEs, Forward AD is the most efficient method, outperforming sensitivity and adjoint methods \cite{ma_comparison_2021}.
 % \todo[inline]{We should pay attention that this section does not overlap with \cite{ma_comparison_2021}.}
 
+Adjoint methods are computationally more efficient for complicated numerical solvers, but they are also more difficult to implement.
+
+If well direct methods like AD and complex-step differentiation can be costly to use directly on a numerical solver, they can still be used to compute the sensitivities required for the calculation of the more efficient adjoint method (see discussion in Section \ref{section:computing-vjp-inside-solver}). 
+
+
 % Mention to limit cases when working with chaotic systems
 \subsection{Chaotic systems}
 

@@ -28,14 +28,20 @@ This effect is dependent on the numerical solver tolerance.
 
 \subsubsection{Complex step differentiation}
 
-Complex-step differentiation does not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small (see Figure \ref{fig:finite-diff}). 
+% For credit: The figure in the left coicindes with the one in  \cite{fike2013multi}
+% Read more carefully Martins et. al. (2001) for the computational aspects of complex step.
+
+Complex-step differentiation does not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small \cite{martins2001connection} as long as it does not reach the underflow threshold \cite{Goldberg_1991_floatingpoint} (see Figure \ref{fig:finite-diff}). 
 As we mentioned in section ..., complex step differentiation has many aspects in common with finite differences and AD based on dual numbers. 
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
 However, the difference between the methods also makes the complex step differentiation sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column in Figure \ref{fig:complex-step-AD}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
 We note that many modern software already have support for complex number arithmetic, making complex step differentiation very easy to implement.
 
+\subsubsection{Automatic differentiation}
 
-\subsubsection{Forward AD based on dual numbers}
+The AD algorithms described in Section ... implement algorithmic differentiation using different methods, namely \textit{operator overloading} for AD based on dual numbers, and \textit{source code transformation} for both forward and reverse AD based on the computational graph \cite{martins2001connection}.
+
+\paragraph{Forward AD based on dual numbers}
 \label{section:software-Forward-AD}
 
 Implementing forward AD using dual numbers is usually carried out using \textit{operator overloading} \cite{Neuenhofen_2018}. 
@@ -80,17 +86,19 @@ To illustrate this point, consider the following example of a simple system of O
  \frac{du_2}{dt} = - a u_2 + u_1 u_2 & \quad u_2(0) = 1
 \end{cases}
 \end{equation}
-with $a$ the parameter withrespect to which we want to differentiate. 
+with $a$ the parameter with respect to which we want to differentiate. 
 In the simple case of $a=1$, the solutions of the ODE are constant functions $u_1(t) \equiv u_2(t) \equiv 1$. 
 As explained in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are designed to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
 This leads to wrong gradient calculations that propagate through the numerical solver without further warning. 
 
-\subsubsection{Reverse-mode AD}
+\paragraph{Forward AD based on computational graph}
+
+Forward algorithmic 
+
+\paragraph{Reverse AD based on computational graph}
 \label{sec:software-reverse-AD}
 
-In contrast to finite differences, forward AD, and complex-step differentiation, reverse AD is the only of this family of methods that propagates the gradient in backwards mode by relying on analytical derivatives of primitive functions, which in Julia are available via 
-\todo{\tiny add here Enzyme.jl?}
-\texttt{ChainRules.jl}.
+In contrast to finite differences, forward AD, and complex-step differentiation, reverse AD is the only of this family of methods that propagates the gradient in backwards mode by relying on analytical derivatives of primitive functions, which in Julia are available via \texttt{ChainRules.jl}.
 Since this requires the evaluation intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
 
 Backwards AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.

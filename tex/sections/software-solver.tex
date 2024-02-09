@@ -4,7 +4,13 @@ This difficulty arises from the fact that the sensitivity method needs to deal w
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
 Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
-These include \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018}; and \texttt{Diffrax} \cite{kidger2021on} in Python. 
+These include 
+\texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; 
+\texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; 
+\texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; 
+\texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018};
+\texttt{DENSERKS} in Fortram\cite{alexe2007denserks}; 
+and \texttt{Diffrax} in Python\cite{kidger2021on}. 
 
 It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
@@ -25,6 +31,7 @@ This complexity makes this method useless for models with many ODEs and/or param
 % Implemented as CSA in Julia
 
 \paragraph{Computing VJPs inside the solver}
+\label{section:computing-vjp-inside-solver}
 
 All the solver-based methods has to faced the challenge of how to compute large VJPs. 
 In the case of the sensitivity equation, this correspond to the row/column terms in $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
@@ -58,8 +65,10 @@ The bottleneck of this method is the calculation of the adjoint, since in order 
 Effectively, notice that the adjoint equation involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$ which are both functions of $u(t)$. 
 There are different ways of addressing the evaluation of $u(t)$ during the backwards step.
 \begin{enumerate}[label=(\roman*)]
-    \item \textbf{Dense Store.} During the forward model, we can store in memory all the intermediate states of the numerical solution. 
+    \item \textbf{Dense Output.} During the forward model, we can store in memory all the intermediate states of the numerical solution. 
     This leads to heavy-memory expensive algorithms. 
+    However, in opposition to discrete methods, solving for the adjoint in reverse mode requires to be able to evaluate the solution $u(t)$ at any given time $t$. 
+    This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme (Equation ...) that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
     \item \textbf{Backsolve.} Solve again the original ODE together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
     \begin{equation}
     \frac{d}{dt}
@@ -105,6 +114,8 @@ Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as
 This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. 
 A second but similar approach is to use an implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. 
 This method also has a complexity of $\mathcal O (n^3 + p)$.
+
+When using Runge-Kutta methods, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients (Equation \eqref{eq:Runge-Kutta-scheme}) in order to both have the same level of accuracy \cite{Alexe_Sandu_2009}.
 
 \paragraph{Solving the quadrature}
 

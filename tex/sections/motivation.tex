@@ -46,8 +46,7 @@ Depending on the nature of the inversion, we may distinguish between the followi
     \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
     \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications.
 \end{itemize}
-Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and
-characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
+Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 
 In recent years the use of machine learning methods has become more popular in many scientific domains. 
 Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning any possible function if enough data is available \cite{gorban_1998}. 
@@ -82,7 +81,8 @@ There is a long tradition of computational models based on sensitivity methods f
 This includes applications to 
 stellarator coil design \cite{McGreivy_stellarator_2021}; 
 fluid dynamics \cite{Giles_Pierce_2000, mohammadi2009applied};
-
+supersonic aircraft design \cite{
+hu2010supersonic, fike2013multi}
 
 % \subsubsection{Computational Fluid Dynamics}
 % \subsubsection{Electromagnetism}

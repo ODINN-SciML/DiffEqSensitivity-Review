@@ -42,18 +42,20 @@ For example, suppose than in the last example the dual variables $x_2$ and $y_2$
 
 Intuitively, we can think of $\epsilon$ as being a differential in the Taylor series expansion, fact that we can observe in how the output of any scalar functions is extended to a dual number output:
 \begin{align}
+\begin{split}
     f(x_1 + \epsilon x_2)
     &= 
     f(x_1)
     + 
     \epsilon \, x_2 \,  f'(x_1)
     + 
-    \epsilon^2 \cdot ( \ldots ) \nonumber \\
+    \epsilon^2 \cdot ( \ldots )\\
     &= 
     f(x_1)
     + 
-    \epsilon \, x_2 \,  f'(x_1)
-    \label{eq:dual-number-function}
+    \epsilon \, x_2 \,  f'(x_1).
+\end{split}
+\label{eq:dual-number-function}
 \end{align}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
@@ -63,7 +65,7 @@ Multidimensional dual number generalize dual number to include a different dual 
 A multidimensional dual number is then defined as $x_\epsilon = x + \sum_{i=1}^p x_i \epsilon_i$ with $\epsilon_i \epsilon_j = 0$ for all pairs $i$ and $j$.
 % Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
 Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, especially in the case of nested functions \cite{manzyuk2019perturbation}.   
-
+Another extension of dual numbers that should not be confused with multidimensional dual numbers are hyper-dual numbers, which allow to compute higher-order derivatives of a function \cite{fike2013multi}. 
 % Here we need to say that for p > 1 the dual component is carrying the value of the sensitivity!!! This will make the connection with sensitivity equations more explicit. 
 
 \paragraph{Computational graph}
@@ -130,7 +132,7 @@ Using the chain rule states that the gradient of the final loss function is
 \begin{equation}
  \nabla_\theta L = \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1, 
 \end{equation}
-with $Dg_i$ the Jacobians of each nested function evaluated at ... 
+with $Dg_i$ the Jacobians of each nested function evaluated at the intermediate values $g_{i-1} \circ g_{i-2} \circ \ldots \circ g_i (\theta)$.
 Notice that in the last equation, $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
 In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiplying the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
 The important aspect of the backwards case is that we will always be computing VJPs, since $\nabla \ell$ is a vector.
