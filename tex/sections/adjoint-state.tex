@@ -3,7 +3,7 @@ These methods are extremely popular in optimal control theory in fluid dynamics,
 
 The idea of the adjoint method is to treat the differential equation as a constraint in an optimization problem and then differentiate an objective function subject to that constraint. 
 Mathematically speaking, this can be treated both from a duality or Lagrangian perspective \cite{Giles_Pierce_2000}.
-Following other authors, we prefer to derive the equation using the former as it may give better insights to how the method works and it allows generalization to other user cases \cite{Givoli_2021}. 
+In agreement with other authors, we prefer to derive the equation using the former as it may give better insights to how the method works and it allows generalization to other user cases \cite{Givoli_2021}. 
 The derivation of adjoint methods using the Lagrangian formulation can be found in Appendix \ref{appendix:lagrangian}.
 % Mathematically, reverse mode AD is related to the adjoint differential equations \cite{Griewack-on-AD}
 
@@ -24,17 +24,16 @@ Since here $U$ is the discrete set of evaluations of the solver, examples of los
     \frac{1}{2} \sum_{i=1}^N \| u_i - u_i^\text{obs} \|^2, 
 \end{equation}
 with $u_i^\text{obs}$ the observed time-series. 
-We further need to impose the constraint that the solution satisfies the algebraic equation $G(U; \theta) = 0$.
-Now,
+Now, same as Equation \eqref{eq:dLdtheta_VJP} we have 
 \begin{equation}
     \frac{dL}{d\theta} 
     = 
     \frac{\partial L}{\partial \theta} 
     + 
-    \frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta},
+    \frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}.
     \label{eq:dhdtheta0}
 \end{equation}
-subject to the constraint $G(U; \theta)=0$, which gives
+We further need to impose the constraint that the solution satisfies the algebraic equation $G(U; \theta) = 0$, which gives
 \begin{equation}
     \frac{dG}{d\theta} 
     = 
@@ -56,13 +55,13 @@ If we replace this last expression into equation \eqref{eq:dhdtheta0}, we obtain
     =
     \frac{\partial L}{\partial \theta} 
     - 
-    \underbrace{\frac{\partial L}{\partial U}}_{\text{vector}}
+    \frac{\partial L}{\partial U}
     \left( \frac{\partial G}{\partial U} \right)^{-1} 
     \frac{\partial G}{\partial \theta}.
     \label{eq:dhdtheta}
 \end{equation}
-The important trick in the adjoint state methods is to observe that in this last equation, the right-hand side can be resolved as a vector-Jacobian product (VJP).
-Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
+The important trick in the adjoint state methods is to observe that in this last equation, the right-hand side can be resolved as a vector-Jacobian product (VJP), with $\frac{\partial L}{\partial U}$ being the vector.
+Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the VJP operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
 This leads to the definition of the adjoint $\lambda \in \R^{nN}$ as the solution of the linear system of equations 
 \begin{equation}
     \left( \frac{\partial G}{\partial U}\right)^T \lambda 
@@ -70,7 +69,7 @@ This leads to the definition of the adjoint $\lambda \in \R^{nN}$ as the solutio
     \left( \frac{\partial L}{\partial U} \right)^T,
     \label{eq:adjoint-state-equation}
 \end{equation}
-that is,
+or equivalently,
 \begin{equation}
     \lambda^T = \frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}.
     \label{eq:def_adjoint}
@@ -84,7 +83,7 @@ Finally, if we replace Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta},
     \lambda^T \frac{\partial G}{\partial \theta}.
     \label{eq:gradient-adjoint-state-method}
 \end{equation}
-The important trick to notice here is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
+The important trick used in the adjoint method is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
 Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices. 
 However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
 By rearranging these terms and relying in the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
@@ -99,11 +98,11 @@ These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, 
 \end{figure}
 
 Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U)=0$ was not necessarily linear in $U$.
-This means that while the forward mode may require multiple iterations in order to solve the non-linear system $G(U) = 0$ using Krylov methods, the backwards step to compute the adjoint is one single linear system of equations. 
+This means that while the forward mode may require multiple iterations in order to solve the non-linear system $G(U) = 0$ (e.g., by using Krylov methods), the backwards step to compute the adjoint is one single linear system of equations. 
 
 \subsubsection{Simple linear system}
 
-To gain further intuition about the adjoint method, let us consider the simple case of the explicit linear one-step methods, where at every step we need to solve the equation $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i$, where $A_i \in \R^{n \times n}$ and $b_i \in \R^n$ are defined by the numerical solver. 
+To gain further intuition about the adjoint method, let us consider the simple case of the explicit linear one-step methods, where at every step we need to solve the equation $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i(\theta)$, where $A_i(\theta) \in \R^{n \times n}$ and $b_i(\theta) \in \R^n$ are defined by the numerical solver. 
 This condition can be written in a more compact manner as $G(U)=A(\theta) U - b(\theta) = 0$, that is 
 \begin{equation}
     A(\theta) U 

@@ -89,7 +89,7 @@ To illustrate this point, consider the following example of a simple system of O
 with $a$ the parameter with respect to which we want to differentiate. 
 In the simple case of $a=1$, the solutions of the ODE are constant functions $u_1(t) \equiv u_2(t) \equiv 1$. 
 As explained in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are designed to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
-This leads to wrong gradient calculations that propagate through the numerical solver without further warning. 
+This can lead to wrong gradient calculations that propagate through the numerical solver without further warning. 
 
 \paragraph{Forward AD based on computational graph}
 
@@ -103,7 +103,7 @@ Since this requires the evaluation intermediate variables, reverse AD requires a
 
 Backwards AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
 In the backward step, this executes a series of function calls, one for each elementary operation.
-If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ ($\bar v_i$) by applying the chain rule. 
+If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all nodes in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ (defined as $\bar v_i$) by applying the chain rule. 
 Consider the example of the multiplicative operation $w = v_1 \times v_2$. Then
 \begin{equation}
  \bar v_1, \bar v_2 
@@ -123,7 +123,7 @@ which is equivalent to using the chain rule as
 
 % \subsubsection{Further remarks}
 
-A crucial distinction between AD implementations based on computational graphs is between static and dynamical methods\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
+A crucial distinction between AD implementations based on computational graphs is between \textit{static} and \textit{dynamical} methods\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
 In the case of a static implementations, the computational graph is constructed before any code is executed, which are encoded and optimized for performance within the graph language. 
 For static structures such as neural networks, this is ideal \cite{abadi-tensorflow}. 
 However, two major drawbacks of static methods are composability with existing code, including support of custom types, and adaptive control flow, which is a common feature of numerical solvers. 

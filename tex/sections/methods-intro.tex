@@ -14,14 +14,17 @@ These methods can be roughly classified as  follows\cite{ma2021comparison}.
 \end{itemize}
 Figure \ref{fig:scheme-all-methods} displays a classification of some methods under this two-fold classification. 
 
-The \textit{continuous} vs \textit{discrete} difference is one of mathematical nature. 
+The \textit{continuous} vs \textit{discrete} difference is one of mathematical and numerical nature. 
 When solving for the gradient of a differential equation, one needs to derive both a mathematical expression for the gradient (the \textit{differentiation step}) and solve the equations using a numerical solver (the \textit{discretization step})\cite{bradley2013pde, Onken_Ruthotto_2020, FATODE2014, Sirkes_Tziperman_1997}. 
-Depending on the order of these two operations, we are going to talk about discrete methods (discretize-differentiate) or continuous methods (differentiate-discretize). 
+Depending on the order of these two operations, we are going to talk about discrete methods (discretize-then-differentiate) or continuous methods (differentiate-then-discretize). 
 In the case of \textit{discrete} methods, gradients are computed based on simple function evaluations of the solutions of the numerical solver (finite differences, complex step differentiation) or by manipulation of atomic operations inside a numerical solver (AD, symbolic differentiation, discrete adjoint method). 
 In the case of \textit{continuous} methods, a new set of differential equations is derived for the sensitivity (sensitivity equations) or the adjoint (continuous adjoint method) of the system, both quantities that allow the calculation of the desired gradient.   
 % We can either discretize the original system of ODEs in order to numerically solve it and then find an strategy to differentiate it; or instead define new equations for the differentiation step and later numerically solver them.
 When comparing between discrete and continuous methods, more than talking about computational efficiency we are focusing on the mathematical consistency of the method, that is, \textit{is the method estimating the right gradient?}. 
 When using discrete methods, we may have a method that is algorithmically correct, meaning that is computing the gradient of the solver discretization, but is not really approximating the gradient of the true solution of the differential equation. 
+For example, methods like automatic differentiation may compute the exact derivative of the numerical approximation of a loss function and yet not give a good approximation of the exact derivative of the loss \cite{Walther_2007}.
+
+However, one has to keep in mind that AD computes the exact derivative of an approximation of the objective and may not yield an approximation to the exact derivatives of the objective.
 
 The \textit{forward} vs \textit{backward} distinction regards when the gradient is computed, if this happens during the forward pass of the numerical solver or in a later recalculation \cite{Griewank:2008kh}. 
 In all \textit{forward} methods the solution of the differential equation is solved sequentially and simultaneously with the gradient during the forward pass of the numerical solver.  

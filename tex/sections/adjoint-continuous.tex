@@ -3,7 +3,7 @@ We encourage the interested reader to make the effort of following how the conti
 The Lagrangian derivation of the continuous adjoint method can also be found in Appendix \ref{appendix:lagrangian}.
 %\footnote{Based on slides of Chris Rackauckas about "Data Efficient model discovery with Scientific Machine Learning", Neural ODE paper, video "The use and practice of scientific machine learning". Paper comparing CSA and DSA} 
 
-Consider an integrated loss function of the form 
+Consider an integrated loss function defined in Equation \eqref{eq:integrated-loss-function} of the form 
 \begin{equation}
     L(u; \theta) = \inttime h(u(t;\theta), \theta) dt
 \end{equation}
@@ -25,7 +25,7 @@ The adjoint equation is obtained by writing the sensitivity equation in the form
     \label{eq:integrated-sensitivity-equation}
 \end{equation}
 where this equation must be satisfied for every function $\lambda(t)$ in order for Equation \eqref{eq:continuous-adjoint} to be true. 
-The next step is to get rid of all time derivative applied to the sensitivity $s(t)$ using integration by parts: 
+The next step is to get rid of the time derivative applied to the sensitivity $s(t)$ using integration by parts: 
 \begin{equation}
     \inttime \lambda(t)^T \frac{ds}{dt} dt
     = 
@@ -84,6 +84,8 @@ The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be desc
     \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.
 \end{enumerate}
 
+More general recipes for deriving continuous adjoint methods exists, including generalizations for PDEs. 
+The adjoint methods can be formulated as ... 
 
 % \subsubsection{Are discrete and continuous adjoint the same?}
 

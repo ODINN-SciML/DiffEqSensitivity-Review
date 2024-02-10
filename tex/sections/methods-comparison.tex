@@ -1,9 +1,9 @@
-\subsubsection{Complex step differentiation and forward AD: dealing with epsilons}
+\subsubsection{Forward AD and complex step differentiation}
 
 Notice that both AD based on dual number and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the extender value that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
 Although these methods seem similar, we emphasize that AD gives the exact gradient, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
-In Figure \ref{fig:complex-step-AD} we show how the calculation of the gradient of $\sin (x^2)$ is performed by these two methods.
+In Figure \ref{fig:complex-step-AD} we show how the calculation of the gradient of the function $\sin (x^2)$ is performed by these two methods.
 Whereas the second component of the dual number has the exact derivative of the function $\sin(x^2)$ with respect to $x$, it is not until we take $\varepsilon \rightarrow 0$ that we obtain the derivative in the imaginary component for the complex step method.
 % The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
 The dependence of the complex step differentiation method on the step size gives it a closer resemblance to finite difference methods than to AD using dual numbers.
@@ -15,9 +15,40 @@ Further notice the complex step method involves more terms in the calculation, a
     \label{fig:complex-step-AD}
 \end{figure}
 
-% \subsubsection{Forward and backwards AD: connection with JVPs and VJPs}
 
-\subsubsection{Forward AD and sensitivity equations: solving for the sensitivity}
+\subsubsection{Discrete adjoints and backwards AD}
+\label{section:comparison-discrete-adjoint-AD}
+
+Both discrete adjoint methods and reverse AD are classified as reverse and discrete methods (see Figure \ref{fig:scheme-all-methods}). 
+Furthermore, both methods introduce an intermediate adjoint associated to the partial derivative of the loss function (output variable) with respect to intermediate variables of the forward computation.
+In the case of reverse AD, this adjoint is defined with the notation $\bar w$ (Equation \eqref{eq:reverse-mode-ad-definition}), while in the discrete adjoint method this correspond to each one of the variables $\lambda_1, \lambda_2, \ldots, \lambda_N$ (Equation \eqref{eq:linea-adjoint-state-equation}).
+In this section we will show that both methods are mathematically equivalent \cite{Zhu_Xu_Darve_Beroza_2021, li2020coupled}, but naive implementations using reverse AD can result in sub-optimal performances compared to the one obtained by directly employing the discrete adjoint method \cite{Alexe_Sandu_2009}. 
+% The discrete adjoint method derived in Section \ref{section:discrete-adjoint} can be obtained by applying the reverse mode AD rule in Equation \eqref{eq:reverse-mode-ad-definition} in the computational graph defined as $\theta \rightarrow G \rightarrow U \rightarrow L$.
+
+In order to have a better idea of how this work in the case of a numerical solver, let us consider again the case of a one-step explicit method, non necessarily linear, where the updates $u_{i}$ satisfy the equation $u_{i+1} = g_{i}(u_{i+1} ; u_{i}, \theta) = 0$.
+Following the same schematics than in Figure \ref{fig:discrete-adjoint}, we represent the computational graph of the numerical method in Figure  using the intermediate variables $g_1, g_2, \ldots, g_{N-1}$.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.65\textwidth]{tex/figures/AD-discrete-adjoint.pdf}
+    \caption{Computational graph... }
+    \label{fig:ad-vs-discrete-adjoint}
+\end{figure}
+
+Modern numerical solvers use functions $g_i$ that correspond to nested functions, meaning $g_i = g_i^{(k_i)} \circ g_i^{(k_i-1)} \circ \ldots \circ g_i^{(1)} $. 
+This is certainly the case when $g_{i}$ is non-linear and the equation $u_{i} - g_{i}(u_i , \theta) = 0$ needs to be solve iteratively using Newton's method (Equation \eqref{eq:newton-method}); or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
+If the number of intermediate function is large, reverse AD will result in a large computational graph, potentially leading to excessive memory usage and slow computation \cite{Margossian_2018, Alexe_Sandu_2009}.
+A solution to this problem is to introduce a customized \textit{super node} that directly encapsulates the contribution to the full adjoint in $g_i$ without computing the adjoint for each intermediate function $g_i^{(j)}$.
+Provided with the value of the Jacobian matrices $\frac{\partial g_i}{\partial u_i}$ and $\frac{\partial g_i}{\partial \theta}$, we can use the implicit function theorem to find the 
+
+% I should check here what customized adjoints actually do in Julia...
+Furthermore, notice that instead of the full Jacobian, reverse methods only required to compute VJPs. 
+
+
+% The code generated by AD is usually sub-optimal compared to the one define by the adjoint method \cite{Alexe_Sandu_2009}.
+% Furthermore, implementation of black-box AD in the numerical solver with result in the differentiation of iterations and sub-routines inside the numerical solver \cite{Alexe_Sandu_2009}. 
+
+\subsubsection{Consistency: Forward AD and sensitivity equations}
 
 The sensitivity equations can also be solved in discrete forward mode by numerically discretizing the original ODE and later deriving the discrete sensitivity equations \cite{ma2021comparison}. 
 For most cases, this leads to the same result than in the continuous case \cite{FATODE2014}.
@@ -31,7 +62,7 @@ We can numerically solve for the sensitivity $s$ by extending the parameter $\th
     \vdots \\
     \theta_p
     \end{bmatrix}
-    \rightarrow
+    \longrightarrow
     \begin{bmatrix}
     \theta_1 + \epsilon_1 \\
     \theta_2 + \epsilon_2 \\
@@ -49,7 +80,7 @@ The dependency of the solution $u$ of the ODE on the parameter $\theta$ is now e
     \vdots \\
     u_n
     \end{bmatrix}
-    \rightarrow
+    \longrightarrow
     \begin{bmatrix}
     u_1 + \sum_{j=1}^p \frac{\partial u_1}{\partial \theta_j} \epsilon_j \\
     u_2 + \sum_{j=1}^p \frac{\partial u_2}{\partial \theta_j} \epsilon_j \\
@@ -70,36 +101,51 @@ This implies forward AD applied to any multistep linear solver will result in th
 For example, for the forward Euler method this gives 
 \begin{align}
 \begin{split}
-    u^{t+1} + \epsilon \, s^{t+1}
+    u^{t+1} + s^{t+1} \, \epsilon 
     &= 
-    u^t + \epsilon \, u^t + \Delta t \, f (u^t + \epsilon \, s^t, \theta + \epsilon, t) \\
+    u^t +  s^t \, \epsilon + \Delta t \, f (u^t + s^t \, \epsilon, \theta + \epsilon, t) \\
     &= 
     u^t + f(u^t, \theta, t) 
     + 
-    \epsilon \, \Delta t 
+    \Delta t 
     \left( 
     \frac{\partial f}{\partial u} s^t + 
     \frac{\partial f}{\partial \theta}
-    \right).
+    \right) \epsilon.
 \end{split}
 \label{eq:sensitivity-equation-AD}
 \end{align}
 The dual component corresponds to the forward Euler discretization of the sensitivity equation \eqref{eq:sensitivity_equations}, with $s^t$ the temporal discretization of the sensitivity $s(t)$.
-For non-linear numerical solver (e.g., Runge-Kutta methods), the discretization forward AD will lead to a different numerical solver for the sensitivity.  
 
-\subsubsection{Discrete adjoints vs backwards AD}
-\label{section:comparison-discrete-adjoint-AD}
+The consistency result for discrete and continuous methods holds for Runge-Kutta methods \cite{Walther_2007}. 
+When introducing dual numbers, the Runge-Kutta scheme in Equation \eqref{eq:Runge-Kutta-scheme} gives the following identities
+\begin{align}
+    u^{n+1} + s^{n+1} \epsilon 
+    &= 
+    s_n + \Delta t_n \sum_{i=1}^s b_i \dot k_i
+    \\
+    k_i + \dot k_i \epsilon
+    &= 
+    f \left(u^n + \sum_{j=1}^s a_{ij} k_j + \left( s^n + \sum_{j=1}^s a_{ij} \dot k_j \right) \epsilon , \theta + \epsilon ,  t_n + c_i \Delta t_n \right) \label{eq:rk-sensitivity-2}
+\end{align}
+with $\dot k_i$ the dual variable associated to $k_i$.
+The partial component in Equation \eqref{eq:rk-sensitivity-2} carrying the coefficient $\epsilon$ gives 
+\begin{align}
+\begin{split}
+    \dot k_i
+    &= 
+    \frac{\partial f}{\partial u} 
+    \left(u^n + \sum_{j=1}^s a_{ij} k_j, \theta,  t_n + c_i \Delta t_n \right)
+    \left( s^n + \sum_{j=1}^s a_{ij} \dot k_j \right) \\
+    &+ 
+    \frac{\partial f}{\partial \theta} 
+    \left(u^n + \sum_{j=1}^s a_{ij} k_j, \theta,  t_n + c_i \Delta t_n \right),
+\end{split}
+\end{align}
+which coincides with the Runge-Kutta scheme we will obtain for the original sensitivity equations. 
+This means that forward AD on Runge-Kutta methods leads to solutions for the sensitivity that have the same convergence properties of the forward solver. 
 
-
-% Is the adjoint the same than a gradient? Yes, but these are derivatives with respect to the state of the system, not with respect to the parameters! 
-
-Optimizition with supernodes \cite{Margossian_2018}
-
-The code generated by AD is usually sub-optimal compared to the one define by the adjoint method \cite{Alexe_Sandu_2009}.
-
-Furthermore, implementation of black-box AD in the numerical solver with result in the differentiation of iterations and sub-routines inside the numerical solver \cite{Alexe_Sandu_2009}. 
-
-\subsubsection{Discrete vs continuous adjoints}
+\subsubsection{Consistency: discrete and continuous adjoints}
 
 % There is a large family of adjoint methods that in first order can be classified as discrete and continuous adjoints. 
 As previously mentioned, the difference between the discrete and continuous adjoint methods is that the former follows the discretize-then-differentiate approach (also known as finite difference of adjoints \cite{Sirkes_Tziperman_1997}).
@@ -108,13 +154,14 @@ In some sense then, we can think of the discrete adjoint $\lambda = (\lambda_1, 
 
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 
 Furthermore, since the continuous adjoint method requires to numerical solve the adjoint, we are interested in the relative accuracy of the forward and backwards step. 
-It can be shown that for Runge-Kutta solvers, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy $b_i \neq 0$, $i=1,2, \ldots, s$
+It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$, $i=1,2, \ldots, s$, then the ... \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}
 
-Different works exist regarding the consistency or inconsistency between the two approaches, and this usually depends on the ODE and equation.  
+For multilinear solver, ... 
 
-Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods have been provided in \cite{sandu2006properties, sandu2011solution}.
-Depending on the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.
+% Different works exist regarding the consistency or inconsistency between the two approaches, and this usually depends on the ODE and equation.  
+% Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods have been provided in \cite{sandu2006properties, sandu2011solution}.
+% Depending on the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.
+
 Furthermore, adjoint methods can fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
-
 In the more general case, both methods can give different computational results \cite{Sirkes_Tziperman_1997}.
-It has been shown \cite{Sirkes_Tziperman_1997} that discrete adjoints can lead to instabilites and wrong gradients.
+% It has been shown \cite{Sirkes_Tziperman_1997} that discrete adjoints can lead to instabilites and wrong gradients.

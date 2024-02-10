@@ -19,7 +19,7 @@ While Equation \eqref{eq:finite_diff} gives the derivative to an error of magnit
 However, there are a series of problems associated with this approach.
 The first one is due to how this scales with the dimension $p$ of parameter vector $\theta$.
 Each directional derivative requires the evaluation of the loss function $L$ twice.
-For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands solving the differential equation in forward mode each time for a new set of parameters.
+For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations which demands solving the differential equation each time for a new set of parameters.
 
 A second problem is due to rounding errors.
 Every computer ultimately stores and manipulates numbers using floating points arithmetic \cite{Goldberg_1991_floatingpoint}. 

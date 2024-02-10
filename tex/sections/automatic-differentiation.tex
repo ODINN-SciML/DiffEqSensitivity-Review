@@ -2,7 +2,7 @@
 Automatic differentiation (AD) is a technology that generates new code representing derivatives of a given parent code. 
 Examples are code representing the tangent linear or adjoint operator of the parent code
 \cite{Griewank:2008kh}. 
-The names \textit{algorithmic} and \textit{computational} differentiation had also been used in the literature, emphasizing the algorithmic rather than automatic nature of AD \cite{Griewank:2008kh}. 
+The names \textit{algorithmic} and \textit{computational} differentiation had also been used in the literature, emphasizing the algorithmic rather than automatic nature of AD \cite{Griewank:2008kh, Margossian_2018}. 
 The basis of all AD systems is the notion that complicated functions included in any computer program can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation \cite{juedes1991taxonomy}.
 The derivatives of the outputs of the computer program (dependent variables) with respect to their inputs (independent variables) are then combined using the chain rule.
 One advantage of AD systems is to automatically differentiate programs that include control flow, such as branching, loops or recursions. 
@@ -15,6 +15,8 @@ Neither forward nor reverse mode is more efficient in all cases \cite{Griewank_1
 
 Forward mode AD amounts to computing directional derivatives. It can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
+Mention distinction between full forward mode AD and scalar mode forward AD.
+
 \paragraph{Dual numbers}
 \label{section:dual-numbers}
 % \vspace*{10px}
@@ -22,7 +24,7 @@ Forward mode AD amounts to computing directional derivatives. It can be implemen
 % \vspace*{5px}
 
 Dual numbers extend the definition of a numerical variable that takes a certain value to also carry information about its derivative with respect to a certain parameter \cite{clifford1871dualnumbers}. 
-We can define an abstract type, defined as a dual number, composed of two elements: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
+We define a dual number based on two variables: a \textit{value} coordinate $x_1$ that carries the value of the variable and a \textit{derivative} (o partial) coordinate $x_2$ with the value of the derivative $\frac{\partial x_1}{\partial \theta}$. 
 Just as complex number, we can represent dual numbers as an ordered pair $(x_1, x_2)$, sometimes known as Argand pair, or in the rectangular form 
 \begin{equation}
  x_\epsilon = x_1 + \epsilon \, x_2
@@ -59,7 +61,7 @@ Intuitively, we can think of $\epsilon$ as being a differential in the Taylor se
 \end{align}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
-In Section \ref{sec:computational-implementation} we will explore how this is implemented and compare this approach with complex-step differentiation. 
+In Section \ref{sec:computational-implementation} we will explore how this is implemented. 
 
 Multidimensional dual number generalize dual number to include a different dual variable $\epsilon_i$ for each variable we want to differentiate with respect to\cite{Neuenhofen_2018, RevelsLubinPapamarkou2016}.
 A multidimensional dual number is then defined as $x_\epsilon = x + \sum_{i=1}^p x_i \epsilon_i$ with $\epsilon_i \epsilon_j = 0$ for all pairs $i$ and $j$.
@@ -106,15 +108,18 @@ Reverse mode AD is also known as the adjoint of cotangent linear mode, or backpr
 The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that does not depend of the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
 Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
 \begin{equation}
- \bar v_i = \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v} \bar{w}.
+    \bar v_i 
+    = 
+    \frac{\partial \ell}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v_i} \bar{w}.
+    \label{eq:reverse-mode-ad-definition}
 \end{equation}
-In this context, the notation $\bar{\omega} = \frac{\partial \ell}{\partial \omega}$ is introduced to signify the partial derivative of the final loss function with respect to various program variables. 
+In this context, the notation $\bar{w} = \frac{\partial \ell}{\partial \omega}$ is introduced to signify the partial derivative of the output variable, here associated to the loss function, with respect to input and intermediate variables. 
 This derivative is often referred to as the adjoint, dual, or cotangent, and its connection with the discrete adjoint method will be made more explicitly in Section \ref{section:comparison-discrete-adjoint-AD}. 
 
-Since in reverse-mode AD the values of $\bar \omega$ are being updated in reverse order, in general
+Since in reverse-mode AD the values of $\bar w$ are being updated in reverse order, in general
 % , i.e., for nonlinear function evaluations or in the presence of complex flow graphs, 
-we need to know the state value of all the argument variables $v$ of $\omega$ in order to evaluate the terms $\frac{\partial \omega}{\partial v}$.
-These state values (required variables) need to be either stored in memory during the evaluation of the function or recomputed ``on the fly'' in order to be able to evaluate the derivative. 
+we need to know the state value of all the argument variables $v$ of $\omega$ in order to evaluate the terms $\frac{\partial w}{\partial v}$.
+These state values (required variables) need to be either stored in memory during the evaluation of the function or recomputed on the fly in order to be able to evaluate the derivative. 
 Checkpointing schemes exist to limit and balance the amount of soring versus recomputation (see section \ref{section:checkpointing}).
 
 
@@ -148,7 +153,7 @@ operations, while backwards mode AD requires
 \begin{equation}
  d_k d_{k-1} + d_{k-1} d_{k-2} + \ldots + d_2 d_1 + d_1 p = \mathcal O (k+p)
 \end{equation}
-operations, where the $\mathcal O$ is with respect to the variable $p$. 
+operations. 
 
 In the general case of a function $L : \R^p \mapsto \R^q$ with multiple outputs and a total of $k$ intermediate functions, the cost of forward AD is $\mathcal O (pk + q)$ and the cost of reverse is $\mathcal O (p + kq)$.
 When the function to differentiate has a larger input space than output ($q \ll p$), AD in reverse mode is more efficient as it propagates the chain rule by computing VJPs, the reason why reverse-mode AD is more used in modern machine learning.
@@ -157,7 +162,7 @@ When the function to differentiate has a larger input space than output ($q \ll 
 However, notice that backwards mode AD requires us to save intermediate variables through the forward run in order to run backwards afterwards \cite{Bennett_1973}, leading to performance overhead that makes forward AD more efficient when $p \lesssim q$ \cite{Griewank_1989, Margossian_2018, Baydin_Pearlmutter_Radul_Siskind_2015}.  
 In other words, backwards AD is really more efficient when $q \ll p$. 
 % while in forward mode we can just evaluate the gradient as we iterate our sequence of functions. 
-We discuss in section XXX how this problem can be overcome with a good checkpointing scheme. 
+We discuss in section \ref{section:checkpointing} how this problem can be overcome with a good checkpointing scheme. 
 % On the other hand, when the goal is to compute the gradient of many function outputs with respect to a few parameters, forward mode AD is more efficient \cite{Griewank_1989}.
 % This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
 

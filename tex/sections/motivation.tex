@@ -1,11 +1,11 @@
 % \subsection{On the importance of differentiable programming}
 
-Scientific models from many domains have often been based on mechanistic (or process-based) models, represented as differential equations, involving the use of numerical methods to solve them. 
-Among many, this led to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them
-\cite{Wigner.1960, Rude:2018jv}. 
+Scientific models from many domains have often been based on mechanistic (or process-based) models that use mathematical formulations of causal mechanisms to mimic physical processes through assumptions on the prominent underlying mechanisms\cite{rackauckas2020universal}. 
+This mathematical formulation is commonly carried using differential equations to describe the underlying physical processes and numerical methods to solve them.
+Among many, this led to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them.
 % From predictions of population growth (Malthus) to permitting the prediction of black holes (Einstein field equations), differential equations have provided huge scientific contributions since Newton.
 The parameters and processes within process-based models have traditionally been determined independently of the model, with empirical data for model validation and comparison \cite{hartig2012}.
-Independent estimation of parameters and processes rapidly becomes impossible as the number of state variables modelled increases, especially when considering highly non-linear processes. 
+Independent estimation of parameters and processes rapidly becomes impossible as the number of variables modelled increases, especially when considering highly non-linear processes. 
 Inverse modelling, which consists in using observation data to recover the parameters of a model that can best explain the data, allows the bridging of this gap \cite{Wigner.1960, Rude:2018jv}. 
 The process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
 Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
@@ -110,27 +110,28 @@ Instead, the adjoint code was derived and implemented manually.
 
 \paragraph{Oceanography}
 
-The recognition of the benefit of adjoint methods for use in gradient-based optimization or data assimilation in the ocean coincided roughly with that in meteorology, with some of the foundational work by \cite{Thacker:1988kp,Thacker:1988ed}. 
+The recognition of the benefit of adjoint methods for use in data assimilation in the ocean coincided roughly with that in meteorology \cite{Thacker:1988kp,Thacker:1988ed}. 
 The first application appeared soon thereafter in the context of a basin-scale general circulation model \cite{Tziperman.1989,Tziperman:1992hg,Tziperman:1992jw}. 
 An important detail is that their work already differed from the ``4D-Var'' problem of NWP in that sensitivities were computed not only with respect to initial conditions but also with respect to surface boundary conditions, i.e., air-sea fluxes of buoyancy and momentum.
 Again, the role of the second-derivative, i.e., the Hessian for uncertainty quantification was readily realized \cite{Thacker:1989jf}.
 Similar to the work on calculating singular vectors in the atmosphere based on tangent linear and adjoint versions of a GCM to solve a generalized eigenvalue problem, the question of El Ni\~no predictability invited model-based singular vector computations in models of the Tropical Pacific Ocean \cite{Moore:1997ci,Moore:1997fp}.
 Such model-based singular vectors were also later computed for optimal excitations of the North Atlantic thermohalince circulation \cite{Zanna.2010,Zanna:2011ge,Zanna:2012dw}.
-Notably in the context of this review, the consortium for ``Estimating the Circulation and Climate of the Ocean'' (ECCO) \cite{Stammer.2002} set out in around 1999 to develop a parameter and state estimation framework, whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient.
-Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using source-to-source automatic differentiation \cite{Marotzke:1999wc,Heimbach.2005}, initially using the ``Tangent linear and Adjoint Model Compiler'' (TAMC, \cite{Giering:1998in}) and then its commercial successor ``Transformation of Algorithms in Fortran'' (TAF, \cite{Giering.2006}).
+Notably in the context of this review, the consortium for Estimating the Circulation and Climate of the Ocean (ECCO) \cite{Stammer.2002} set out in around 1999 to develop a parameter and state estimation framework, whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient.
+Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using source-to-source automatic differentiation \cite{Marotzke:1999wc,Heimbach.2005}, initially using the \textit{Tangent linear and Adjoint Model Compiler} (TAMC)\cite{Giering:1998in} and then its commercial successor \textit{Transformation of Algorithms in Fortran} (TAF) \cite{Giering.2006}.
 Rigorous exploitation of AD enabled the simulation framework to be significantly extended over time in terms of vastly improved model numerics \cite{Forget.2015m9i} and coupling other Earth system components, including biogeochemistry \cite{Dutkiewicz:2006gw}, sea-ice \cite{Heimbach:2010fz}, and sub-ice shelf cavities \cite{Heimbach:2012iu}.
-Unlike NWP-type 4D-Var, the use of AD also enabled extension of the framework to the problem of parameter calibration (or, ``learning parameters'' in today's speak) from observations, e.g., \cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. Arguably, this work heralded much of today's efforts in ``online'' learning of parameterization schemes, where the functional representation between the parameters and the learning data are provided by the numerical implementation of a PDF rather than by a neural network.
-Th desire to make AD for Earth system models written in Fortran (to date the vast majority) has also spurned the development of alternative AD tools with powerful reverse modes, notably OpenAD \cite{Utke:2008ko} and most recently Tapenade \cite{Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
+Unlike NWP-type 4D-Var, the use of AD also enabled extension of the framework to the problem of parameter calibration from observations\cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. 
+Arguably, this work heralded much of today's efforts in online learning of parameterization schemes, where the functional representation between the parameters and the learning data are provided by the numerical implementation of a PDF rather than by a neural network.
+The desire to make AD for Earth system models written in Fortran (to date the vast majority) has also spurned the development of alternative AD tools with powerful reverse modes, notably OpenAD \cite{Utke:2008ko} and most recently Tapenade \cite{Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
 There is enormous potential to seamlessly integrate the inverse-modeling and machine-learning based approaches through the concept of differentiable programming.
 
 \paragraph{Climate science}
 
 The same goals that have driven the use of sensitivity information in numerical weather prediction (optimal initial conditions for forecasts) or ocean science (state and parameter estimation) apply in the world of climate modeling.
-The recognition that ``good'' initial conditions (e.g., such that are closest to the real or observed system) will lead to improved forecasts on subseasonal, seasonal, interannual, or even decadal time scales has driven major community efforts (e.g., \cite{Meehl.2021}). However, there has been a lack so far in exploiting the use of gradient information to achieve optimal initialization for coupled Earth system models \cite{Frolov.2023}. 
+The recognition that good initial conditions (e.g., such that are closest to the real or observed system) will lead to improved forecasts on subseasonal, seasonal, interannual, or even decadal time scales has driven major community efforts\cite{Meehl.2021}. However, there has been a lack so far in exploiting the use of gradient information to achieve optimal initialization for coupled Earth system models \cite{Frolov.2023}. 
 One conceptual challenge is the presence of multiple timescales in the coupled system and the utility of gradient information beyond many synoptic time scales in the atmosphere and ocean \cite{Lea:2000gv,Lea:2002cv}.
 Nevertheless, efforts are underway to enable adjoint-based parameter estimation of coupled atmosphere-ocean climate models, with AD again playing a crucial role in generating the corresponding adjoint model
 \cite{Blessing.2014,Lyu.2018,Stammer:2018de}.
-Complementary, recognizing the power of differentiable programming, efforts are also targeting the development of ``neural atmospheric general circulation models'' in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
+Complementary, recognizing the power of differentiable programming, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
 \cite{Kochkov.2023}.
 
 \paragraph{Glaciology}
@@ -142,8 +143,9 @@ Additionally, the use of AD has become increasingly widespread in glaciology, pa
 Recently, differentiable programming has also facilitated the development of hybrid frameworks, combining numerical methods with data-driven models by means of universal differential equations \cite{BolibarSapienza_UDEs}. 
 Alternatively, some other approaches have dropped the use of numerical solvers in favour of different flavours of physics-informed neural networks, exploring the inversion of rheological properties of glaciers \cite{wang2022discovering} and to accelerate ice thickness inversions and simulations by leveraging GPUs \cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, jouvet2023inversion}. 
 
-% \paragraph{Solid Earth geophysics}
-% ...
+\paragraph{Solid Earth geophysics}
+
+Seismic inversion \cite{Zhu_Xu_Darve_Beroza_2021} for earthquake characterization and inversion of Earth's internal structure.
 
 \subsubsection{Biology and ecology}
 

@@ -3,7 +3,7 @@ Consider a system of ordinary differential equations (ODEs) given by
  \frac{du}{dt} = f(u, \theta, t),
  \label{eq:original_ODE}
 \end{equation}
-where $u \in \mathbb{R}^n$ is the unknown solution; $f$ is a function that depends on the state $u$, some parameter $\theta \in \mathbb R^p$, and an independent variable $t$ which we will refer as time, but it can represent another quantity; and with initial condition $u(t_0) = u_0$.
+where $u \in \mathbb{R}^n$ is the unknown solution; $f: \R^n \times \R^p \times \R \mapsto \R^n$ is a function that depends on the state $u$, some vector parameter $\theta \in \mathbb R^p$, and potentially the independent variable $t$ which we will refer as time; and with initial condition $u(t_0) = u_0$.
 Here $n$ denotes the total number of ODEs and $p$ the dimension of a parameter embedded in the functional form of the differential equation.
 Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to the case of partial differential equations (PDEs; for example, via the method of lines \cite{ascher2008numerical}) and differential algebraic equations (DAE).
 In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
@@ -13,7 +13,7 @@ Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqre
 \subsubsection{What to differentiate and why?}
 
 We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
-Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a much broader class of functions. 
+This formulation is very general and allows to include many different applications, including the following. 
 % Maybe organize this in sections, like 
 \begin{itemize}
     \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
@@ -45,6 +45,7 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     We can also consider the continuous evaluated loss function of the form
     \begin{equation}
          L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+         \label{eq:integrated-loss-function}
     \end{equation}
     with $h$ being a function that quantifies the contribution of the error term at every time $t \in [t_0, t_1]$. 
     Defining a loss function where just the empirical error is penalized is known as trajectory matching. 
@@ -74,13 +75,16 @@ Here we are using the letter $L$ to emphasize that in many cases this will be a 
     \begin{equation}
         p(\theta | Y) = \frac{p(Y | \theta) \, p (\theta)}{p(Y)}. 
     \end{equation}
-    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}. 
+    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}.
+    % Add mention for variatinal inference problems
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
     \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
 \end{itemize}
+In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the much broader class of functions included in the previous examples. 
 
 \subsubsection{Optimization}
 
+% Add one line adding general framework for optimization, since the following formula is no the more general optimization strategy.
 In the context of optimization, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
 \begin{equation}
     \theta^{k+1} 
@@ -102,16 +106,18 @@ Using ADAM for the first iterations followed by (L-)BFGS proves to be a successf
 
 Using the chain rule and noticing that in most cases the loss function depends on $\thete$ thought $u$, meaning $L(\theta) = L(u(\cdot, \theta))$, we can derive
 \begin{equation} 
- \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
+ \frac{dL}{d\theta} = \frac{\partial L}{\partial u} \frac{\partial u}{\partial \theta} + \frac{\partial L}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
 \end{equation} 
-The first term on the right-hand side is usually easy to evaluate since it just involves the partial derivative of the scalar loss function with respect to the solution.
-For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
+The two partial derivatives of the loss function on the right-hand side are usually easy to evaluate.
+For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this are simply given by 
 \begin{equation}
-    \frac{dL}{du} = u - u^{\text{target}}(t_1).
+    \frac{\partial L}{\partial u} = u - u^{\text{target}}(t_1)
+    \qquad 
+    \frac{\partial L}{\partial \theta} = 0.
     \label{eq:dLdu}
 \end{equation}
-The second term on the right-hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
+The complicated term to compute is the derivative $\frac{\partial u}{\partial \theta}$, usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
 \begin{equation}
  s 
  = 
@@ -127,7 +133,7 @@ The second term on the right-hand side is more difficult to compute and it is us
 \end{equation}
 The sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
 Some of the methods we will discuss here will directly compute the sensitivity, while others will only deal with Jacobian-vector products (JVPs) of the form $\frac{\partial u}{\partial \theta} v$, for some vector $v \in \R^p$. 
-The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative of the function $u(\theta)$, that is, 
+The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative of the function $u(\theta)$, also known as the Gateaux derivative of $u(\theta)$ in the direction $v$, given by 
 \begin{equation}
     \frac{\partial u}{\partial \theta} v 
     = 
@@ -135,9 +141,9 @@ The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative 
 \end{equation}
 representing how much the function $u$ changes when we perturb $\theta$ in the direction of $v$. 
 
-Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
-When a function depends on more than one argument, we use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
-On the other hand, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
+% Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
+% When a function depends on more than one argument, we use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
+% On the other hand, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
 
 
 \subsubsection{Numerical solvers for differential equations}
@@ -175,9 +181,19 @@ For multistep methods, solving the differential equation implies to be able to s
     g_i(u_i; \theta) = u_i - h \beta_{n0} f(u_i, \theta, t_i) - \alpha_i = 0
 \end{equation}
 where $\alpha_i$ has includes the information of all the past iterations. 
-This system can be solved sequentially, by solving for $u_i$ in increasing order of index using Newton method. 
+This system can be solved sequentially, by solving for $u_i$ in increasing order of index using Newton method,  
+\begin{equation}
+    u_i^{(j+1)} 
+    = 
+    u_i^{(j)} - \left( \frac{\partial g_i}{\partial u_i} (u_i^{(j)}; \theta) \right)^{-1} g(u_i^{(j)}; \theta).
+    \label{eq:newton-method}
+\end{equation}
+
+
 If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of equations $G(U) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$.
 
+% Add comment about time-step controllers
+% Add comment about tolerances in numerical solvers
 
 % In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
 % Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.
