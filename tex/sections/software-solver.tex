@@ -3,13 +3,14 @@ Sensitivity methods based on numerical solvers tend to be better adapted to the 
 This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerations, including i) how to handle matrix/Jacobian-vector products; ii) numerical stability of the forward/backward solver; and iii) memory-time tradeoff. 
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
-Just a few modern scientific software have the capabilities of handling ODE solvers and computing their sensitivities at the same time. 
+Just a few modern scientific software have the capabilities of solving forward ODE and computing their sensitivities at the same time. 
 These include 
 \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; 
 \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; 
 \texttt{SciMLSensitivity.jl} in Julia \cite{rackauckas2020universal}; 
 \texttt{Dolfin-adjoint} based on the \texttt{FEniCS} Project \cite{dolfin2013, dolfin2018};
 \texttt{DENSERKS} in Fortram\cite{alexe2007denserks}; 
+\texttt{DASPKADJOINT} \cite{Cao_Li_Petzold_2002};
 and \texttt{Diffrax} in Python\cite{kidger2021on}. 
 
 It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
@@ -23,6 +24,7 @@ This calculation is carried out by another sensitivity method (finite difference
 For systems of equations with few number of parameters, this method is useful since the system of $n(p+1)$ equations composed by Equations \eqref{eq:original_ODE} and \eqref{eq:sensitivity_equations} can be solved using the same precision for both solution and sensitivity numerical evaluation. 
 Furthermore, this is a forward method and it does not required saving the solution in memory. 
 The simplicity of the sensitivity method makes it available in most software for sensitivity analysis, including ... 
+In Julia, the \texttt{ForwardSensitivity} methods implement continuous sensitivity analysis, which performs forward AD on the solver via \texttt{ForwardDiff.jl} (see Section \ref{section:forwardAD-sensitivity}).
 
 However, for stiff systems of ODEs the use of the sensitivity equations is unfeasible \cite{kim_stiff_2021}.
 For systems of stiff-ODEs, the cost of numerically stable solvers is cubic in the number of ODEs\cite{hairer-solving-2}, making the complexity of the sensitivity method $\mathcal{O}(n^3p^3)$. 
@@ -42,6 +44,8 @@ Therefore, the choice of the specific algorithm to compute VJPs can have signifi
 In SUNDIALS, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In FATODE, these can be computed with finite differences, AD or provides by the user.
 In the Julia ecosystem, different AD packages are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, \texttt{Tracker.jl}.
+These will compute the VJPs using some for of AD, which will result in correct calculations but potentially sub-optimal code. 
+For these cases, customized VJPs function can be passed to the sensitivity methods using the \texttt{autojacvec}. 
 
 \subsubsection{Adjoint methods}
 \label{section:computing-adjoints}
@@ -51,25 +55,67 @@ In the Julia ecosystem, different AD packages are available for this task (see S
 % There is no flexibilty in discrete adjoitns, but there is in continuous
 % Human effort required to compute discrete adjoints is large \cite{FATODE2014}
 
-For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive since the large number of function evaluations required by the solver and the later store of the intermediate states. 
-For these cases, the adjoint-based method allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final sensitivity. 
+For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
+For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final sensitivity. 
 If well the adjoint method offers considerate advantages when working with complex systems, since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability
 Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
 % Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. \todo{not clear}
 
-...
+\paragraph{Discrete adjoint method}
 
-\paragraph{Solving the backwards mode and checkpointing}
+As we discuss in Section \ref{section:comparison-discrete-adjoint-AD}, the discrete adjoint method can be directly been implemented using reverse AD. 
+In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on the numerical solver via \texttt{ReverseDiff.jl}; \texttt{ZygoteAdjoint} via \texttt{Zygote.jl}; and \texttt{TrackerAdjoint} via \texttt{Tracker.jl}. 
+In all these cases, a custom pullback function needs to be specified that specifies how VJPs are computed thought the numerical solver \cite{rackauckas2021generalized}.
 
-The bottleneck of this method is the calculation of the adjoint, since in order to solve the adjoint equation we need to know $u(t)$ at any given time. 
-Effectively, notice that the adjoint equation involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$ which are both functions of $u(t)$. 
+\paragraph{Continuous adjoint method}
+
+\begin{table}[h]
+\centering
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+% \footnotesize
+% \scriptsize
+\begin{tabular}{ c |c c c c|} 
+ \cline{2-5}
+ &\textbf{Method} & \textbf{Stability} & \textbf{Stiff Performance} & \textbf{Memory} 
+ \\ [0.5ex] 
+ \cline{2-5}
+ \hline
+ \multirow{3}*{\rotatebox{90}{\textbf{Discrete}}}  
+ &ReverseDiffAdjoint & Best & $\mathcal O (n^3 + p)$ & High \\
+ &ZygoteAdjoint & & & \\
+ &TrackerAdjoint & Best & $\mathcal O (n^3 + p)$ & High
+ \\ [0.5ex] 
+ \hline\hline
+ \multirow{7}*{\rotatebox{90}{\textbf{Continuous}}} 
+ & Sensitivity equation & Good & $\mathcal O (n^3p^3)$ & $\mathcal O(1)$ \\
+ \cline{2-5}
+ &Backsolve adjoint$^\vartriangleleft$ & Poor & $\mathcal O ((n+p)^3)$ & $\mathcal O(1)$ \\ 
+ &Backsolve adjoint$^\blacktriangleleft$ & Medium & $\mathcal O ((n+p)^3)$ & $\matcal O (K)$ \\
+ &Interpolating adjoint$^\vartriangleleft$ & Good & $\mathcal O ((n+p)^3)$ & High \\ 
+ &Interpolating adjoint$^\blacktriangleleft$ & Good & $\mathcal O ((n+p)^3)$ & $\matcal O (K)$ \\
+ &Quadrature adjoint & Good & $\mathcal O (n^3 + p)$ & High \\
+ &Gauss adjoint & ... & $\mathcal O (n^3 + p)$ & .. \\
+ % name & .. & .. & .. \\
+ \hline
+\end{tabular}
+% \vspace
+\caption{Methods that are being checkpointed are indicated with the symbol $\blacktriangleleft$, whith the number $K$ corresponding to the number of checkpoints.}
+\label{table:adjoint}
+\end{table}
+
+The continuous adjoint methods offers a series of advantages over the discrete method and the rest of the forward methods previously discussed. 
+Just as the discrete adjoint methods and backpropagation, the bottleneck is how to solve for the adjoint $\lambda(t)$ due to its dependency with VJPs involving the state $u(t)$.
+Effectively, notice that Equation \eqref{eq:casa-adjoint-equation} involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$, which are both functions of $u(t)$. 
+In opposition to the discrete adjoint methods, notice that here the full continuous trajectory $u(t)$ is needed, instead of its discrete pointwise evaluation. 
 There are different ways of addressing the evaluation of $u(t)$ during the backwards step.
 \begin{enumerate}[label=(\roman*)]
-    \item \textbf{Dense Output.} During the forward model, we can store in memory all the intermediate states of the numerical solution. 
-    This leads to heavy-memory expensive algorithms. 
-    However, in opposition to discrete methods, solving for the adjoint in reverse mode requires to be able to evaluate the solution $u(t)$ at any given time $t$. 
-    This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme (Equation ...) that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
-    \item \textbf{Backsolve.} Solve again the original ODE together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
+    \item \textbf{Interpolating adjoint.} During the forward model, we can store in memory intermediate states of the numerical solution that allow the dense evaluation of the numerical solution at any given time, which is a requirement of continuous methods in opposition to discrete. 
+    % This leads to heavy-memory expensive algorithms. 
+    % However, in opposition to discrete methods, solving for the adjoint in reverse mode requires to be able to evaluate the solution $u(t)$ at any given time $t$. 
+    This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme (Equation \eqref{eq:Runge-Kutta-scheme}) that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
+    When using checkpointing, intermediate variables are saved and the interpolation between them is re-computed on demand. 
+    \item \textbf{Backsolve adjoint.} Solve again the original ODE together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
     \begin{equation}
     \frac{d}{dt}
     \begin{bmatrix}
@@ -103,13 +149,15 @@ There are different ways of addressing the evaluation of $u(t)$ during the backw
        \lambda(t_0)^T s(t_0)
     \end{bmatrix}.
     \end{equation}
-    However, computing the ODE backwards can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
+    An important problem with this approach is that computing the ODE backwards can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
+    One way of solving this system of equations that ensures stability is by using implicit methods. 
+    However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method.
     \item \textbf{Checkpointing. } Also known as windowing, checkpointing is a technique that sets a trade-off between memory and time by saving intermediate states of the solution in the forward pass and recalculating the solution between intermediate states in the backwards mode \cite{Griewank:2008kh, Checkpoiting_2023}. 
     This is implemented in \texttt{Checkpointing.jl} \cite{Checkpoiting_2023}.
 \end{enumerate} 
 
-One way of solving this system of equations that ensures stability is by using implicit methods. 
-However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method.
+Backsolving the original ODE as $\frac{du}{dt} = - f(u,\theta, t)$ can lead to unstable methods in the reverse step, a problem amplified by the calculation of the adjoint \cite{kim_stiff_2021}.
+
 Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, then solve for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
 This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. 
 A second but similar approach is to use an implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. 

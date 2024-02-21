@@ -104,7 +104,7 @@ Using ADAM for the first iterations followed by (L-)BFGS proves to be a successf
 
 \subsubsection{Sensitivity matrix}
 
-Using the chain rule and noticing that in most cases the loss function depends on $\thete$ thought $u$, meaning $L(\theta) = L(u(\cdot, \theta))$, we can derive
+Using the chain rule and noticing that in most cases the loss function depends on $\theta$ thought $u$, meaning $L(\theta) = L(u(\cdot, \theta))$, we can derive
 \begin{equation} 
  \frac{dL}{d\theta} = \frac{\partial L}{\partial u} \frac{\partial u}{\partial \theta} + \frac{\partial L}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
@@ -138,6 +138,7 @@ The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative 
     \frac{\partial u}{\partial \theta} v 
     = 
     \lim_{h \rightarrow 0} \frac{u(\theta + h v) - u(\theta)}{h},
+    \label{eq:directional-derivative}
 \end{equation}
 representing how much the function $u$ changes when we perturb $\theta$ in the direction of $v$. 
 
@@ -192,9 +193,14 @@ This system can be solved sequentially, by solving for $u_i$ in increasing order
 
 If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can combine all these equations into one single system of equations $G(U) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$.
 
-% Add comment about time-step controllers
+% Add comment about time-step controllers and adaptive timestepping
 % Add comment about tolerances in numerical solvers
+% Add mention to stiff DE, since this is quite an important point at the moment of solving the adjoint.
+% Stiff differential equations are chacarterized by dynamics with different time scale \cite{kim_stiff_2021}
+% Stiff equations are equations for which explicit methods don't work (Hairer)
 
 % In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
 % Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.
 % The same nature of the adjoint methods deserves to be treated entirely in Section \ref{section:adjoint-methods}.
+
+% Krilov methods work well for non-stiff methods, but the inverse condition number coincides with the stiff index, meaning that in stiff cases we should solve the system with full inversion models, which requires cubic cost in the number of ODEs 

@@ -13,7 +13,7 @@ Furthermore, the \textit{curse of dimensionality} renders gradient-free optimiza
 % Differential Programming
 Models based in differential equations arising in simulation-based science, which play a central role in describing the behaviour of systems in natural and social sciences, are not an exception to the rule\cite{Ghattas.2021}.
 The solution of differential equations can be seen as functions which map parameter and initial conditions to state variables, similarly to machine learning models.
-Some authors have recently suggested differentiable programming as the bridge between modern machine learning methods and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth}. 
+Some authors have recently suggested differentiable programming as the bridge between modern machine learning methods and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
 Being able to compute gradients or sensitivities of dynamical systems opens the door to more complex data assimilation models that leverage in strong physical priors at the same time they offer flexibility to addapt to observations.
 This is very appealing in fields like computational physics, geophysics, and biology, to mention a few, where there is a broad literature on physical models and a long tradition in numerical methods. 
 The first goal of this work is to introduce some of the applications of this emerging technology and to motivate its incorporation for the modelling of complex systems in the natural and social sciences. 
@@ -63,6 +63,7 @@ Although many modern differentiation tools use AD to some extent, there is also 
 % We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 
 %We emphasize that AD is merely a \emph{tool} for generating derivatives of computer code. Alternatively, such code can be (and often has been) generated ``by hand'', e.g., to avoid restrictions incurred by the available AD tool.
 %Down-sides of hand-written derivative code are, (i) it is error-prone, (ii) it is difficult to keep pace with the development of the parent code, and (iii) [I need to remember ...].
+Furthermore, it is important to be aware than when using AD or any other technique we are differentiating the algorithm used to lead to the numerical solution, no the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.
 
 The differences between methods arise both from their mathematical formulation and their computational implementation. 
 The first provides different guarantees on the method returning the actual gradient or a good approximation thereof. 

@@ -32,7 +32,7 @@ Some of these methods require some a priori knowledge about the function to be d
 If many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
 We will further emphasize this point in Section \ref{sec:computational-implementation}.
 
-Despite all these caveats, finite differences can be useful when computing Jacobian-vector products. 
+Despite all these caveats, finite differences can be useful when computing Jacobian-vector products (JVPs). 
 Given a Jacobian matrix $J = \frac{\partial f}{\partial u}$ (or the sensitivity $s = \frac{\partial u}{\partial \theta}$) and a vector $v$, the product $Jv$ corresponding to the directional derivative and can be approximated as 
 \begin{equation}
     Jv \approx \frac{f(u + \varepsilon v, \theta, t) - f(u, \theta, t)}{\varepsilon}

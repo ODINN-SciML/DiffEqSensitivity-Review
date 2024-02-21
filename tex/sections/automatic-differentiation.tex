@@ -13,9 +13,9 @@ Neither forward nor reverse mode is more efficient in all cases \cite{Griewank_1
 
 \subsubsection{Forward mode}
 
-Forward mode AD amounts to computing directional derivatives. It can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. Examples of these data structures include dual numbers and Wengert lists \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+Forward mode AD can be implemented in different ways depending on the data structures we use at the moment of representing a computer program. 
+Examples of these data structures include dual numbers and Wengert lists \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
-Mention distinction between full forward mode AD and scalar mode forward AD.
 
 \paragraph{Dual numbers}
 \label{section:dual-numbers}
@@ -66,7 +66,8 @@ In Section \ref{sec:computational-implementation} we will explore how this is im
 Multidimensional dual number generalize dual number to include a different dual variable $\epsilon_i$ for each variable we want to differentiate with respect to\cite{Neuenhofen_2018, RevelsLubinPapamarkou2016}.
 A multidimensional dual number is then defined as $x_\epsilon = x + \sum_{i=1}^p x_i \epsilon_i$ with $\epsilon_i \epsilon_j = 0$ for all pairs $i$ and $j$.
 % Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
-Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, especially in the case of nested functions \cite{manzyuk2019perturbation}.   
+Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, especially in the case of nested functions \cite{manzyuk2019perturbation}. 
+This problem can be further been overcome by computing the full gradient as the combination of independent directional derivatives (see Section \ref{sec:vjp-jvp}) 
 Another extension of dual numbers that should not be confused with multidimensional dual numbers are hyper-dual numbers, which allow to compute higher-order derivatives of a function \cite{fike2013multi}. 
 % Here we need to say that for p > 1 the dual component is carrying the value of the sensitivity!!! This will make the connection with sensitivity equations more explicit. 
 
@@ -129,6 +130,9 @@ Checkpointing schemes exist to limit and balance the amount of soring versus rec
 When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters \cite{Giering_Kaminski_1998}.
 When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVP).
 As their name indicates, the difference between them is that the quantity we are interested in is described by the product of a Jacobian times a vector on the left side (VJP) or the right (JVP).
+Furthermore, both forward and reverse AD can be thought as a way of computing directional derivatives associated with JVPs (see Equation \eqref{eq:directional-derivative}) and VJPs, respectively. 
+Full Jacobians like the sensitivity $s = \frac{\partial u}{\partial \theta} \in \R^{n \times p}$ can be fully reconstructed by the independent computation of the $p$ columns of $s$ via the JVPs $s e_i$, with $e_i \in \R^p$ the canonical vectors; or by the calculation of the $m$ rows of $s$ via the VJPs $e_j^T s$, with $e_j \in \R^n$.
+In a practical sense, many AD systems are reduced to the computation of only directional derivatives (VJPs) and JVPs \cite{Griewank:2008kh}. -
 
 For nested functions, the Jacobian is described as the product of multiple Jacobians using the chain rule.
 In this case, the full gradient is computed as the chain product of vectors and Jacobians. 
@@ -165,6 +169,8 @@ In other words, backwards AD is really more efficient when $q \ll p$.
 We discuss in section \ref{section:checkpointing} how this problem can be overcome with a good checkpointing scheme. 
 % On the other hand, when the goal is to compute the gradient of many function outputs with respect to a few parameters, forward mode AD is more efficient \cite{Griewank_1989}.
 % This means that for problems with a small number of parameters, forward mode can be faster and more memory-efficient that backwards AD.
+
+Intepreatation without multiarray Jacobian computation.
 
 \begin{figure}[t]
     \centering

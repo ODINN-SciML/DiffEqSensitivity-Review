@@ -190,6 +190,7 @@ Computationally this also means that if we can solve the original system of disc
 Another more natural way of finding the adjoints $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the final value problem 
 \begin{equation}
     \lambda_{i} = A_{i}^T \lambda_{i+1} + (u_i - u_i^\text{obs})
+    \label{eq:adjoint-discrete-linear-example}
 \end{equation}
 with final condition $\lambda_N$. 
 This means that we can solve the adjoint equation backwards, i.e., in reverse mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 

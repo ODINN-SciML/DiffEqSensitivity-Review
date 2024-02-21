@@ -39,7 +39,7 @@ We note that many modern software already have support for complex number arithm
 
 \subsubsection{Automatic differentiation}
 
-The AD algorithms described in Section ... implement algorithmic differentiation using different methods, namely \textit{operator overloading} for AD based on dual numbers, and \textit{source code transformation} for both forward and reverse AD based on the computational graph \cite{martins2001connection}.
+The AD algorithms described in Section \ref{section:automatic-differentiation} implement algorithmic differentiation using different methods, namely \textit{operator overloading} for AD based on dual numbers, and \textit{source code transformation} for both forward and reverse AD based on the computational graph \cite{martins2001connection}.
 
 \paragraph{Forward AD based on dual numbers}
 \label{section:software-Forward-AD}
@@ -77,7 +77,7 @@ Implementations of forward AD using dual numbers and computational graphs requir
 This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered.
 
 % If well forward AD is implemented independently of the differential equation and numerical solver, the careless combination of both can lead to disastrous numerical errors. 
-Although AD is always algorithmically correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations. 
+Although AD is always algorithmically correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations \cite{Eberhard_Bischof_1996}. 
 % Contrary to common folk, AD is not always \textit{numerically} correct and can lead to wrong gradients. 
 To illustrate this point, consider the following example of a simple system of ODEs
 \begin{equation}
@@ -90,6 +90,8 @@ with $a$ the parameter with respect to which we want to differentiate.
 In the simple case of $a=1$, the solutions of the ODE are constant functions $u_1(t) \equiv u_2(t) \equiv 1$. 
 As explained in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are designed to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
 This can lead to wrong gradient calculations that propagate through the numerical solver without further warning. 
+
+In the Julia ecosystem, the sensitivity method \texttt{ForwardDiffSensitivity} implements forward differentiation inside the numerical solver using dual numbers. 
 
 \paragraph{Forward AD based on computational graph}
 
@@ -133,12 +135,13 @@ There also exist source-to-source AD system that achive highest performance at t
 These include \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, and \texttt{Difractor.jl}.
 The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
+
 % Since perturbation confusion also affects reverse mode AD, maybe is better to cover that here.
 
 \paragraph{Checkpointing}
 \label{section:checkpointing}
 
-In opposition to forward AD, reverse AD requires to store in memory intermediate variables of the program. 
+In opposition to forward methods, all reverse methods, including backpropagation and adjoint methods, require to access ... . 
 For a numerical solver, the number of memory required can be very large, involving a total of at least $\mathcal O(nk)$ terms, with $k$ the number of steps of the numerical solver. 
 Checkpointing is a technique that can be used for all the backwards methods that avoids storing all the intermediate states by balancing  storing and recomputation to recover the required state exactly \cite{Griewank:2008kh}.
 

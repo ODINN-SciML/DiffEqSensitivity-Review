@@ -1,11 +1,13 @@
 % \subsection{On the importance of differentiable programming}
 
-Scientific models from many domains have often been based on mechanistic (or process-based) models that use mathematical formulations of causal mechanisms to mimic physical processes through assumptions on the prominent underlying mechanisms\cite{rackauckas2020universal}. 
-This mathematical formulation is commonly carried using differential equations to describe the underlying physical processes and numerical methods to solve them.
-Among many, this led to fundamental advances in the physical sciences during the last century, with the combination of complex mathematical theories and a reduced amount of observations to validate them.
+Mechanistic (or process-based) models have played a central role in a wide range of scientific disciplines. They consist of precise mathematical descriptions of causal mechanisms, assumed to be the main processes underlying the system behavior \cite{rackauckas2020universal}. 
+Differential equations are particularly convenient mathematical representations that, together with the numerical methods to approximate their solutions, led to fundamental advances in the understanding and prediction of physical and biological systems since their invention.
+% with the combination of complex mathematical theories and a reduced amount of observations to validate them.
 % From predictions of population growth (Malthus) to permitting the prediction of black holes (Einstein field equations), differential equations have provided huge scientific contributions since Newton.
-The parameters and processes within process-based models have traditionally been determined independently of the model, with empirical data for model validation and comparison \cite{hartig2012}.
-Independent estimation of parameters and processes rapidly becomes impossible as the number of variables modelled increases, especially when considering highly non-linear processes. 
+Crucially, differential equation models depend on parameters that determine the processes represented. The parameter values have traditionally been estimated independently of the model, with empirical data for model validation and comparison \cite{hartig2012}.
+The independent estimation of parameters poses several problems.
+First, the independent estimation of parameters and processes rapidly becomes impossible as the number of variables modelled increases, especially when considering highly non-linear processes. 
+Second, 
 Inverse modelling, which consists in using observation data to recover the parameters of a model that can best explain the data, allows the bridging of this gap \cite{Wigner.1960, Rude:2018jv}. 
 The process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
 Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
@@ -45,6 +47,7 @@ Depending on the nature of the inversion, we may distinguish between the followi
     \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, lead to an optimal match between the observations and the simulated state (or diagnostics thereof); variants thereof are used for optimal forecasting.
     \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
     \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications.
+    \item \textbf{Model selection} Estimating the model evidence for each candidate model to discriminate between competing hypotheses \cite{burnham2004}. Involves the calculation of the marginal likelihood for each model, which may be approximated by Laplace approximation and involves the calculation of the hessian of the likelihood function, or by the calculation of information-based criteria (AIC, BIC, see ref\cite{burnham2002}).
 \end{itemize}
 Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 
@@ -82,7 +85,7 @@ This includes applications to
 stellarator coil design \cite{McGreivy_stellarator_2021}; 
 fluid dynamics \cite{Giles_Pierce_2000, mohammadi2009applied};
 supersonic aircraft design \cite{
-hu2010supersonic, fike2013multi}
+hu2010supersonic, fike2013multi}, biology \citep{Strouwen2022}
 
 % \subsubsection{Computational Fluid Dynamics}
 % \subsubsection{Electromagnetism}
@@ -148,5 +151,19 @@ Alternatively, some other approaches have dropped the use of numerical solvers i
 Seismic inversion \cite{Zhu_Xu_Darve_Beroza_2021} for earthquake characterization and inversion of Earth's internal structure.
 
 \subsubsection{Biology and ecology}
+% todo: maybe we need a subsection "systems biology" and one subsection "ecology and evolution".
 
-
+Differential equation models have been broadly used in biology and ecology to model the functioning and function of cells \cite{Gabor2015}, eco-evolutionary dynamics \cite{Lion2018,Villa2021,Boussange2022,boussange2023a}, population dynamics and animal movement \cite{Volpert2009}, the dynamics of microbial \cite{VandenBerg2022} or ecological communities \cite{Akesson2021,chalmandrier2021}, and biomass and energy fluxes and transformation at ecosystem levels \cite{Weng2015,Schartau2017,Franklin2020,Geary2020}.
+Conducting microcosm experiments to estimate biological parameters in biological models is costly.
+Furthermore, parameters independently inferred from microsocms experiments usually fail in capturing real biological dynamics \cite{Watts2001}. 
+As a consequence, inverse modelling methods have great potential in biology and ecology.
+Inverse modelling can take the form of parameter estimation \citep{Schartau2017} or model selection \citep{Johnson2004}, both involving the use of inference methods to estimate the probability of the empirical data given the model parameters (i.e., the likelihood).
+Provided that they are inferred together with uncertainties, parameters can be interpreted to better understand the strengths and effects of the processes considered \citep{Pontarp2019}. 
+For instance, \cite{Higgins2010,Curtsdotter2019,godwin2020} infer the parameters of dynamic community models to understand the processes involved in ecosystem functions.
+In model selection, candidate models embedding competing hypotheses about causal processes are derived, and the relative support of each model given the data is computed to discriminate between the hypotheses \cite{Johnson2004}.
+For instance, using inverse modelling and eco-evolutionary models embedding competing evolutionary speed hypotheses, \cite{Skeels2022} shows that temperature-dependent evolutionary speed most likely explains variations in biodiversity patterns. 
+The computation of the most probable model parameter values, or the computation of the different model supports, critically involves sensitivity methods which must adequately handle the typically larger number of parameters, and the nonlinearities of biological models \cite{Gabor2015}.
+While inverse modelling in biology has been mostly agnostic to AD techniques, they potential have recently been highlighted \cite{frank2022}. 
+\cite{alsos2023} suggests to take advantage of increasingly available data such as paleao-time series with inverse modelling techniques to recover the biotic and abiotic processes underlying ecosystem dynamics. 
+Dynamic models informed by data can further be used to extrapolate beyond current dynamics and provide robust forecasts of ecosystem responses to future climate change \cite{alsos2023}. 
+Physics-informed approaches have also emerged recently \cite{Yazdani2020}.
