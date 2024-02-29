@@ -16,7 +16,7 @@ Further notice the complex step method involves more terms in the calculation, a
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.75\textwidth]{tex/figures/complex-step-AD.pdf}
+    \includegraphics[width=0.75\textwidth]{figures/complex-step-AD.pdf}
     \caption{Comparison between AD implemented with dual numbers and complex step differentiation. For the simple case of the function $f(x) = \sin(x^2)$, we can see how each operation is carried in the forward step by the dual component (blue) and the complex component (red). Whereas AD gives the exact gradient at the end of the forward run, in the case of the complex step method we need to take the limit in the imaginary part. }
     \label{fig:complex-step-AD}
 \end{figure}
@@ -72,7 +72,7 @@ The updates of $\bar g_i$ then mathematically coincide with the updates in rever
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.65\textwidth]{tex/figures/AD-discrete-adjoint.pdf}
+    \includegraphics[width=0.65\textwidth]{figures/AD-discrete-adjoint.pdf}
     \caption{Computational graph associated to the discrete adjoint method. Reverse AD applied on top of the computational graph leads to the update rules for the discrete adjoint. The adjoint variable $\lambda_i$ in the discrete adjoint method coincides with the adjoint variable $\bar g_i$ defined in the backpropagation step.}
     \label{fig:ad-vs-discrete-adjoint}
 \end{figure}
