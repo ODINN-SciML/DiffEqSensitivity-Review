@@ -1,6 +1,6 @@
 
 Sensitivity methods based on numerical solvers tend to be better adapted to the structure and properties of the underlying ODE (stiffness, stability, accuracy) but are also more difficult to implement.  
-This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerations, including i) how to handle matrix/Jacobian-vector products; ii) numerical stability of the forward/backward solver; and iii) memory-time tradeoff. 
+This difficulty arises from the fact that the sensitivity method needs to deal with some numerical and computational considerations, including i) how to handle matrix/Jacobian-vector products; ii) numerical stability of the forward/reverse solver; and iii) memory-time tradeoff. 
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
 Just a few modern scientific software have the capabilities of solving forward ODE and computing their sensitivities at the same time. 
@@ -16,14 +16,14 @@ and \texttt{Diffrax} in Python\cite{kidger2021on}.
 It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
 Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
-This calculation is carried out by another sensitivity method (finite differences, AD) which plays a central role when analyzing the accuracy and stability of the adjoint method. 
+This calculation is carried out by another sensitivity method, usually finite differences or AD, which plays a central role when analyzing the accuracy and stability of the adjoint method. 
 
 \subsubsection{Sensitivity equation}
 \label{section:computing-sensitivity-equations}
 
 For systems of equations with few number of parameters, this method is useful since the system of $n(p+1)$ equations composed by Equations \eqref{eq:original_ODE} and \eqref{eq:sensitivity_equations} can be solved using the same precision for both solution and sensitivity numerical evaluation. 
 Furthermore, this is a forward method and it does not required saving the solution in memory. 
-The simplicity of the sensitivity method makes it available in most software for sensitivity analysis, including ... 
+The simplicity of the sensitivity method makes it available in most software for sensitivity analysis. 
 In Julia, the \texttt{ForwardSensitivity} methods implement continuous sensitivity analysis, which performs forward AD on the solver via \texttt{ForwardDiff.jl} (see Section \ref{section:forwardAD-sensitivity}).
 
 However, for stiff systems of ODEs the use of the sensitivity equations is unfeasible \cite{kim_stiff_2021}.
@@ -37,7 +37,7 @@ This complexity makes this method useless for models with many ODEs and/or param
 
 All the solver-based methods has to faced the challenge of how to compute large VJPs. 
 In the case of the sensitivity equation, this correspond to the row/column terms in $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
-For the adjoint equations, although an efficient trick has been used to remove the most computationally expensive VJP, we still need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
+For the adjoint equations, although an efficient trick has been used to remove the computationally expensive VJP, we still need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
 % Mention why these are different?
 Therefore, the choice of the specific algorithm to compute VJPs can have significant impact in the overall performance. 
 
@@ -56,16 +56,17 @@ For these cases, customized VJPs function can be passed to the sensitivity metho
 % Human effort required to compute discrete adjoints is large \cite{FATODE2014}
 
 For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
-For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final sensitivity. 
-If well the adjoint method offers considerate advantages when working with complex systems, since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability
-Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
-% Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. \todo{not clear}
+For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final gradient. 
+If well the adjoint method offers considerate advantages when working with complex systems, since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability.
 
 \paragraph{Discrete adjoint method}
 
 As we discuss in Section \ref{section:comparison-discrete-adjoint-AD}, the discrete adjoint method can be directly been implemented using reverse AD. 
 In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on the numerical solver via \texttt{ReverseDiff.jl}; \texttt{ZygoteAdjoint} via \texttt{Zygote.jl}; and \texttt{TrackerAdjoint} via \texttt{Tracker.jl}. 
 In all these cases, a custom pullback function needs to be specified that specifies how VJPs are computed thought the numerical solver \cite{rackauckas2021generalized}.
+
+% Include code example
+% Mention that in many cases this is implemented manually
 
 \paragraph{Continuous adjoint method}
 
@@ -108,14 +109,14 @@ The continuous adjoint methods offers a series of advantages over the discrete m
 Just as the discrete adjoint methods and backpropagation, the bottleneck is how to solve for the adjoint $\lambda(t)$ due to its dependency with VJPs involving the state $u(t)$.
 Effectively, notice that Equation \eqref{eq:casa-adjoint-equation} involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$, which are both functions of $u(t)$. 
 In opposition to the discrete adjoint methods, notice that here the full continuous trajectory $u(t)$ is needed, instead of its discrete pointwise evaluation. 
-There are different ways of addressing the evaluation of $u(t)$ during the backwards step.
+There are two principal ways of addressing the evaluation of $u(t)$ during the backwards step.
 \begin{enumerate}[label=(\roman*)]
-    \item \textbf{Interpolating adjoint.} During the forward model, we can store in memory intermediate states of the numerical solution that allow the dense evaluation of the numerical solution at any given time, which is a requirement of continuous methods in opposition to discrete. 
+    \item \textbf{Interpolation.} During the forward model, we can store in memory intermediate states of the numerical solution that allow the dense evaluation of the numerical solution at any given time, which is a requirement of continuous methods in opposition to discrete. 
     % This leads to heavy-memory expensive algorithms. 
     % However, in opposition to discrete methods, solving for the adjoint in reverse mode requires to be able to evaluate the solution $u(t)$ at any given time $t$. 
     This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme (Equation \eqref{eq:Runge-Kutta-scheme}) that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
     When using checkpointing, intermediate variables are saved and the interpolation between them is re-computed on demand. 
-    \item \textbf{Backsolve adjoint.} Solve again the original ODE together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
+    \item \textbf{Backsolving.} Solve again the original ODE together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
     \begin{equation}
     \frac{d}{dt}
     \begin{bmatrix}
@@ -149,21 +150,21 @@ There are different ways of addressing the evaluation of $u(t)$ during the backw
        \lambda(t_0)^T s(t_0)
     \end{bmatrix}.
     \end{equation}
-    An important problem with this approach is that computing the ODE backwards can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
+    An important problem with this approach is that computing the ODE backwards $\frac{du}{dt} = - f(u,\theta, t)$ can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
     One way of solving this system of equations that ensures stability is by using implicit methods. 
     However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method.
-    \item \textbf{Checkpointing. } Also known as windowing, checkpointing is a technique that sets a trade-off between memory and time by saving intermediate states of the solution in the forward pass and recalculating the solution between intermediate states in the backwards mode \cite{Griewank:2008kh, Checkpoiting_2023}. 
-    This is implemented in \texttt{Checkpointing.jl} \cite{Checkpoiting_2023}.
 \end{enumerate} 
 
-Backsolving the original ODE as $\frac{du}{dt} = - f(u,\theta, t)$ can lead to unstable methods in the reverse step, a problem amplified by the calculation of the adjoint \cite{kim_stiff_2021}.
+Both interpolating and backsolve adjoint methods can be implemented along with a checkpointing scheme. 
+This is implemented in \texttt{Checkpointing.jl} \cite{Checkpoiting_2023}.
 
+When dealing with stiff differential equations, special considerations need to be taken into account.
 Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$ as we move forward, then solve for $\lambda$ backwards using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
 This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. 
 A second but similar approach is to use an implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. 
 This method also has a complexity of $\mathcal O (n^3 + p)$.
 
-When using Runge-Kutta methods, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients (Equation \eqref{eq:Runge-Kutta-scheme}) in order to both have the same level of accuracy \cite{Alexe_Sandu_2009}.
+
 
 \paragraph{Solving the quadrature}
 
@@ -182,4 +183,3 @@ Weights and knots are obtained in order to maximize the order in which polynomia
 Different quadrature methods are based on different choices of the knots and associated weights.
 Between these methods, the Gaussian quadrature is the faster method to evaluate one-dimensional integrals \cite{Norcliffe_gaussquadrature_2023}.
 
-\paragraph{Comparison between discrete and continuous adjoint}

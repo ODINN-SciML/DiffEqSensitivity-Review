@@ -16,7 +16,7 @@ We are interested in computing the gradient of a given function $L(u(\cdot, \the
 This formulation is very general and allows to include many different applications, including the following. 
 % Maybe organize this in sections, like 
 \begin{itemize}
-    \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
+    \item \textbf{Loss function and empirical risk function}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
     \begin{equation}
          L(\theta) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}}(t_1) \|_2^2,
          \label{eq:quadratic-loss-function}
@@ -44,14 +44,14 @@ This formulation is very general and allows to include many different applicatio
     \end{equation}
     We can also consider the continuous evaluated loss function of the form
     \begin{equation}
-         L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+         L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta)  dt, 
          \label{eq:integrated-loss-function}
     \end{equation}
     with $h$ being a function that quantifies the contribution of the error term at every time $t \in [t_0, t_1]$. 
-    Defining a loss function where just the empirical error is penalized is known as trajectory matching. 
+    Defining a loss function where just the empirical error is penalized is known as trajectory matching \cite{ramsay2017dynamic}. 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
     % \todo{this is unclear}
-    \item \textbf{Likelihood profiles.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
+    \item \textbf{Likelihood function.} From a statistical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
     When $H$ is the identity, each $y_i$ corresponds to the noise observation of the state $u(t_i; \theta)$.
     If $p(Y | t , \theta)$ is the probability distribution of $Y=(y_1, y_2, \ldots, y_N)$, maximum likelihood estimation consists in finding the maximum a posteriori (MAP) estimate of the parameter $\theta$ as
     \begin{equation}
@@ -61,7 +61,7 @@ This formulation is very general and allows to include many different applicatio
         = 
         \prod_{i=1}^n p(y_i | \theta, t_i) .
     \end{equation}
-    When $\varepsilon_i \sim N(0, \sigma_i^2 \I)$ is the isotropic multivariate normal distribution, the maximum likelihood principle is the same as minimizing $- \log \ell(Y | \theta)$ which coincides with the mean squared error of Equation \eqref{eq:loss-state-observation},
+    When $\varepsilon_i \sim N(0, \sigma_i^2 \I)$ is the isotropic multivariate normal distribution, the maximum likelihood principle is the same as minimizing $- \log \ell(Y | \theta)$ which coincides with the mean squared error of Equation \eqref{eq:loss-state-observation}\cite{hastie2009elements},
     \begin{equation}
         \theta^* 
         = 
@@ -80,7 +80,7 @@ This formulation is very general and allows to include many different applicatio
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
     \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
 \end{itemize}
-In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the much broader class of functions included in the previous examples. 
+In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the richer class of functions included in the previous examples. 
 
 \subsubsection{Optimization}
 
@@ -95,16 +95,18 @@ In the context of optimization, the gradient of the loss allows performing gradi
     \frac{dL}{d\theta^k}.
 \end{equation}
 Gradient-based methods tend to outperform gradient-free optimization schemes, as they are not prone to the curse of dimensionality \cite{Schartau2017}. 
-While a direct implementation of gradient descent is prone to converge to a local minimum and slow down in a neighborhood of saddle points, variants employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent} to avoid convergence to local minima, and are widely adopted in the field of artificial intelligence to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}), as well as in the field of inverse methods for large-scale problems. 
+While a direct implementation of gradient descent is prone to converge to a local minimum and slow down in a neighborhood of saddle points, variants employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent} to avoid convergence to local minima, and are widely adopted to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}), as well as parameters inverse methods for large-scale problems. 
 For instance, ADAM \cite{Kingma2014} is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update, reducing the risk to converge to local minima. 
 Other widely employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
 ADAM is less prone to converging to a local minimum, while (L-)BFGS has a faster converge rate. 
 Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 
 % Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
+% I will mentioned that other methods for optimization based on the gradient exists (e.g., majorization) but not giving much details on it. 
 
 \subsubsection{Sensitivity matrix}
 
-Using the chain rule and noticing that in most cases the loss function depends on $\theta$ thought $u$, meaning $L(\theta) = L(u(\cdot, \theta))$, we can derive
+In the general case, we are going to work with loss functions of the form $L(\theta) = L(u(\cdot, \theta), \theta)$. 
+Using the chain rule we can derive 
 \begin{equation} 
  \frac{dL}{d\theta} = \frac{\partial L}{\partial u} \frac{\partial u}{\partial \theta} + \frac{\partial L}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
@@ -117,7 +119,8 @@ For example, for the loss function in Equation \eqref{eq:quadratic-loss-function
     \frac{\partial L}{\partial \theta} = 0.
     \label{eq:dLdu}
 \end{equation}
-The complicated term to compute is the derivative $\frac{\partial u}{\partial \theta}$, usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
+Just as in this last example, in most applications the loss function $L(\theta)$ will depend on $\theta$ just thought $u$, meaning $\frac{\partial L}{\partial \theta} = 0$.
+The complicated term to compute is the matrix of derivatives $\frac{\partial u}{\partial \theta}$, usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
 \begin{equation}
  s 
  = 
@@ -204,3 +207,5 @@ If we call the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, we can co
 % The same nature of the adjoint methods deserves to be treated entirely in Section \ref{section:adjoint-methods}.
 
 % Krilov methods work well for non-stiff methods, but the inverse condition number coincides with the stiff index, meaning that in stiff cases we should solve the system with full inversion models, which requires cubic cost in the number of ODEs 
+
+% Explain generalization to PDEs, meshes, etc.

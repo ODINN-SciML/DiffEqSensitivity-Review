@@ -97,12 +97,12 @@ These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, 
     \label{fig:discrete-adjoint}
 \end{figure}
 
-Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U)=0$ was not necessarily linear in $U$.
+Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U; \theta)=0$ was not necessarily linear in $U$.
 This means that while the forward mode may require multiple iterations in order to solve the non-linear system $G(U) = 0$ (e.g., by using Krylov methods), the backwards step to compute the adjoint is one single linear system of equations. 
 
 \subsubsection{Simple linear system}
 
-To gain further intuition about the adjoint method, let us consider the simple case of the explicit linear one-step methods, where at every step we need to solve the equation $g_i (u_{i+1}; \theta) = u_{i+1} - A_i (\theta) \, u_i - b_i(\theta)$, where $A_i(\theta) \in \R^{n \times n}$ and $b_i(\theta) \in \R^n$ are defined by the numerical solver. 
+To gain further intuition about the discrete adjoint method, let us consider the simple case of the explicit linear one-step methods, where at every step we need to solve the equation $u_{i+1} = g_i (u_i; \theta) = A_i (\theta) \, u_i + b_i(\theta)$, where $A_i(\theta) \in \R^{n \times n}$ and $b_i(\theta) \in \R^n$ are defined by the numerical solver \cite{Johnson}. 
 This condition can be written in a more compact manner as $G(U)=A(\theta) U - b(\theta) = 0$, that is 
 \begin{equation}
     A(\theta) U 
@@ -138,7 +138,7 @@ with $\I_{n \times n}$ the identity matrix of size $n \times n$.
 Notice that in most cases, the matrix $A(\theta)$ is quite large and mostly sparse. 
 While this representation of the discrete differential equation is  convenient for mathematical manipulations, when solving the system we rely on iterative solvers that save memory and computation. 
 
-For the linear system of discrete equations $G(U; \theta)=A(\theta) U - b(\theta)=0$, we have \cite{Johnson}
+For the linear system of discrete equations $G(U; \theta)=A(\theta) U - b(\theta)=0$, we have 
 \begin{equation}
     \frac{\partial G}{\partial \theta} 
     = 

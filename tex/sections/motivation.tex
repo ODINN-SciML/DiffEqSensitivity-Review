@@ -1,30 +1,25 @@
 % \subsection{On the importance of differentiable programming}
 
-Mechanistic (or process-based) models have played a central role in a wide range of scientific disciplines. They consist of precise mathematical descriptions of causal mechanisms, assumed to be the main processes underlying the system behavior \cite{rackauckas2020universal}. 
-Differential equations are particularly convenient mathematical representations that, together with the numerical methods to approximate their solutions, led to fundamental advances in the understanding and prediction of physical and biological systems since their invention.
+Mechanistic (or process-based) models have played a central role in a wide range of scientific disciplines. 
+They consist of precise mathematical descriptions of physical mechanisms, that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration \cite{rackauckas2020universal}. 
+These mathematical representation typically take the form of differential equations. 
+Together with the numerical methods to approximate their solutions, differential equations led to fundamental advances in the understanding and prediction of physical and biological systems.
 % with the combination of complex mathematical theories and a reduced amount of observations to validate them.
 % From predictions of population growth (Malthus) to permitting the prediction of black holes (Einstein field equations), differential equations have provided huge scientific contributions since Newton.
-Crucially, differential equation models depend on parameters that determine the processes represented. The parameter values have traditionally been estimated independently of the model, with empirical data for model validation and comparison \cite{hartig2012}.
-The independent estimation of parameters poses several problems.
-First, the independent estimation of parameters and processes rapidly becomes impossible as the number of variables modelled increases, especially when considering highly non-linear processes. 
-Second, 
-Inverse modelling, which consists in using observation data to recover the parameters of a model that can best explain the data, allows the bridging of this gap \cite{Wigner.1960, Rude:2018jv}. 
-The process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
-Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
+Differential equation models depend on parameters that determine the processes represented. 
+The parameter values have traditionally been estimated independently of the model, which poses several problems \cite{hartig2012}.
+First, the independent estimation of parameters and processes rapidly becomes impossible as the number of state variables increases, especially when considering highly non-linear processes. 
+Second, the measurement of certain parameters are intrinsically difficult \cite{Schartau2017}. Third, parameter values estimated from laboratory experiments may be specific to the experimental setting and resulting simulations are likely to diverge from observations in the field.
 
-Meanwhile, the field of statistics experienced a boom following the massive growth of data, signaling the era of data science and machine learning \cite{Cox:2017hv}.
-With the advent of machine learning methods, it is possible to learn and capture extremely complex nonlinear patterns and information hidden in huge datasets. 
-% Machine learning models can be seen as the opposite of mechanistic models, as they are flexible, data-driven and they do not necessarily respect domain-specific constraints.
-Contrasting with mechanistic models, machine learning models are inherently flexible and data-driven, often operating without adhering to domain-specific constraints. 
-A significant characteristic of contemporary machine learning, particularly deep learning models, is their ability to autonomously learn at multiple levels of abstraction, efficiently extracting pertinent features from large datasets \cite{LeCun2015}.
-
-At first sight, these two modelling philosophies may be seen as antagonistic, and this is more or less the way they have evolved in the last decades \cite{zdeborova_understanding_2020}. 
-On the one hand, domain scientists have often been sceptical of adopting machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. 
-Predictions with correlative models assume that patterns contained in data can be extrapolated \cite{dormann2007}. 
-However, they may fail to disentangle the respective impact of the numerous ecological processes at play and may fail to predict dramatic shifts in dynamics \cite{Barnosky2012}.
-% On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any \textit{a priori} physical knowledge. 
+Due to the difficulty of estimating parameter values in mechanistic models, and accompanying the massive growth of data upon which they depend, statistical (or machine learning) models have lead the modelling field in the past decades \cite{Cox:2017hv}. Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015} allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
+However, the use of machine learning models for predictions has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
+In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
+The fields of mechanistic modelling and statistical modelling have mostly evolved independently \cite{zdeborova_understanding_2020}, due to several reasons. 
+On the one hand, domain scientists have often been reluctant in learning about machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. 
+On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any \textit{a priori} physical knowledge. 
 However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models \cite{Molnar.2020sisk,Rudin.2022,Schneider2017,rasp2018,Yazdani2020,Abarbanel2018,Carrassi2018,Bocquet2019,Gabor2015,Gharamti2017,Curtsdotter2019,Rosenbaum2019,Toms2020,Brajard2021}.
-If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
+Inverse modelling is a attempt to bridge the statistical and mechanistic modelling fields. Inverse modelling consists in using observation data to recover the parameters of a mechanistic model that can best explain the data  \cite{Wigner.1960, Rude:2018jv}. Differentiable programming is key in this process.
+
 
 % A key way to achieve this is through differentiable programming, i.e., being able to compute derivatives of any computer program describing a scientific model.
 % During the last decades, the backpropagation algorithm has enabled the fast growth of deep learning by efficiently computing gradients of large and complex neural networks with many parameters \cite{griewank2012invented}.
@@ -37,17 +32,17 @@ If both modelling approaches have different strengths, why not combine them and 
 \subsection{Domain-specific applications}
 
 Arguably, the notion of differentiable programming has a long tradition in computational physics which is founded on solving and/or inverting models based on differential equation.
-The overarching goal of such problems is to find a set of optimal model parameters that minimize an objective or cost function quantifying the misfit between observations and the simulated state.
+The overarching goal of inverse modelling is to find a set of optimal model parameters that minimizes an objective or cost function quantifying the misfit between observations and the simulated state.
 %, subject to the constraint that the model equations be fulfilled. 
 %The constrained optimization problem is transformed into an unconstrained problem by way of \emph{Lagrange multiplier method}\cite{Vadlamani.2020}, also referred to as the \emph{adjoint method}. 
 % The corresponding \textit{adjoint model} computes the gradient of the objective function with respect to all inputs. 
 % Gradient-based nonlinear optimization, then, enables us to invert for optimal values of the unknown or uncertain inputs.
 Depending on the nature of the inversion, we may distinguish between the following cases.
 \begin{itemize}
-    \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, lead to an optimal match between the observations and the simulated state (or diagnostics thereof); variants thereof are used for optimal forecasting.
-    \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
-    \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications.
-    \item \textbf{Model selection} Estimating the model evidence for each candidate model to discriminate between competing hypotheses \cite{burnham2004}. Involves the calculation of the marginal likelihood for each model, which may be approximated by Laplace approximation and involves the calculation of the hessian of the likelihood function, or by the calculation of information-based criteria (AIC, BIC, see ref\cite{burnham2002}).
+    \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, leads to an optimal match between the observations and the simulated state (or diagnostics thereof); variants thereof are used for optimal forecasting.
+    \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produces an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
+    \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications. Parametrization is a special case of parameter inversion, where a parametric function (e.g., a neural network) is used to approximate processes \cite{rasp2018,beucler2024,boussange2024}.
+    \item \textbf{Model selection.} Estimating the model evidence for each candidate model to discriminate between competing hypotheses \cite{burnham2004}. Involves the calculation of the marginal likelihood for each model, or the calibration of each model and evaluation of their score in out-of-samples predictions. %which may be approximated by Laplace approximation and involves the calculation of the hessian of the likelihood function, or by the calculation of information-based criteria (AIC, BIC, see ref\cite{burnham2002}).
 \end{itemize}
 Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 
@@ -58,7 +53,7 @@ This combined flexibility can be exploited by many different domain-specific pro
 There is a long tradition of differentiable programming methods applied across the scientific spectrum. 
 Without aiming to have a complete and fully comprehensive overview of applications to all scientific and engineering applications, as well as a perfect classification of them, the following are a few selected examples where these techniques had been used by different communities. 
 
-\subsubsection{Computational physics}
+\subsubsection{Computational physics and optimal design}
 
 There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines. 
 These include examples in 
@@ -67,6 +62,17 @@ particle physics \cite{Dorigo.2022} or quantum chemistry \cite{Arrazola.2021}
 
 optimal design in nanophotonics \cite{Molesky_Lin_Piggott_Jin_Vucković_Rodriguez_2018}
 optimal design in electromagnetism \cite{Georgieva_Glavic_Bakr_Bandler_2002}
+
+
+There is a long tradition of computational models based on sensitivity methods for optimal design and optimal control \cite{lions1971optimal, pironneau2005optimal, allaire2014shape}.
+This includes applications to 
+stellarator coil design \cite{McGreivy_stellarator_2021}; 
+fluid dynamics \cite{Giles_Pierce_2000, mohammadi2009applied};
+supersonic aircraft design \cite{
+hu2010supersonic, fike2013multi}, biology \citep{Strouwen2022}
+
+% \subsubsection{Computational Fluid Dynamics}
+% \subsubsection{Electromagnetism}
 
 \paragraph{Quantum physics}
 
@@ -78,34 +84,22 @@ In cases where the analytical calculation of a gradient is impractical, numerica
 Specifically, AD streamlines the adjustment to diverse objectives or constraints, and its efficiency can be enhanced by employing custom derivative rules for the time propagation of quantum states as governed by solutions to the Schrödinger equation~\cite{goerz:2022}. 
 Moreover, sensitivity methods for differential equations facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations~\cite{schaefer:2021}.
 
-\subsubsection{Optimal design}
-
-There is a long tradition of computational models based on sensitivity methods for optimal design and optimal control \cite{lions1971optimal, pironneau2005optimal, allaire2014shape}.
-This includes applications to 
-stellarator coil design \cite{McGreivy_stellarator_2021}; 
-fluid dynamics \cite{Giles_Pierce_2000, mohammadi2009applied};
-supersonic aircraft design \cite{
-hu2010supersonic, fike2013multi}, biology \citep{Strouwen2022}
-
-% \subsubsection{Computational Fluid Dynamics}
-% \subsubsection{Electromagnetism}
-% \subsubsection{Quantum Physics}
 
 \subsubsection{Geosciences}
 
-Many geoscientific phenomena are governed by global and local conservation laws (conservation of mass, momentum, energy, tracers) along with a set of empirical constitutive laws and subgrid-scale parametrization schemes. 
+Many geoscientific phenomena are governed by global and local conservation laws along with a set of empirical constitutive laws and subgrid-scale parametrization schemes. 
 Together, they enable efficient description of the system's spatio-temporal evolution in terms of a set of partial differential equations (PDEs).
-Example are geophysical fluid dynamics \cite{Vallis:2016kv}, describing geophysical properties of many Earth systems, such as the atmosphere, oceans, and glaciers.
-In such models, calibrating model parameters is extremely challenging, due to (i) datasets being sparse in both space and time, heterogeneous, and noisy; and (ii) computational models involving high-dimensional (typically $O(10^3) - O(10^8)$) space of parameters.
+Example are geophysical fluid dynamics \cite{Vallis:2016kv}, describing geophysical properties of many Earth systems, such as the atmosphere, oceans, land surface, and glaciers.
+In such models, calibrating model parameters is extremely challenging, due to datasets being sparse in both space and time, heterogeneous, and noisy; and computational models involving high-dimensional parameter spaces, often on the order of $O(10^3) - O(10^8)$.
 Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
 
-In the following, we sketch how differentiable programming based on  adjoint modeling has been used in different disciplines of geosciences, and how new concepts are emerging of combining inverse modeling and machine learning approaches where differentiable programming provides a key computational enabling framework, something recently coined as scientific machine learning. 
+In the following, we sketch how differentiable programming has been used in different disciplines of geosciences, and how new concepts are emerging of combining inverse modeling and machine learning approaches where differentiable programming provides a key computational enabling framework, something recently coined as scientific machine learning. 
 %(Note that some authors have used the notion of ``scientific machine learning'' to capture some aspects of the latter approach [REFS]).
 
 \paragraph{Meteorology}
 
 Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have played an important role \cite{Errico_1997}. 
-The work by \cite{Talagrand.1987,Courtier.1987} introduced the use of adjoint methods to infer initial conditions that minimize the misfit between simulations and weather observations, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
+Adjoint methods was introduced to infer initial conditions that minimize the misfit between simulations and weather observations\cite{Talagrand.1987,Courtier.1987}, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
 This led to the development of the so-called \textit{four-dimensional variational} (4D-Var) data assimilation (DA) technique \cite{Rabier.1992,Rabier:2000uu} at the European Centre for Medium-Range Weather Forecasts (ECMWF) as one the most advanced DA approaches, and which contributed substantially to the \textit{quiet revolution} in NWP \cite{Bauer.2015}.
 Related, within the framework of transient non-normal amplification or optimal excitation \cite{Farrell.1988,Farrell:1996jx}, the adjoint method has been used extensively to infer patterns in initial conditions that over time contribute to maximum uncertainty growth in forecasts \cite{Palmer:1994br,Buizza:1995in} and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
 Except in very few instances and for experimental purposes \cite{Giering.2006}, automatic differentiation has not been used in the development of adjoint models in NWP.
@@ -116,7 +110,7 @@ Instead, the adjoint code was derived and implemented manually.
 The recognition of the benefit of adjoint methods for use in data assimilation in the ocean coincided roughly with that in meteorology \cite{Thacker:1988kp,Thacker:1988ed}. 
 The first application appeared soon thereafter in the context of a basin-scale general circulation model \cite{Tziperman.1989,Tziperman:1992hg,Tziperman:1992jw}. 
 An important detail is that their work already differed from the ``4D-Var'' problem of NWP in that sensitivities were computed not only with respect to initial conditions but also with respect to surface boundary conditions, i.e., air-sea fluxes of buoyancy and momentum.
-Again, the role of the second-derivative, i.e., the Hessian for uncertainty quantification was readily realized \cite{Thacker:1989jf}.
+Again, the role of the second-derivative for uncertainty quantification was readily realized \cite{Thacker:1989jf}.
 Similar to the work on calculating singular vectors in the atmosphere based on tangent linear and adjoint versions of a GCM to solve a generalized eigenvalue problem, the question of El Ni\~no predictability invited model-based singular vector computations in models of the Tropical Pacific Ocean \cite{Moore:1997ci,Moore:1997fp}.
 Such model-based singular vectors were also later computed for optimal excitations of the North Atlantic thermohalince circulation \cite{Zanna.2010,Zanna:2011ge,Zanna:2012dw}.
 Notably in the context of this review, the consortium for Estimating the Circulation and Climate of the Ocean (ECCO) \cite{Stammer.2002} set out in around 1999 to develop a parameter and state estimation framework, whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient.
@@ -146,24 +140,21 @@ Additionally, the use of AD has become increasingly widespread in glaciology, pa
 Recently, differentiable programming has also facilitated the development of hybrid frameworks, combining numerical methods with data-driven models by means of universal differential equations \cite{BolibarSapienza_UDEs}. 
 Alternatively, some other approaches have dropped the use of numerical solvers in favour of different flavours of physics-informed neural networks, exploring the inversion of rheological properties of glaciers \cite{wang2022discovering} and to accelerate ice thickness inversions and simulations by leveraging GPUs \cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, jouvet2023inversion}. 
 
-\paragraph{Solid Earth geophysics}
+% \paragraph{Solid Earth geophysics}
 
-Seismic inversion \cite{Zhu_Xu_Darve_Beroza_2021} for earthquake characterization and inversion of Earth's internal structure.
+% Seismic inversion \cite{Zhu_Xu_Darve_Beroza_2021} for earthquake characterization and inversion of Earth's internal structure.
 
 \subsubsection{Biology and ecology}
 % todo: maybe we need a subsection "systems biology" and one subsection "ecology and evolution".
 
-Differential equation models have been broadly used in biology and ecology to model the functioning and function of cells \cite{Gabor2015}, eco-evolutionary dynamics \cite{Lion2018,Villa2021,Boussange2022,boussange2023a}, population dynamics and animal movement \cite{Volpert2009}, the dynamics of microbial \cite{VandenBerg2022} or ecological communities \cite{Akesson2021,chalmandrier2021}, and biomass and energy fluxes and transformation at ecosystem levels \cite{Weng2015,Schartau2017,Franklin2020,Geary2020}.
-Conducting microcosm experiments to estimate biological parameters in biological models is costly.
-Furthermore, parameters independently inferred from microsocms experiments usually fail in capturing real biological dynamics \cite{Watts2001}. 
-As a consequence, inverse modelling methods have great potential in biology and ecology.
-Inverse modelling can take the form of parameter estimation \citep{Schartau2017} or model selection \citep{Johnson2004}, both involving the use of inference methods to estimate the probability of the empirical data given the model parameters (i.e., the likelihood).
-Provided that they are inferred together with uncertainties, parameters can be interpreted to better understand the strengths and effects of the processes considered \citep{Pontarp2019}. 
+Differential equation models have been broadly used in biology and ecology to model the dynamics of genes and alleles \cite{Page2002}, the ecological and evolutionary dynamics of biological units from bacteria to ecological communities \cite{Gabor2015,Lion2018,Villa2021,Boussange2022,boussange2023a, Akesson2021,chalmandrier2021,VandenBerg2022}, and biomass and energy fluxes and transformation at ecosystem levels \cite{Weng2015,Schartau2017,Franklin2020,Geary2020}.
+Estimating parameters of biological models from laboratory experiments is costly, may be extremely difficult per se \cite{Schartau2017} and may result in simulations failing in capturing real biological dynamics \cite{Watts2001}. 
+As a consequence, statistical models have been the main modelling paradigm in biology \cite{zimmermann2010}, but inverse modelling methods are increasingly advocated to inform mechanistic models \cite{hartig2012,alsos2023,pantel2023} and e.g. provide robust forecasts of ecosystem responses to global change \cite{alsos2023}.
+Inverse modelling can take the form of parameter estimation \cite{Schartau2017} or model selection \cite{Johnson2004}, both involving the use of inference methods to estimate the probability of the empirical data given the model parameters (i.e., the likelihood).
+Provided that they are inferred together with uncertainties, parameters can be interpreted to better understand the strengths and effects of the processes considered \cite{Pontarp2019}. 
 For instance, \cite{Higgins2010,Curtsdotter2019,godwin2020} infer the parameters of dynamic community models to understand the processes involved in ecosystem functions.
-In model selection, candidate models embedding competing hypotheses about causal processes are derived, and the relative support of each model given the data is computed to discriminate between the hypotheses \cite{Johnson2004}.
+In model selection, candidate models embedding competing hypotheses about causal processes are derived, and the relative support of each model given the data is computed to discriminate between the hypotheses \cite{Johnson2004,alsos2023}.
 For instance, using inverse modelling and eco-evolutionary models embedding competing evolutionary speed hypotheses, \cite{Skeels2022} shows that temperature-dependent evolutionary speed most likely explains variations in biodiversity patterns. 
-The computation of the most probable model parameter values, or the computation of the different model supports, critically involves sensitivity methods which must adequately handle the typically larger number of parameters, and the nonlinearities of biological models \cite{Gabor2015}.
-While inverse modelling in biology has been mostly agnostic to AD techniques, they potential have recently been highlighted \cite{frank2022}. 
-\cite{alsos2023} suggests to take advantage of increasingly available data such as paleao-time series with inverse modelling techniques to recover the biotic and abiotic processes underlying ecosystem dynamics. 
-Dynamic models informed by data can further be used to extrapolate beyond current dynamics and provide robust forecasts of ecosystem responses to future climate change \cite{alsos2023}. 
-Physics-informed approaches have also emerged recently \cite{Yazdani2020}.
+The computation of the most probable model parameter values, or the computation of the different model supports, critically involves sensitivity methods which must adequately handle the typically larger number of parameters and the nonlinearities of biological models \cite{Gabor2015}.
+While inverse modelling in biology has been mostly agnostic to AD techniques, their potential have recently been highlighted \cite{frank2022,alsos2023} and new approaches to accommodate for the specificity of biological and ecological models are increasingly proposed \cite{Yazdani2020,Boussange2022a,paredes2023}. Given that key ecological processes are not accurately represented in biological models \cite{hartig2012,Schartau2017,chalmandrier2021}, AD-based inverse modelling methods are particularly relevant to support hybrid approaches where neural networks are used as data-driven parametrization \cite{rasp2018,Boussange2022a} in differential equation models.
+Increasingly available biological dataset following the development of monitoring technologies such as paleao-time series \cite{alsos2023}, environmental DNA \cite{Ruppert2019}, remote sensing \cite{Jetz2019}, bioaccoustics \cite{Aide2013}, and citizen observations \cite{GBIF}, are additional opportunities.

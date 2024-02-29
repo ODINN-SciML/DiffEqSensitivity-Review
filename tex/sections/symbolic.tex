@@ -13,48 +13,53 @@ This can also be understood as if AD is symbolic differentiation performed by a 
 % This means that the mathematical calculations involved are the same, but they need to be interpreted by the compiler at the moment of computing the derivative. 
 % Something like $x + 2$ needs to be understood as an \textit{expression} composed by a variable $x$, a literal $2$, and a binary operation $+$ binding them. 
 
-\subsubsection{Sparse Symbolic Differentiation vs Sparse Colored AD}
+% \subsubsection{Sparse Symbolic Differentiation vs Sparse Colored AD}
 
-Sparse Jacobians are commonplace in several large-scale nonlinear systems, discretized PDEs, etc., and are often a major computational bottleneck for solving those problems. We will consider 2 possibilities for computing these sparse Jacobians -- Symbolic Differentiation and Colored AD. Consider a toy example, with a Jacobian with known sparsity pattern $\mathcal{J}_{\text{sparse}}$:
-%
-\begin{equation}
-    \mathcal{J}_{\text{sparse}} = \begin{bmatrix}
-        \bullet &         &         &         &         \\
-                & \bullet & \bullet &         &         \\
-                &         &         & \bullet &         \\
-        \bullet & \bullet &         &         & \bullet \\
-                &         &         &         & \bullet
-    \end{bmatrix}
-\end{equation}
-%
-where $\bullet$ denotes the non-zero elements of the Jacobian. AD tools compute Jacobians column-wise or row-wise by composing multiple JVPs or VJPs respectively. This is done to avoid perturbation confusion~\cite{manzyuk2019perturbation}. Sparse Colored AD can chunk multiple JVPs or VJPs using the colored Jacobian~\cite{gebremedhin2005color}. More concretely, we can color the above matrix as follows:
-%
-\begin{equation}
-    \mathcal{J}^{(\text{col})}_{\text{sparse}} = \begin{bmatrix}
-        \color{red}{\blacktriangleright} &                            &                                  &                                  &                              \\
-                                         & \color{blue}{\blacksquare} & \color{red}{\blacktriangleright} &                                  &                              \\
-                                         &                            &                                  & \color{red}{\blacktriangleright} &                              \\
-        \color{red}{\blacktriangleright} & \color{blue}{\blacksquare} &                                  &                                  & \color{green}{\blacklozenge} \\
-                                         &                            &                                  &                                  & \color{green}{\blacklozenge}
-    \end{bmatrix} \qquad \mathcal{J}^{(\text{row})}_{\text{sparse}} = \begin{bmatrix}
-        \color{blue}{\blacksquare}   &                              &                            &                            &                              \\
-                                     & \color{blue}{\blacksquare}   & \color{blue}{\blacksquare} &                            &                              \\
-                                     &                              &                            & \color{blue}{\blacksquare} &                              \\
-        \color{green}{\blacklozenge} & \color{green}{\blacklozenge} &                            &                            & \color{green}{\blacklozenge} \\
-                                     &                              &                            &                            & \color{blue}{\blacksquare}
-    \end{bmatrix}
-\end{equation}
-%
-To compute $\mathcal{J}^{(\text{col})}_{\text{sparse}}$, we need to perform 3 JVPs (once each for $\color{red}{\blacktriangleright}$, $\color{blue}{\blacksquare}$, and $\color{green}{\blacklozenge}$) compared to 5 JVPs for a $5 \times 5$ dense Jacobian. Similarly, since reverse mode materializes the Jacobian one row at a time, we need 2 VJPs (once each for $\color{blue}{\blacksquare}$, and $\color{green}{\blacklozenge}$) compared to 5 VJPs for the dense counterpart. However, colored AD has the limitation that an extremely sparse matrix can have no rows or columns that are independent of each other. Consider the arrowhead matrix:
-%
-\begin{equation}
-    \mathcal{J}_{\text{arrowhead}} = \begin{bmatrix}
-        \bullet & \bullet & \bullet & \bullet & \bullet \\
-        \bullet & \bullet &         &         &         \\
-        \bullet &         & \bullet &         &         \\
-        \bullet &         &         & \bullet &         \\
-        \bullet &         &         &         & \bullet
-    \end{bmatrix}
-\end{equation}
-%
-In this case, both reverse mode AD and forward mode AD will have to perform $N$ VJPs and JVPs, respectively (for a $N \times N$ arrowhead matrix), i.e., there is no computational benefit of coloring the matrix here. Instead, Symbolic Differentiation constructs a symbolic representation of the Sparse Jacobian and can fill the Jacobian with $N + 2 \cdot (N - 1)$ computations, where each computation is significantly cheaper than each VJP or JVP.
+% Sparse Jacobians are commonplace in several large-scale nonlinear systems, discretized PDEs, etc., and are often a major computational bottleneck for solving those problems. 
+% We will consider 2 possibilities for computing these sparse Jacobians -- Symbolic Differentiation and Colored AD. 
+% Consider a toy example, with a Jacobian with known sparsity pattern $\mathcal{J}_{\text{sparse}}$:
+% \begin{equation}
+%     \mathcal{J}_{\text{sparse}} = \begin{bmatrix}
+%         \bullet &         &         &         &         \\
+%                 & \bullet & \bullet &         &         \\
+%                 &         &         & \bullet &         \\
+%         \bullet & \bullet &         &         & \bullet \\
+%                 &         &         &         & \bullet
+%     \end{bmatrix}
+% \end{equation}
+% where $\bullet$ denotes the non-zero elements of the Jacobian. 
+% AD tools compute Jacobians column-wise or row-wise by composing multiple JVPs or VJPs respectively. 
+% This is done to avoid perturbation confusion~\cite{manzyuk2019perturbation}. Sparse Colored AD can chunk multiple JVPs or VJPs using the colored Jacobian~\cite{gebremedhin2005color}. 
+% More concretely, we can color the above matrix as follows:
+% \begin{equation}
+%     \mathcal{J}^{(\text{col})}_{\text{sparse}} = \begin{bmatrix}
+%         \color{red}{\blacktriangleright} &                            &                                  &                                  &                              \\
+%                                          & \color{blue}{\blacksquare} & \color{red}{\blacktriangleright} &                                  &                              \\
+%                                          &                            &                                  & \color{red}{\blacktriangleright} &                              \\
+%         \color{red}{\blacktriangleright} & \color{blue}{\blacksquare} &                                  &                                  & \color{green}{\blacklozenge} \\
+%                                          &                            &                                  &                                  & \color{green}{\blacklozenge}
+%     \end{bmatrix} \qquad \mathcal{J}^{(\text{row})}_{\text{sparse}} = \begin{bmatrix}
+%         \color{blue}{\blacksquare}   &                              &                            &                            &                              \\
+%                                      & \color{blue}{\blacksquare}   & \color{blue}{\blacksquare} &                            &                              \\
+%                                      &                              &                            & \color{blue}{\blacksquare} &                              \\
+%         \color{green}{\blacklozenge} & \color{green}{\blacklozenge} &                            &                            & \color{green}{\blacklozenge} \\
+%                                      &                              &                            &                            & \color{blue}{\blacksquare}
+%     \end{bmatrix}
+% \end{equation}
+% To compute $\mathcal{J}^{(\text{col})}_{\text{sparse}}$, we need to perform 3 JVPs (once each for $\color{red}{\blacktriangleright}$, $\color{blue}{\blacksquare}$, and $\color{green}{\blacklozenge}$) compared to 5 JVPs for a $5 \times 5$ dense Jacobian.
+% Similarly, since reverse mode materializes the Jacobian one row at a time, we need 2 VJPs (once each for $\color{blue}{\blacksquare}$, and $\color{green}{\blacklozenge}$) compared to 5 VJPs for the dense counterpart. 
+% However, colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. Consider the arrowhead matrix:
+% \begin{equation}
+%     \mathcal{J}_{\text{arrowhead}} = \begin{bmatrix}
+%         \bullet & \bullet & \bullet & \bullet & \bullet \\
+%         \bullet & \bullet &         &         &         \\
+%         \bullet &         & \bullet &         &         \\
+%         \bullet &         &         & \bullet &         \\
+%         \bullet &         &         &         & \bullet
+%     \end{bmatrix}
+% \end{equation}
+% In this case, both reverse mode AD and forward mode AD will have to perform $N$ VJPs and JVPs, respectively (for a $N \times N$ arrowhead matrix), i.e., there is no computational benefit of coloring the matrix here. 
+% Instead, Symbolic Differentiation constructs a symbolic representation of the Sparse Jacobian and can fill the Jacobian with $N + 2 \cdot (N - 1)$ computations, where each computation is significantly cheaper than each VJP or JVP.
+
+% In Chapter 3, Section 3.5, of Griewank (2008) there is an example where they evaluate a symbolic differentiation pipeline for weird neasted functions  
+
