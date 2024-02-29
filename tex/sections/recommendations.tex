@@ -1,2 +1,36 @@
-For sufficient small systems of less than 100 parameters and ODEs, Forward AD is the most efficient method, outperforming sensitivity and adjoint methods \cite{ma_comparison_2021}.
-% \todo[inline]{We should pay attention that this section does not overlap with \cite{ma_comparison_2021}.}
+For sufficient small systems of less than 100 parameters and ODEs, Forward AD is the most efficient method, outperforming sensitivity and adjoint methods \cite{ma2021comparison}.
+
+Adjoint methods are computationally more efficient for complicated numerical solvers, but they are also more difficult to implement.
+
+If well direct methods like AD and complex-step differentiation can be costly to use directly on a numerical solver, they can still be used to compute the sensitivities required for the calculation of the more efficient adjoint method (see discussion in Section \ref{section:computing-vjp-inside-solver}). 
+
+As an AD algorithm, we support the use of forward and reverse AD as the method of choice over finite differences, complex step differentiation, and symbolic differentiation. 
+The first two do not really provide an advantage over AD in terms of precision, required some tuning of the stepsize $\varepsilon$, and 
+On the othe side, if well symbolic differentiation can be more efficient in neasted cases (see ...) or when the spartity patter of the Jacobian is known, in general this advantage is not drasmatic in most real cases. 
+
+When using discrete methods (discretize-then-differentiate), it is important to be aware that the differentiation machinery is applied after algorithm to solve the differential equation has been specified, meaning that the computed derivatives are not just with respect to the numerical solution, but also with respect to the algorithm used \cite{Eberhard_Bischof_1996}.
+This is certainly the case when the iterative solver have adaptive stepsize controllers that depend on the parameter to differentiate, as we explored in Section \ref{section:software-Forward-AD}.
+Although some solutions has been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996}, this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
+
+Furthermore, continuous sensitivity analysis is more efficient while discrete adjoint method is more stable (discussion in appendix of \cite{rackauckas2020universal})
+
+Generalizations to DAE \cite{Cao_Li_Petzold_2002}
+
+% Mention to limit cases when working with chaotic systems
+\subsection{Chaotic systems}
+
+% Intro: why we take this average quantities in chaotic system? Need to motivate this in a sentense.
+Both forward and adjoint sensitivity analysis methods from the previous chapters encounter challenges and become less useful when applied to chaotic systems.
+To illustrate this, let us consider long-time-averaged quantities 
+\begin{equation}\label{eq:long_time_averaged_quantities}
+    \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T L(u(t), \theta) \, dt, 
+\end{equation}
+of chaotic systems, where $L(u(t), \theta)$ is the instantaneous objective and $u(t)$ denotes the state of the dynamical system at time $t$.
+For ergodic dynamical systems, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t)$. 
+In particular, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ does not depend on the initial condition. 
+Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$\cite{ruelle1997differentiation,ruelle2009review}. 
+However, computing derivatives using numerical methods of statistical quantities of the form \eqref{eq:long_time_averaged_quantities} with respect to the vector parameter $\theta$ in chaotic dynamical systems remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state. 
+As a consequence, the solutions of the forward and adjoint sensitivity equations blow up (exponentially fast) instead of converging to the actual derivative.
+To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.
+
+In Julia this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}

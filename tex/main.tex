@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
 
 \setlength{\oddsidemargin}{0in}
 \setlength{\textwidth}{6.5in}
@@ -17,10 +17,10 @@
 \usepackage[hidelinks]{hyperref} % hidelinks added to not display red box for links
 \usepackage{algorithm}
 \usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
-% \usepackage{todonotes} % Taking notes
-
+\usepackage{todonotes} % Taking notes
+\usepackage{csquotes}
 \usepackage{titlesec}
-
+\usepackage{multirow}
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
 
@@ -54,20 +54,26 @@
 
 % Bibliography %
 \usepackage{mybib}
-% All the bib files are centralized here, but feel free to 
-% add a new custom bib file inside ./bibs/
+% IMPORTANT NOTE:
+% All the bib files are centralized here in bibliography.bib, which is 
+% automatically created by compiling all the required cites in the references contained inside ./bibs/
+% Please add your references in a different .bib file inside the bibs folder. 
+% It is ok if the first time you add the cites they don't show up, Facu will fix it.
 \addbibresource{bibliography.bib}
 % Alternative bib source
-% \addbibresource{bibs/bilbiography-victor.bib}
 % \addbibresource{bibs/bibliography-facu.bib}
 % \addbibresource{bibs/bibliography-heimbach.bib}
-
+% \addbibresource{bibs/bibliography-jordi.bib}
+% \addbibresource{bibs/bibliography-avik.bib}
+% For now, this file needs to be added manually:
+\addbibresource{bibs/bibliography-victor.bib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% Document %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{A Review of Sensitivity Methods \\ for Differential Equations}
+\title{Differentiable Programming for Differential Equations: \\ A Review}
 
 \date{\today}
 
@@ -82,7 +88,7 @@
 \input{sections/abstract}
 \end{abstract}
 
-\vspace{200px}
+\vspace{250px}
 \input{sections/community-statement}
 
 \normalsize
@@ -98,56 +104,71 @@
 \section{Introduction}
 \input{sections/introduction}
 
-\section{Scientific motivation}
+\section{Scientific motivation: A domain science perspective}
+\label{sectopn:motivation}
 \input{sections/motivation}
 
-\section{Methods}
+\section{Methods: A mathematical perspective}
 \label{section:methods}
 \input{sections/methods-intro}
 
 \subsection{Preliminaries}
+\label{section:preliminaries}
 \input{sections/preliminaries}
 
 \subsection{Finite differences}
+\label{section:finite-diffences}
 \input{sections/finite-differences}
 
 \subsection{Automatic differentiation}
+\label{section:automatic-differentiation}
 \input{sections/automatic-differentiation}
 
 \subsection{Complex step differentiation}
+\label{section:comple-step-differentiation}
 \input{sections/complex-step}
 
 \subsection{Symbolic differentiation}
+\label{section:symbolic}
 \input{sections/symbolic}
 
 \subsection{Sensitivity equations}
 \label{section:sensitivity-equation}
 \input{sections/sensitivity-equation}
 
-\subsection{Adjoint methods}
-\label{section:adjoint-methods}
-\input{sections/adjoint-intro}
+% \subsection{Adjoint methods}
+% \label{section:adjoint-methods}
+% \input{sections/adjoint-intro}
 
-\subsubsection{Discrete adjoint method}
+\subsection{Discrete adjoint method}
+\label{section:discrete-adjoint}
 \input{sections/adjoint-state}
 
-\subsubsection{Continuous adjoint method}
+\subsection{Continuous adjoint method}
+\label{section:continuous-adjoint}
 \input{sections/adjoint-continuous}
 
-\section{Numerical implementation}
-\label{sec:computational-implementation}
-\input{sections/software}
+\subsection{Mathematical comparision of the methods}
+\label{section:compatison-math}
+\input{sections/methods-comparison}
 
+\section{Implementation: A computer science perspective}
+\label{sec:computational-implementation}
+\input{sections/software-intro}
+\subsection{Direct methods}
+\label{section:direct-methods}
+\input{sections/software-direct}
+\subsection{Solver-based methods}
+\label{section:solver-methods}
+\input{sections/software-solver}
 
 % \section{Extensions}
 
 \section{Recommendations}
 \input{sections/recommendations}
 
-% \section{Conclusions}
-% \input{sections/conclusions}
-
-% \section{Do we need full gradients?}
+\section{Conclusions}
+\input{sections/conclusions}
 
 % \section{Notation}
 % \input{sections/notation}
@@ -158,11 +179,9 @@
 \addcontentsline{toc}{section}{Appendices}
 \renewcommand{\thesubsection}{\Alph{subsection}}
 
-\subsection{Statistical foundations of inverse modelling}
-% Check how to do this input correctly
+% \subsection{Statistical foundations of inverse modelling}
 % \input{sections/statistical-foundations}
-\newpage
-\subsection{Lagrangian derivation of adjoints}
+\subsection{Lagrangian formulation of the adjoint method}
 \input{appendix/lagrangian}
 \newpage
 \subsection{When AD is algorithmically correct but numerically wrong}
