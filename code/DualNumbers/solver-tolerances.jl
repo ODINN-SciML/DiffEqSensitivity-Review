@@ -1,11 +1,16 @@
-# using Pkg
-# Pkg.activate("../SensitivityEnv")
+using Pkg
+Pkg.activate(".")
 
 using SciMLSensitivity
 using OrdinaryDiffEq
 using Zygote
 using ForwardDiff
 using Infiltrator
+
+
+
+
+
 
 tspan = (0.0, 10.0)
 u0 = [0.0]
