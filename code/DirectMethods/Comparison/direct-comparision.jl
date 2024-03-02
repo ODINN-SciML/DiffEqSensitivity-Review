@@ -5,8 +5,9 @@ using OrdinaryDiffEq
 using CairoMakie
 using ComplexDiff
 using Zygote, ForwardDiff, SciMLSensitivity
+using BenchmarkTools
 
-include("./complex_solver.jl")
+include("../ComplexStep/complex_solver.jl")
 
 # Parameters 
 u0 = [0.0, 1.0]
@@ -107,7 +108,7 @@ error_complex_high = abs.((derivative_true .- derivative_complex_high) ./ deriva
 
 # Complex step Differentiation
 derivative_complex_exact = ComplexDiff.derivative.(ω -> solution(t₁, u0, [ω]), p[1], stepsizes)
-error_complex_exact = abs.((derivative_complex .- derivative_true)./derivative_true)
+error_complex_exact = abs.((derivative_complex_exact .- derivative_true)./derivative_true)
 
 # Forward AD applied to numerical solver
 derivative_AD_low = Zygote.gradient(p->solve(ODEProblem(oscilatior!, u0, tspan, p), Tsit5(), reltol=1e-6, abstol=1e-6).u[end][1], p)[1][1]
@@ -150,4 +151,11 @@ plot!(ax, [stepsizes[begin], stepsizes[end]],[error_AD_high, error_AD_high], col
 # Add legend
 fig[1, 2] = Legend(fig, ax)
 
-save("FiniteDifferences/FiniteDifferences_derivative.pdf", fig)
+save("Figures/DirectMethods_comparison.pdf", fig)
+
+
+######### Benchmark ###########
+
+# It looks like complex step has better performance... both in speed and momory allocation.
+# @benchmark derivative_complex_low = complexstep_differentiation.(Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol=1e-6, abstol=1e-6).u[end][1]), Ref(p[1]), [1e-5])
+# @benchmark derivative_AD_low = Zygote.gradient(p->solve(ODEProblem(oscilatior!, u0, tspan, p), Tsit5(), reltol=1e-6, abstol=1e-6).u[end][1], p)[1][1]
