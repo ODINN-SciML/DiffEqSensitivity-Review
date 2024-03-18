@@ -9,16 +9,28 @@ Together with the numerical methods to approximate their solutions, differential
 Differential equation models depend on parameters that determine the processes represented. 
 The parameter values have traditionally been estimated independently of the model, which poses several problems \cite{hartig2012}.
 First, the independent estimation of parameters and processes rapidly becomes impossible as the number of state variables increases, especially when considering highly non-linear processes. 
-Second, the measurement of certain parameters are intrinsically difficult \cite{Schartau2017}. Third, parameter values estimated from laboratory experiments may be specific to the experimental setting and resulting simulations are likely to diverge from observations in the field.
+Second, the measurement of certain parameters are intrinsically difficult \cite{Schartau2017}. 
+Third, parameter values estimated from laboratory experiments may be specific to the experimental setting and resulting simulations are likely to diverge from observations in the field.
 
-Due to the difficulty of estimating parameter values in mechanistic models, and accompanying the massive growth of data upon which they depend, statistical (or machine learning) models have lead the modelling field in the past decades \cite{Cox:2017hv}. Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015} allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
+Due to the difficulty of estimating parameter values in mechanistic models, and accompanying the massive growth of data upon which they depend, statistical (or machine learning) models have lead the modelling field in the past decades \cite{Cox:2017hv}. 
+Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015}, allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
 However, the use of machine learning models for predictions has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
 In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
+% Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
+
+% Meanwhile, the field of statistics experienced a boom following the massive growth of data, signaling the era of data science and machine learning \cite{Cox:2017hv}.
+% With the advent of machine learning methods, it is possible to learn and capture extremely complex nonlinear patterns and information hidden in huge datasets. 
+% % Machine learning models can be seen as the opposite of mechanistic models, as they are flexible, data-driven and they do not necessarily respect domain-specific constraints.
+% Contrasting with mechanistic models, machine learning models are inherently flexible and data-driven, often operating without adhering to domain-specific constraints. 
+% A significant characteristic of contemporary machine learning, particularly deep learning models, is their ability to autonomously learn at multiple levels of abstraction, efficiently extracting pertinent features from large datasets \cite{LeCun2015}.
+
 The fields of mechanistic modelling and statistical modelling have mostly evolved independently \cite{zdeborova_understanding_2020}, due to several reasons. 
 On the one hand, domain scientists have often been reluctant in learning about machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. 
 On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any \textit{a priori} physical knowledge. 
 However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models \cite{Molnar.2020sisk,Rudin.2022,Schneider2017,rasp2018,Yazdani2020,Abarbanel2018,Carrassi2018,Bocquet2019,Gabor2015,Gharamti2017,Curtsdotter2019,Rosenbaum2019,Toms2020,Brajard2021}.
-Inverse modelling is a attempt to bridge the statistical and mechanistic modelling fields. Inverse modelling consists in using observation data to recover the parameters of a mechanistic model that can best explain the data  \cite{Wigner.1960, Rude:2018jv}. Differentiable programming is key in this process.
+% If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
+Inverse modelling is a attempt to bridge the statistical and mechanistic modelling fields \cite{Wigner.1960, Rude:2018jv}. 
+Differentiable programming is key in this process.
 
 
 % A key way to achieve this is through differentiable programming, i.e., being able to compute derivatives of any computer program describing a scientific model.
