@@ -120,16 +120,6 @@ def save_bib(bib_data, file, manual_backslash_plague_fix=True):
         bib_data.to_file(file, bib_format="bibtex")
 
 
-#db.to_file(f_out, bib_format='bibtex')  # <- what doesn't work correctly
-astr = db.to_string(bib_format='bibtex')
-astr = astr.replace("\\\\", "\\")
-astr = astr.replace("\_", "_")
-astr = astr.replace("\&", "&")
-astr = astr.replace("\%", "%")
-with open(f_out, "w") as f_handle:
-    f_handle.write(astr)
-
-
 if __name__ == "__main__":
     working_directory = sys.argv[1]
     output_file = sys.argv[2]
