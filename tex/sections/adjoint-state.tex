@@ -13,8 +13,8 @@ The derivation of adjoint methods using the Lagrangian formulation can be found 
 % reference: Sensitivity theory of non-linear systems
 
 The derivation of the discrete adjoint equations is carried out once the numerical scheme for solving Equation \eqref{eq:original_ODE} has been specified (see Section \ref{section:intro-numerical-solvers}).  
-Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we evaluate the solution at $u_i = u(t_i; \theta)$. 
-Any numerical solver can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$.
+Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we aim to find approximate numerical solutions $u_i \approx u(t_i; \theta)$. 
+Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, and we had combine the systems of equations defined by the iterative solver as $G(U; \theta) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
 
 We are interested in differentiating an objective or loss function $L(U, \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solver, examples of loss functions now include 

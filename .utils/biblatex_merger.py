@@ -102,12 +102,26 @@ def merge_bib(path):
     return filtered_bib_data
 
 
-def save_bib(bib_data, file):
-    bib_data.to_file(file, bib_format="bibtex")
+def save_bib(bib_data, file, manual_backslash_plague_fix=True):
+    if manual_backslash_plague_fix:
+        astr = bib_data.to_string(bib_format='bibtex')
+        astr = astr.replace("\\\\\\\&", "\&")
+        astr = astr.replace("\\\\\\&", "\&")
+        astr = astr.replace("\\\\\&", "\&")
+        astr = astr.replace("\\\\&", "\&")
+        astr = astr.replace("\\\&", "\&")
+        astr = astr.replace("\\&", "\&")
+        # astr = astr.replace("\_", "_")
+        # astr = astr.replace("\&", "&")
+        # astr = astr.replace("\%", "%")
+        with open(file, "w") as f_handle:
+            f_handle.write(astr)
+    else:
+        bib_data.to_file(file, bib_format="bibtex")
 
 
 if __name__ == "__main__":
     working_directory = sys.argv[1]
     output_file = sys.argv[2]
     filtered_bib_data = merge_bib(working_directory)
-    save_bib(filtered_bib_data, output_file)
+    save_bib(filtered_bib_data, output_file, manual_backslash_plague_fix=True)
