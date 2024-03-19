@@ -79,7 +79,7 @@ The updates of $\bar g_i$ then mathematically coincide with the updates in rever
 
 Modern numerical solvers use functions $g_i$ that correspond to nested functions, meaning $g_i = g_i^{(k_i)} \circ g_i^{(k_i-1)} \circ \ldots \circ g_i^{(1)} $. 
 % When in an explicit solver this happens? 
-This is certainly the case for implicit methods when $u_{i+1}$ is the solution of an iterative  Newton's method (Equation \eqref{eq:newton-method}); or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
+This is certainly the case for implicit methods when $u_{i+1}$ is the solution of an iterative Newton's method\cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
 If the number of intermediate function is large, reverse AD will result in a large computational graph, potentially leading to excessive memory usage and slow computation \cite{Margossian_2018, Alexe_Sandu_2009}.
 A solution to this problem is to introduce a customized \textit{super node} that directly encapsulates the contribution to the full adjoint in $g_i$ without computing the adjoint for each intermediate function $g_i^{(j)}$.
 Provided with the value of the Jacobian matrices $\frac{\partial g_i}{\partial u_i}$ and $\frac{\partial g_i}{\partial \theta}$, we can use the implicit function theorem to find the 
@@ -200,21 +200,14 @@ In some sense then, we can think of the discrete adjoint $\lambda = (\lambda_1, 
 
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 
 Furthermore, since the continuous adjoint method requires to numerical solve the adjoint, we are interested in the relative accuracy of the forward and backwards step. 
-It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$, $i=1,2, \ldots, s$, then the ... \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}
+It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continunous adjoint with same level of convergence than the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
+To guarantee the same order of convergence, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients \cite{Alexe_Sandu_2009}.
+Importantly, even when consistent the code generated using the discrete adjoint using AD tools (see Section \ref{section:comparison-discrete-adjoint-AD}) can be sub-optimal and manual modification of the differentiation code are required to guarantee correctness \cite{Eberhard_Bischof_1996, alexe2007denserks}.
 
-For multilinear solver, ... 
+% For multilinear solver, ... 
 
-% Different works exist regarding the consistency or inconsistency between the two approaches, and this usually depends on the ODE and equation.  
-% Proofs of the consistency of discrete adjoint methods for Runge-Kutta methods have been provided in \cite{sandu2006properties, sandu2011solution}.
-% Depending on the choice of the Runge-Kutta coefficients, we can have a numerical scheme that is both consistent for the original equation and consistent/inconsistent for the adjoint \cite{Hager_2000}.
 
-Although the discrete adjoint has been shown to be consistent with the continuous adjoint method, the code generated when using the discrete adjoint using AD tools (see Section \ref{section:comparison-discrete-adjoint-AD}) can be sub-optimal and manual modification of the differentiation code are required to guarantee correctness \cite{Eberhard_Bischof_1996, alexe2007denserks}.
-
-Furthermore, adjoint methods can fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
-In the more general case, both methods can give different computational results \cite{Sirkes_Tziperman_1997}.
-% It has been shown \cite{Sirkes_Tziperman_1997} that discrete adjoints can lead to instabilites and wrong gradients.
-
+It is important to remark that adjoint methods can fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
 Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
-% Implicit forward schemes can give rise to explicit backwards schemes, leading to unstable solutions for the gradient. \todo{not clear}
+In the more general case, discrete and continuous adjoint methods can give different computational results \cite{Sirkes_Tziperman_1997}.
 
-When using Runge-Kutta methods, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients (Equation \eqref{eq:Runge-Kutta-scheme}) in order to both have the same level of accuracy \cite{Alexe_Sandu_2009}.
