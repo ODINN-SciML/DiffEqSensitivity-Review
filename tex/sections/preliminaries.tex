@@ -5,8 +5,8 @@ Consider a system of first order ordinary differential equations (ODEs) given by
 \end{equation}
 where $u \in \mathbb{R}^n$ is the unknown solution; $f: \R^n \times \R^p \times \R \mapsto \R^n$ is a function that depends on the state $u$, some vector parameter $\theta \in \mathbb R^p$, and potentially the independent variable $t$ which we will refer as time; and with initial condition $u(t_0) = u_0$.
 Here $n$ denotes the total number of ODEs and $p$ the dimension of a parameter embedded in the functional form of the differential equation.
-Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to the case of partial differential equations (PDEs; for example, via the method of lines \cite{ascher2008numerical}) and differential algebraic equations (DAE).
-In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
+Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to the case of partial differential equations (PDEs; for example, via the method of lines \cite{ascher2008numerical}) and differential algebraic equations (DAEs) \cite{hairer-solving-2}.
+% In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
 Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
 
@@ -14,8 +14,8 @@ Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqre
 \label{section:intro-numerical-solvers}
 % Work in progress due to refactoring
 
-Numerical solvers for the solution of ODEs or initial value problems can be classified as one-step methods, among which Runge-Kutta methods are the most widely used, and multi-step methods \cite{hairer-solving-1}.
-With a long historical record in numerical analysis, Runge-Kutta methods generalize quadrature rules to iterative solve for the time discretization $u^{n} \approx u(t_n)$. 
+Numerical solvers for the solution of ODEs or initial value problems (IVP) can be classified as one-step methods, among which Runge-Kutta methods are the most widely used, and multi-step methods \cite{hairer-solving-1}.
+% With a long historical record in numerical analysis, Runge-Kutta methods generalize quadrature rules to iteratively solve for the time discretization $u^{n} \approx u(t_n)$. 
 Given an integer $s$, a $s$-stage Runge-Kutta methods is defined by generalizing numerical integration quadrature rules as follows
 \begin{align}
 \begin{split}
@@ -49,7 +49,7 @@ For implicit methods, the usually non-linear equation
     g_i(u_i; \theta) = u_i - h \beta_{n0} f(u_i, \theta, t_i) - \alpha_i = 0,
     \label{eq:solver-constriant-example}
 \end{equation}
-with $\alpha_i$ a computed coefficient that includes the information of all the past iterations, can be solved using predictor-corrector methods \cite{hairer-solving-1} or iteratively using Newton's method\cite{SUNDIALS-hindmarsh2005sundials}.  
+with $\alpha_i$ a computed coefficient that includes the information of all the past iterations, can be solved using predictor-corrector methods \cite{hairer-solving-1} or iteratively using Newton's method \cite{SUNDIALS-hindmarsh2005sundials}.  
 % \begin{equation}
 %     u_i^{(j+1)} 
 %     = 
@@ -60,12 +60,12 @@ with $\alpha_i$ a computed coefficient that includes the information of all the 
 % Stiffness
 There are many considerations at the moment of picking a numerical solver. 
 One of the most important ones is the stiffness of the differential equation we are trying to solve. 
-Although stiffness is a known phenomena in the study of differential equation solver, different definitions (and types) of instability exist in the literature. 
+Although stiffness is a known phenomena in the study of differential equation solver, different definitions and types of instability exist in the literature. 
 This is due to historical reasons \cite{Dahlquist_1985} as well as the fact that different stiff equations suffer from different types of instabilities. 
-Among them we select
+Among them we select the following. 
 \begin{itemize}
-    \item Stiff differential equations are characterized by dynamics with different time scales \cite{kim_stiff_2021}, also characterized by the phenomena of increasing oscillations\cite{Dahlquist_1985}.
     \item Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
+    \item Stiff differential equations are characterized by dynamics with different time scales \cite{kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
 \end{itemize}
 Stability properties can be achieved by the use of implicit methods over explicit methods. 
 When using explicit methods, smaller timesteps may be required to guaranteed stability. 
@@ -139,7 +139,7 @@ This formulation is very general and allows to include many different applicatio
         = 
         \prod_{i=1}^n p(y_i | \theta, t_i) .
     \end{equation}
-    When $\varepsilon_i \sim N(0, \sigma_i^2 \I)$ is the isotropic multivariate normal distribution, the maximum likelihood principle is the same as minimizing $- \log \ell(Y | \theta)$ which coincides with the mean squared error of Equation \eqref{eq:loss-state-observation}\cite{hastie2009elements},
+    When $\varepsilon_i \sim N(0, \sigma_i^2 \I)$ is the isotropic multivariate normal distribution, the maximum likelihood principle is the same as minimizing $- \log \ell(Y | \theta)$ which coincides with the mean squared error of Equation \eqref{eq:loss-state-observation} \cite{hastie2009elements},
     \begin{equation}
         \theta^* 
         = 
@@ -149,10 +149,10 @@ This formulation is very general and allows to include many different applicatio
         \, \frac{1}{2\sigma_i^2} \,
         \| y_i - H(u(t_i; \theta)) \|_2^2 .
     \end{equation}
-    Provided with a prior distribution $p(\theta)$ for the parameter $\theta$, we can further compute a posterior distribution for $\theta$ given the observations $Y$ following Bayes theorem 
-    \begin{equation}
-        p(\theta | Y) = \frac{p(Y | \theta) \, p (\theta)}{p(Y)}. 
-    \end{equation}
+    Provided with a prior distribution $p(\theta)$ for the parameter $\theta$, we can further compute a posterior distribution for $\theta$ given the observations $Y$ following Bayes theorem \cite{pml1Book}.
+    % \begin{equation}
+    %     p(\theta | Y) = \frac{p(Y | \theta) \, p (\theta)}{p(Y)}. 
+    % \end{equation}
     In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}.
     % Add mention for variatinal inference problems
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 

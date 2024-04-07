@@ -1,5 +1,5 @@
 % General statement: why gradients are important?
-Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many\cite{Razavi.2021}. 
+Evaluating how the value of a function changes with respect to its arguments and parameters plays a central role in optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
 Modern machine learning applications require the use of gradients to efficiently exploit the high-dimensional space of parameters to be inferred or learned (e.g., the weights of a neural network). 
 When optimizing an objective function, gradient-based methods (for example, gradient descent and its many variants \cite{ruder2016overview-gradient-descent}) are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 When numerically computing the posterior of a probabilistic model, gradient-based sampling strategies are better at estimating the posterior distribution than gradient-free methods. 
@@ -11,7 +11,7 @@ Furthermore, the \textit{curse of dimensionality} renders gradient-free optimiza
 \end{displayquote}
 
 % Differential Programming
-Models based on differential equations arising in simulation-based science, which play a central role in describing the behaviour of systems in natural and social sciences, are not an exception to the rule\cite{Ghattas.2021}.
+Models based on differential equations arising in simulation-based science, which play a central role in describing the behaviour of systems in natural and social sciences, are not an exception to the rule \cite{Ghattas.2021}.
 The solution of differential equations can be seen as functions that map parameter and initial conditions to state variables, similar to machine learning models.
 Some authors have recently suggested differentiable programming as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
 Being able to compute gradients or sensitivities of dynamical systems opens the door to more complex data assimilation models that leverage in strong physical priors at the same time they offer flexibility to adapt to observations.
@@ -46,7 +46,7 @@ Furthermore, numerical solutions introduce approximation errors.
 These errors can be propagated and amplified during the computation of the gradient. 
 Alternatively, there is a broad literature on numerical methods for solving differential equations \cite{hairer-solving-1, hairer-solving-2}. 
 Although each method provides different guarantees and advantages depending on the use case, this means that the tools developed to compute gradients when using a solver need to be universal enough in order to be applied to all or at least to a large set of them. 
-As coined by Uwe Naumann, \textit{the automatic generation of optimal (in terms of robustness and efficiency) adjoint versions of large-scale simulation code is one of the great open challenges in the field of High-Performance Scientific Computing}\cite{Naumann.2011}.
+As coined by Uwe Naumann, \textit{the automatic generation of optimal (in terms of robustness and efficiency) adjoint versions of large-scale simulation code is one of the great open challenges in the field of High-Performance Scientific Computing} \cite{Naumann.2011}.
 The second goal of this article is to review different methods that exist to achieve this goal.
 \begin{quote}
     \textbf{Question 2. }
@@ -56,8 +56,8 @@ The second goal of this article is to review different methods that exist to ach
 %This is certainly the case in machine learning and optimization where the goal is to minimize a loss function that depends of some predicted and target responses. 
 
 % AD
-The broader set of tools known as automatic or algorithmic differentiation (AD) aims at computing derivatives by sequentially applying the chain to the sequence of unit operations that constitute a computer program\cite{Griewank:2008kh, Naumann.2011}. 
-The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication, that are individually easy to differentiate and their composition is easy to differentiate by using the chain rule\cite{Giering:1998in}. 
+The broader set of tools known as automatic or algorithmic differentiation (AD) aims at computing derivatives by sequentially applying the chain to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
+The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication, that are individually easy to differentiate and their composition is easy to differentiate by using the chain rule \cite{Giering:1998in}. 
 More broadly than AD, differentiable programming encapsulates the set of software tools that allows to compute efficient and robust gradients though complex algorithms, including numerical solvers \cite{Innes_Zygote}. 
 Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations and/or compute an intermediate adjoint. 
 % We are going to refer to this family of methods as \textit{continuous}, and we will dedicate them a special treatment in future sections to distinguish them from the discrete algorithms that resemble more to pure AD. 

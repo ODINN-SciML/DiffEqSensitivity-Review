@@ -77,9 +77,9 @@ Another extension of dual numbers that should not be confused with multidimensio
 % \vspace*{5px}
 
 A useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
-Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{Griewank:2008kh, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or its linearized representation via Wengert trace/tape\cite{Wengert_1964, Bauer_1974, Griewank:2008kh}. 
+Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{Griewank:2008kh, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or its linearized representation via a Wengert trace/tape\cite{Wengert_1964, Bauer_1974, Griewank:2008kh}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
-We can define $v_1, v_2, \ldots, v_p = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{p+1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
+We can define $v_{-p+1}, v_{-p+2}, \ldots, v_0 = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
 Once the graph is constructed, we can compute the derivative of every node with respect to other (a quantity known as the tangent) using the Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
 \begin{equation}
@@ -90,7 +90,7 @@ Once the graph is constructed, we can compute the derivative of every node with 
     \prod_{k=0}^{K-1} \frac{\partial w_{k+1}}{\partial w_{k}},
 \end{equation}
 where the sum is calculated with respect to all the directed paths in the graph connecting the input and target node.
-Instead of evaluating the last expression for all possible path, a simplification is to increasingly evaluate $j=p+1, \ldots, m$ using the recursion 
+Instead of evaluating the last expression for all possible path, a simplification is to increasingly evaluate $j=1, \ldots, m$ using the recursion 
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
@@ -107,7 +107,7 @@ The only requirement for differentiation is being able to compute the derivative
 
 Reverse mode AD is also known as the adjoint of cotangent linear mode, or backpropagation in the field of machine learning. 
 The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that does not depend of the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
-Given a directional graph of operations defined by a Wengert list \cite{Wengert_1964}, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
+Given a directional graph of operations defined by a Wengert list, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
 \begin{equation}
     \bar v_i 
     = 
@@ -121,7 +121,7 @@ Since in reverse-mode AD the values of $\bar w$ are being updated in reverse ord
 % , i.e., for nonlinear function evaluations or in the presence of complex flow graphs, 
 we need to know the state value of all the argument variables $v$ of $w$ in order to evaluate the terms $\frac{\partial w}{\partial v}$.
 These state values (required variables) need to be either stored in memory during the evaluation of the function or recomputed on the fly in order to be able to evaluate the derivative. 
-Checkpointing schemes exist to limit and balance the amount of soring versus recomputation (see section \ref{section:checkpointing}).
+Checkpointing schemes exist to limit and balance the amount of storing versus recomputation (see section \ref{section:checkpointing}).
 
 
 \subsubsection{AD connection with JVPs and VJPs}
@@ -139,7 +139,7 @@ The final gradient is computed as the chain product of vectors and Jacobians as
  \nabla_\theta L = \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1, 
 \end{equation}
 with $Dg_i$ the Jacobian of each nested function evaluated at the intermediate values $g_{i-1} \circ g_{i-2} \circ \ldots \circ g_i (\theta)$.
-Notice that in the last equation, $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
+Notice that in the last equation $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
 In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiplying the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
 The important aspect of the backwards case is that we will always be computing VJPs, since $\nabla \ell$ is a vector.
 Since VJPs are easier to evaluate than full Jacobians, the reverse mode will in general be faster when $1 \ll p$.
@@ -178,7 +178,7 @@ We discuss in section \ref{section:checkpointing} how this problem can be overco
 In a practical sense, many AD systems are reduced to the computation of only directional derivatives (VJPs) and JVPs \cite{Griewank:2008kh}.
 % An important observation is that most AD systems construct full Jacobians by performing multiple VJPs and JVPs instead of constructing the full Jacobian at once. 
 Full Jacobians $J \in \R^{n \times p}$ (e.g., the sensitivity $s = \frac{\partial u}{\partial \theta} \in \R^{n \times p}$) can be fully reconstructed by the independent computation of the $p$ columns of $J$ via the JVPs $J e_i$, with $e_i \in \R^p$ the canonical vectors; or by the calculation of the $m$ rows of $J$ via the VJPs $e_j^T J$, with $e_j \in \R^n$.
-An important observation here is then how to efficiently compute sparse Jacobians, which are commonplace in large-scale nonlinear systems, discretized PDEs, etc., and are often a major computational bottleneck for solving those problems. 
+An important observation here is then how to efficiently compute sparse Jacobians, which are commonplace in large-scale nonlinear systems and discretized PDEs. 
 Consider the example of a Jacobian ${J}_{\text{sparse}}$ with known sparsity pattern given by
 \begin{equation}
     {J}_{\text{sparse}} = \begin{bmatrix}

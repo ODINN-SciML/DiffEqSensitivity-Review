@@ -1,4 +1,4 @@
-Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations} simultaneously with the original system of linear equations defined by the numerical solver. 
+Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, simultaneously with the original system of equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
 
 The idea of the adjoint method is to treat the differential equation as a constraint in an optimization problem and then differentiate an objective function subject to that constraint. 
@@ -12,7 +12,7 @@ The derivation of adjoint methods using the Lagrangian formulation can be found 
 
 % reference: Sensitivity theory of non-linear systems
 
-The derivation of the discrete adjoint equations is carried out once the numerical scheme for solving Equation \eqref{eq:original_ODE} has been specified (see Section \ref{section:intro-numerical-solvers}).  
+The derivation of the discrete adjoint equations is carried out once the numerical scheme for solving Equation \eqref{eq:original_ODE} has been specified.  
 Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we aim to find approximate numerical solutions $u_i \approx u(t_i; \theta)$. 
 Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, and we had combine the systems of equations defined by the iterative solver as $G(U; \theta) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
 
@@ -196,16 +196,3 @@ Another more natural way of finding the adjoints $\lambda$ is by noticing that t
 with final condition $\lambda_N$. 
 This means that we can solve the adjoint equation backwards, i.e., in reverse mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
 Unless the loss function $L$ is linear in $U$, this procedure requires to know the value of $u_i$ (or some equivalent form of it) at any given timestep. 
-% \todo[inline]{Well, in this example it doesn't really because the problem is linear. The the linear misfit $u_i-u_i^{obs}$ could be precomputed when evaluating the forward model and instead of  reading the obs $u_i^{obs}$ from file, you could simply store the difference in forward and then restore the difference from file in the adjoint. Here, the need to restore only arises due to the nonlinearity of the loss function.}
-% When do we solve this backwards and when forward?
-
-
-%In order to compute the gradient of the full solution of the differential equation, we apply this method sequentially using the chain rule. One single step of the state method can be understood as the chain of operations $\theta \mapsto g \mapsto u \mapsto L$. This allows us to create adjoints for any primitive function $g$ (i.e. the numerical solver scheme) we want, and then incorporated it as a unit of any AD program. 
-
-% \subsubsection{Further remarks}
-
-% Conection with duality
-% Conection with the adjoint operator
-% Different ways of deriving the adjoint equations: lagrangian
-
-% \paragraph{Is the discrete adjoint method the same as backwards AD?}

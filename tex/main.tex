@@ -1,59 +1,20 @@
 \documentclass[10pt]{article}
 
-\setlength{\oddsidemargin}{0in}
-\setlength{\textwidth}{6.5in}
-\setlength{\topmargin}{-0.5in}
-\setlength{\textheight}{9in}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%% General packages %%%%%%%%
+%%%%%%% Customized packages %%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{graphicx} % Include figure files
-\usepackage{caption}
-\usepackage{color} % Include colors for document elements
-\usepackage{dcolumn} % Align table columns on decimal point
-\usepackage{float}
-\usepackage[hidelinks]{hyperref} % hidelinks added to not display red box for links
-\usepackage{algorithm}
-\usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
-\usepackage{todonotes} % Taking notes
-\usepackage{csquotes}
-\usepackage{titlesec}
-\usepackage{multirow}
-\setcounter{tocdepth}{4}
-\setcounter{secnumdepth}{4}
-
-\titleformat{\paragraph}
-{\normalfont\small\bfseries}{\theparagraph}{1em}{}
-\titlespacing*{\paragraph}
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
-\usepackage{titlesec}
-
-\setcounter{tocdepth}{4}
-\setcounter{secnumdepth}{4}
-
-\titleformat{\paragraph}
-{\normalfont\small\bfseries}{\theparagraph}{1em}{}
-\titlespacing*{\paragraph}
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%% Customized packages %%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Authors information
+\usepackage{mystyle}
 \usepackage{contributors}
-
-% Julia code
+\usepackage{mymath}
 \usepackage{jlcode}
 
-% Math 
-\usepackage{mymath}
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-% Bibliography %
-\usepackage{mybib}
+
 % IMPORTANT NOTE:
 % All the bib files are centralized here in bibliography.bib, which is 
 % automatically created by compiling all the required cites in the references contained inside ./bibs/
@@ -148,7 +109,7 @@
 \label{section:continuous-adjoint}
 \input{sections/adjoint-continuous}
 
-\subsection{Mathematical comparision of the methods}
+\subsection{Mathematical comparison of the methods}
 \label{section:compatison-math}
 \input{sections/methods-comparison}
 
@@ -189,11 +150,12 @@
 \newpage
 \subsection{Supplementary code}
 \input{appendix/code}
+\label{appedix:code}
+
 
 % \section{Glossary} 
 
 \newpage
-
 \printbibliography[heading=bibintoc, title={References}]
 
 \end{document}
