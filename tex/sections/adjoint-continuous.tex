@@ -24,7 +24,7 @@ The adjoint equation is obtained by writing the sensitivity equation in the form
     0,
     \label{eq:integrated-sensitivity-equation}
 \end{equation}
-where this equation must be satisfied for every function $\lambda(t)$ in order for Equation \eqref{eq:continuous-adjoint} to be true. 
+where this equation must be satisfied for every function $\lambda(t)$ in order for Equation \eqref{eq:sensitivity_equations} to be true. 
 The next step is to get rid of the time derivative applied to the sensitivity $s(t)$ using integration by parts: 
 \begin{equation}
     \inttime \lambda(t)^T \frac{ds}{dt} dt
@@ -83,10 +83,6 @@ The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be desc
     \item Solve the backwards adjoint differential equation given by Equation \eqref{eq:casa-adjoint-equation};
     \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.
 \end{enumerate}
-
-More general recipes for deriving continuous adjoint methods exists, including generalizations for PDEs. 
-The adjoint methods can be formulated as ... 
-
-% \subsubsection{Are discrete and continuous adjoint the same?}
+The same recipe used here to derived the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000} and DAE \cite{Cao_Li_Petzold_2002}. 
 
 

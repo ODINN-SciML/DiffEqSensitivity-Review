@@ -86,4 +86,4 @@ totallength(x::AbstractArray) = sum(totallength,x)
 grad3 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = ForwardDiffSensitivity(), saveat = 0.1, internalnorm = (u,t) -> sqrt(sum(x->sse(x),u) / totallength(u)), abstol=abstol, reltol=reltol)), p)
 # grad3 = ([212.71042521681392],)
 \end{jllisting}
-Notice that current implementations of forward AD inside \texttt{SciMLSensitivity.jl} already accounts for this and there is no need to specify the internal norm. 
+Notice that current implementations of forward AD inside \texttt{SciMLSensitivity.jl} already accounts for this and there is no need to specify the internal norm $\clubsuit_\text{\ref{code:AD-wrong}}$. 

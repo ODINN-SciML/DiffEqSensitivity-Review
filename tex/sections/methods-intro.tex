@@ -7,7 +7,7 @@
 
 There is a large family of methods for computing gradients and sensitivities of systems of differential equations. 
 Depending on the number of parameters and the complexity of the differential equation we are trying to solve, they have different mathematical, numerical, and computational advantages.
-These methods can be roughly classified as  follows\cite{ma2021comparison}. 
+These methods can be roughly classified as  follows \cite{ma2021comparison}. 
 \begin{itemize}
     \item \textit{Continuous} vs \textit{discrete}  methods
     \item \textit{Forward} vs \textit{reverse} methods
@@ -15,7 +15,7 @@ These methods can be roughly classified as  follows\cite{ma2021comparison}.
 Figure \ref{fig:scheme-all-methods} displays a classification of some methods under this two-fold classification. 
 
 The \textit{continuous} vs \textit{discrete} distinction is one of mathematical and numerical nature. 
-When solving for the gradient of a differential equation, one needs to derive both a mathematical expression for the gradient (the \textit{differentiation step}) and solve the equations using a numerical solver (the \textit{discretization step})\cite{bradley2013pde, Onken_Ruthotto_2020, FATODE2014, Sirkes_Tziperman_1997}. 
+When solving for the gradient of a differential equation, one needs to derive both a mathematical expression for the gradient (the differentiation step) and solve the equations using a numerical solver (the discretization step) \cite{bradley2013pde, Onken_Ruthotto_2020, FATODE2014, Sirkes_Tziperman_1997}. 
 Depending on the order of these two operations, we are going to talk about discrete methods (discretize-then-differentiate) or continuous methods (differentiate-then-discretize). 
 In the case of \textit{discrete} methods, gradients are computed based on simple function evaluations of the solutions of the numerical solver (finite differences, complex step differentiation) or by manipulation of atomic operations inside a numerical solver (AD, symbolic differentiation, discrete adjoint method). 
 In the case of \textit{continuous} methods, a new set of differential equations is derived for the sensitivity (sensitivity equations) or the adjoint (continuous adjoint method) of the system, both quantities that allow the calculation of the desired gradient.   
@@ -28,7 +28,8 @@ However, one has to keep in mind that AD computes the exact derivative of an app
 The \textit{forward} vs \textit{reverse} distinction regards when the gradient is computed, if this happens during the forward pass of the numerical solver or in a later recalculation \cite{Griewank:2008kh}. 
 In all \textit{forward} methods the solution of the differential equation is solved sequentially and simultaneously with the gradient during the forward pass of the numerical solver.  
 On the contrary, \textit{reverse} methods compute the gradient tracking backwards the forward model by resolving a new problem that moves in the opposite direction as the original numerical solver. 
-For systems of ordinary differential equations (ODEs) and initial value problems (IVPs), most numerical methods solve the differential equation progressively moving forward in time, reason why forward methods solve the gradient moving \textit{forward} in time -- or, instead, they solve a new system that goes \textit{backwards} in time.
+For systems of ordinary differential equations (ODEs) and initial value problems (IVPs), most numerical methods solve the differential equation progressively moving forward in time, meanign that reverse methods then solve for the gradient moving backwards in time. 
+% reason why forward methods solve the gradient moving \textit{forward} in time -- or, instead, they solve a new system that goes \textit{backwards} in time.
 
 As we will discuss in the following sections, forward methods are very efficient for problems with a small number of parameters we want to differentiate with respect to, while backwards methods are more efficient for a large number of parameters but they come with a larger memory cost which needs to be overcome using different performance tricks. 
 With the exception of finite differences and complex step differentiation, the rest of the forward methods (i.e. forward AD, sensitivity equations, symbolic differentiation) compute the full sensitivity of the differential equation, that is, how the full solution of the ODEs changes when we change the parameters of the model. 

@@ -1,20 +1,64 @@
-For sufficient small systems of less than 100 parameters and ODEs, Forward AD is the most efficient method, outperforming sensitivity and adjoint methods \cite{ma2021comparison}.
+There is no sensitivity method that is universally suitable for all problems equally and that performs better under all conditions. 
+However, in light of the methods we explore in this work, we can give general guidelines on which methods to use in specific circumstances.
 
-Adjoint methods are computationally more efficient for complicated numerical solvers, but they are also more difficult to implement.
+\vspace{5px}
+\noindent\textit{Working with small systems. }
+For sufficient small systems of less than $100$ parameters and ODEs, it has been shown that forward AD and sensitivity equations are the most efficient method, outperforming sensitivity and adjoint methods \cite{ma2021comparison}.
+Furthermore, as we have shown in Section \ref{section:direct-methods}, automatic differentiation outperforms other form of direct differentiation (finite differences, complex-step differentiation). 
+Modern scientific software commonly support automatic differentiation, making AD our preferred choice for small problems. 
+We will make further comments in the choice between discrete and continuous methods later in this section.
 
+\vspace{5px}
+\noindent\textit{Working with large systems. }
+For larger systems with more parameters and ODEs, reverse techniques are required. 
+
+\vspace{5px}
+\noindent\textit{More than one sensitivity method. }
 If well direct methods like AD and complex-step differentiation can be costly to use directly on a numerical solver, they can still be used to compute the sensitivities required for the calculation of the more efficient adjoint method (see discussion in Section \ref{section:computing-vjp-inside-solver}). 
 
-As an AD algorithm, we support the use of forward and reverse AD as the method of choice over finite differences, complex step differentiation, and symbolic differentiation. 
-The first two do not really provide an advantage over AD in terms of precision, required some tuning of the stepsize $\varepsilon$, and 
+\vspace{5px}
+\noindent\textit{Direct methods of choice. }
+We further recommend the use of automatic differentiation (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
+As we had seen in Section \ref{section:direct-methods}, finite differences and complex step differentiation do not really provide an advantage over AD in terms of precision and require the tuning of the stepsize $\varepsilon$. 
+
 On the othe side, if well symbolic differentiation can be more efficient in neasted cases (see ...) or when the spartity patter of the Jacobian is known, in general this advantage is not drasmatic in most real cases. 
 
-When using discrete methods (discretize-then-differentiate), it is important to be aware that the differentiation machinery is applied after algorithm to solve the differential equation has been specified, meaning that the computed derivatives are not just with respect to the numerical solution, but also with respect to the algorithm used \cite{Eberhard_Bischof_1996}.
-This is certainly the case when the iterative solver have adaptive stepsize controllers that depend on the parameter to differentiate, as we explored in Section \ref{section:software-Forward-AD}.
+
+\vspace{5px}
+\noindent\textit{Discrete vs continuous. }
+When using discrete methods, it is important to be aware that the differentiation machinery is applied after algorithm to solve the differential equation has been specified, meaning that the derivatives are computed with respect to the used algorithm instead of the solution \cite{Eberhard_Bischof_1996}.
+As we explored in Section \ref{section:software-Forward-AD}, this is the case when the iterative solver have adaptive stepsize controllers that depend on the parameter to differentiate, as we explored in Section \ref{section:software-Forward-AD}.
 Although some solutions has been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996}, this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
+Furthermore, continuous sensitivity analysis is more efficient while discrete adjoint method is more stable \cite{rackauckas2020universal}.
 
-Furthermore, continuous sensitivity analysis is more efficient while discrete adjoint method is more stable (discussion in appendix of \cite{rackauckas2020universal})
+\vspace{5px}
+\noindent\textit{Rely on existing software. }
+Direct methods are easier to implement and sometimes do not required any special package, although we recommend the use of robust and tested software when available. 
 
-Generalizations to DAE \cite{Cao_Li_Petzold_2002}
+
+% Furthermore, it is important to be aware than when using AD or any other technique we are differentiating the algorithm used to lead to the numerical solution, no the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.
+% When comparing between discrete and continuous methods, more than talking about computational efficiency we are focusing on the mathematical consistency of the method, that is, \textit{is the method estimating the right gradient?}. 
+% As we will discuss in the following sections, forward methods are very efficient for problems with a small number of parameters we want to differentiate with respect to, while backwards methods are more efficient for a large number of parameters but they come with a larger memory cost which needs to be overcome using different performance tricks. 
+% Neither forward nor reverse mode is more efficient in all cases \cite{Griewank_1989}, as we will discuss in Section \ref{sec:vjp-jvp}.
+% When the function to differentiate has a larger input space than output ($q \ll p$), AD in reverse mode is more efficient as it propagates the chain rule by computing VJPs, the reason why reverse-mode AD is more used in modern machine learning.
+%  leading to performance overhead that makes forward AD more efficient when $p \lesssim q$
+% The former are easier to implement since they are agnostic with respect to the mathematical and numerical properties of the system of ODEs; however, they tend to be either inaccurate, memory-expensive, or at times unfeasible for large models. 
+% which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered
+% For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
+
+\vspace{5px}
+\noindent\textit{Adjoint methods. }
+Adjoint methods are computationally more efficient for complicated numerical solvers, but they are also more difficult to implement.
+For programming languages like Julia that support adjoint calculation, we recommend to use this ... 
+
+
+
+
+
+
+% Generalizations to DAE \cite{Cao_Li_Petzold_2002}
+
+% See recommendations at \cite{Shen_diff_modelling}.
 
 % Mention to limit cases when working with chaotic systems
 \subsection{Chaotic systems}
