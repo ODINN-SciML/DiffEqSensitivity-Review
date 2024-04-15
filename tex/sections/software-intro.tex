@@ -3,7 +3,7 @@
 
 In this section, we address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
 In order to address this point, it is important to make one further distinction between the methods introduced in Section \ref{section:methods}, i.e., between those that apply direct differentiation at the algorithmic level and those that are based on numerical solvers.  
-The former are easier to implement since they are agnostic with respect to the mathematical and numerical properties of the system of ODEs; however, they tend to be either inaccurate, memory-expensive, or at times unfeasible for large models. 
+The former require a much different implementation since they are agnostic with respect to the mathematical and numerical properties of the system of ODEs; however, they tend to be either inaccurate, memory-expensive, or at times unfeasible for large models. 
 The latter family of methods that are based on numerical solvers include the sensitivity equations and the adjoint methods, both discrete and continuous; they are more difficult to implement and for real case applications require complex software implementations, but they are also more accurate and adequate. 
 This section is then divided in two parts:
 \begin{itemize}

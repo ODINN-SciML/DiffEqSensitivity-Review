@@ -1,6 +1,6 @@
-In symbolic differentiation, functions are represented algebraically instead of algorithmically, reason why many symbolic differentiation tools are included inside computer algebra systems (CAS) \cite{Symbolics_jl_2022}. 
+In symbolic differentiation, functions are represented algebraically instead of algorithmically, which is why many symbolic differentiation tools are included inside computer algebra systems (CAS) \cite{Symbolics_jl_2022}. 
 Instead of numerically evaluating the final value of a derivative, symbolic systems define \textit{algebraic} objects, including variable names, expressions, operations, and literals. 
-For example, the relation $y = x^2$ is interpreted as expression with two variables, $x$ and $y$, and the symbolic system need to generate the derivative $y' = 2 \times x$ with $2$ a numeric literal, $\times$ a binary operation, and $x$ the same variable assignment than in the original expression.
+For example, the relation $y = x^2$ is interpreted as expression with two variables, $x$ and $y$, and the symbolic system generates the derivative $y' = 2 \times x$ with $2$ a numeric literal, $\times$ a binary operation, and $x$ the same variable assignment than in the original expression.
 When the function to differentiate is large, symbolic differentiation can lead to \textit{expression swell}, that is, exponentially large or complex symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 Here, an important piece of CAS is simplification routines that reduce the size and complexity of algebraic expressions by finding common sub-expressions.  
 This can make symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 

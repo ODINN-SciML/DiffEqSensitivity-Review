@@ -37,8 +37,7 @@ Consider the arrowhead matrix given by
     \end{bmatrix}.
 \end{equation}
 In this case, both reverse mode AD and forward mode AD will have to perform $n$ VJPs and JVPs, respectively (for $J_{\text{arrowhead}} \in \R^{n \times n}$ arrowhead matrix), and there is no computational benefit of coloring the matrix here. 
-Instead, symbolic differentiation constructs a symbolic representation of the sparse Jacobian and can fill the Jacobian with $n + 2 \cdot (n-1)$ computations, where each computation is significantly cheaper than each VJP or JVP.
-
+Instead, symbolic differentiation constructs a symbolic representation of the sparse Jacobian and can fill the Jacobian with $n + 2 \cdot (n-1)$ computations, where each computation is significantly cheaper than each VJP or JVP. 
 % This may be worth adding, but not sure yet.
 % Consider the example given in \cite{Griewank:2008kh}
 % \begin{equation}
@@ -191,6 +190,10 @@ The partial component in Equation \eqref{eq:rk-sensitivity-2} carrying the coeff
 which coincides with the Runge-Kutta scheme we will obtain for the original sensitivity equation. 
 This means that forward AD on Runge-Kutta methods leads to solutions for the sensitivity that have the same convergence properties of the forward solver. 
 
+Note that consistency does not imply that an ODE solver is necessarily correct or stable under such a transformation. 
+Such a property requires that other aspects of the solver, such as adaptivity and error control, take into account the properties of the derivative. Appendix \ref{appendix:dual-number-solver} explores this further by demonstrating that common implementations of adaptive ODE solvers may not be convergent when forward AD is applied to solver even though the process is mathematically consistent. 
+This highlights that additional factors beyond consistency must be considered when understanding whether an implementation is convergent.
+
 \subsubsection{Consistency: discrete and continuous adjoints}
 
 % There is a large family of adjoint methods that in first order can be classified as discrete and continuous adjoints. 
@@ -200,7 +203,7 @@ In some sense then, we can think of the discrete adjoint $\lambda = (\lambda_1, 
 
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 
 Furthermore, since the continuous adjoint method requires to numerical solve the adjoint, we are interested in the relative accuracy of the forward and backwards step. 
-It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continunous adjoint with same level of convergence than the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
+It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continunous adjoint with same level of convergence of the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
 To guarantee the same order of convergence, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients \cite{Alexe_Sandu_2009}.
 Importantly, even when consistent the code generated using the discrete adjoint using AD tools (see Section \ref{section:comparison-discrete-adjoint-AD}) can be sub-optimal and manual modification of the differentiation code are required to guarantee correctness \cite{Eberhard_Bischof_1996, alexe2007denserks}.
 

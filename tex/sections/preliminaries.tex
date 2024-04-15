@@ -31,7 +31,7 @@ Given an integer $s$, a $s$-stage Runge-Kutta methods is defined by generalizing
 \end{split}
 \end{align}
 where $u^{n} \approx u(t_n)$ approximates the solution at time $t_n$; timesteps $\Delta t_n = t_{n+1}-t_n$; and coefficients $a_{ij}$, $b_i$, and $c_j$, with $i,j=1, 2,\ldots, j$, usually represented in the form of a tableau. 
-A Runge-Kutta methods is called explicit if $a_{ij}=0$ for $i \leq j$; diagonally implicit if $a_{ij}=0$ for $i < j$; and implicit otherwise. 
+A Runge-Kutta methods is called explicit if $a_{ij}=0$ for $i \leq j$; diagonally implicit if $a_{ij}=0$ for $i < j$; and fully implicit otherwise. 
 Different choices of number of stages and coefficients give different orders of convergence of the numerical scheme \cite{Butcher_Wanner_1996, Butcher_2001}. 
 
 On the contrary, multisteps linear solvers are of the form 
@@ -41,7 +41,7 @@ On the contrary, multisteps linear solvers are of the form
     \Delta t_n \sum_{j=0}^{k_2} \beta_{nj} f(u^{n-j}, \theta, t_{n-j})
 \end{equation}
 where $\alpha_{ni}$ and $\beta_{nj}$ are numerical coefficients \cite{hairer-solving-1}.
-In most cases, including Adam and BFG methods, we have the coefficients $\alpha_{ni} = \alpha_i$ and $\beta_{nj}=\beta_j$, meaning that the coefficient do not depend on the iteration. 
+In most cases, including Adam and BDF methods, we have the coefficients $\alpha_{ni} = \alpha_i$ and $\beta_{nj}=\beta_j$, meaning that the coefficient do not depend on the iteration. 
 Notice that multisteps linear methods are linear in the function $f$, which is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
 Explicit methods are characterized by $\beta_{n, 0} = 0$ and are easy to solve by direct iterative updates. 
 For implicit methods, the usually non-linear equation 
@@ -68,7 +68,7 @@ Among them we select the following.
     \item Stiff differential equations are characterized by dynamics with different time scales \cite{kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
 \end{itemize}
 Stability properties can be achieved by the use of implicit methods over explicit methods. 
-When using explicit methods, smaller timesteps may be required to guaranteed stability. 
+When using explicit methods, smaller timesteps may be required to guarantee stability. 
 
 % Timestep controller
 Another important consideration is how to pick the time-steps $\Delta t_i$ in a numerical solver \cite{hairer-solving-1}. 
@@ -110,7 +110,7 @@ This formulation is very general and allows to include many different applicatio
     \end{equation}
     with $\omega_i$ some arbitrary non-negative weights.
     More generally, misfit functions used in optimal estimation and control problems map from the model's state space, in this case the solution $u(t)$, to the observation space define by a new variable $y(t) = H(u(t, \theta))$, where $H: \R^n \mapsto \R^o$ is a given function mapping the latent state to observational space \cite{1975-Bryson-Ho-optimal-control}. 
-    In these cases, the lost function is instead 
+    In these cases, the loss function is instead 
     \begin{equation}
         L(\theta) 
         =
@@ -201,7 +201,7 @@ For example, for the loss function in Equation \eqref{eq:quadratic-loss-function
     \frac{\partial L}{\partial \theta} = 0.
     \label{eq:dLdu}
 \end{equation}
-Just as in this last example, in most applications the loss function $L(\theta)$ will depend on $\theta$ just thought $u$, meaning $\frac{\partial L}{\partial \theta} = 0$.
+Just as in this last example, in most applications the loss function $L(\theta)$ will depend on $\theta$ just through $u$, meaning $\frac{\partial L}{\partial \theta} = 0$.
 The complicated term to compute is the matrix of derivatives $\frac{\partial u}{\partial \theta}$, usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
 \begin{equation}
  s 

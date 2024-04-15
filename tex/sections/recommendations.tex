@@ -3,8 +3,9 @@ However, in light of the methods we explore in this work, we can give general gu
 
 \vspace{5px}
 \noindent\textit{Working with small systems. }
-For sufficient small systems of less than $100$ parameters and ODEs, it has been shown that forward AD and sensitivity equations are the most efficient method, outperforming sensitivity and adjoint methods \cite{ma2021comparison}.
-Furthermore, as we have shown in Section \ref{section:direct-methods}, automatic differentiation outperforms other form of direct differentiation (finite differences, complex-step differentiation). 
+For sufficient small systems of less than $50$ parameters and ODEs, it has been shown that forward AD and sensitivity equations are the most efficient method, outperforming sensitivity and adjoint methods. \cite{ma2021comparison} holds the original benchmarks, though the \texttt{SciMLBenchmarks} system continually updates the benchmarks and has revised the cutoff point as reverse-mode AD engines improved. 
+See \url{https://docs.sciml.ai/SciMLBenchmarksOutput/stable/} for continued updates.
+Furthermore, as we have shown in Section \ref{section:direct-methods}, automatic differentiation outperforms other forms of direct differentiation (finite differences, complex-step differentiation). 
 Modern scientific software commonly support automatic differentiation, making AD our preferred choice for small problems. 
 We will make further comments in the choice between discrete and continuous methods later in this section.
 
@@ -27,14 +28,14 @@ On the othe side, if well symbolic differentiation can be more efficient in neas
 \vspace{5px}
 \noindent\textit{Discrete vs continuous. }
 When using discrete methods, it is important to be aware that the differentiation machinery is applied after algorithm to solve the differential equation has been specified, meaning that the derivatives are computed with respect to the used algorithm instead of the solution \cite{Eberhard_Bischof_1996}.
-As we explored in Section \ref{section:software-Forward-AD}, this is the case when the iterative solver have adaptive stepsize controllers that depend on the parameter to differentiate, as we explored in Section \ref{section:software-Forward-AD}.
-Although some solutions has been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996}, this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
-Furthermore, continuous sensitivity analysis is more efficient while discrete adjoint method is more stable \cite{rackauckas2020universal}.
+As we explored in Section \ref{section:software-Forward-AD}, this can mean the method is non-convergent in the case where the iterative solver has adaptive stepsize controllers that depend on the parameter to differentiate.
+Although some solutions has been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996} (and have been implemented in the case of the Julia implementations), this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
+Using many of the aforementioned ``tricks'', such as continuous checkpointing and Gaussian quadrature approximations, continuous sensitivity analysis tends to be more memory and computationally efficient. However, the errors of discrete adjoint method's derivative error may better represent the actual code being evaluated, and thus in some instances has been found to lead to more stable optimizations. A simplification of this result can then be summed up as, continuous adjoint methods are more efficient while discrete adjoint methods are more stable\cite{rackauckas2020universal}, though the reverse can apply and as such the choice ultimately depends on the nuances of the application.
 
 \vspace{5px}
 \noindent\textit{Rely on existing software. }
-Direct methods are easier to implement and sometimes do not required any special package, although we recommend the use of robust and tested software when available. 
-
+Direct methods are easier to implement in programming languages where AD already exists and sometimes does not required any special package, but users must be aware of the aforementioned convergence issues of AD naively applied to solvers. 
+Thus we recommend the use of robust and tested software when available as the solvers must apply corrections to AD implementations in order to guarantee numerically correct derivatives.
 
 % Furthermore, it is important to be aware than when using AD or any other technique we are differentiating the algorithm used to lead to the numerical solution, no the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.
 % When comparing between discrete and continuous methods, more than talking about computational efficiency we are focusing on the mathematical consistency of the method, that is, \textit{is the method estimating the right gradient?}. 
@@ -77,4 +78,4 @@ However, computing derivatives using numerical methods of statistical quantities
 As a consequence, the solutions of the forward and adjoint sensitivity equations blow up (exponentially fast) instead of converging to the actual derivative.
 To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.
 
-In Julia this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}.
+In Julia this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}. Standard derivative approximations are inappropriate for such systems and will not give convergent estimates. This includes AD of a solver.
