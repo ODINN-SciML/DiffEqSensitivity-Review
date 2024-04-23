@@ -142,6 +142,39 @@
     year = "2018"
 }
 
+@article{christianson1994reverse,
+    author = "Christianson, Bruce",
+    title = "Reverse accumulation and attractive fixed points",
+    journal = "Optimization Methods and Software",
+    volume = "3",
+    number = "4",
+    pages = "311--326",
+    year = "1994",
+    publisher = "Taylor \& Francis"
+}
+
+@article{christianson1998reverse,
+    author = "Christianson, Bruce",
+    title = "Reverse aumulation and imploicit functions",
+    journal = "Optimization Methods and Software",
+    volume = "9",
+    number = "4",
+    pages = "307--322",
+    year = "1998",
+    publisher = "Taylor \& Francis"
+}
+
+@article{Bell_Burke_2008,
+    author = "Bell, Bradley M. and Burke, James V.",
+    title = "Advances in Automatic Differentiation",
+    ISSN = "1439-7358",
+    DOI = "10.1007/978-3-540-68942-3\_7",
+    abstractNote = "In applied optimization, an understanding of the sensitivity of the optimal value to changes in structural parameters is often essential. Applications include parametric optimization, saddle point problems, Benders decompositions, and multilevel optimization. In this paper we adapt a known automatic differentiation (AD) technique for obtaining derivatives of implicitly defined functions for application to optimal value functions. The formulation we develop is well suited to the evaluation of first and second derivatives of optimal values. The result is a method that yields large savings in time and memory. The savings are demonstrated by a Benders decomposition example using both the ADOL-C and CppAD packages. Some of the source code for these comparisons is included to aid testing with other hardware and compilers, other AD packages, as well as future versions of ADOL-C and CppAD. The source code also serves as an aid in the implementation of the method for actual applications. In addition, it demonstrates how multiple C++ operator overloading AD packages can be used with the same source code. This provides motivation for the coding numerical routines where the floating point type is a C++ template parameter.",
+    journal = "Lecture Notes in Computational Science and Engineering",
+    year = "2008",
+    pages = "67–77"
+}
+
 @article{rackauckas2021generalized,
     author = "Rackauckas, Christopher and Edelman, Alan and Fischer, Keno and Innes, Mike and Saba, Elliot and Shah, Viral B and Tebbutt, Will",
     title = "Generalized physics-informed learning through language-wide differentiable programming",
@@ -1383,12 +1416,41 @@
     series = "OSDI'16"
 }
 
+@article{Moses.2021,
+    author = "Moses, William S and Churavy, Valentin and Paehler, Ludger and Hückelheim, Jan and Narayanan, Sri Hari Krishna and Schanen, Michel and Doerfert, Johannes",
+    year = "2021",
+    title = "{Reverse-Mode Automatic Differentiation and Optimization of GPU Kernels via Enzyme}",
+    journal = "SC21: International Conference for High Performance Computing, Networking, Storage and Analysis",
+    doi = "10.1145/3458817.3476165",
+    abstract = "{Computing derivatives is key to many algorithms in scientific computing and machine learning such as optimization, uncertainty quantification, and stability analysis. Enzyme is a LL VM compiler plugin that performs reverse-mode automatic differentiation (AD) and thus generates high performance gradients of programs in languages including \$\textbackslashmathrm\{C\}/\textbackslashmathrm\{C\}++\$, Fortran, Julia, and Rust. Prior to this work, Enzyme and other AD tools were not capable of generating gradi-ents of GPU kernels. Our paper presents a combination of novel techniques that make Enzyme the first fully automatic reverse-mode AD tool to generate gradients of GPU kernels. Since unlike other tools Enzyme performs automatic differentiation within a general-purpose compiler, we are able to introduce several novel GPU and AD-specific optimizations. To show the generality and efficiency of our approach, we compute gradients office GPU-based HPC applications, executed on NVIDIA and AMD GPUs. All bench-marks run within an order of magnitude of the original program's execution time. Without GPU and AD-specific optimizations, gra-dients of GPU kernels either fail to run from a lack of resources or have infeasible overhead. Finally, we demonstrate that increasing the problem size by either increasing the number of threads or increasing the work per thread, does not substantially impact the overhead from differentiation.}",
+    pages = "1--18",
+    volume = "00",
+    local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2021/misc\_moses\_etal\_2021\_reverse\_mode\_ad\_gpu\_kernels\_enzyme.pdf"
+}
+
 @article{Schäfer_Tarek_White_Rackauckas_2021,
     author = "Schäfer, Frank and Tarek, Mohamed and White, Lyndon and Rackauckas, Chris",
     title = "AbstractDifferentiation.jl: Backend-Agnostic Differentiable Programming in Julia",
     DOI = "10.48550/arxiv.2109.12449",
     journal = "arXiv",
     year = "2021"
+}
+
+@article{Heimbach.2005,
+    author = "Heimbach, Patrick and Hill, Chris and Giering, Ralf",
+    year = "2005",
+    rating = "0",
+    title = "{An efficient exact adjoint of the parallel MIT General Circulation Model, generated via automatic differentiation}",
+    journal = "Future Generation Computer Systems",
+    issn = "0167-739X",
+    doi = "10.1016/j.future.2004.11.010",
+    url = "http://linkinghub.elsevier.com/retrieve/pii/S0167739X04001797",
+    abstract = "{We describe computational aspects of automatic differentiation applied to global ocean circulation modeling and state estimation. The task of minimizing a cost function measuring the ocean simulation versus observation misfit is achieved through efficient calculation of the cost gradient w.r.t. a set of controls via the adjoint technique. The adjoint code of the parallel MIT general circulation model is generated using TAMC or its successor TAF. To achieve a tractable problem in both CPU and memory requirements, in the light of control flow reversal, the adjoint code relies heavily on the balancing of storing versus recomputation via the checkpointing method. Further savings are achieved by exploiting self-adjointness of part of the computation. To retain scalability of domain decomposition-based parallelism, hand-written adjoint routines are provided. These complement routines of the parallel support package to perform corresponding operations in reverse mode. The unique feature of the TAF tool which enables the dumping of the adjoint state and restart the adjoint integration is exploited to overcome batch execution limitations on HPC machines for large-scale ocean and climate simulations. Strategies to test the correctness of the adjoint-generated gradient are presented. The size of a typical adjoint application is illustrated for the case of the global ocean state estimation problem undertaken by the SIO-JPL-MIT Consortium “Estimating the Circulation and Climate of the Ocean” (ECCO). Results are given by way of example.}",
+    pages = "1356--1371",
+    number = "8",
+    volume = "21",
+    keywords = "",
+    local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2005/2005-Heimbach-Future\%20Generation\%20Computer\%20Systems.pdf"
 }
 
 @article{Checkpoiting_2023,
@@ -2226,23 +2288,6 @@
     volume = "104",
     keywords = "",
     local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/1999/1999-Marotzke-Journal\%20of\%20Geophysical\%20Research.pdf"
-}
-
-@article{Heimbach.2005,
-    author = "Heimbach, Patrick and Hill, Chris and Giering, Ralf",
-    year = "2005",
-    rating = "0",
-    title = "{An efficient exact adjoint of the parallel MIT General Circulation Model, generated via automatic differentiation}",
-    journal = "Future Generation Computer Systems",
-    issn = "0167-739X",
-    doi = "10.1016/j.future.2004.11.010",
-    url = "http://linkinghub.elsevier.com/retrieve/pii/S0167739X04001797",
-    abstract = "{We describe computational aspects of automatic differentiation applied to global ocean circulation modeling and state estimation. The task of minimizing a cost function measuring the ocean simulation versus observation misfit is achieved through efficient calculation of the cost gradient w.r.t. a set of controls via the adjoint technique. The adjoint code of the parallel MIT general circulation model is generated using TAMC or its successor TAF. To achieve a tractable problem in both CPU and memory requirements, in the light of control flow reversal, the adjoint code relies heavily on the balancing of storing versus recomputation via the checkpointing method. Further savings are achieved by exploiting self-adjointness of part of the computation. To retain scalability of domain decomposition-based parallelism, hand-written adjoint routines are provided. These complement routines of the parallel support package to perform corresponding operations in reverse mode. The unique feature of the TAF tool which enables the dumping of the adjoint state and restart the adjoint integration is exploited to overcome batch execution limitations on HPC machines for large-scale ocean and climate simulations. Strategies to test the correctness of the adjoint-generated gradient are presented. The size of a typical adjoint application is illustrated for the case of the global ocean state estimation problem undertaken by the SIO-JPL-MIT Consortium “Estimating the Circulation and Climate of the Ocean” (ECCO). Results are given by way of example.}",
-    pages = "1356--1371",
-    number = "8",
-    volume = "21",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2005/2005-Heimbach-Future\%20Generation\%20Computer\%20Systems.pdf"
 }
 
 @article{Forget.2015m9i,
