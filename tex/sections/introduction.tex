@@ -21,12 +21,6 @@ The first goal of this work is to introduce some of the applications of this eme
     \textbf{Question 1. }
     \textit{What are the scientific applications of differentiable programming for dynamical systems?}
 \end{quote}
-% \todo[inline,caption={}]{
-% \begin{itemize}
-%     \item this paragraph that introduces sensitivity analysis and its challenges seems disconnected from the question, which relates to differentiable programming. the question seems more relevant to the second paragraph, which introduces AD
-%     \item I would first have a question on the usefulness of calculating parameter sensivitity, and then bring sensitivity analysis and its associated challenges 
-% \end{itemize}    
-% }
 
 Sensitivity analysis refers to any method aiming to calculate how much the output of a function or program changes when we vary one of the function (or model) input parameters. 
 This task is performed in different ways by different communities when working with dynamical systems. 
@@ -35,8 +29,6 @@ In numerical analysis, sensitivities quantify how the solution of a differential
 This is particularly useful in optimal control theory \cite{Giles_Pierce_2000}, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function. 
 In recent years, there has been an increasing interest in designing machine learning workflows that include constraints in the form of differential equations. 
 Examples of this include methods that numerically solve differential equations, such as physics-informed neural networks \cite{PINNs_2019}, as well as methods that augment and learn parts of the differential equation, such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also includes the case of neural ordinary differential equations \cite{chen_neural_2019} and neural stochastic differential equations \cite{li2020scalable}.
-
-% soft / hard constrains
 
 % Differentiation 
 However, when working with differential equations, the computation of gradients is not an easy task, both regarding the mathematical framework and software implementation involved. 

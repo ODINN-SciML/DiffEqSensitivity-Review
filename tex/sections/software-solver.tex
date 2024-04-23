@@ -243,7 +243,7 @@ There are two solutions for addressing the evaluation of $u(t)$ during the backw
     \end{equation}
     An important problem with this approach is that computing the ODE backwards $\frac{du}{dt} = - f(u,\theta, t)$ can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
     One way of solving this system of equations that ensures stability is by using implicit methods. 
-    However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. In practice, this methods is hardly stable for most complex (even non-stiff) differential equations. 
+    However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. In practice, this method is hardly stable for most complex (even non-stiff) differential equations. 
 \end{enumerate} 
 
 When dealing with stiff differential equations, special considerations need to be taken into account.
