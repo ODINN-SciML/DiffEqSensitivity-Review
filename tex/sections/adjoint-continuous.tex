@@ -19,7 +19,7 @@ Again, the trick is to evaluate the VJP $\frac{\partial h}{\partial u} \frac{\pa
 The continuous adjoint equation now is obtained by finding the dual/adjoint equation of the sensitivity equation using the weak formulation of Equation \eqref{eq:sensitivity_equations}. 
 The adjoint equation is obtained by writing the sensitivity equation in the form 
 \begin{equation}
-    \inttime \lambda(t)^T \left( \frac{ds}{dt} - f(u, \theta, t) \, s - \frac{\partial f}{\partial \theta}  \right) dt 
+    \inttime \lambda(t)^T \left( \frac{ds}{dt} - \frac{\partial f}{\partial u} \, s - \frac{\partial f}{\partial \theta}  \right) dt 
     = 
     0,
     \label{eq:integrated-sensitivity-equation}
@@ -35,7 +35,7 @@ The next step is to get rid of the time derivative applied to the sensitivity $s
 \end{equation}
 Replacing this last expression into Equation \eqref{eq:integrated-sensitivity-equation} we obtain 
 \begin{equation}
-    \inttime \left( - \frac{d\lambda^T}{dt} -  \lambda(t)^T f(u, \theta, t) \right) s(t) dt
+    \inttime \left( - \frac{d\lambda^T}{dt} -  \lambda(t)^T \frac{\partial f}{\partial u} \right) s(t) dt
     =
     \inttime \lambda(t)^T \frac{\partial f}{\partial \theta} dt 
     - 
@@ -52,7 +52,7 @@ This is done by defining the adjoint $\lambda(t)$ to be the solution of the new 
     \frac{d\lambda}{dt} 
     = 
     - 
-    f(u, \theta, t)^T \lambda  
+    \frac{\partial f}{\partial u}^T \lambda  
     - 
     \frac{\partial h^T}{\partial u} 
     \qquad \quad \lambda(t_1) = 0. 
@@ -78,7 +78,8 @@ Finally, replacing this inside the expression for the gradient of the loss funct
     \label{eq:casa-final-loss-gradient}
 \end{equation}
 The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be described as follows:
-\begin{enumerate}
+\begin{enumerate}[label=(\roman*)]
+% \begin{enumerate}
     \item Solve the original differential equation $\frac{du}{dt} = f(u, t, \theta)$;
     \item Solve the backwards adjoint differential equation given by Equation \eqref{eq:casa-adjoint-equation};
     \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.

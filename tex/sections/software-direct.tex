@@ -79,7 +79,7 @@ Further notice that AD is not subject to same level of numerical errors due to f
 % \end{jllisting}
 
 Implementations of forward AD using dual numbers and computational graphs require a number of operations that increases with the number of variables to differentiate, since each computed quantity is accompanied by the corresponding gradient calculations \cite{Griewank_1989}. 
-This consideration also applies to the other forward methods, including finite differences and complex-step differentiation, which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered.
+This consideration also applies to the other forward methods, including finite differences and complex-step differentiation.
 
 % If well forward AD is implemented independently of the differential equation and numerical solver, the careless combination of both can lead to disastrous numerical errors. 
 Although AD is always algorithmically correct, when combined with a numerical solver \textit{AD can be numerically incorrect} and result in wrong gradient calculations \cite{Eberhard_Bischof_1996}. 
@@ -125,13 +125,16 @@ which is equivalent to using the chain rule as
 
 % \subsubsection{Further remarks}
 
-A crucial distinction between AD implementations based on computational graphs is between \textit{static} and \textit{dynamic} methods\cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
+A crucial distinction between AD implementations based on computational graphs is between \textit{static} and \textit{dynamic} methods \cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
 In the case of a static implementations, the computational graph is constructed before any code is executed, which are encoded and optimized for performance within the graph language. 
 For static structures such as neural networks, this is ideal \cite{abadi-tensorflow}. 
 However, two major drawbacks of static methods are composability with existing code, including support of custom types, and adaptive control flow, which is a common feature of numerical solvers. 
 These issues are addressed in reverse AD implementations using \textit{tracing}, where the program structure is transformed into a list of pullback functions that built the graph dynamically at runtime. 
-Popular libraries in this category are \texttt{Tracker.jl} and \texttt{ReverseDiff.jl}. A major drawback of tracing systems is that the pullbacks are constructed with respect to the control flow of the input value and thus do not necessarily generalize to other inputs. This means that the pullback must be reconstructed for each now forward pass, limiting the reuse of computational optimizations or inducing higher overhead. Source-to-source AD systems can achieve higher performance by giving a static derivative representation to  arbitrary control flow structure, thus allowing for the construction and optimization of pullbacks independent of the input value. 
-These include \texttt{Zygote.jl}\cite{Innes_Zygote}, \texttt{Enzyme.jl}\cite{moses_Enzyme}, and \texttt{Difractor.jl}.
+Popular libraries in this category are \texttt{Tracker.jl} and \texttt{ReverseDiff.jl}. 
+A major drawback of tracing systems is that the pullbacks are constructed with respect to the control flow of the input value and thus do not necessarily generalize to other inputs. 
+This means that the pullback must be reconstructed for each now forward pass, limiting the reuse of computational optimizations or inducing higher overhead. 
+Source-to-source AD systems can achieve higher performance by giving a static derivative representation to  arbitrary control flow structure, thus allowing for the construction and optimization of pullbacks independent of the input value. 
+These include \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, and \texttt{Difractor.jl}.
 The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
 

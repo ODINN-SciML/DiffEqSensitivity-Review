@@ -1,5 +1,5 @@
 Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, simultaneously with the original system of equations defined by the numerical solver. 
-These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000}.
+These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000} or in ocean state estimation \cite{Wunsch.2007,Wunsch:2008fp}.
 
 The idea of the adjoint method is to treat the differential equation as a constraint in an optimization problem and then differentiate an objective function subject to that constraint. 
 Mathematically speaking, this can be treated both from a duality or Lagrangian perspective \cite{Giles_Pierce_2000}.
@@ -14,7 +14,7 @@ The derivation of adjoint methods using the Lagrangian formulation can be found 
 
 The derivation of the discrete adjoint equations is carried out once the numerical scheme for solving Equation \eqref{eq:original_ODE} has been specified.  
 Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we aim to find approximate numerical solutions $u_i \approx u(t_i; \theta)$. 
-Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, and we had combine the systems of equations defined by the iterative solver as $G(U; \theta) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
+Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, and we have combined the system of equations defined by the iterative solver as $G(U; \theta) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
 
 We are interested in differentiating an objective or loss function $L(U, \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solver, examples of loss functions now include 
@@ -99,7 +99,7 @@ These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, 
 
 
 Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations even when the original system $G(U; \theta)=0$ was not necessarily linear in $U$.
-This means that while the forward mode may require multiple iterations in order to solve the non-linear system $G(U) = 0$ (e.g., by using Krylov methods), the backwards step to compute the adjoint is one single linear system of equations. 
+This means that while solving the original system of ODEs may require multiple iterations in order to solve the non-linear system $G(U) = 0$ (e.g., by using Krylov methods), the backwards step to compute the adjoint is one single linear system of equations. 
 
 \subsubsection{Simple linear system}
 
@@ -195,4 +195,4 @@ Another more natural way of finding the adjoints $\lambda$ is by noticing that t
 \end{equation}
 with final condition $\lambda_N$. 
 This means that we can solve the adjoint equation backwards, i.e., in reverse mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
-Unless the loss function $L$ is linear in $U$, this procedure requires to know the value of $u_i$ (or some equivalent form of it) at any given timestep. 
+Unless the loss function $L$ is linear in $U$, this procedure requires knowledge of the value of $u_i$ (or some equivalent form of it) at any given timestep. 

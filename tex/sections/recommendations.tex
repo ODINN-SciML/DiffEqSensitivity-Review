@@ -2,7 +2,7 @@ There is no sensitivity method that is universally suitable for all problems equ
 However, in light of the methods we explore in this work, we can give general guidelines on which methods to use in specific circumstances.
 
 \vspace{5px}
-\noindent\textit{Working with small systems. }
+\noindent\textit{\textbf{Working with small systems.}}
 For sufficient small systems of less than $50$ parameters and ODEs, it has been shown that forward AD and sensitivity equations are the most efficient method, outperforming sensitivity and adjoint methods. \cite{ma2021comparison} holds the original benchmarks, though the \texttt{SciMLBenchmarks} system continually updates the benchmarks and has revised the cutoff point as reverse-mode AD engines improved. 
 See \url{https://docs.sciml.ai/SciMLBenchmarksOutput/stable/} for continued updates.
 Furthermore, as we have shown in Section \ref{section:direct-methods}, automatic differentiation outperforms other forms of direct differentiation (finite differences, complex-step differentiation). 
@@ -10,8 +10,10 @@ Modern scientific software commonly support automatic differentiation, making AD
 We will make further comments in the choice between discrete and continuous methods later in this section.
 
 \vspace{5px}
-\noindent\textit{Working with large systems. }
-For larger systems with more parameters and ODEs, reverse techniques are required. 
+\noindent\textit{\textbf{Working with large systems. }}
+For larger systems with more parameters and ODEs, reverse techniques are required. As explained in section \ref{section:solver-methods}, the continuous adjoint method, particularly the InterpolatingAdjoint, QuadratureAdjoint and GaussAdjoint, are the most suitable methods to tackle large stiff systems. The choice between these three types of adjoints will be problem-specific and will depend on the trade-off between numerical stability, performance and memory usage. Adjoint methods supporting checkpointing present more flexibility in this sense, and can allow modulating the method depending on the performance vs memory constraints of each problem. 
+
+Unlike for small systems of ODEs and a reduced number of parameters, differentiating large ODE systems (e.g. stiff discretized PDEs) with respect to a large number of parameters (e.g. in a neural network), is a much more complex problem. Current state-of-the-art tools can easily work for a wide array of small systems \cite{rackauckas2020universal}, whereas methods for large systems are still under heavy development and are likely to see many changes and improvements in the future. 
 
 \vspace{5px}
 \noindent\textit{More than one sensitivity method. }
@@ -22,15 +24,17 @@ If well direct methods like AD and complex-step differentiation can be costly to
 We further recommend the use of automatic differentiation (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
 As we had seen in Section \ref{section:direct-methods}, finite differences and complex step differentiation do not really provide an advantage over AD in terms of precision and require the tuning of the stepsize $\varepsilon$. 
 
-On the othe side, if well symbolic differentiation can be more efficient in neasted cases (see ...) or when the spartity patter of the Jacobian is known, in general this advantage is not drasmatic in most real cases. 
+On the othe side, if well symbolic differentiation can be more efficient in nested cases (see ...) or when the spartity patter of the Jacobian is known, in general this advantage is not drasmatic in most real cases. 
 
 
 \vspace{5px}
 \noindent\textit{Discrete vs continuous. }
-When using discrete methods, it is important to be aware that the differentiation machinery is applied after algorithm to solve the differential equation has been specified, meaning that the derivatives are computed with respect to the used algorithm instead of the solution \cite{Eberhard_Bischof_1996}.
+When using discrete methods, it is important to be aware that the differentiation machinery is applied after an algorithm to solve the differential equation has been specified, meaning that the derivatives are computed with respect to the used algorithm instead of the solution \cite{Eberhard_Bischof_1996}.
 As we explored in Section \ref{section:software-Forward-AD}, this can mean the method is non-convergent in the case where the iterative solver has adaptive stepsize controllers that depend on the parameter to differentiate.
-Although some solutions has been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996} (and have been implemented in the case of the Julia implementations), this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
-Using many of the aforementioned ``tricks'', such as continuous checkpointing and Gaussian quadrature approximations, continuous sensitivity analysis tends to be more memory and computationally efficient. However, the errors of discrete adjoint method's derivative error may better represent the actual code being evaluated, and thus in some instances has been found to lead to more stable optimizations. A simplification of this result can then be summed up as, continuous adjoint methods are more efficient while discrete adjoint methods are more stable\cite{rackauckas2020universal}, though the reverse can apply and as such the choice ultimately depends on the nuances of the application.
+Although some solutions have been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996} (and have been implemented in Julia), this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
+Using many of the aforementioned \emph{tricks}, such as continuous checkpointing and Gaussian quadrature approximations, continuous sensitivity analysis tends to be more memory and computationally efficient. However, the errors of discrete adjoint method's derivative error may better represent the actual code being evaluated, and thus in some instances has been found to lead to more stable optimizations. 
+
+In a nutshell, continuous adjoint methods tend to be more efficient while discrete adjoint methods tend to be more stable \cite{rackauckas2020universal}, though the opposite can apply and as such the choice ultimately depends on the nuances of each problem.
 
 \vspace{5px}
 \noindent\textit{Rely on existing software. }
@@ -47,25 +51,22 @@ Thus we recommend the use of robust and tested software when available as the so
 % which makes forward models prone to the curse of dimensionality with respect to the number of parameters considered
 % For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
 
-\vspace{5px}
-\noindent\textit{Adjoint methods. }
-Adjoint methods are computationally more efficient for complicated numerical solvers, but they are also more difficult to implement.
-For programming languages like Julia that support adjoint calculation, we recommend to use this ... 
-
-
-
-
-
-
-% Generalizations to DAE \cite{Cao_Li_Petzold_2002}
 
 % See recommendations at \cite{Shen_diff_modelling}.
 
-% Mention to limit cases when working with chaotic systems
+\subsection{Generalization to PDEs and DAEs}
+
+% Generalizations to DAE \cite{Cao_Li_Petzold_2002}
+
 \subsection{Chaotic systems}
 
+% Integreate this paragraph in this section
+% It is important to remark that adjoint methods can fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
+% Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
+% In the more general case, discrete and continuous adjoint methods can give different computational results \cite{Sirkes_Tziperman_1997}.
+
 % Intro: why we take this average quantities in chaotic system? Need to motivate this in a sentense.
-Both forward and adjoint sensitivity analysis methods from the previous chapters encounter challenges and become less useful when applied to chaotic systems.
+All the sensitivity methods discussed in the previous sections encounter challenges and become less useful when applied to chaotic systems \cite{Wang2012-chaos-adjoint}.
 To illustrate this, let us consider long-time-averaged quantities 
 \begin{equation}\label{eq:long_time_averaged_quantities}
     \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T L(u(t), \theta) \, dt, 
@@ -73,9 +74,11 @@ To illustrate this, let us consider long-time-averaged quantities
 of chaotic systems, where $L(u(t), \theta)$ is the instantaneous objective and $u(t)$ denotes the state of the dynamical system at time $t$.
 For ergodic dynamical systems, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t)$. 
 In particular, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ does not depend on the initial condition. 
-Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$\cite{ruelle1997differentiation,ruelle2009review}. 
+Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$\cite{ruelle1997differentiation,ruelle2009review}.
 However, computing derivatives using numerical methods of statistical quantities of the form \eqref{eq:long_time_averaged_quantities} with respect to the vector parameter $\theta$ in chaotic dynamical systems remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state. 
 As a consequence, the solutions of the forward and adjoint sensitivity equations blow up (exponentially fast) instead of converging to the actual derivative.
 To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.
 
-In Julia this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}. Standard derivative approximations are inappropriate for such systems and will not give convergent estimates. This includes AD of a solver.
+In Julia, this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}. 
+Standard derivative approximations are inappropriate for such systems and will not give convergent estimates.
+This includes AD of a solver.

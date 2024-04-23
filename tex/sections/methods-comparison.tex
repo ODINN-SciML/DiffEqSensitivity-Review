@@ -1,11 +1,11 @@
-In Sections \ref{section:finite-diffences}-\ref{section:continuous-adjoint} we focused in merely introducing each one of the sensitivity methods classified in Figure \ref{fig:scheme-all-methods} as separate methods, postponing the discussion about their points in common. 
-In this section, we are going to compare one-to-one these methods and show parallelism across them. 
-We hope this enlightens the discussion on sensitivity methods and helps demystified  misconceptions around the sometimes apparent differences across methods. 
+In Sections \ref{section:finite-diffences} -- \ref{section:continuous-adjoint} we focused on merely introducing each one of the sensitivity methods classified in Figure \ref{fig:scheme-all-methods} as separate methods, postponing the discussion about their points in common. 
+In this section, we compare one-to-one these methods and highlight parallels between them. 
+We hope this enlightens the discussion on sensitivity methods and helps to demystify  misconceptions around the sometimes apparent differences between methods. 
 This comparison will be strengthen again later in Section \ref{sec:computational-implementation}, where we will see how even small differences between methods can be translated to different software implementations with different advantages. 
 
 \subsubsection{Forward AD and complex step differentiation}
 
-Notice that both AD based on dual number and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the dual variable that carries forward the numerical value of the gradient.
+Both AD based on dual numbers and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the dual variable that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
 Although these methods seem similar, we emphasize that AD gives the exact gradient, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
 In Figure \ref{fig:complex-step-AD} we show how the calculation of the gradient of the function $\sin (x^2)$ is performed by these two methods.
@@ -78,14 +78,13 @@ The updates of $\bar g_i$ then mathematically coincide with the updates in rever
 
 Modern numerical solvers use functions $g_i$ that correspond to nested functions, meaning $g_i = g_i^{(k_i)} \circ g_i^{(k_i-1)} \circ \ldots \circ g_i^{(1)} $. 
 % When in an explicit solver this happens? 
-This is certainly the case for implicit methods when $u_{i+1}$ is the solution of an iterative Newton's method\cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
+This is certainly the case for implicit methods when $u_{i+1}$ is the solution of an iterative Newton's method \cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
 If the number of intermediate function is large, reverse AD will result in a large computational graph, potentially leading to excessive memory usage and slow computation \cite{Margossian_2018, Alexe_Sandu_2009}.
 A solution to this problem is to introduce a customized \textit{super node} that directly encapsulates the contribution to the full adjoint in $g_i$ without computing the adjoint for each intermediate function $g_i^{(j)}$.
 Provided with the value of the Jacobian matrices $\frac{\partial g_i}{\partial u_i}$ and $\frac{\partial g_i}{\partial \theta}$, we can use the implicit function theorem to find the 
-
 % I should check here what customized adjoints actually do in Julia...
 In both cases, the discrete adjoint method can be implemented directly on top of a reverse AD tool that allows customized adjoint calculation \cite{rackauckas2021generalized}. 
-Furthermore, notice that instead of the full Jacobian, reverse methods only required to compute VJPs. 
+% Furthermore, notice that instead of the full Jacobian, reverse methods only required to compute VJPs. 
 
 
 
@@ -210,7 +209,4 @@ Importantly, even when consistent the code generated using the discrete adjoint 
 % For multilinear solver, ... 
 
 
-It is important to remark that adjoint methods can fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
-Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
-In the more general case, discrete and continuous adjoint methods can give different computational results \cite{Sirkes_Tziperman_1997}.
 
