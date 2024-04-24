@@ -115,7 +115,7 @@ f = heateq_with_phase_change(grid, T_ub)
 jac_prototype = Tridiagonal(ones(length(H0)-1), ones(length(H0)), ones(length(H0)-1))
 tspan = (0.0, 5*24*3600.0)
 prob = ODEProblem(ODEFunction(f; jac_prototype), H0, tspan, p)
-sol = @time solve(prob, SSPRK43(), abstol=1e-2, reltol=1e-6, saveat=3600.0)
+sol = @time solve(prob, SSPRK43(), abstol=1e-2, reltol=1e-6)
 
 H_sol = reduce(hcat, sol.u)
 T_sol = first.(enthalpyinv.(H_sol, Ref(p)))
@@ -124,8 +124,8 @@ Plots.heatmap(sol.t./3600.0, grid.cells, T_sol, yflip=true)
 
 buildalg(::Type{InterpolatingAdjoint}; autojacvec, checkpointing, kwargs...) = InterpolatingAdjoint(; autojacvec, checkpointing)
 buildalg(::Type{GaussAdjoint}; autojacvec, checkpointing, kwargs...) = GaussAdjoint(; autojacvec, checkpointing)
+buildalg(::Type{BacksolveAdjoint}; autojacvec, checkpointing, kwargs...) = BacksolveAdjoint(; autojacvec, checkpointing)
 buildalg(::Type{QuadratureAdjoint}; autojacvec, kwargs...) = QuadratureAdjoint(; autojacvec)
-buildalg(::Type{BacksolveAdjoint}; autojacvec, kwargs...) = BacksolveAdjoint(; autojacvec)
 
 function benchmark_sensealg(::Type{algType}, tspan_end, p; saveat=nothing, dealg=SSPRK43(), sensealg_kwargs...) where {algType}
     sensealg = buildalg(algType; sensealg_kwargs...)
@@ -144,7 +144,6 @@ function benchmark_sensealg(::Type{algType}, tspan_end, p; saveat=nothing, dealg
         sensealg=$sensealg,
         t=[$sol.t[end]],
         dgdu_discrete=$dgdu,
-        checkpoints=$sol.t,
         abstol=1e-8,
         reltol=1e-8,
     )
@@ -161,8 +160,8 @@ function benchmark_sensealg(::Type{algType}, tspan_end, p; saveat=nothing, dealg
     )
 end
 
-res_with_chckpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=true, saveat=600.0)
-res_without_checkpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=false)
+res_with_chckpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=true, saveat=3600.0)
+res_without_checkpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=false, saveat=3600.0)
 
 configs = [
     (InterpolatingAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
@@ -170,7 +169,9 @@ configs = [
     (GaussAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
     (GaussAdjoint, (autojacvec=EnzymeVJP(), checkpointing=true)),
     (QuadratureAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
-    (BacksolveAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
+    (QuadratureAdjoint, (autojacvec=true, checkpointing=false)),
+    # backsolve appears to fail for longer integration periods
+    # (BacksolveAdjoint, (autojacvec=EnzymeVJP(), checkpointing=true)),
 ]
 
 # target simulation time periods ranging from 1 minute to 30 days
@@ -184,10 +185,15 @@ for t in tspans
     for c in configs
         algtype, kwargs = c
         @info "Running benchmark for $algtype with $kwargs and tspan of $t sec."
-        saveat = min(t/10.0, 3600.0)
-        push!(results, benchmark_sensealg(algtype, t, p; saveat, kwargs...))
+        if haskey(kwargs, :checkpointing) && kwargs.checkpointing
+            res = benchmark_sensealg(algtype, t, p; saveat=min(t/10.0, 3600.0), kwargs...)
+        else
+            res = benchmark_sensealg(algtype, t, p; kwargs...)
+        end
+        push!(results, res)
     end
 end
 
 using DataFrames
 results_df = DataFrame(results)
+show(stdout, "text/plain", results_df)
