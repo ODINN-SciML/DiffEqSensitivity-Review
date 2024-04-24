@@ -113,7 +113,7 @@ grid = Grid1D(grid_edges)
 T0, H0 = steady_state_init(grid, p; Tsurf=-10.0)
 f = heateq_with_phase_change(grid, T_ub)
 jac_prototype = Tridiagonal(ones(length(H0)-1), ones(length(H0)), ones(length(H0)-1))
-tspan = (0.0, 5*24*3600.0)
+tspan = (0.0, 30*24*3600.0)
 prob = ODEProblem(ODEFunction(f; jac_prototype), H0, tspan, p)
 sol = @time solve(prob, SSPRK43(), abstol=1e-2, reltol=1e-6)
 
@@ -144,8 +144,8 @@ function benchmark_sensealg(::Type{algType}, tspan_end, p; saveat=nothing, dealg
         sensealg=$sensealg,
         t=[$sol.t[end]],
         dgdu_discrete=$dgdu,
-        abstol=1e-8,
-        reltol=1e-8,
+        abstol=1e-10,
+        reltol=1e-10,
     )
     # bench = @benchmark Zygote.gradient($loss, $p)
     return (
@@ -160,8 +160,17 @@ function benchmark_sensealg(::Type{algType}, tspan_end, p; saveat=nothing, dealg
     )
 end
 
-res_with_chckpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=true, saveat=3600.0)
-res_without_checkpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=false, saveat=3600.0)
+# simple tests
+res_ia_with_chckpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=true, saveat=3600.0)
+res_ia_without_checkpointing = benchmark_sensealg(InterpolatingAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), checkpointing=false, saveat=3600.0)
+res_qa_enzyme = benchmark_sensealg(QuadratureAdjoint, 24*3600.0, p; autojacvec=EnzymeVJP(), saveat=3600.0)
+# zygote VJP appears to be several orders of magnitude slower than Enzyme...
+res_qa_zygote = benchmark_sensealg(QuadratureAdjoint, 24*3600.0, p; autojacvec=ZygoteVJP(), saveat=3600.0)
+# forward mode VJP is about 1-2 orders of magnitude slower
+res_qa_forward = benchmark_sensealg(QuadratureAdjoint, 24*3600.0, p; autojacvec=true, saveat=3600.0)
+# doesn't work; weird internal error:
+# ERROR: MethodError: no method matching increment_deriv!(::Float64, ::Float64)
+# res_qa_reverse = benchmark_sensealg(QuadratureAdjoint, 24*3600.0, p; autojacvec=ReverseDiffVJP(), saveat=3600.0)
 
 configs = [
     (InterpolatingAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
@@ -169,13 +178,12 @@ configs = [
     (GaussAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
     (GaussAdjoint, (autojacvec=EnzymeVJP(), checkpointing=true)),
     (QuadratureAdjoint, (autojacvec=EnzymeVJP(), checkpointing=false)),
-    (QuadratureAdjoint, (autojacvec=true, checkpointing=false)),
     # backsolve appears to fail for longer integration periods
     # (BacksolveAdjoint, (autojacvec=EnzymeVJP(), checkpointing=true)),
 ]
 
-# target simulation time periods ranging from 1 minute to 30 days
-tspans = [60.0, 3600.0, 24*3600.0, 30*24*3600.0]
+# target simulation time periods ranging from 1 minute to 1 year
+tspans = [60.0, 3600.0, 24*3600.0, 30*24*3600.0, 12*30*24*3600.0]
 
 # lossfunc = buildloss(prob, InterpolatingAdjoint(autojacvec=EnzymeVJP()), tspan=(0.0,24*3600.0))
 # Zygote.gradient(lossfunc, p)
@@ -197,3 +205,36 @@ end
 using DataFrames
 results_df = DataFrame(results)
 show(stdout, "text/plain", results_df)
+
+function matchesconfig(config, row)
+    alg, kwargs = config
+    return row.alg == string(alg) && kwargs.autojacvec == row.autojacvec && kwargs.checkpointing == row.checkpointing
+end
+
+df1 = filter(row -> matchesconfig(configs[1], row), results_df)
+Plots.plot(df1.t./60.0, df1.memory./1024, marker=:dot, label="InterpolatingAdjoint", xscale=:log10, yscale=:log10, xlabel="Simulation tspan / min", ylabel="Memory / KiB", leg=:topleft)
+df2 = filter(row -> matchesconfig(configs[2], row), results_df)
+Plots.plot!(df2.t./60.0, df2.memory./1024, marker=:dot, label="InterpolatingAdjoint w/ checkpointing")
+df3 = filter(row -> matchesconfig(configs[3], row), results_df)
+Plots.plot!(df3.t./60.0, df3.memory./1024, marker=:dot, label="GaussAdjoint")
+df4 = filter(row -> matchesconfig(configs[4], row), results_df)
+Plots.plot!(df4.t./60.0, df4.memory./1024, marker=:dot, label="GaussAdjoint w/ checkpointing")
+df5 = filter(row -> matchesconfig(configs[5], row), results_df)
+Plots.plot!(df5.t./60.0, df5.memory./1024, marker=:dot, label="QuadratureAdjoint")
+# df6 = filter(row -> matchesconfig(configs[6], row), results_df)
+# Plots.plot!(df6.t./60.0, df6.memory./1024, marker=:dot, label="QuadratureAdjoint w/ ForwardDiff VJP")
+Plots.savefig("plots/heateq1D_memory_vs_simulation_tspan.png")
+
+df1 = filter(row -> matchesconfig(configs[1], row), results_df)
+Plots.plot(df1.t./60.0, df1.runtime_mid./1e9, marker=:dot, label="InterpolatingAdjoint", xscale=:log10, yscale=:log10, xlabel="Simulation tspan / min", ylabel="Wallclock runtime / s", leg=:topleft)
+df2 = filter(row -> matchesconfig(configs[2], row), results_df)
+Plots.plot!(df2.t./60.0, df2.runtime_mid./1e9, marker=:dot, label="InterpolatingAdjoint w/ checkpointing")
+df3 = filter(row -> matchesconfig(configs[3], row), results_df)
+Plots.plot!(df3.t./60.0, df3.runtime_mid./1e9, marker=:dot, label="GaussAdjoint")
+df4 = filter(row -> matchesconfig(configs[4], row), results_df)
+Plots.plot!(df4.t./60.0, df4.runtime_mid./1e9, marker=:dot, label="GaussAdjoint w/ checkpointing")
+df5 = filter(row -> matchesconfig(configs[5], row), results_df)
+Plots.plot!(df5.t./60.0, df5.runtime_mid./1e9, marker=:dot, label="QuadratureAdjoint")
+# df6 = filter(row -> matchesconfig(configs[6], row), results_df)
+# Plots.plot!(df6.t./60.0, df6.runtime_mid./1e9, marker=:dot, label="QuadratureAdjoint w/ ForwardDiff VJP")
+Plots.savefig("plots/heateq1D_runtime_vs_simulation_tspan.png")
