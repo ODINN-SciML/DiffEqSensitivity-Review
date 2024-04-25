@@ -7,30 +7,34 @@ However, in light of the methods we explore in this work, we can give general gu
 For sufficient small systems of less than $50$ parameters and ODEs, it has been shown that forward AD and sensitivity equations are the most efficient method, outperforming sensitivity and adjoint methods. \cite{ma2021comparison} holds the original benchmarks, though the \texttt{SciMLBenchmarks} system continually updates the benchmarks and has revised the cutoff point as reverse-mode AD engines improved. 
 See \url{https://docs.sciml.ai/SciMLBenchmarksOutput/stable/} for continued updates.
 Furthermore, as we have shown in Section \ref{section:direct-methods}, automatic differentiation outperforms other forms of direct differentiation (finite differences, complex-step differentiation). 
-Modern scientific software commonly support automatic differentiation, making AD our preferred choice for small problems. 
+Modern scientific software commonly support automatic differentiation, making forward AD our preferred choice for small problems. 
 We will make further comments in the choice between discrete and continuous methods later in this section.
 
 \vspace{5px}
 \noindent\textit{\textbf{Working with large systems. }}
-For larger systems with more parameters and ODEs, reverse techniques are required. As explained in section \ref{section:solver-methods}, the continuous adjoint method, particularly the InterpolatingAdjoint, QuadratureAdjoint and GaussAdjoint, are the most suitable methods to tackle large stiff systems. The choice between these three types of adjoints will be problem-specific and will depend on the trade-off between numerical stability, performance and memory usage. Adjoint methods supporting checkpointing present more flexibility in this sense, and can allow modulating the method depending on the performance vs memory constraints of each problem. 
+For larger systems with more parameters and ODEs, reverse techniques are required. 
+As explained in section \ref{section:solver-methods}, the continuous adjoint method, particularly the interpolating adjoint, quadrature adjoint and Gauss adjoint, are the most suitable methods to tackle large stiff systems. 
+The choice between these three types of adjoints will be problem-specific and will depend on the trade-off between numerical stability, performance and memory usage. 
+Adjoint methods supporting checkpointing present more flexibility in this sense, and can allow modulating the method depending on the performance vs memory constraints of each problem. 
 
-Unlike for small systems of ODEs and a reduced number of parameters, differentiating large ODE systems (e.g. stiff discretized PDEs) with respect to a large number of parameters (e.g. in a neural network), is a much more complex problem. Current state-of-the-art tools can easily work for a wide array of small systems \cite{rackauckas2020universal}, whereas methods for large systems are still under heavy development and are likely to see many changes and improvements in the future. 
+Unlike for small systems of ODEs and a reduced number of parameters, differentiating large ODE systems (e.g. stiff discretized PDEs) with respect to a large number of parameters (e.g. in a neural network), is a much more complex problem. 
+Current state-of-the-art tools can easily work for a wide array of small systems \cite{rackauckas2020universal}, whereas methods for large systems are still under heavy development and are likely to see many changes and improvements in the future. 
 
 \vspace{5px}
 \noindent\textit{More than one sensitivity method. }
-If well direct methods like AD and complex-step differentiation can be costly to use directly on a numerical solver, they can still be used to compute the sensitivities required for the calculation of the more efficient adjoint method (see discussion in Section \ref{section:computing-vjp-inside-solver}). 
+While direct methods like AD and complex-step differentiation can be costly to use directly on a numerical solver, they can still be used to compute the sensitivities required for the calculation of the more efficient adjoint method (see discussion in Section \ref{section:computing-vjp-inside-solver}). 
 
 \vspace{5px}
 \noindent\textit{Direct methods of choice. }
 We further recommend the use of automatic differentiation (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
 As we had seen in Section \ref{section:direct-methods}, finite differences and complex step differentiation do not really provide an advantage over AD in terms of precision and require the tuning of the stepsize $\varepsilon$. 
 
-On the othe side, if well symbolic differentiation can be more efficient in nested cases (see ...) or when the spartity patter of the Jacobian is known, in general this advantage is not drasmatic in most real cases. 
+On the other hand, if symbolic differentiation can be more efficient in nested cases (see ...) or when the spartity patter of the Jacobian is known, in general this advantage is not drastic in most real cases. 
 
 
 \vspace{5px}
 \noindent\textit{Discrete vs continuous. }
-When using discrete methods, it is important to be aware that the differentiation machinery is applied after an algorithm to solve the differential equation has been specified, meaning that the derivatives are computed with respect to the used algorithm instead of the solution \cite{Eberhard_Bischof_1996}.
+When using discrete methods, it is important to be aware that the differentiation machinery is applied after an the numerical solver for the differential equation has been specified, meaning that the derivatives are computed with respect to the time discretization instead of the solution \cite{Eberhard_Bischof_1996}.
 As we explored in Section \ref{section:software-Forward-AD}, this can mean the method is non-convergent in the case where the iterative solver has adaptive stepsize controllers that depend on the parameter to differentiate.
 Although some solutions have been proposed to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996} (and have been implemented in Julia), this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
 Using many of the aforementioned \emph{tricks}, such as continuous checkpointing and Gaussian quadrature approximations, continuous sensitivity analysis tends to be more memory and computationally efficient. However, the errors of discrete adjoint method's derivative error may better represent the actual code being evaluated, and thus in some instances has been found to lead to more stable optimizations. 

@@ -36,13 +36,12 @@ As we will discuss in the following sections, forward methods are very efficient
 With the exception of finite differences and complex step differentiation, the rest of the forward methods (i.e. forward AD, sensitivity equations, symbolic differentiation) compute the full sensitivity of the differential equation, that is, how the full solution of the ODEs changes when we change the parameters of the model. 
 This can be computationally expensive or intractable for large systems. 
 Conversely, reverse methods are based on the computation of intermediate variables, known as the adjoint or dual variables, that cleverly avoid the unnecessary calculation of the full sensitivity at expenses of larger memory cost \cite{Givoli_2021}. 
-% For this reason, reverse methods can be also labeled as adjoint methods \cite{ma2021comparison}. 
 
-% Double-check this paragraph to see if we still want to include it. 
-One extra distinction between methods is with regards to how computationally entangled the numerical solver and the differentiation machinery are. 
-% With the exception of the discrete adjoint methods, this coincides with discrete-continuous classification. 
-However, the construction of the discrete adjoint is based on the numerical solver, something that does not happen with the other discrete methods. 
-While this might not have big conceptual implications, it is an important consideration when using software that integrates numerical solvers and differentiation, a distinction that will help in the discussion in Section \ref{sec:computational-implementation}.
+% Ommiting this paragraph for this section 
+% One extra distinction between methods is with regards to how computationally entangled the numerical solver and the differentiation machinery are. 
+% % With the exception of the discrete adjoint methods, this coincides with discrete-continuous classification. 
+% However, the construction of the discrete adjoint is based on the numerical solver, something that does not happen with the other discrete methods. 
+% While this might not have big conceptual implications, it is an important consideration when using software that integrates numerical solvers and differentiation, a distinction that will help in the discussion in Section \ref{sec:computational-implementation}.
 
 The rest of this section is organized as follows. 
 We first introduce some basic mathematical notions that are going to facilitate the discussion of the sensitivity methods (Section \ref{section:preliminaries}).

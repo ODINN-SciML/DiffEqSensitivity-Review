@@ -55,7 +55,7 @@ In the case of reverse AD, this adjoint is defined with the notation $\bar w$ (E
 In this section we will show that both methods are mathematically equivalent \cite{Zhu_Xu_Darve_Beroza_2021, li2020coupled}, but naive implementations using reverse AD can result in sub-optimal performances compared to the one obtained by directly employing the discrete adjoint method \cite{Alexe_Sandu_2009}. 
 % The discrete adjoint method derived in Section \ref{section:discrete-adjoint} can be obtained by applying the reverse mode AD rule in Equation \eqref{eq:reverse-mode-ad-definition} in the computational graph defined as $\theta \rightarrow G \rightarrow U \rightarrow L$.
 
-In order to have a better idea of how this works in the case of a numerical solver, let us consider again the case of a one-step explicit method, non necessarily linear, where the updates $u_{i}$ satisfy the equation $u_{i+1} = g_{i}(u_{i}, \theta)$.
+In order to have a better idea of how this works in the case of a numerical solver, let us consider again the case of a one-step explicit method, not necessarily linear, where the updates $u_{i}$ satisfy the equation $u_{i+1} = g_{i}(u_{i}, \theta)$.
 Following the same schematics as in Figure \ref{fig:discrete-adjoint}, we represent the computational graph of the numerical method using the intermediate variables $g_1, g_2, \ldots, g_{N-1}$.
 The dual/adjoint variables defined in reverse AD in this computational graph are given by 
 \begin{equation}
@@ -207,7 +207,7 @@ A natural question then is if these two methods effectively compute the same gra
 Furthermore, since the continuous adjoint method requires to numerically solve the adjoint, we are interested in the relative accuracy of the forward and reverse step. 
 It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continunous adjoint with same level of convergence of the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
 To guarantee the same order of convergence, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients \cite{Alexe_Sandu_2009}.
-Importantly, even when consistent the code generated using the discrete adjoint using AD tools (see Section \ref{section:comparison-discrete-adjoint-AD}) can be sub-optimal and manual modification of the differentiation code are required to guarantee correctness \cite{Eberhard_Bischof_1996, alexe2007denserks}.
+Importantly, even when consistent, the code generated using the discrete adjoint using AD tools (see Section \ref{section:comparison-discrete-adjoint-AD}) can be sub-optimal and manual modification of the differentiation code are required to guarantee correctness \cite{Eberhard_Bischof_1996, alexe2007denserks}.
 
 % For multilinear solver, ... 
 

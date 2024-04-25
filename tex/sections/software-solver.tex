@@ -109,14 +109,10 @@ In Julia, the options \texttt{autodiff} and \texttt{autojacvec} allow to customi
 \subsubsection{Adjoint methods}
 \label{section:computing-adjoints}
 
-% Distinctio between discrete and continuous
-% Discrete are the exact gradient of the computer program, continuous are not. 
-% There is no flexibilty in discrete adjoitns, but there is in continuous
-% Human effort required to compute discrete adjoints is large \cite{FATODE2014}
-
 For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
 For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final gradient. 
-If done well the adjoint method offers considerate advantages when working with complex systems, since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability.
+If done well the adjoint method offers considerate advantages when working with complex systems.
+Since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability.
 
 \paragraph{Discrete adjoint method}
 
@@ -187,12 +183,12 @@ In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on
  &Interpolating adjoint$^\blacktriangleleft$ & Good & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
  &Quadrature adjoint & Good & $\mathcal O (n^3 + p)$ & High \\
  &Gauss adjoint & Good & $\mathcal O (n^3 + p)$ & High \\
-  &Gauss adjoint$^\blacktriangleleft$ & Good & $\mathcal O (n^3 + p)$ & $\mathcal O(K)$ \\
+ &Gauss adjoint$^\blacktriangleleft$ & Good & $\mathcal O (n^3 + p)$ & $\mathcal O(K)$ \\
  % name & .. & .. & .. \\
  \hline
 \end{tabular}
 % \vspace
-\caption{Comparison in performance and cost of solver-based methods. Methods that can be checkpointed are indicated with the symbol $\blacktriangleleft$, with $K$ the total number of checkpoints.}
+\caption{Comparison in performance and cost of solver-based methods. Methods that can be checkpointed are indicated with the symbol $\blacktriangleleft$, with $K$ the total number of checkpoints. The nomenclature of the different adjoint methods here follows the naming in the documentation of \texttt{SciMLSensitivity.jl} \cite{rackauckas2020universal}.}
 \label{table:adjoint}
 \end{table}
 
@@ -262,9 +258,31 @@ In the backsolve variation, the value $u$ in the reverse pass can be corrected t
 
 \paragraph{Solving the quadrature}
 
-Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. While one can solve the integral simultaneously to the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODEs are of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. The InterpolationgAdjoint and BacksolveAdjoint method use this ODE solver approach for computing the integrand. The QuadratureAdjoint approach avoids this computational cost by computing the dense solution $\lambda(t)$ and performs the quadrature after the solution using an adaptive Gauss-Kronrod method (QuadGK.jl). This method results in global error control on the integration and removes the cubic scaling within implicit solvers. Nonetheless, it requires a larger memory cost by storing the adjoint pass continuous solution.
+Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
+While one can solve the integral simultaneously to the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODEs are of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. 
+The interpolating adjoint and backsolve adjoint method use this ODE solver approach for computing the integrand. 
+On the other side, the quadrature adjoint approach avoids this computational cost by computing the dense solution $\lambda(t)$ and then computing the quadrature  
+\begin{align}
+    \frac{dL}{d\theta}
+    &= 
+    \lambda(t_0)^T s(t_0)
+    + 
+    \inttime
+    \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt \nonumber \\
+    &\approx
+    \lambda(t_0)^T s(t_0)
+    + 
+    \sum_{j=1}^N \omega_j \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) (\tau_i)
+\end{align}
+where $\omega_i$, $\tau_i$ are the weights and knots of the adaptive Gauss-Kronrod method from \texttt{QuadGK.jl} \cite{laurie1997calculation, gonnet2012review}. 
+This method results in global error control on the integration and removes the cubic scaling within implicit solvers. Nonetheless, it requires a larger memory cost by storing the adjoint pass continuous solution.
 
-Solvers designed for large implicit systems allow for solving explicit integrals based on the ODE solution simultaneously without including the equations in the ODE evaluation in order to avoid this expense. The Sundials COVDE solver introduced this technique specifically for BDF methods \cite{SUNDIALS-hindmarsh2005sundials}. In the Julia DifferentialEquations.jl solvers, this can be done using a callback (specifically the numerical integration callbacks form the DiffEqCallbacks.jl library). The GaussAdjoint method uses the callback approach to allow for a simultanious explicit evaluation the integral using Gaussian quadrature (related to \cite{Norcliffe_gaussquadrature_2023} but using a different approximation to improve convergence).
+Solvers designed for large implicit systems allow for solving explicit integrals based on the ODE solution simultaneously without including the equations in the ODE evaluation in order to avoid this expense. 
+The Sundials COVDE solver introduced this technique specifically for BDF methods \cite{SUNDIALS-hindmarsh2005sundials}. 
+In the Julia \texttt{DifferentialEquations.jl} solvers, this can be done using a callback (specifically the numerical integration callbacks form the \texttt{DiffEqCallbacks.jl} library). 
+The Gauss adjoint method uses the callback approach to allow for a simultaneous explicit evaluation the integral using Gaussian quadrature related to \cite{Norcliffe_gaussquadrature_2023} but using a different approximation to improve convergence.
 
-These differences in the schemes for computing $u(t)$ and the final quadrature give rise to the set of methods in Table \ref{table:adjoint}. All of these are ''the adjoint method`` with differences being in the way steps of the adjoint method are approximated, and notably there is a general trade-off in stability, performance, and memory. One final piece to note is that while the GaussAdjoint achieves good properties according to this chart, the QuadratureAdjoint notably uses a global error control of the quadrature as opposed to the local error control of the GaussAdjoint, and thus can achieve more robust bounding of the error with respect to user chosen tolerances.
+These differences in the schemes for computing $u(t)$ and the final quadrature give rise to the set of methods in Table \ref{table:adjoint}. 
+Excluding the sensitivity equation which was added for completeness, all of these are \textit{the adjoint method} with differences being in the way steps of the adjoint method are approximated, and notably there is a general trade-off in stability, performance, and memory. 
+One final piece to note is that while the Gauss adjoint achieves good properties according to this chart, the quadrature adjoint notably uses a global error control of the quadrature as opposed to the local error control of the Gauss adjoint, and thus can achieve more robust bounding of the error with respect to user chosen tolerances.
 

@@ -120,9 +120,6 @@ which is equivalent to using the chain rule as
 \begin{equation}
  \frac{\partial \ell}{\partial v_1} = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}.
 \end{equation}
-% There are many libraries that implement reverse AD acroos programming languages \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
-% In Julia, the libraries \texttt{ReverseDiff.jl} and \texttt{Zygote.jl} use pullbacks to compute gradients \cite{Innes_2018}. 
-% When gradients are being computed with less than $\sim 100$ parameters, the former is faster (see documentation).
 
 % \subsubsection{Further remarks}
 
@@ -138,8 +135,7 @@ Source-to-source AD systems can achieve higher performance by giving a static de
 These include \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme, Moses.2021}, and \texttt{Diffractor.jl}.
 The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
-
-% Since perturbation confusion also affects reverse mode AD, maybe is better to cover that here.
+It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables  result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
 
 \paragraph{Discrete checkpointing}
 \label{section:checkpointing}
@@ -151,7 +147,7 @@ It avoids storing all the intermediate states by balancing  storing and recomput
 This is achieved by saving intermediate states of the solution in the forward pass and recalculating the solution between intermediate states in the backwards mode \cite{Griewank:2008kh}. 
 Different checkpointing algorithms have been proposed, ranging from static, multi-level (e.g., \cite{Giering:1998in,Heimbach.2005} to optimized, binomial checkpointing algorithms (e.g., \cite{Walther:2004,Checkpoiting_2023}).
 
-Talk about MALI \cite{Zhuang_Dvornek_Tatikonda_Duncan_2021}. 
+% Talk about MALI \cite{Zhuang_Dvornek_Tatikonda_Duncan_2021}. 
 
 % Margossian has a nice discussion on this topic
 

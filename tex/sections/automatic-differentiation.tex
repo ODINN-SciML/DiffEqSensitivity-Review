@@ -63,10 +63,9 @@ In Section \ref{sec:computational-implementation} we will explore how this is im
 Multidimensional dual number generalize dual number to include a different dual variable $\epsilon_i$ for each variable we want to differentiate with respect to \cite{Neuenhofen_2018, RevelsLubinPapamarkou2016}.
 A multidimensional dual number is then defined as $x_\epsilon = x + \sum_{i=1}^p x_i \epsilon_i$, with the property that $\epsilon_i \epsilon_j = 0$ for all pairs $i$ and $j$.
 % Notice that a major limitation of the dual number approach is that we need a dual variable for each variable we want to differentiate. 
-Incorrect implementations of this aspect can lead to \textit{perturbation confusion} \cite{siskind2005perturbation, manzyuk2019perturbation}, an existing problem in some AD software where dual variables corresponding to different variables result indistinguishable, especially in the case of nested functions \cite{manzyuk2019perturbation}. 
-This problem can be overcome by computing the full gradient as the combination of independent directional derivatives (see Section \ref{sec:vjp-jvp}) 
+% This problem can be overcome by computing the full gradient as the combination of independent directional derivatives (see Section \ref{sec:vjp-jvp}). 
 Another extension of dual numbers that should not be confused with multidimensional dual numbers are hyper-dual numbers, which allow to compute higher-order derivatives of a function \cite{fike2013multi}. 
-% Here we need to say that for p > 1 the dual component is carrying the value of the sensitivity!!! This will make the connection with sensitivity equations more explicit. 
+
 
 \paragraph{Computational graph}
 % \vspace*{10px}
@@ -103,15 +102,18 @@ The only requirement for differentiation is being able to compute the derivative
 \subsubsection{Reverse mode}
 
 Reverse mode AD is also known as the adjoint, or cotangent linear mode, or backpropagation in the field of machine learning. 
-The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computation of the gradient of a function and the function itself can be bounded by a constant that does not depend on the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
+The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computational cost of the gradient of a function and the function itself can be bounded by a constant that does not depend on the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
 Given a directional graph of operations defined by a Wengert list, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
 \begin{equation}
     \bar v_i 
     = 
-    \frac{\partial L}{\partial v_i}= \sum_{w : v \rightarrow w \in G} \frac{\partial w}{\partial v_i} \bar{w}.
+    \frac{\partial \ell}{\partial v_i}
+    = 
+    \sum_\text{$w$\text{ such that} $v_i \rightarrow w$}
+    \frac{\partial w}{\partial v_i} \bar{w}.
     \label{eq:reverse-mode-ad-definition}
 \end{equation}
-In this context, the notation $\bar{w} = \frac{\partial L}{\partial \omega}$ is introduced to signify the partial derivative of the output variable, here associated to the loss function, with respect to input and intermediate variables. 
+In this context, the notation $\bar{w} = \frac{\partial L}{\partial w}$ is introduced to signify the partial derivative of the output variable, here associated to the loss function, with respect to input and intermediate variables. 
 This derivative is often referred to as the adjoint, dual, or cotangent, and its connection with the discrete adjoint method will be made more explicitly in Section \ref{section:comparison-discrete-adjoint-AD}. 
 
 Since in reverse-mode AD the values of $\bar w$ are being updated in reverse order, in general

@@ -67,7 +67,7 @@ Among them we select the following.
     \item Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
     \item Stiff differential equations are characterized by dynamics with different time scales \cite{kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
 \end{itemize} 
-Stability properties can be achieved by different means, for example by the use of implicit methods or stable explicit methods, such as Runge–Kutta–Chebyshev. 
+Stability properties can be achieved by different means, for example by the use of implicit methods or stabilized explicit methods, such as Runge–Kutta–Chebyshev \cite{van1980internal, hairer-solving-2}. 
 When using explicit methods, smaller timesteps may be required to guarantee stability. 
 
 % Timestep controller
@@ -150,10 +150,9 @@ This formulation is very general and allows to include many different applicatio
     % \begin{equation}
     %     p(\theta | Y) = \frac{p(Y | \theta) \, p (\theta)}{p(Y)}. 
     % \end{equation}
-    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian MCMC \cite{Betancourt_2017}.
+    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian Monte Carlo \cite{Betancourt_2017}.
     % Add mention for variatinal inference problems
     \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
-    % \todo[inline]{PH: I do not see the difference between a QoI and a "Diagnosis of the solution". Both refer to general scalar-valued functions whose sensitivity we seek (any QoI can be any Diagnosis). I would merge these.}
 \end{itemize}
 In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the richer class of functions included in the previous examples. 
 
@@ -200,9 +199,6 @@ For example, for the loss function in Equation \eqref{eq:quadratic-loss-function
 \end{equation}
 In most applications, the empirical component of the loss function $L(\theta)$, that is, the part of the loss that is a function on the data, will depend on $\theta$ just through $u$, meaning $\frac{\partial L}{\partial \theta} = 0$. 
 However, regularization terms added to the loss can directly depend on the parameter $\theta$, that is $\frac{\partial L}{\partial \theta} \neq 0$.
-% Just as in this last example, 
-% \todo{\footnotesize PH: Probably not true, since most of these applications also have regularization/penalty terms, such that $L$ depends directly on the parameters.}
-% in most applications the loss function $L(\theta)$ will depend on $\theta$ just through $u$, meaning $\frac{\partial L}{\partial \theta} = 0$.
 In both cases, the complicated term to compute is the matrix of derivatives $\frac{\partial u}{\partial \theta}$, usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
 \begin{equation}
  s 
