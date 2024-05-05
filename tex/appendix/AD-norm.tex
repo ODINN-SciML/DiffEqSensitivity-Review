@@ -28,7 +28,7 @@ If the stepsize $\Delta t_{n+1}$ proposed in Equation \eqref{eq:PIC} to update f
 When $\eta < 1$ (which is the case for simple controllers with $\beta_2 = \beta_3 = 0$), Equation \eqref{eq:PIC} can be used for the local update. 
 It is also common to restrict $\eta \in [\eta_\text{min}, \eta_\text{max}]$ so the stepsize does not change abruptly \cite{hairer-solving-1}. 
 
-When performing forward AD thought numerical solver, the error used in the stepsize controller needs to naturally account for both the errors induced in the numerical solution of the original ODE and the errors in the dual component carrying the value of the sensitivity. 
+When performing forward AD though numerical solver, the error used in the stepsize controller needs to naturally account for both the errors induced in the numerical solution of the original ODE and the errors in the dual component carrying the value of the sensitivity. 
 This relation between the numerical solver and AD has been made explicit when we presented the relationship between forward AD and the sensitivity equations (Section \ref{section:sensitivity-equation}, Equation \eqref{eq:sensitivity-equation-AD}). 
 To illustrate this, let us consider the simple ODE example from Section \ref{section:software-Forward-AD}, consisting in the system of equations 
 \begin{equation}
@@ -86,4 +86,4 @@ totallength(x::AbstractArray) = sum(totallength,x)
 grad3 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = ForwardDiffSensitivity(), saveat = 0.1, internalnorm = (u,t) -> sqrt(sum(x->sse(x),u) / totallength(u)), abstol=abstol, reltol=reltol)), p)
 # grad3 = ([212.71042521681392],)
 \end{jllisting}
-Notice that current implementations of forward AD inside \texttt{SciMLSensitivity.jl} already accounts for this and there is no need to specify the internal norm. 
+Notice that current implementations of forward AD inside \texttt{SciMLSensitivity.jl} already accounts for this and there is no need to specify the internal norm $\clubsuit_\text{\ref{code:AD-wrong}}$. 

@@ -56,11 +56,14 @@
 }
 
 @book{ramsay2017dynamic,
-    title={Dynamic data analysis},
-    author={Ramsay, James and Hooker, Giles},
-    year={2017},
-    publisher={Springer}
+    year = {2017}, 
+    title = {{Dynamic Data Analysis, Modeling Data with Differential Equations}}, 
+    author = {Ramsay, James and Hooker, Giles}, 
+    journal = {Springer Series in Statistics}, 
+    issn = {0172-7397}, 
+    doi = {10.1007/978-1-4939-7190-9}
 }
+
 
 @inproceedings{Johnson,
     title={Notes on Adjoint Methods for 18.335},
@@ -1299,3 +1302,94 @@ eprint = {https://doi.org/10.1137/22M1477805}
  @article{Butcher_Wanner_1996, title={Runge-Kutta methods: some historical notes}, volume={22}, ISSN={0168-9274}, DOI={10.1016/s0168-9274(96)00048-7}, abstractNote={This centenary history of Runge-Kutta methods contains an appreciation of the early work of Runge, Heun, Kutta, and Nyström and a survey of some significant developments of these methods over the last hundred years. In particular, the order conditions, as they are now understood, will be outlined, as will the introduction and practical implementation of implicit Runge-Kutta methods, the use of linear and nonlinear stability analysis in the assessment of Runge-Kutta methods, and the theory and applications of the composition of methods. Of the many further developments that have arisen, most are discussed only briefly; however, the recent interest in Runge-Kutta methods for Hamiltonian systems will be surveyed in more detail.}, number={1–3}, journal={Applied Numerical Mathematics}, author={Butcher, J.C. and Wanner, G.}, year={1996}, pages={113–151} }
 
  @article{Dahlquist_1985, title={33 years of numerical instability, Part I}, volume={25}, ISSN={0006-3835}, DOI={10.1007/bf01934997}, abstractNote={BIT has played and plays a great role in the development of concepts concerning numerical (in)stability in initial value problems forODE’s and related questions. This development is here seen through the looking-glass of the author, who experienced much of its pains and pleasures. The article is based on a talk given in 1981 at the Zürich symposium to commemorate the tenth anniversary of the death of the eminent Swiss numerical analyst, Heinz Rutishauser. The presentation is mainly chronological with a few digressions. Part I ends at the beginning of the stiff epoch.}, number={1}, journal={BIT Numerical Mathematics}, author={Dahlquist, Germund}, year={1985}, pages={188–204} }
+
+@book{pml1Book,
+ author = "Kevin P. Murphy",
+ title = "Probabilistic Machine Learning: An introduction",
+ publisher = "MIT Press",
+ year = 2022,
+ url = "probml.ai"
+}
+
+@article{Fornberg1988,
+ ISSN = {00255718, 10886842},
+ URL = {http://www.jstor.org/stable/2008770},
+ author = {Bengt Fornberg},
+ journal = {Mathematics of Computation},
+ number = {184},
+ pages = {699--706},
+ publisher = {American Mathematical Society},
+ title = {Generation of Finite Difference Formulas on Arbitrarily Spaced Grids},
+ urldate = {2024-03-20},
+ volume = {51},
+ year = {1988}
+}
+
+@article{Zhuang_Dvornek_Tatikonda_Duncan_2021, title={MALI: A memory efficient and reverse accurate integrator for Neural ODEs}, DOI={10.48550/arxiv.2102.04668}, abstractNote={Neural ordinary differential equations (Neural ODEs) are a new family of deep-learning models with continuous depth. However, the numerical estimation of the gradient in the continuous case is not well solved: existing implementations of the adjoint method suffer from inaccuracy in reverse-time trajectory, while the naive method and the adaptive checkpoint adjoint method (ACA) have a memory cost that grows with integration time. In this project, based on the asynchronous leapfrog (ALF) solver, we propose the Memory-efficient ALF Integrator (MALI), which has a constant memory cost textit{w.r.t} number of solver steps in integration similar to the adjoint method, and guarantees accuracy in reverse-time trajectory (hence accuracy in gradient estimation). We validate MALI in various tasks: on image recognition tasks, to our knowledge, MALI is the first to enable feasible training of a Neural ODE on ImageNet and outperform a well-tuned ResNet, while existing methods fail due to either heavy memory burden or inaccuracy; for time series modeling, MALI significantly outperforms the adjoint method; and for continuous generative models, MALI achieves new state-of-the-art performance. We provide a pypi package at url{https://jzkay12.github.io/TorchDiffEqPack/}}, journal={arXiv}, author={Zhuang, Juntang and Dvornek, Nicha C and Tatikonda, Sekhar and Duncan, James S}, year={2021} }
+
+@article{neal2011mcmc,
+  title={MCMC using Hamiltonian dynamics},
+  author={Neal, Radford M and others},
+  journal={Handbook of markov chain monte carlo},
+  volume={2},
+  number={11},
+  pages={2},
+  year={2011},
+  publisher={Chapman and Hall/CRC}
+}
+
+@article{Bell_Burke_2008, title={Advances in Automatic Differentiation}, ISSN={1439-7358}, DOI={10.1007/978-3-540-68942-3_7}, abstractNote={In applied optimization, an understanding of the sensitivity of the optimal value to changes in structural parameters is often essential. Applications include parametric optimization, saddle point problems, Benders decompositions, and multilevel optimization. In this paper we adapt a known automatic differentiation (AD) technique for obtaining derivatives of implicitly defined functions for application to optimal value functions. The formulation we develop is well suited to the evaluation of first and second derivatives of optimal values. The result is a method that yields large savings in time and memory. The savings are demonstrated by a Benders decomposition example using both the ADOL-C and CppAD packages. Some of the source code for these comparisons is included to aid testing with other hardware and compilers, other AD packages, as well as future versions of ADOL-C and CppAD. The source code also serves as an aid in the implementation of the method for actual applications. In addition, it demonstrates how multiple C++ operator overloading AD packages can be used with the same source code. This provides motivation for the coding numerical routines where the floating point type is a C++ template parameter.}, journal={Lecture Notes in Computational Science and Engineering}, author={Bell, Bradley M. and Burke, James V.}, year={2008}, pages={67–77} }
+
+@article{christianson1998reverse,
+  title={Reverse aumulation and imploicit functions},
+  author={Christianson, Bruce},
+  journal={Optimization Methods and Software},
+  volume={9},
+  number={4},
+  pages={307--322},
+  year={1998},
+  publisher={Taylor \& Francis}
+}
+
+@article{christianson1994reverse,
+  title={Reverse accumulation and attractive fixed points},
+  author={Christianson, Bruce},
+  journal={Optimization Methods and Software},
+  volume={3},
+  number={4},
+  pages={311--326},
+  year={1994},
+  publisher={Taylor \& Francis}
+}
+
+@article{van1980internal,
+  title={On the internal stability of explicit, m-stage Runge-Kutta methods for large m-values},
+  author={van Der Houwen, Pieter J and Sommeijer, Ben P},
+  journal={ZAMM-Journal of Applied Mathematics and Mechanics/Zeitschrift f{\"u}r Angewandte Mathematik und Mechanik},
+  volume={60},
+  number={10},
+  pages={479--485},
+  year={1980},
+  publisher={Wiley Online Library}
+}
+
+@article{gonnet2012review,
+  title={A review of error estimation in adaptive quadrature},
+  author={Gonnet, Pedro},
+  journal={ACM Computing Surveys (CSUR)},
+  volume={44},
+  number={4},
+  pages={1--36},
+  year={2012},
+  publisher={ACM New York, NY, USA}
+}
+
+@article{laurie1997calculation,
+  title={Calculation of Gauss-Kronrod quadrature rules},
+  author={Laurie, Dirk},
+  journal={Mathematics of Computation},
+  volume={66},
+  number={219},
+  pages={1133--1145},
+  year={1997}
+}

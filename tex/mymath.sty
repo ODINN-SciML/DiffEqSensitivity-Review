@@ -34,3 +34,10 @@
 \definecolor{myred}{RGB}{192, 57, 43}
 \definecolor{myblue}{RGB}{41, 128, 185}
 \definecolor{myviolet}{RGB}{142, 68, 173}
+
+%%% Code counter
+\newcounter{rtaskno}
+\setcounter{rtaskno}{-1}
+\DeclareRobustCommand{\code}[1]{%
+   \refstepcounter{rtaskno}%
+   \thertaskno\label{#1}}

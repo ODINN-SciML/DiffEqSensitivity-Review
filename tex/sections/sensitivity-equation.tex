@@ -3,7 +3,7 @@ If we consider the original system of ODEs given by Equation \eqref{eq:original_
 \begin{equation}
     \frac{d}{d\theta} \left( \frac{du}{dt}  - f(u(\theta), \theta, t) \right) = 0.
 \end{equation}
-Assuming that an unique solution exists and both $\frac{\partial f}{\partial u}$ and $\frac{\partial f}{\partial \theta}$ are continuous in the neighbour of the solution; or under the guarantee of interchangeability of the derivatives \cite{gronwall1919note}, for example by assuming that both $\frac{du}{dt}$ and $\frac{du}{d\theta}$ are differentiable \cite{math8111947}, we can derive
+Assuming that an unique solution exists and both $\frac{\partial f}{\partial u}$ and $\frac{\partial f}{\partial \theta}$ are continuous in the neighbourhood of the solution, or under the guarantee of interchangeability of the derivatives \cite{gronwall1919note}, for example by assuming that both $\frac{du}{dt}$ and $\frac{du}{d\theta}$ are differentiable \cite{math8111947}, we can derive
 \begin{equation}
  \frac{d}{d\theta} \frac{du}{dt} 
  =
@@ -21,11 +21,7 @@ Identifying the sensitivity matrix $s(t)$ defined in Equation \eqref{eq:sensitiv
 Both the original system of $n$ ODEs and the sensitivity equation of $np$ ODEs are solved simultaneously, which is necessary since the sensitivity differential equation directly depends on the value of $u(t)$.  
 This implies that as we solve the ODEs, we can ensure the same level of numerical precision for the two of them inside the numerical solver.
 
-In contrast to the methods previously introduced, the sensitivity equations find the gradient by solving a new set of continuous differential equations.
+In contrast to the methods previously introduced, the sensitivity equations find the derivative by solving a new set of continuous differential equations.
 Notice also that the obtained sensitivity $s(t)$ can be evaluated at any given time $t$. 
 This method can be labeled as forward, since we solve both $u(t)$ and $s(t)$ as we solve the differential equation forward in time, without the need of backtracking any operation though the solver.
 By solving the sensitivity equation and the original differential equation for $u(t)$ simultaneously, we ensure that by the end of the forward step we have calculated both $u(t)$ and $s(t)$. 
-
-% \subsubsection{Forward AD as the discretization of the sensitivity equations}
-
-%Notice that since $s(t)$ is a matrix of size $n \times p$, the complexity of solving the sensitivity equation scales as $\mathcal O(np)$. From a computational perspective, the sensitivity $s$ appears in the sensitivity equation as a VJP, meaning the the term $\frac{\partial f}{\partial u} s$ can be efficiently computed using backwards automatic differentiation. 
