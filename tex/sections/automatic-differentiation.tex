@@ -3,12 +3,13 @@ Automatic differentiation (AD) is a technology that generates new code represent
 Examples are code representing the tangent linear or adjoint operator of the parent code
 \cite{Griewank:2008kh}. 
 The names \textit{algorithmic} and \textit{computational} differentiation is also used in the literature, emphasizing the algorithmic rather than automatic nature of AD \cite{Griewank:2008kh, Naumann.2011, Margossian_2018}. 
-The basis of all AD systems is the notion that complicated functions included in any computer program can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation \cite{juedes1991taxonomy}.
+Any computer program implementing a given function can be reduced to a sequence of simple algebraic operations that have straightforward derivative expressions, based upon elementary rules of differentiation \cite{juedes1991taxonomy}.
 The derivatives of the outputs of the computer program (dependent variables) with respect to their inputs (independent variables) are then combined using the chain rule.
-One advantage of AD systems is to automatically differentiate programs that include control flow, such as branching, loops or recursions. 
-This is because any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+One advantage of AD systems is their capacity to differentiate complex programs that include control flow, such as branching, loops or recursions. 
+% This is because any program can be reduced to a trace of input, intermediate and output variables \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
 
-Depending on whether the concatenation of these derivatives is done as we execute the program (from input to output) or in a later instance where we trace-back the calculation from the end (from output to input), we refer to \textit{forward} or \textit{reverse} mode AD, respectively.
+AD falls under the category of discrete methods.
+Depending on whether the concatenation of the elementary derivatives is done as the program is executed (from input to output) or in a later instance where we trace-back the calculation from the end (from output to input), we refer to \textit{forward} or \textit{reverse} mode AD, respectively.
 Neither forward nor reverse mode is more efficient in all cases \cite{Griewank_1989}, as we will discuss in Section \ref{sec:vjp-jvp}.
 
 \subsubsection{Forward mode}
@@ -73,7 +74,7 @@ Another extension of dual numbers that should not be confused with multidimensio
 % \vspace*{5px}
 
 A useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
-Most scalar functions of interest can be represented in this factorial form as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{Griewank:2008kh, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or its linearized representation via a Wengert trace/tape \cite{Wengert_1964, Bauer_1974, Griewank:2008kh}. 
+Most scalar functions of interest can be represented as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{Griewank:2008kh, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or its linearized representation via a Wengert trace/tape \cite{Wengert_1964, Bauer_1974, Griewank:2008kh}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
 We can define $v_{-p+1}, v_{-p+2}, \ldots, v_0 = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
@@ -86,7 +87,7 @@ Once the graph is constructed, we can compute the derivative of every node with 
     \prod_{k=0}^{K-1} \frac{\partial w_{k+1}}{\partial w_{k}},
 \end{equation}
 where the sum is calculated with respect to all the directed paths in the graph connecting the input and target node.
-Instead of evaluating the last expression for all possible path, a simplification is to increasingly evaluate $j=1, \ldots, m$ using the recursion 
+Instead of evaluating the last expression for all possible paths, a simplification is to increasingly evaluate $j=1, \ldots, m$ using the recursion 
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
@@ -103,7 +104,7 @@ The only requirement for differentiation is being able to compute the derivative
 
 Reverse mode AD is also known as the adjoint, or cotangent linear mode, or backpropagation in the field of machine learning. 
 The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computational cost of the gradient of a function and the function itself can be bounded by a constant that does not depend on the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
-Given a directional graph of operations defined by a Wengert list, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
+Given a directed graph of operations defined by a Wengert list, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
 \begin{equation}
     \bar v_i 
     = 
@@ -132,22 +133,22 @@ As their name indicates, the difference between them is that the quantity we are
 Furthermore, both forward and reverse AD can be thought of as a way of computing derivatives associated with JVPs (see Equation \eqref{eq:directional-derivative}) and VJPs, respectively. 
 In other words, given a function $g: \R^{d_1} \mapsto \R^{d_2}$ that is evaluated during the forward mode of given program, AD will carry terms of the form $Dh (x) \cdot \dot x$ (JVP) in forward mode and $\bar y^T \cdot Dh (x)$ (VJP) in reverse mode \cite{Griewank:2008kh}.
 
-Let us consider for example the case of a nested loss function $L : \mathbb R^p \mapsto \mathbb R$ taking a total of $p$ arguments as inputs that can be decomposed as $L(\theta) = \ell \circ g_{k} \circ \ldots \circ g_2 \circ g_1(\theta)$, with $\ell : \mathbb R^{d_k} \mapsto \mathbb R$ the final evaluation of the loss function after we apply in order a sequence of intermediate functions $g_i : \mathbb R^{d_{i-1}} \mapsto \mathbb R^{d_i}$, where we define $d_0 = p$ for simplicity. 
+Let us consider for example the case of a loss function $L : \mathbb R^p \mapsto \mathbb R$ taking a total of $p$ arguments as inputs that can be decomposed as $L(\theta) = \ell \circ g_{k} \circ \ldots \circ g_2 \circ g_1(\theta)$, with $\ell : \mathbb R^{d_k} \mapsto \mathbb R$ the final evaluation of the loss function after we apply in order a sequence of intermediate functions $g_i : \mathbb R^{d_{i-1}} \mapsto \mathbb R^{d_i}$, where we define $d_0 = p$ for simplicity. 
 The final gradient is computed as the chain product of vectors and Jacobians as
 \begin{equation}
  \nabla_\theta L = \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1, 
 \end{equation}
-\todo[inline]{Eqn (25) is misleading insofar as it gives the (wrong) impression that grad(L) can be computed in forward mode. But that is not the case. All that can be computed is grad(L)*v(0). The grads should be changed into "D", or you should make the product of grad(L)*v(o) explicit.
-You'll need the transpose of that eqn to get the gradient.}
+% \todo[inline]{Eqn (25) is misleading insofar as it gives the (wrong) impression that grad(L) can be computed in forward mode. But that is not the case. All that can be computed is grad(L)*v(0). The grads should be changed into "D", or you should make the product of grad(L)*v(o) explicit.
+% You'll need the transpose of that eqn to get the gradient.}
 with $Dg_i$ the Jacobian of each nested function evaluated at the intermediate values $g_{i-1} \circ g_{i-2} \circ \ldots \circ g_i (\theta)$.
 Notice that in the last equation $\nabla \ell \in \mathbb R^{d_k}$ is a vector.
-\todo{See above comment: All that eqn (25) can do is solve grad(L)*v(0), ie the directional derivative.}
+% \todo{See above comment: All that eqn (25) can do is solve grad(L)*v(0), ie the directional derivative.}
 In order to compute $\nabla_\theta L$, we can solve the multiplication starting from the right side, which will correspond to multiplying the Jacobians forward from $Dg_1$ to $Dg_k$, or from the left side, moving backwards. 
 The important aspect of the backwards case is that we will always be computing VJPs, 
-\todo{No, $\nabla \ell$ is not a vector, it's a gradient.}
+% \todo{No, $\nabla \ell$ is not a vector, it's a gradient.}
 since $\nabla \ell$ is a vector.
 Since VJPs are easier to evaluate than full Jacobians, the reverse mode will in general be faster when $1 \ll p$. This example is illustrated in Figure \ref{fig:vjp-jvp}. 
-\todo[inline]{JVPs are also easier to evaluate than Jacobians. The point is that JVP maps from dim(p) to dim(1), whereas VJP maps from dim(1) to dim(p).}
+% \todo[inline]{JVPs are also easier to evaluate than Jacobians. The point is that JVP maps from dim(p) to dim(1), whereas VJP maps from dim(1) to dim(p).}
 For general rectangular matrices $A\in \mathbb R^{d_1 \times d_2}$ and $B \in \mathbb R^{d_2 \times d_3}$, the cost of the matrix multiplication $AB$ is $\mathcal O (d_1 d_2 d_3)$.
 
 It is worth noting that while more efficient methods for matrix-matrix multiplication based on Strassen’s recursive algorithm and its variants exist, these are not extensively used in most scientific applications \cite{Silva_Gustafson_Wong_2018, Huang_Smith_Henry_Geijn_2016}.
@@ -166,7 +167,7 @@ When the function to differentiate has a larger input space than output ($q \ll 
 For this reason, reverse-mode AD is preferred in both modern machine learning and inverse methods.
 % On the other side, when the output dimension is larger than the input space dimension, forwards AD is more efficient.
 % This is the reason why in most machine learning application people use backwards AD. 
-However, notice that reverse mode AD requires us to save intermediate variables through the forward run in order to run backwards afterwards \cite{Bennett_1973}, leading to performance overhead that makes forward AD more efficient when $p \lesssim q$ \cite{Griewank_1989, Margossian_2018, Baydin_Pearlmutter_Radul_Siskind_2015}. 
+However, notice that reverse mode AD requires saving intermediate variables through the forward run in order to run backwards afterwards \cite{Bennett_1973}, leading to performance overhead that makes forward AD more efficient when $p \lesssim q$ \cite{Griewank_1989, Margossian_2018, Baydin_Pearlmutter_Radul_Siskind_2015}. 
 
 \begin{figure}[t]
     \centering
@@ -179,8 +180,9 @@ However, notice that reverse mode AD requires us to save intermediate variables 
 In practice, many AD systems are reduced to the computation of only directional derivatives (JVPs) or gradients (VJPs) \cite{Griewank:2008kh}.
 % An important observation is that most AD systems construct full Jacobians by performing multiple VJPs and JVPs instead of constructing the full Jacobian at once. 
 Full Jacobians $J \in \R^{n \times p}$ (e.g., the sensitivity $s = \frac{\partial u}{\partial \theta} \in \R^{n \times p}$) can be fully reconstructed by the independent computation of the $p$ columns of $J$ via the JVPs $J e_i$, with $e_i \in \R^p$ the canonical vectors; or by the calculation of the $m$ rows of $J$ via the VJPs $e_j^T J$, with $e_j \in \R^n$.
-An important observation here is then how to efficiently compute sparse Jacobians, which are commonplace in large-scale nonlinear systems and discretized PDEs. 
-Consider the example of a Jacobian, ${J}_{\text{sparse}}$, with known sparsity pattern given by
+Sparse Jacobians are commonplace in large-scale nonlinear systems and discretized PDEs. 
+When the sparsity pattern is known, they can be efficiently obtained with \textit{colored AD} to chunk multiple JVPs or VJPs, based on the colored Jacobian~\cite{gebremedhin2005color}.
+More concretely, consider the example of a Jacobian, ${J}_{\text{sparse}}$, with known sparsity pattern given by
 \begin{equation}
     {J}_{\text{sparse}} = \begin{bmatrix}
         \bullet &         &         &         &         \\
@@ -193,8 +195,7 @@ Consider the example of a Jacobian, ${J}_{\text{sparse}}$, with known sparsity p
 where $\bullet$ denotes the non-zero elements of the Jacobian. 
 % AD tools compute Jacobians column-wise or row-wise by composing multiple JVPs or VJPs respectively. 
 % This is done to avoid perturbation confusion~\cite{manzyuk2019perturbation}. 
-For cases with known sparsity pattern, \textit{colored AD} can be used to chunk multiple JVPs or VJPs using the colored Jacobian~\cite{gebremedhin2005color}. 
-More concretely, we can color the above matrix as follows:
+We can color the above matrix as follows:
 \begin{equation}
     {J}^{(\text{col})}_{\text{sparse}} = \begin{bmatrix}
         \color{myred}{\blacktriangleright} &                            &                                  &                                  &                              \\

@@ -1,13 +1,13 @@
 In Sections \ref{section:finite-diffences} -- \ref{section:continuous-adjoint} we focused on merely introducing each one of the sensitivity methods classified in Figure \ref{fig:scheme-all-methods} as separate methods, postponing the discussion about their points in common. 
-In this section, we compare one-to-one these methods and highlight parallels between them. 
+In this section, we compare one-to-one these methods and highlight differences and parallels between them. 
 We hope this enlightens the discussion on sensitivity methods and helps to demystify  misconceptions around the sometimes apparent differences between methods. 
-This comparison will be strengthen again later in Section \ref{sec:computational-implementation}, where we will see how even small differences between methods can be translated to different software implementations with different advantages. 
+This comparison will be strengthened again later in Section \ref{sec:computational-implementation}, where we will see how even small differences between methods can be translated to different software implementations with different advantages. 
 
 \subsubsection{Forward AD and complex step differentiation}
 
 Both AD based on dual numbers and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the dual variable that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
-Although these methods seem similar, we emphasize that AD gives the exact gradient, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
+Although these methods seem similar, we emphasize that AD gives the exact gradient value, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
 In Figure \ref{fig:complex-step-AD} we show how the calculation of the gradient of the function $\sin (x^2)$ is performed by these two methods.
 Whereas the second component of the dual number has the exact derivative of the function $\sin(x^2)$ with respect to $x$, it is not until we take $\varepsilon \rightarrow 0$ that we obtain the derivative in the imaginary component for the complex step method.
 % The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
@@ -189,24 +189,25 @@ The partial component in Equation \eqref{eq:rk-sensitivity-2} carrying the coeff
     \left(u^n + \sum_{j=1}^s a_{ij} k_j, \theta,  t_n + c_i \Delta t_n \right),
 \end{split}
 \end{align}
-which coincides with the Runge-Kutta scheme we will obtain for the original sensitivity equation. 
+which coincides with the Runge-Kutta scheme we would obtain for the original sensitivity equation. 
 This means that forward AD on Runge-Kutta methods leads to solutions for the sensitivity that have the same convergence properties of the forward solver. 
 
 Note that consistency does not imply that an ODE solver is necessarily correct or stable under such a transformation. 
-Such a property requires that other aspects of the solver, such as adaptivity and error control, take into account the properties of the derivative. Appendix \ref{appendix:dual-number-solver} explores this further by demonstrating that common implementations of adaptive ODE solvers may not be convergent when forward AD is applied to solver even though the process is mathematically consistent. 
-This highlights that additional factors beyond consistency must be considered when understanding whether an implementation is convergent.
+Such properties involve other aspects of the solver, such as adaptivity and error control, take into account the properties of the derivative. 
+In Appendix \ref{appendix:dual-number-solver}, we demonstrate that common implementations of adaptive ODE solvers may not be convergent when forward AD is applied to solver even though the process is mathematically consistent. 
+This highlights that additional factors beyond consistency must be considered when investigating whether an implementation is convergent.
 
 \subsubsection{Consistency: discrete and continuous adjoints}
 
 % There is a large family of adjoint methods that in first order can be classified as discrete and continuous adjoints. 
 As previously mentioned, the difference between the discrete and continuous adjoint methods is that the former follows the discretize-then-differentiate approach (also known as finite difference of adjoints \cite{Sirkes_Tziperman_1997}).
 In contrast, continuous adjoint equations are derived by directly operating on the differential equation, without a priori consideration of the numerical scheme used to solve it. 
-In some sense then, we can think of the discrete adjoint $\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_N)$ in Equation \eqref{eq:linea-adjoint-state-equation} as the discretization of the continuous adjoint $\lambda(t)$. 
+In some sense, we can think of the discrete adjoint $\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_N)$ in Equation \eqref{eq:linea-adjoint-state-equation} as the discretization of the continuous adjoint $\lambda(t)$. 
 
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 
 Furthermore, since the continuous adjoint method requires to numerically solve the adjoint, we are interested in the relative accuracy of the forward and reverse step. 
-It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continunous adjoint with same level of convergence of the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
-To guarantee the same order of convergence, it is important that both the forward and backwards solver use the same Runge-Kutta coefficients \cite{Alexe_Sandu_2009}.
+It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continuous adjoint with same level of convergence as for the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
+To guarantee the same order of convergence, it is important that both the forward and backward solver use the same Runge-Kutta coefficients \cite{Alexe_Sandu_2009}.
 Importantly, even when consistent, the code generated using the discrete adjoint using AD tools (see Section \ref{section:comparison-discrete-adjoint-AD}) can be sub-optimal and manual modification of the differentiation code are required to guarantee correctness \cite{Eberhard_Bischof_1996, alexe2007denserks}.
 
 % For multilinear solver, ... 

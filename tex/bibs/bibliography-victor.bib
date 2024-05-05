@@ -691,12 +691,19 @@
   keywords = {monitoring},
   file = {/Users/victorboussange/Zotero/storage/V8FPB3V3/peerj-01-103.pdf}
 }
-@article{Boussange2022a,
-  title = {Mini-Batching Ecological Data to Improve Ecosystem Models with Machine Learning},
-  author = {Boussange, Victor and Vilimelis, Pau and Pellissier, Loïc},
-  date = {2022},
-  file = {/Users/victorboussange/Zotero/storage/SR4SPAWN/2022.07.25.501365v1.full.pdf}
+@article {Boussange2024,
+	author = {Victor Boussange and Pau Vilimelis Aceituno and Frank Sch{\"a}fer and Lo{\"\i}c Pellissier},
+	title = {Partitioning time series to improve process-based models with machine learning},
+	elocation-id = {2022.07.25.501365},
+	year = {2024},
+	doi = {10.1101/2022.07.25.501365},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {Process-based community models are required to extrapolate beyond current dynamics and anticipate biodiversity response to global change, but their adoption has been limited in practice because of issues with model parameter estimation and model inaccuracies. While observation data could be used to directly estimate parameters and refine model structures, model nonlinearities, sparse and noisy datasets and the complexity of ecological dynamics complicate this process. Here, we propose an inverse modelling framework designed for addressing these issues, that relies on a segmentation method combined with automatic differentiation, deep learning gradient-based optimizers, minibatching, and a parameter normalization technique. By partitioning the data into time series with a short time horizon, we show that the segmentation method regularizes the inverse problem. Implemented in the Julia package PiecewiseInference.jl, the resulting framework enables the efficient calibration of realistic dynamical community models and supports the use of neural networks to represent complex ecological processes within the model. We evaluate the performance of the inverse modelling framework on simulated food-web dynamics of increasing complexity, including scenarios with partial observations. Our results demonstrate its performance in inferring model parameters and providing forecasts. We further showcase that the regularization induced by the framework, together with its efficiency, are instrumental for the online training of neural network-based parametrizations, alongside the other model parameters. Neural network-based parametrizations not only mitigate model inaccuracies but can also contribute to the refinement of ecological theory through their offline examination. The proposed inverse modelling framework is data-efficient, interpretable and capable of extrapolating beyond observed dynamics, showing promise in improving our ability to understand and forecast biodiversity dynamics.Competing Interest StatementThe authors have declared no competing interest.},
+	URL = {https://www.biorxiv.org/content/early/2024/04/11/2022.07.25.501365},
+	eprint = {https://www.biorxiv.org/content/early/2024/04/11/2022.07.25.501365.full.pdf},
+	journal = {bioRxiv}
 }
+
 @online{paredes2023,
   title = {Rsofun: {{A}} Model-Data Integration Framework for Simulating Ecosystem Processes},
   shorttitle = {Rsofun},

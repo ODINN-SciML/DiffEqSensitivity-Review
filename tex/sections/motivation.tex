@@ -53,25 +53,24 @@ The overarching goal of inverse modelling is to find a set of optimal model para
 Depending on the scientific problem, inverse modelling can be performed on different quantities of interest of system under study, including:
 % Depending on the nature of the inversion, we may distinguish between the following cases:
 \begin{itemize}
-    \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, lead to an optimal match between the observations and the simulated state (or diagnostics); variants thereof are used for optimal forecasting.
-    \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produce an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
+    \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, leads to an optimal match between the observations and the simulated state (or diagnostics); variants thereof are used for optimal forecasting.
+    \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produces an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
     \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications. Parametrization is a special case of parameter inversion, where a parametric function (e.g., a neural network) is used to approximate processes. 
     % \cite{rasp2018, beucler2024, boussange2024}.
     % \item \textbf{Model selection.} Estimating the model evidence for each candidate model to discriminate between competing hypotheses \cite{burnham2004}. Involves the calculation of the marginal likelihood for each model, or the calibration of each model and evaluation of their score in out-of-samples predictions. %which may be approximated by Laplace approximation and involves the calculation of the hessian of the likelihood function, or by the calculation of information-based criteria (AIC, BIC, see ref\cite{burnham2002}).
 \end{itemize}
 Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 
-In recent years the use of machine learning methods has become more popular in many scientific domains. 
+In recent years the use of machine learning methods has become more popular in many scientific domains \cite{ml_clouds_climate, chem_ml_review, bio_ml_review}. 
 Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning any possible function if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
 
-There is a long tradition of differentiable programming methods applied across the scientific spectrum. 
-Without aiming to have a complete or comprehensive overview of applications to all scientific and engineering applications, or a perfect classification of them, the following are a few selected examples where these techniques had been used by different communities. 
+In the following, we present selected examples belonging to a wide range of scientific communities where differentiable programming techniques have been used. 
 
 \subsubsection{Computational physics and optimal design}
 
 There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines. These include examples in fluid dynamics, where sensitivity methods have been used for optimal design and optimal control
-\cite{lions1971optimal, pironneau2005optimal}, for aerodynamic design and shape optimization
+\cite{lions1971optimal, pironneau2005optimal}, aerodynamic design and shape optimization
 \cite{Jameson_1988,Giles_Pierce_2000, mohammadi2009applied,allaire2014shape} and 
 supersonic aircraft design \cite{hu2010supersonic, fike2013multi}.
 Furthermore, these methods have been applied to particle physics \cite{Dorigo.2022} and quantum chemistry \cite{Arrazola.2021}, to the optimal design of nanophotonics devices  \cite{Molesky_Lin_Piggott_Jin_Vucković_Rodriguez_2018}, to optimal design in electromagnetism \cite{Georgieva_Glavic_Bakr_Bandler_2002}, to stellarator coil design \cite{McGreivy_stellarator_2021}, and to biological applications \cite{Strouwen2022}.
@@ -100,7 +99,7 @@ Example are geophysical fluid dynamics \cite{Vallis:2016kv}, describing geophysi
 In such models, calibrating model parameters is extremely challenging, due to datasets being sparse in both space and time, heterogeneous, and noisy; and computational models involving high-dimensional parameter spaces, often on the order of $O(10^3) - O(10^8)$.
 Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
 
-In the following, we sketch how differentiable programming has been used in different disciplines of geosciences, and how new concepts are emerging of combining inverse modeling and machine learning approaches where differentiable programming provides a key computational enabling framework, something recently coined as scientific machine learning. 
+
 %(Note that some authors have used the notion of ``scientific machine learning'' to capture some aspects of the latter approach [REFS]).
 
 \paragraph{Meteorology}
@@ -156,14 +155,15 @@ Alternatively, some other approaches have dropped the use of numerical solvers i
 
 Differential equation models have been broadly used in biology and ecology to model the dynamics of genes and alleles \cite{Page2002}, the ecological and evolutionary dynamics of biological units from bacteria to ecological communities \cite{Gabor2015,Lion2018,Villa2021,Boussange2022,boussange2023a, Akesson2021,chalmandrier2021,VandenBerg2022}, and biomass and energy fluxes and transformation at ecosystem levels \cite{Weng2015,Schartau2017,Franklin2020,Geary2020}.
 Estimating parameters of biological models from laboratory experiments is costly and difficult\cite{Schartau2017}, and may even result in simulations failing in capturing real biological dynamics \cite{Watts2001}. 
-As a consequence, statistical models have been the main modelling paradigm in biology \cite{zimmermann2010}, but inverse modelling methods are increasingly advocated to inform mechanistic models \cite{hartig2012,alsos2023,pantel2023} and e.g. provide robust forecasts of ecosystem responses to global change \cite{alsos2023}.
-Inverse modelling can take the form of parameter estimation \cite{Schartau2017} or model selection \cite{Johnson2004}, both involving the use of inference methods to estimate the probability of the empirical data given the model parameters (i.e., the likelihood).
-Provided that they are inferred together with uncertainties, parameters can be interpreted to better understand the strengths and effects of the processes considered \cite{Pontarp2019}. 
-For instance, \cite{Higgins2010,Curtsdotter2019,godwin2020} infer the parameters of dynamic community models to understand the processes involved in ecosystem functions.
+As a consequence, statistical models have been the main modelling paradigm in biology \cite{zimmermann2010}, but inverse modelling methods are increasingly advocated to inform mechanistic models \cite{hartig2012,alsos2023,pantel2023}.
+Inverse modelling can take the form of parameter estimation \cite{Schartau2017} or model selection \cite{Johnson2004}.
+Provided that they are inferred together with uncertainties, parameters can be interpreted to better understand the strengths and effects of the processes considered \cite{Pontarp2019,Higgins2010,Curtsdotter2019,godwin2020}.
 In model selection, candidate models embedding competing hypotheses about causal processes are derived, and the relative support of each model given the data is computed to discriminate between the hypotheses \cite{Johnson2004,alsos2023}.
 % For instance, using inverse modelling and eco-evolutionary models embedding competing evolutionary speed hypotheses, \cite{Skeels2022} shows that temperature-dependent evolutionary speed most likely explains variations in biodiversity patterns. 
 The computation of the most probable model parameter values, or the computation of the different model supports, critically involves sensitivity methods which must adequately handle the typically larger number of parameters and the nonlinearities of biological models \cite{Gabor2015}.
 
-While inverse modelling in biology has been mostly agnostic to AD techniques, their potential have recently been highlighted \cite{frank2022,alsos2023} and new approaches to accommodate for the specificity of biological and ecological models are increasingly proposed \cite{Yazdani2020,Boussange2022a,paredes2023}. 
-Given that key ecological processes are not accurately represented in biological models \cite{hartig2012,Schartau2017,chalmandrier2021}, AD-based inverse modelling methods are particularly relevant to support hybrid approaches where neural networks are used as data-driven parametrization \cite{rasp2018,Boussange2022a} in differential equation models.
-Increasingly available biological dataset following the development of monitoring technologies such as paleao-time series \cite{alsos2023}, environmental DNA \cite{Ruppert2019}, remote sensing \cite{Jetz2019}, bioaccoustics \cite{Aide2013}, and citizen observations \cite{GBIF}, are additional opportunities.
+While inverse modelling in biology has been mostly agnostic to differential programming techniques, their potential have recently been highlighted \cite{frank2022,alsos2023} and new approaches to accommodate for the specificity of biological and ecological models are increasingly proposed \cite{Yazdani2020,Boussange2024,paredes2023}. 
+Given that key ecological processes are not accurately represented in biological models \cite{hartig2012,Schartau2017,chalmandrier2021}, hybrid approaches where neural networks are used as data-driven parametrization of uncertain processes in differential equation models are particularly relevant \cite{rasp2018,Boussange2024} .
+Increasingly available biological dataset following the development of monitoring technologies such as paleao-time series \cite{alsos2023}, environmental DNA \cite{Ruppert2019}, remote sensing \cite{Jetz2019}, bioaccoustics \cite{Aide2013}, and citizen observations \cite{GBIF}, are additional opportunities to leverage mechanistic models with data-driven components.
+
+% Maybe have a section on hybrid modelling, combining data-driven components with convential models
