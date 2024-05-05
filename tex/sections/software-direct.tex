@@ -96,7 +96,6 @@ In the simple case of $a=1$, the solutions of the ODE are constant functions $u_
 As explained in Appendix \ref{appendix:dual-number-solver}, traditional adaptive stepsize solvers used for just solving ODEs are designed to control for numerical errors in the ODE solution but not in its sensitivities when coupled with an internal AD method. 
 This can lead to wrong gradient calculations that propagate through the numerical solver without further warning $\clubsuit_\text{\code{code:AD-wrong}}$. 
 
-
 \paragraph{Reverse AD based on computational graph}
 \label{sec:software-reverse-AD}
 
