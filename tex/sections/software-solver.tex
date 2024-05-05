@@ -20,7 +20,7 @@ and \texttt{Diffrax} in Python \cite{kidger2021on}.
 
 It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
-Another important consideration is that all these methods have subroutines to compute the VJPs involved in the sensitivity and adjoint equations. 
+Another important consideration is that all these methods have subroutines to compute the JVPs and VJPs involved in the sensitivity and adjoint equations, respectively. 
 This calculation is carried out by another sensitivity method, usually finite differences or AD, which plays a central role when analyzing the accuracy and stability of the adjoint method. 
 
 \subsubsection{Forward sensitivity equation}
@@ -90,26 +90,26 @@ For stiff systems of ODEs the use of the sensitivity equations can be computatio
 This is because stiff ODEs require the use of stable solvers with cubic cost with respect to the number of ODEs \cite{hairer-solving-2}, making the total complexity of the sensitivity method $\mathcal{O}(n^3p^3)$. 
 This complexity makes this method expensive for models with many ODEs and/or parameters unless the solver is able to further specialize on sparsity or properties of the linear solver (i.e. through Newton-Krylov methods). 
 
-\paragraph{Computing VJPs inside the solver}
+\paragraph{Computing JVPs and VJPs inside the solver}
 \label{section:computing-vjp-inside-solver}
 
-All solver-based methods require the computations of VJPs. 
-In the case of the sensitivity equation, this correspond to the row/column terms in $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
+All solver-based methods require the computation of JVPs or VJPs. 
+In the case of the sensitivity equation, this correspond to the JVPs resulting form the product $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
 For the adjoint equations, although an efficient trick has been used to remove the computationally expensive VJP, we still need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
 % Mention why these are different?
-Therefore, the choice of the algorithm to compute VJPs can have a significant impact in the overall performance. 
+Therefore, the choice of the algorithm to compute JVPS/VJPs can have a significant impact in the overall performance. 
 
-In \texttt{SUNDIALS}, the VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
-In \texttt{FATODE}, these can be computed with finite differences, AD, or it can be provided by the user.
+In \texttt{SUNDIALS}, the JVPS/VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
+In \texttt{FATODE}, they can be computed with finite differences, AD, or it can be provided by the user.
 In the Julia ecosystem, different AD packages are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, \texttt{Tracker.jl}.
-These will compute the VJPs using some form of AD, which will result in correct calculations but potentially sub-optimal code. 
-In Julia, the options \texttt{autodiff} and \texttt{autojacvec} allow to customized if VJPs are computed using AD or finite differences.  
+These will compute the JVPs/VJPs using some form of AD, which will result in correct calculations but potentially sub-optimal code. 
+In Julia, the options \texttt{autodiff} and \texttt{autojacvec} allow one to customize if JVPs/VJPs are computed using AD or finite differences.  
 % For these cases, customized VJPs function can be passed to the sensitivity methods using the \texttt{autojacvec}. 
 
 \subsubsection{Adjoint methods}
 \label{section:computing-adjoints}
 
-For complex and large systems, direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
+For complex and large systems (e.g. of more than 50 parameters and ODEs), direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
 For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final gradient. 
 If done well the adjoint method offers considerate advantages when working with complex systems.
 Since we are dealing with a new differential equation special care needs to be taken with respect to numerical efficiency and stability.
@@ -148,7 +148,7 @@ In this case, the full solution in the forward pass is stored in memory and used
 As in the case of reverse AD, checkpointing can be used here. 
 
 The previous example shows a manual implementation of the adjoint method. 
-However, as we discuss in Section \ref{section:comparison-discrete-adjoint-AD}, the discrete adjoint method can be directly been implemented using reverse AD. 
+However, as we discuss in Section \ref{section:comparison-discrete-adjoint-AD}, the discrete adjoint method can be directly implemented using reverse AD. 
 In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on the numerical solver via \texttt{ReverseDiff.jl}; \texttt{ZygoteAdjoint} via \texttt{Zygote.jl}; and \texttt{TrackerAdjoint} via \texttt{Tracker.jl}. 
 % In all these cases, a custom pullback function needs to be specified that specifies how VJPs are computed thought the numerical solver \cite{rackauckas2021generalized}.
 
@@ -158,32 +158,31 @@ In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on
 
 \begin{table}[bt]
 \centering
-\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\setlength{\tabcolsep}{6pt} % Default value: 6pt
 \renewcommand{\arraystretch}{1.5} % Default value: 1
-% \footnotesize
-% \scriptsize
-\begin{tabular}{ c |c c c c|} 
- \cline{2-5}
- &\textbf{Method} & \textbf{Stability} & \textbf{Stiff Performance} & \textbf{Memory} 
+\small
+\begin{tabular}{ c |c c c c c|} 
+ \cline{2-6}
+ &\textbf{Method} & \textbf{Stability} & \textbf{Non-Stiff Performance} & \textbf{Stiff Performance} & \textbf{Memory} 
  \\ [0.5ex] 
- \cline{2-5}
+ \cline{2-6}
  \hline
  \multirow{3}*{\rotatebox{90}{\textbf{Discrete}}}  
- &ReverseDiffAdjoint & Good & $\mathcal O (n^3 + p)$ & High \\
- &ZygoteAdjoint & Good & $\mathcal O (n^3 + p)$ & High \\
- &TrackerAdjoint & Good & $\mathcal O (n^3 + p)$ & High
+ &ReverseDiffAdjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
+ &ZygoteAdjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
+ &TrackerAdjoint & Good & & $\mathcal O (n^3 + p)$ & High
  \\ [0.5ex] 
  \hline\hline
  \multirow{7}*{\rotatebox{90}{\textbf{Continuous}}} 
- & Sensitivity equation & Good & $\mathcal O (n^3p^3)$ & $\mathcal O(1)$ \\
- \cline{2-5}
- &Backsolve adjoint & Poor & $\mathcal O ((n+p)^3)$ & $\mathcal O(1)$ \\ 
- &Backsolve adjoint$^\blacktriangleleft$ & Medium & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
- &Interpolating adjoint & Good & $\mathcal O ((n+p)^3)$ & High \\ 
- &Interpolating adjoint$^\blacktriangleleft$ & Good & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
- &Quadrature adjoint & Good & $\mathcal O (n^3 + p)$ & High \\
- &Gauss adjoint & Good & $\mathcal O (n^3 + p)$ & High \\
- &Gauss adjoint$^\blacktriangleleft$ & Good & $\mathcal O (n^3 + p)$ & $\mathcal O(K)$ \\
+ & Sensitivity equation & Good & & $\mathcal O (n^3p^3)$ & $\mathcal O(1)$ \\
+ \cline{2-6}
+ &Backsolve adjoint & Poor & & $\mathcal O ((n+p)^3)$ & $\mathcal O(1)$ \\ 
+ &Backsolve adjoint$^\blacktriangleleft$ & Medium & & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
+ &Interpolating adjoint & Good & & $\mathcal O ((n+p)^3)$ & High \\ 
+ &Interpolating adjoint$^\blacktriangleleft$ & Good & & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
+ &Quadrature adjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
+ &Gauss adjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
+ &Gauss adjoint$^\blacktriangleleft$ & Good & & $\mathcal O (n^3 + p)$ & $\mathcal O(K)$ \\
  % name & .. & .. & .. \\
  \hline
 \end{tabular}

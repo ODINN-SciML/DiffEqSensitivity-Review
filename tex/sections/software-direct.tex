@@ -101,7 +101,7 @@ This can lead to wrong gradient calculations that propagate through the numerica
 \label{sec:software-reverse-AD}
 
 In contrast to finite differences, forward AD, and complex-step differentiation, reverse AD is the only of this family of methods that propagates the gradient in reverse mode by relying on analytical derivatives of primitive functions, which in Julia are available via \texttt{ChainRules.jl}
-\todo[inline]{And recently in Enzyme.jl!}
+% \todo[inline]{And recently in Enzyme.jl!}
 Since this requires the evaluation intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
 
 Reverse AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
