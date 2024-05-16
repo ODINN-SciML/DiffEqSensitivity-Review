@@ -5,7 +5,7 @@
     \label{fig:scheme-all-methods}
 \end{figure}
 
-There is a large family of methods for computing gradients or sensitivities of functions based on solutions of systems of differential equations. 
+There is a large family of methods for computing gradients of functions based on solutions of systems of differential equations. 
 Depending on the number of parameters and the characteristics of the differential equation (e.g., level of stiffness), they have different mathematical, numerical, and computational advantages.
 These methods can be roughly classified as follows \cite{ma2021comparison}. 
 \begin{itemize}
@@ -26,13 +26,19 @@ Discrete methods compute the exact derivative of the numerical approximation to 
 % For example, methods such as automatic differentiation may compute the exact derivative of the numerical approximation of a loss function and yet not give a good approximation of the exact derivative of the loss \cite{Walther_2007}.
 % However, one has to keep in mind that AD computes the exact derivative of an approximation of the objective and may not yield an approximation to the exact derivatives of the objective (Section \ref{section:forwardAD-sensitivity}).
 
-The distinction between \textit{forward} and \textit{reverse} methods relate to the timing of gradient computation, whether it occurs during the initial forward pass of the numerical solver or during a subsequent recalculation\cite{Griewank:2008kh}. 
-In all \textit{forward} methods the solution of the differential equation is solved sequentially and simultaneously with the derivative (either the full gradient or more commonly a directional derivative) during the forward pass of the numerical solver. 
+% The \textit{forward} vs \textit{reverse} distinction regards when the gradient is computed, if this happens during the forward pass of the numerical solver or in a later recalculation \cite{Griewank:2008kh}. 
+The distinction between \textit{forward} and \textit{reverse} regards whether sensitivities are computing for intermediate variables with respect to the input variable or parameter to differentiate (forward) or, on the contrary, we compute the sensitivity of the output variable with respect to each intermediate variable by defining a new adjoint variable (reverse). 
+% methods relate to the timing of gradient computation, whether it occurs during the initial forward pass of the numerical solver or during a subsequent recalculation \cite{Griewank:2008kh}. 
+Mathematically speaking, this distinction translated to the fact that forward methods compute directional derivatives by mapping sequential mappings between tangent spaces, while reverse methods apply sequential mappings between co-tangent spaces from the direction of the output variable to the input variable (Section \ref{sec:vjp-jvp}).   
+In all \textit{forward} methods the solution of the differential equation is solved sequentially and simultaneously with the directional derivative during the forward pass of the numerical solver. 
+On the contrary, \textit{reverse} methods compute the gradient by solving a new problem that moves in the opposite direction as the original numerical solver.
+In ODE-based models, intermediate variables correspond to intermediate solutions of the differential equation.
+Most numerical methods solve ordinary differential equations progressively moving forward in time, meaning that reverse methods solve for the gradient moving backwards in time. 
+In other words, forward methods compute directional derivatives as they simultaneously solve the original differential equation, while reverse methods compute adjoints as they solve the problem from output to input.
 % \todo[inline]{That doesn't sound right, see Griewank, section 3: the forward model computes directional derivatives, not gradients (tangent mode), the reverse mode computes gradients (adjoint mode). I.e., forward mode maps between tangent spaces, reverse mode maps between cotangent spaces. The text can be corrected if you replace "gradient" more generically by "derivative" (but it then misses the point).}
-On the contrary, \textit{reverse} methods compute the gradient tracking backwards the forward model by solving a new problem that moves in the opposite direction as the original numerical solver. 
-For systems of ordinary differential equations (ODEs) and initial value problems (IVPs), most numerical methods solve the differential equation progressively moving forward in time, meaning that reverse methods then solve for the gradient moving backwards in time. 
 
-As discussed in the following sections, forward methods are very efficient for problems with a small number of parameters we want to differentiate with respect to, while reverse methods are more efficient for a large number of parameters but they come with a larger memory cost or compute overhead which needs to be overcome using different performance tricks. 
+As discussed in the following sections, forward methods are very efficient for problems with a small number of parameters we want to differentiate with respect to. 
+Conversely, reverse methods, though more efficient for a large number of parameters, incur greater memory costs and computational overhead which need to be overcome using different performance tricks. 
 With the exception of finite differences and complex step differentiation, the rest of the forward methods (i.e. forward AD, sensitivity equations, symbolic differentiation) compute the full sensitivity of the differential equation, which can be computationally expensive or intractable for large systems. 
 Conversely, reverse methods are based on the computation of intermediate variables, known as the adjoint or dual variables, that cleverly avoid the unnecessary calculation of the full sensitivity at expenses of larger memory cost \cite{Givoli_2021}. 
 

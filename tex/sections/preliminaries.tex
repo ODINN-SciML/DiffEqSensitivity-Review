@@ -5,7 +5,7 @@ Consider a system of first-order ODEs given by
 \end{equation}
 subject to the initial condition $u(t_0) = u_0$, where $u \in \mathbb{R}^n$ is the unknown solution vector of the ODEs, $f: \R^n \times \R^p \times \R \mapsto \R^n$ is a function that depends on the state $u$, $\theta \in \mathbb R^p$ is a vector parameter, and $t$ refers to time.
 Here, $n$ denotes the total number of ODEs and $p$ the number of parameters of the differential equation.
-Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to the case, equation \eqref{eq:original_ODE} also extends to partial differential equations (PDEs) (when discretized via e.g. the method of lines \cite{ascher2008numerical}), and to differential algebraic equations (DAEs) \cite{hairer-solving-2}.
+% Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to partial differential equations (PDEs) (when discretized via e.g. the method of lines \cite{ascher2008numerical}), and to differential algebraic equations (DAEs) \cite{hairer-solving-2}.
 % In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
 Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqref{eq:original_ODE} need to be computed using numerical solvers. 
@@ -30,7 +30,7 @@ Given an integer $s$, $s$-stage Runge-Kutta methods are defined by generalizing 
     \label{eq:Runge-Kutta-scheme}
 \end{split}
 \end{align}
-where $u^{n} \approx u(t_n)$ approximates the solution at time $t_n$, where $\Delta t_n = t_{n+1}-t_n$, and where $a_{ij}$, $b_i$, and $c_j$ are scalar coefficients with $i,j=1, 2,\ldots, j$, usually represented in the form of a tableau. 
+where $u^{n} \approx u(t_n)$ approximates the solution at time $t_n$, $\Delta t_n = t_{n+1}-t_n$, and $a_{ij}$, $b_i$, and $c_j$ are scalar coefficients with $i,j=1, 2,\ldots, j$, usually represented in the form of a tableau. 
 A Runge-Kutta method is called explicit if $a_{ij}=0$ for $i \leq j$; diagonally implicit if $a_{ij}=0$ for $i < j$; and fully implicit otherwise. 
 Different choices of the number of stages $s$ and coefficients give different orders of convergence of the numerical scheme \cite{Butcher_Wanner_1996, Butcher_2001}. 
 
@@ -41,7 +41,7 @@ In contrast, multi-step linear solvers are of the form
     \Delta t_n \sum_{j=0}^{k_2} \beta_{nj} f(u^{n-j}, \theta, t_{n-j})
 \end{equation}
 where $\alpha_{ni}$ and $\beta_{nj}$ are numerical coefficients \cite{hairer-solving-1}.
-In most cases, including Adam method and backwards differentiation formulas (BDF), we have the coefficients $\alpha_{ni} = \alpha_i$ and $\beta_{nj}=\beta_j$, meaning that the coefficient do not depend on the iteration. 
+In most cases, including the Adams methods and backwards differentiation formulas (BDF), we have the coefficients $\alpha_{ni} = \alpha_i$ and $\beta_{nj}=\beta_j$, meaning that the coefficient do not depend on the iteration. 
 Notice that multi-step linear methods are linear in the function $f$, which is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
 Explicit methods are characterized by $\beta_{n, 0} = 0$ and are easy to solve by direct iterative updates. 
 For implicit methods, the usually non-linear equation 
@@ -63,7 +63,7 @@ Stiffness encompasses various definitions, reflecting its historical development
 Two definitions are noteworthy
 \begin{itemize}
     \item Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
-    \item Stiff differential equations are characterized by dynamics with different time scales \cite{kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
+    \item Stiff differential equations are characterized by dynamics with different time scales \cite{hairer-solving-2, kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
 \end{itemize} 
 Stability properties can be achieved by different means, for example by the use of implicit methods or stabilized explicit methods, such as Runge–Kutta–Chebyshev \cite{van1980internal, hairer-solving-2}. 
 When using explicit methods, smaller timesteps may be required to guarantee stability. 
@@ -82,9 +82,9 @@ Modern solvers include stepsize controllers that pick $\Delta t_i$ as large as p
 
 % Krilov methods work well for non-stiff methods, but the inverse condition number coincides with the stiff index, meaning that in stiff cases we should solve the system with full inversion models, which requires cubic cost in the number of ODEs 
 
-\subsubsection{What to differentiate and why?}
+\subsubsection{What to differentiate?}
 
-In most applications, the need for differentiating the solution of ODEs stems from the need to obtaining the gradient of a function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$, where $L$ can denote
+In most applications, the need for differentiating the solution of ODEs stems from the need to obtain the gradient of a function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$, where $L$ can denote
 \begin{itemize}
     \item \textbf{A loss function or an empirical risk function}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
     \begin{equation}
@@ -150,14 +150,14 @@ In most applications, the need for differentiating the solution of ODEs stems fr
     In most realistic cases, the posterior distribution is approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. 
     Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian Monte Carlo \cite{Betancourt_2017}.
     % Add mention for variatinal inference problems
-    \item \textbf{A quantity of interest.} This is useful when we want to know how the solution itself changes as we move the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
+    \item \textbf{A quantity of interest.} In some applications we are interested in quantifying how the solution of the differential equation changes as we vary the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
 \end{itemize}
 In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the richer class of functions included in the previous examples. 
 
 \subsubsection{Gradient-based optimization}
 
 % Add one line adding general framework for optimization, since the following formula is no the more general optimization strategy.
-In the context of optimization, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
+In the context of optimization, the gradient of the loss allows us to perform gradient-based updates on the parameter $\theta$ by 
 \begin{equation}\label{eq:gradient-descent}
     \theta^{k+1} 
     = 
@@ -170,7 +170,7 @@ Gradient-based methods tend to outperform gradient-free optimization schemes, as
 A direct implementation of gradient descent following Equation \eqref{eq:gradient-descent} is prone to converge to a local minimum and slows down in a neighborhood of saddle points. 
 To address these issues, variants of this scheme employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent}.
 These methods include Newton-type methods \cite{second-order-optimization}, quasi-Newton methods, acceleration techniques \cite{JMLR:v22:20-207}, and natural gradient descent methods \cite{doi:10.1137/22M1477805}. 
-For instance, ADAM is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update \cite{Kingma2014}.
+For instance, ADAM is an adaptive, momentum-based algorithm  that stores the parameter update at each iteration, and determines the next update as a linear combination of the gradient and the previous update \cite{Kingma2014}.
 ADAM been widely adopted to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}).
 Other widely employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
 ADAM is less prone to converge to a local minimum, while (L-)BFGS has a faster converge rate. 
@@ -216,7 +216,7 @@ In both cases, the complicated term to compute is the matrix of derivatives $\fr
 The sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is a \textit{Jacobian}, that is, a matrix of first derivatives of a vector-valued function. 
 Methods involved in the calculation of $s$ are naturally part of sensitivity methods.
 As mentioned earlier, most of forward sensitivity methods compute the full sensitivity matrix $s$, while reverse methods only deal with Jacobian-vector products (JVPs) of the form $\frac{\partial u}{\partial \theta} v$, for some vector $v \in \R^p$, saving unnecessary calculations at the expenses of larger memory cost.
-The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative of the function $u(\theta)$, also known as the Gateaux derivative of $u(\theta)$ in the direction $v$, given by 
+The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative of the function $u(\theta)$ in the direction $v$, given by 
 \begin{equation}
     \frac{\partial u}{\partial \theta} v 
     = 

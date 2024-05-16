@@ -1,13 +1,12 @@
 In Sections \ref{section:finite-diffences} -- \ref{section:continuous-adjoint} we focused on merely introducing each one of the sensitivity methods classified in Figure \ref{fig:scheme-all-methods} as separate methods, postponing the discussion about their points in common. 
 In this section, we compare one-to-one these methods and highlight differences and parallels between them. 
-We hope this enlightens the discussion on sensitivity methods and helps to demystify  misconceptions around the sometimes apparent differences between methods. 
-This comparison will be strengthened again later in Section \ref{sec:computational-implementation}, where we will see how even small differences between methods can be translated to different software implementations with different advantages. 
+
 
 \subsubsection{Forward AD and complex step differentiation}
 
 Both AD based on dual numbers and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the dual variable that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
-Although these methods seem similar, we emphasize that AD gives the exact gradient value, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
+Although these methods seem similar, AD gives the exact gradient value, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
 In Figure \ref{fig:complex-step-AD} we show how the calculation of the gradient of the function $\sin (x^2)$ is performed by these two methods.
 Whereas the second component of the dual number has the exact derivative of the function $\sin(x^2)$ with respect to $x$, it is not until we take $\varepsilon \rightarrow 0$ that we obtain the derivative in the imaginary component for the complex step method.
 % The stepsize dependence of the complex step differentiation method makes it resemble more to finite differences than AD with dual numbers. 
@@ -21,9 +20,9 @@ Further notice the complex step method involves more terms in the calculation, a
     \label{fig:complex-step-AD}
 \end{figure}
 
-\subsubsection{AD, finite differences and symbolic differentiation with sparsity}
+\subsubsection{AD and symbolic differentiation with sparsity}
 
-When sparsity patterns of the gradient/Jacobian to be computed are known, symbolic differentiation can be more efficient than AD and finite differences \cite{Lantoine_Russell_Dargent_2012}.
+When sparsity patterns of the gradient/Jacobian to be computed are known, symbolic differentiation can be more efficient than AD \cite{Lantoine_Russell_Dargent_2012}.
 In Section \ref{sec:vjp-jvp} we discussed how colored AD can be used to efficiently compute a sparse Jacobian.
 However, colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. 
 Consider the arrowhead matrix given by
@@ -52,7 +51,7 @@ Instead, symbolic differentiation constructs a symbolic representation of the sp
 Both discrete adjoint methods and reverse AD are classified as discrete and reverse methods (see Figure \ref{fig:scheme-all-methods}). 
 Furthermore, both methods introduce an intermediate adjoint associated with the partial derivative of the loss function (output variable) with respect to intermediate variables of the forward computation.
 In the case of reverse AD, this adjoint is defined with the notation $\bar w$ (Equation \eqref{eq:reverse-mode-ad-definition}), while in the discrete adjoint method this correspond to each one of the variables $\lambda_1, \lambda_2, \ldots, \lambda_N$ (Equation \eqref{eq:linea-adjoint-state-equation}).
-In this section we will show that both methods are mathematically equivalent \cite{Zhu_Xu_Darve_Beroza_2021, li2020coupled}, but naive implementations using reverse AD can result in sub-optimal performances compared to the one obtained by directly employing the discrete adjoint method \cite{Alexe_Sandu_2009}. 
+In this section we show that both methods are mathematically equivalent \cite{Zhu_Xu_Darve_Beroza_2021, li2020coupled}, but naive implementations using reverse AD can result in sub-optimal performances compared to the one obtained by directly employing the discrete adjoint method \cite{Alexe_Sandu_2009}. 
 % The discrete adjoint method derived in Section \ref{section:discrete-adjoint} can be obtained by applying the reverse mode AD rule in Equation \eqref{eq:reverse-mode-ad-definition} in the computational graph defined as $\theta \rightarrow G \rightarrow U \rightarrow L$.
 
 In order to have a better idea of how this works in the case of a numerical solver, let us consider again the case of a one-step explicit method, not necessarily linear, where the updates $u_{i}$ satisfy the equation $u_{i+1} = g_{i}(u_{i}, \theta)$.
@@ -201,7 +200,7 @@ This highlights that additional factors beyond consistency must be considered wh
 
 % There is a large family of adjoint methods that in first order can be classified as discrete and continuous adjoints. 
 As previously mentioned, the difference between the discrete and continuous adjoint methods is that the former follows the discretize-then-differentiate approach (also known as finite difference of adjoints \cite{Sirkes_Tziperman_1997}).
-In contrast, continuous adjoint equations are derived by directly operating on the differential equation, without a priori consideration of the numerical scheme used to solve it. 
+In contrast, continuous adjoint equations are derived analitically, without a priori consideration of the numerical scheme used to solve it. 
 In some sense, we can think of the discrete adjoint $\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_N)$ in Equation \eqref{eq:linea-adjoint-state-equation} as the discretization of the continuous adjoint $\lambda(t)$. 
 
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 

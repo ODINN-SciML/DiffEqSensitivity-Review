@@ -30,7 +30,7 @@ It is also common to restrict $\eta \in [\eta_\text{min}, \eta_\text{max}]$ so t
 
 When performing forward AD though numerical solver, the error used in the stepsize controller needs to naturally account for both the errors induced in the numerical solution of the original ODE and the errors in the dual component carrying the value of the sensitivity. 
 This relation between the numerical solver and AD has been made explicit when we presented the relationship between forward AD and the sensitivity equations (Section \ref{section:sensitivity-equation}, Equation \eqref{eq:sensitivity-equation-AD}). 
-To illustrate this, let us consider the simple ODE example from Section \ref{section:software-Forward-AD}, consisting in the system of equations 
+To illustrate this, let us consider the simple ODE example consisting in the system of equations 
 \begin{equation}
 \begin{cases}
  \frac{du_1}{dt} = a u_1 - u_1 u_2 & \quad u_1(0) = 1  \\ 

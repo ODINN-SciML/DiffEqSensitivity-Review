@@ -65,6 +65,10 @@
             uniquelist=false, 
             ]
     {biblatex}
+
+\setcounter{biburlnumpenalty}{100}  % allow breaks at numbers
+\setcounter{biburlucpenalty}{100}   % allow breaks at uppercase letters
+\setcounter{biburllcpenalty}{100}   % allow breaks at lowercase letters
     
 % Redefinde cite command to be based on autocite with superscript
 \renewcommand{\cite}[1]{\parencite{#1}}

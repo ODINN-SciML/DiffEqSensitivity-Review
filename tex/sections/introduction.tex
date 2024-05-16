@@ -12,7 +12,7 @@ Furthermore, the \textit{curse of dimensionality} renders gradient-free optimiza
 \end{displayquote}
 
 % Differential Programming
-Models based on differential equations arising in simulation-based science, which play a central role in describing the behaviour of systems in natural and social sciences, are not an exception to the rule \cite{Ghattas.2021}.
+Models based on ordinary differential equations (ODEs) and more general differential equations (DEs) arising in simulation-based science, which play a central role in describing the behaviour of systems in natural and social sciences, are not an exception to the rule \cite{Ghattas.2021}.
 The solution of differential equations can be seen as functions that map parameter and initial conditions to state variables, similar to machine learning models.
 Some authors have recently suggested differentiable programming as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
 Being able to compute gradients or sensitivities of dynamical systems opens the door to more complex data assimilation models that leverage strong physical priors while offering flexibility to adapt to observations.
@@ -52,7 +52,7 @@ The second goal of this article is to review different methods that exist to ach
 % AD
 The broader set of tools known as automatic or algorithmic differentiation (AD) aims to compute derivatives by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
 The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication, that are individually easy to differentiate and their composition is easy to differentiate by using the chain rule \cite{Giering:1998in}. 
-More broadly than AD, differentiable programming encapsulates the set of software tools that allows to compute efficient and robust gradients though complex algorithms, including numerical solvers \cite{Innes_Zygote}. 
+More broadly than AD, differentiable programming encapsulates the set of software tools that allows us to compute efficient and robust gradients though complex algorithms, including numerical solvers \cite{Innes_Zygote}. 
 Although many modern differentiation tools use AD to some extent, there is also a family of methods that compute the gradient by relying on an auxiliary set of differential equations and/or compute an intermediate adjoint. 
 Furthermore, it is important to be aware that when using AD or any other technique we are differentiating the algorithm used to compute the numerical solution, not the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.
 

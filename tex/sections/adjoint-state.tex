@@ -16,7 +16,7 @@ The derivation of the discrete adjoint equations is carried out once the numeric
 Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we aim to find approximate numerical solutions $u_i \approx u(t_i; \theta)$. 
 Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, and we have combined the system of equations defined by the iterative solver as $G(U; \theta) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
 
-We are interested in differentiating an objective or loss function $L(U, \theta)$ with respect to the parameter $\theta$. 
+We are interested in differentiating an objective or loss function $L(\theta) = L(U(\theta), \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solver, examples of loss functions now include 
 \begin{equation}
     L(U, \theta) 
@@ -88,7 +88,7 @@ The important trick used in the adjoint method is the rearrangement of the multi
 Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices. 
 However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
 By rearranging these terms and relying on the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
-These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, where we can also see an interesting interpretation of the adjoint as being equivalent to $\lambda^T = - \frac{\partial L}{\partial G}$. 
+These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, where we can also see an interpretation of the adjoint as being equivalent to $\lambda^T = - \frac{\partial L}{\partial G}$. 
 
 \begin{figure}[t]
     \centering

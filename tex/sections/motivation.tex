@@ -7,14 +7,14 @@ Together with the numerical methods to approximate their solutions, differential
 % with the combination of complex mathematical theories and a reduced amount of observations to validate them.
 % From predictions of population growth (Malthus) to permitting the prediction of black holes (Einstein field equations), differential equations have provided huge scientific contributions since Newton.
 They depend on uncertain inputs or parameters that determine the processes represented. 
-The parameter values have traditionally been estimated independently of the model, which poses several problems \cite{hartig2012}.
+The parameter values have traditionally been estimated independently of the model, which poses several problems \cite{hartig2012}:
 First, the independent estimation of parameters and processes rapidly becomes impossible as the number of state variables increases, especially when considering highly non-linear processes. 
 Second, the measurement of certain parameters -- to the extent that they can be measured -- are intrinsically difficult \cite{Schartau2017}. 
 Third, parameter values estimated from laboratory experiments, or those representing subgrid-scale processes, may be specific to the experimental setting, or to the resolution of a simulation, and resulting simulations are likely to diverge from observations in the field.
 
 Due to the difficulty of estimating parameter values in mechanistic models, and accompanying the massive growth of data upon which they depend, statistical (or machine learning) models have led the modelling field in the past decades \cite{Cox:2017hv}. 
 Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015}, allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
-However, whereas the use of machine learning models for regression, i.e., interpolation, has shown great successes, its use for prediction, i.e., extrapolation, has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
+However, whereas the use of machine learning models for predictions has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. % Alternative: However, whereas the use of machine learning models for regression, i.e., interpolation, has shown great successes, its use for prediction, i.e., extrapolation, has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
 In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
 % Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
 
@@ -134,7 +134,7 @@ The recognition that good initial conditions (e.g., such that are closest to the
 One conceptual challenge is the presence of multiple timescales in the coupled system and the utility of gradient information beyond many synoptic time scales in the atmosphere and ocean \cite{Lea:2000gv,Lea:2002cv}.
 Nevertheless, efforts are underway to enable adjoint-based parameter estimation of coupled atmosphere-ocean climate models, with AD again playing a crucial role in generating the corresponding adjoint model
 \cite{Blessing.2014,Lyu.2018,Stammer:2018de}.
-Complementary, recognizing the power of differentiable programming, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
+Complementarily, recognizing the power of differentiable programming, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
 \cite{Kochkov.2023}.
 
 \paragraph{Glaciology}
@@ -163,7 +163,7 @@ In model selection, candidate models embedding competing hypotheses about causal
 The computation of the most probable model parameter values, or the computation of the different model supports, critically involves sensitivity methods which must adequately handle the typically larger number of parameters and the nonlinearities of biological models \cite{Gabor2015}.
 
 While inverse modelling in biology has been mostly agnostic to differential programming techniques, their potential have recently been highlighted \cite{frank2022,alsos2023} and new approaches to accommodate for the specificity of biological and ecological models are increasingly proposed \cite{Yazdani2020,Boussange2024,paredes2023}. 
-Given that key ecological processes are not accurately represented in biological models \cite{hartig2012,Schartau2017,chalmandrier2021}, hybrid approaches where neural networks are used as data-driven parametrization of uncertain processes in differential equation models are particularly relevant \cite{rasp2018,Boussange2024} .
+Given that key ecological processes are not accurately represented in biological models \cite{hartig2012,Schartau2017,chalmandrier2021}, hybrid approaches where neural networks are used as data-driven parametrization of uncertain processes in differential equation models are particularly relevant \cite{rasp2018,Boussange2024}.
 Increasingly available biological dataset following the development of monitoring technologies such as paleao-time series \cite{alsos2023}, environmental DNA \cite{Ruppert2019}, remote sensing \cite{Jetz2019}, bioaccoustics \cite{Aide2013}, and citizen observations \cite{GBIF}, are additional opportunities to leverage mechanistic models with data-driven components.
 
 % Maybe have a section on hybrid modelling, combining data-driven components with convential models
