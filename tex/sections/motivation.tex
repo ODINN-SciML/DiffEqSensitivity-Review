@@ -107,9 +107,9 @@ Moreover, many existing mechanistic models can only partially describe observati
 Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have played an important role \cite{Errico_1997}. 
 Adjoint methods were introduced to infer initial conditions that minimize the misfit between simulations and weather observations \cite{Talagrand.1987,Courtier.1987}, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
 This led to the development of the so-called \textit{four-dimensional variational} (4D-Var) data assimilation (DA) technique \cite{Rabier.1992,Rabier:2000uu} at the European Centre for Medium-Range Weather Forecasts (ECMWF) as one the most advanced DA approaches, and which contributed substantially to the \textit{quiet revolution} in NWP \cite{Bauer.2015}.
-Related, within the framework of transient non-normal amplification or optimal excitation \cite{Farrell.1988,Farrell:1996jx}, the adjoint method has been used extensively to infer patterns in initial conditions that over time contribute to maximum uncertainty growth in forecasts \cite{Palmer:1994br,Buizza:1995in} and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
+Related, within the framework of transient non-normal amplification or optimal excitation \cite{Farrell.1988,Farrell:1996jx}, the adjoint method has been used to infer patterns in initial conditions that over a finite time contribute to maximum uncertainty growth in forecasts \cite{Palmer:1994br,Buizza:1995in} and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
 Except in very few instances and for experimental purposes \cite{Giering.2006}, automatic differentiation has not been used in the development of adjoint models in NWP.
-Instead, the adjoint code was derived and implemented manually.
+Instead, the adjoint code has been derived and implemented manually.
 
 \paragraph{Oceanography}
 
@@ -134,15 +134,18 @@ The recognition that good initial conditions (e.g., such that are closest to the
 One conceptual challenge is the presence of multiple timescales in the coupled system and the utility of gradient information beyond many synoptic time scales in the atmosphere and ocean \cite{Lea:2000gv,Lea:2002cv}.
 Nevertheless, efforts are underway to enable adjoint-based parameter estimation of coupled atmosphere-ocean climate models, with AD again playing a crucial role in generating the corresponding adjoint model
 \cite{Blessing.2014,Lyu.2018,Stammer:2018de}.
-Complementarily, recognizing the power of differentiable programming, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
+Complementary, recognizing the power of differentiable programming, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
 \cite{Kochkov.2023}.
 
 \paragraph{Glaciology}
 
-Due to the difficulty of having direct observations of internal and basal rheological processes of glaciers, adjoint methods have been widely used to study them, following the pioneering work by \cite{macayeal1992basal} three decades ago. 
-Since then, the adjoint method has been applied to many different studies investigating parameter and state estimation \cite{goldberg2013parameter}, ice volume sensitivity to basal, surface and initial conditions \cite{heimbach2009greenland}, inversion of initial conditions \cite{mosbeux2016comparison} or inversion of basal friction \cite{morlighem2013inversion}.
+Due to the difficulty of taking direct measurements of internal and basal rheological processes of glaciers and ice sheets, inverse methods based on adjoint models have been widely used to study them, following the pioneering work by \cite{macayeal1992basal} three decades ago. 
+Since then, the adjoint method has been applied to many different studies investigating parameter and state estimation \cite{Vieli.2006, goldberg2013parameter}, ice volume sensitivity to basal, surface and initial conditions \cite{heimbach2009greenland}, inversion of initial conditions \cite{mosbeux2016comparison} or inversion of basal friction \cite{Petra.2012, morlighem2013inversion}.
 These studies either derived the adjoint with a manual implementation or combined AD with hand-written adjoint solvers. 
-Additionally, the use of AD has become increasingly widespread in glaciology, paving the way for more complex modelling frameworks \cite{hascoet2018source, Gaikwad.2023}. 
+The use of AD has become increasingly widespread in glaciology, paving the way for more complex modelling frameworks \cite{hascoet2018source, Gaikwad.2023}. 
+The use of second-derivative (Hessian) information has also been recognized as a powerful approach for conducting rigorous uncertainty quantification in the context of ice sheet parameter inversion \cite{Petra.2014,Isaac.2015hf}.
+For a recent comprehensive review of data assimilation in ice sheet modeling, with emphasis on adjoint methods, see \cite{Morlighem.2023}.
+
 Recently, differentiable programming has also facilitated the development of hybrid frameworks, combining numerical methods with data-driven models by means of universal differential equations \cite{BolibarSapienza_UDEs}. 
 Alternatively, some other approaches have dropped the use of numerical solvers in favour of different flavours of physics-informed neural networks, exploring the inversion of rheological properties of glaciers \cite{wang2022discovering} and to accelerate ice thickness inversions and simulations by leveraging GPUs \cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, jouvet2023inversion}. 
 

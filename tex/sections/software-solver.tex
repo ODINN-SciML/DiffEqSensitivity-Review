@@ -9,7 +9,7 @@ Sensitivity methods based on numerical solvers need to deal with some numerical 
 \end{enumerate}
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
-Just a few modern scientific software have the capabilities of solving forward ODE and computing their sensitivities at the same time. 
+Just a few modern scientific software implementations have the capabilities of solving forward ODE and computing their sensitivities at the same time. 
 These include 
 \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; 
 \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; 
@@ -257,7 +257,7 @@ In the backsolve variation, the value $u$ in the reverse pass can be corrected t
 \paragraph{Solving the quadrature}
 
 Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
-While one can solve the integral simultaneously to the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODEs are of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. 
+While one can solve the integral simultaneously with the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODEs are of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. 
 The interpolating adjoint and backsolve adjoint method use this ODE solver approach for computing the integrand. 
 On the other side, the quadrature adjoint approach avoids this computational cost by computing the dense solution $\lambda(t)$ and then computing the quadrature  
 \begin{align}

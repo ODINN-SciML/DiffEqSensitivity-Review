@@ -192,7 +192,7 @@ which coincides with the Runge-Kutta scheme we would obtain for the original sen
 This means that forward AD on Runge-Kutta methods leads to solutions for the sensitivity that have the same convergence properties of the forward solver. 
 
 Note that consistency does not imply that an ODE solver is necessarily correct or stable under such a transformation. 
-Such properties involve other aspects of the solver, such as adaptivity and error control, take into account the properties of the derivative. 
+Such properties involve other aspects of the solver, such as adaptivity and error control, and take into account the properties of the derivative. 
 In Appendix \ref{appendix:dual-number-solver}, we demonstrate that common implementations of adaptive ODE solvers may not be convergent when forward AD is applied to solver even though the process is mathematically consistent. 
 This highlights that additional factors beyond consistency must be considered when investigating whether an implementation is convergent.
 

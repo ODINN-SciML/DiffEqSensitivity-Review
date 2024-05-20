@@ -28,7 +28,7 @@ Computing the imaginary part $\text{Im}(L(\theta + i \varepsilon))$ leads to
 \end{equation}
 The method of \textit{complex step differentiation} consists then in estimating the gradient as $\text{Im}(L(\theta + i \varepsilon)) / \varepsilon$ for a small value of $\varepsilon$. 
 Besides the advantage of being a method with precision $\mathcal{O}(\varepsilon^2)$, the complex step method avoids subtracting cancellation error and then the value of $\varepsilon$ can be reduced to almost machine precision error without affecting the calculation of the derivative. 
-However, a major limitation of this method is that it only just for locally complex analytical functions \cite{Martins_Sturdza_Alonso_2003_complex_differentiation} and does not outperform AD. 
+However, a major limitation of this method is that it only applicable to locally complex analytical functions \cite{Martins_Sturdza_Alonso_2003_complex_differentiation} and does not outperform AD. 
 One additional limitation is that it requires the evaluation of mathematical functions with small complex values, e.g., operations such as $\sin(1 + 10^{-16} i)$, which are not necessarily always computable to high accuracy with modern math libraries.
-Extension to higher order derivatives can be done by introducing multicomplex variables \cite{Lantoine_Russell_Dargent_2012}. 
+Extension to higher order derivatives can be obtained by introducing multicomplex variables \cite{Lantoine_Russell_Dargent_2012}. 
 

@@ -55,6 +55,7 @@ However, notice that reverse mode AD requires saving intermediate variables thro
 
 In practice, most AD systems are reduced to the computation of only directional derivatives (JVPs) or gradients (VJPs) \cite{Griewank:2008kh}.
 Full Jacobians $J \in \R^{n \times p}$ (e.g., the sensitivity $s = \frac{\partial u}{\partial \theta} \in \R^{n \times p}$) can be fully reconstructed by the independent computation of the $p$ columns of $J$ via the JVPs $J e_i$, with $e_i \in \R^p$ the canonical vectors; or by the calculation of the $m$ rows of $J$ via the VJPs $e_j^T J$, with $e_j \in \R^n$.
+
 Sparse Jacobians are commonplace in large-scale nonlinear systems and discretized PDEs. % Reference here!
 When the sparsity pattern is known, they can be efficiently obtained with \textit{colored AD} to chunk multiple JVPs or VJPs, based on the colored Jacobian~\cite{gebremedhin2005color}.
 More concretely, consider the example of a Jacobian, ${J}_{\text{sparse}}$, with known sparsity pattern given by

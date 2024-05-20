@@ -37,7 +37,7 @@ For this experiment, both relative and absolute tolerances of the numerical solv
 \subsubsection{Automatic differentiation}
 
 The AD algorithms described in Section \ref{section:automatic-differentiation} can be implemented using different strategies, namely \textit{operator overloading} for AD based on dual numbers, and \textit{source code transformation} for both forward and reverse AD based on the computational graph \cite{martins2001connection}.
-In Section \ref{section:software-Forward-AD} we cover how forward AD is implemented using dual numbers, postponing the discussion about the implementation using computational graphs for reverse AD in Section \ref{sec:software-reverse-AD}. 
+In Section \ref{section:software-Forward-AD} we first cover how forward AD is implemented using dual numbers, postponing the discussion about the implementation using computational graphs for reverse AD in Section \ref{sec:software-reverse-AD}. 
 
 \paragraph{Forward AD based on dual numbers}
 \label{section:software-Forward-AD}
@@ -127,7 +127,7 @@ which is equivalent to using the chain rule as
 
 A crucial distinction between AD implementations based on computational graphs is between \textit{static} and \textit{dynamic} methods \cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
 In the case of a static implementations, the computational graph is constructed before any code is executed, which are encoded and optimized for performance within the graph language. 
-For static structures such as neural networks, this is ideal \cite{abadi-tensorflow}. 
+For static structures such as neural networks, this is ideal \cite{abadi-tensorflow}, as it simplifies performance optimizations to be applied. 
 However, two major drawbacks of static methods are composability with existing code, including support of custom types, and adaptive control flow, which is a common feature of numerical solvers. 
 These issues are addressed in reverse AD implementations using \textit{tracing}, where the program structure is transformed into a list of pullback functions that build the graph dynamically at runtime. 
 Popular Julia libraries falling in this category are \texttt{Tracker.jl} and \texttt{ReverseDiff.jl}. 
@@ -135,7 +135,7 @@ A major drawback of tracing systems is that the pullbacks are constructed with r
 This means that the pullback must be reconstructed for each forward pass, limiting the reuse of computational optimizations and inducing higher overhead. 
 Source-to-source AD systems can achieve higher performance by giving a static derivative representation to arbitrary control flow structure, thus allowing for the construction and optimization of pullbacks independent of the input value. 
 These include \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme, Moses.2021}, and \texttt{Diffractor.jl}.
-The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
+The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows one to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
 It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
 
@@ -147,7 +147,7 @@ For a numerical solver or for time-stepping codes, the number of memory required
 Checkpointing is a technique that can be used for all reverse methods. 
 It avoids storing all the intermediate states by balancing  storing and recomputation to recover the required state exactly \cite{Griewank:2008kh}.
 This is achieved by saving intermediate states of the solution in the forward pass and recalculating the solution between intermediate states in the reverse mode \cite{Griewank:2008kh}. 
-Different checkpointing algorithms have been proposed, ranging from static or uniform, multi-level (e.g., \cite{Giering:1998in,Heimbach.2005} to optimized, binomial checkpointing algorithms  \cite{Griewank:2000,Walther:2004,Bockhorn:2020,Checkpoiting_2023}.
+Different checkpointing algorithms have been proposed, ranging from static or uniform, multi-level (e.g., \cite{Giering:1998in,Heimbach.2005} to optimized, binomial checkpointing algorithms  \cite{Griewank.2000,Walther.2004,Bockhorn.2020,Checkpoiting_2023}.
 
 % Talk about MALI \cite{Zhuang_Dvornek_Tatikonda_Duncan_2021}. 
 
@@ -183,7 +183,7 @@ complexstep_differentiation(x -> solve(ODEProblem(dyn!, u0, tspan, [x]), Tsit5()
 
 Figure \ref{fig:direct-methods} further shows the result of performing complex step differentiation using the same example as in Section \ref{section:software-finite-differences}.
 We can see from both exact and numerical solution that complex-step differentiation does not suffer from small values of $\varepsilon$, meaning that $\varepsilon$ can be chosen arbitrarily small \cite{martins2001connection} as long as it does not reach the underflow threshold \cite{Goldberg_1991_floatingpoint}. 
-Notice that for large values of the stepsize $\varepsilon$ complex step differentiation gives similar results than finite differences, while for small values of $\varepsilon$ the performance of complex step differentiation is slightly worse than forward AD. 
+Notice that for large values of the stepsize $\varepsilon$ complex step differentiation gives similar results to finite differences, while for small values of $\varepsilon$ the performance of complex step differentiation is slightly worse than forward AD. 
 This result emphasizes the observation made in Section \ref{section:comparison-discrete-adjoint-AD}, namely that complex step differentiation has many aspects in common with finite differences and AD based on dual numbers. 
 
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
