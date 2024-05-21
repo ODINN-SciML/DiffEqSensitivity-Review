@@ -29,7 +29,7 @@ In forward AD, we can compute $\delta L$ from Equation \eqref{eq:deltaL} by defi
 For $\| \delta \theta \|_2 = 1$, this procedure will return $\delta L$ as the value of the directional derivative of $L$ evaluated at $\theta$ in the direction $\delta \theta$ (see Equation \eqref{eq:directional-derivative}). 
 In order to compute the full gradient $\nabla L \in \R^p$, we need to perform this operation at least $p$ times, which requires a total of $p \, (d_2 d_1 + d_3 d_2 + \ldots + d_k d_{k-1} + d_k )= \mathcal O (kp)$ operations.
 
-In the case of reverse AD, we observe that $\nabla \ell \in \mathbb R^{d_k}$ is a vector, so we can instead compute $\delta L$ for all possible perturbations $\delta \theta$ by solving the multiplication involved in Equation \eqref{eq:deltaL} starting from the left side. 
+In the case of reverse AD, we observe that $\nabla \ell \in \mathbb R^{d_k}$ is a vector, so we can instead compute $\delta L$ for all possible perturbations $\delta \theta$ by solving the multiplication involved in Equation \eqref{eq:deltaL} starting from the left-hand side. 
 This is carried by the sequential definition of intermediate variables $\bar g_j$ computed as VJPs that map between co-tangent (or normal spaces) $\bar y \mapsto \bar y^T \cdot Dg_j$:
 \begin{align}
     \bar g_{k}^T &= \nabla \ell \\
@@ -42,7 +42,7 @@ The reverse mode will in general be faster when $1 \ll p$.
 This example is illustrated in Figure \ref{fig:vjp-jvp}. 
 In the general case of a function $L : \R^p \mapsto \R^q$ with multiple outputs and a total of $k$ intermediate functions, the cost of forward AD is $\mathcal O (pk + q)$ and the cost of reverse is $\mathcal O (p + kq)$.
 When the function to differentiate has a larger input space than output ($q \ll p$), AD in reverse mode is more efficient as it propagates the chain rule by computing VJPs.
-For this reason, reverse AD is preferred in both modern machine learning and inverse methods.
+For this reason, reverse AD is often preferred in both modern machine learning and inverse methods.
 However, notice that reverse mode AD requires saving intermediate variables through the forward run in order to run backwards afterwards \cite{Bennett_1973}, leading to performance overhead that makes forward AD more efficient when $p \lesssim q$ \cite{Griewank_1989, Margossian_2018, Baydin_Pearlmutter_Radul_Siskind_2015}. 
 
 \begin{figure}[p]
