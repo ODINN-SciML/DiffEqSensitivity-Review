@@ -2,16 +2,15 @@
 Models based on ordinary differential equations (ODEs) and more generally differential equations (DE) play a central role in describing the behaviour of mechanistic systems in natural and social sciences \cite{Ghattas.2021}.
 They consist of precise mathematical descriptions of physical mechanisms, including the modelling of causal interactions, feedback loops, and dependencies between components of the system under consideration \cite{rackauckas2020universal}.
 % Differential equations are the cornerstone of the physical sciences.
-Examples of this include the modelling of the evolution of atmospheric and ocean currents and ice flow in geophysics, evolution of species in ecology, etc.  
-For centuries, the scientific community relied only on theoretical and analytical approaches to model and solve systems governed by differential equations. 
-The introduction of numerical methods and, most importantly, the development of the computer, allowed scientists to enter the realm of computational modelling \cite{hey2009}. 
-With such numerical methods to approximate their solutions, ODE-based models led to fundamental advances in the understanding and prediction of physical, biological, and social systems, among others.
+Examples of this include the modelling of the dynamics of atmospheric and ocean currents and ice flow in geophysics, the modelling of the spatio-temporal dynamics of species abundance in ecology, the modelling of cancer cell evolution in biology, etc.  
+For centuries, scientists relied on theoretical and analytical methods to solve differential equations, but the advent of computer and numerical methods enabled computational modeling \cite{Dahlquist_1985, hey2009}.
+With numerical methods to approximate their solutions, ODE-based models led to fundamental advances in the understanding and prediction of physical, biological, and social systems, among others.
 
 % In a more abstract sense, the solution of differential equations can be seen as functions that map model parameters parameter and initial conditions to state variables and observations, similar to forward models, statistics, and even machine learning. 
 
 % General statement: why gradients are important?
-Quantifying how much the output of a ODE-based model changes with respect to its arguments and parameters, also known as model sensitivity, is the cornerstone of many scientific computing and machine learning methods. 
-This includes applications to optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
+Quantifying how much the output of a ODE-based model changes with respect to its arguments and parameters, also known as model sensitivity, is fundamental to many scientific computing and machine learning applications. 
+These include optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
 In most cases, the model sensitivity can be computed by the evaluation of one or multiple gradients of the model output. 
 In sensitivity analysis, gradients are crucial for comprehending the relationships between model inputs and outputs, assessing the influence of each parameter, and evaluating the robustness of model predictions. 
 In optimization and inverse modelling, gradient-based methods, including gradient descent and its many variants \cite{ruder2016overview-gradient-descent}, are more efficient at finding a minimum and converge faster to them than gradient-free methods.
@@ -21,11 +20,10 @@ Therefore, accurately determining model gradients is essential for robust model 
 % \begin{displayquote}
 % \emph{A gradient serves as a compass: it tells us in which direction in the vast, open ocean of parameters we should move towards in order to increase our chances of success. }
 % \end{displayquote}
-In all the previous cases, the set of techniques used to compute the gradient belong to the framework of differentiable programming. 
-% obtaining a gradient generally involves differentiating a computer program, which can be obtained through differentiable programming.
+The techniques used to compute these gradients fall within the framework of differentiable programming.
 
 % Gradiens are obtained with DP
-Differentiable programming (DP) refers to the set of techniques and software tools for computing gradients of a model output evaluated using a computer program with respect to model variables or parameters \cite{Shen_diff_modelling, Innes_Zygote, blondel2024elements}. 
+Differentiable programming (DP) refers to a set of techniques and software tools for computing gradients of a model's output, evaluated using a computer program, with respect to the model's variables or parameters \cite{Shen_diff_modelling, Innes_Zygote, blondel2024elements}.
 % This set of tools are particularly useful for the estimation and computation of the gradient of the model output with respect to certain input parameter.  
 % In the case of ODE-based models, DP techniques include automatic or algorithmic differentiation (AD), sensitivity equations, and adjoint methods. 
 Being able to compute gradients of ODE-based models is the key to complex data assimilation models that leverage strong physical priors while offering flexibility to adapt to observations.
@@ -34,12 +32,12 @@ Going a step further, some authors have recently suggested DP as the bridge betw
 The first goal of this work is to introduce some of the applications of this emerging technology and to motivate its incorporation for the modelling of complex systems in the natural and social sciences. 
 \begin{quote}
     \textbf{Question 1. }
-    \textit{What are the scientific applications of differentiable programming for dynamical systems?}
+    \textit{What are the scientific applications of differentiable programming for ODE-based models?}
 \end{quote}
 We will answer this first question in Section \ref{sectopn:motivation}. 
 
 % DP in different fields: traditional appraches and modern ML
-Arguably, the notion of DP in ODE-based models, specially for inverse modelling, has a long tradition among different scientific communities.
+Arguably, the development of DP for ODE-based models has a long tradition across different scientific communities.
 In statistics, gradients of the likelihood function of ODE-based models enable inference on the model parameters \cite{ramsay2017dynamic}. 
 In numerical analysis, sensitivities quantify how the solution of a differential equation fluctuates with respect to certain parameters. 
 This is particularly useful in optimal control theory, where the goal is to find the optimal value of some control (e.g. the shape of a wing) that minimizes a given loss function \cite{Giles_Pierce_2000}. 
@@ -50,21 +48,21 @@ On the other hand, there has been an increased interest in augmenting differenti
 
 
 % SciML and large scale models 
-The need of gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when considering highly non-linear processes dictated by hidden physics \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}.
-In these cases, the \textit{curse of dimensionality} renders gradient-free optimization and sampling methods computationally intractable for most large-scale problems. 
-This is certainly the case in machine learning application where neural networks are used as the default method to approximate general non-linear function. 
-Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference \cite{Cranmer_Brehmer_Louppe_2020}.
-The integration of automatic differentiation and, more broadly, differentiable programming, has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
-The availability of second derivatives (Hessian) further helps to improve the convergence rates of these algorithms \cite{BuiThanh:2012ul}.
+The need for model gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when dealing with highly non-linear processes \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}.
+In these cases, the \textit{curse of dimensionality} renders gradient-free optimization and sampling methods computationally intractable. 
+This is certainly the case in machine learning application where neural networks are used as the default method to approximate unknown non-linear function \cite{LeCun2015}. 
+Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference.
+The integration of differentiable programming, has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
+% The availability of second derivatives (Hessian) further helps to improve the convergence rates of these algorithms \cite{BuiThanh:2012ul}.
 
 
 % Difficulties with ODE and numerical solvers
-However, when working with ODE-based models, the computation of gradients is not an easy task, both regarding the mathematical framework and software implementation involved. 
+However, computing gradients in ODE-based models is challenging due to the complexities in both the mathematical framework and the software implementation.
 Except for a small set of particular cases, most differential equations require numerical methods to approximate their solution.
-This means that solutions cannot be directly differentiated and require special treatment to compute derivatives. 
+This means that solutions cannot be differentiated analytically and necessitate numerical methods. 
 Furthermore, numerical solutions introduce approximation errors. 
 These errors can be propagated to the computation of the gradient, leading to incorrect gradient values. 
-Alternatively, there is a broad literature on numerical methods for solving differential equations \cite{hairer-solving-1, hairer-solving-2}. 
+At the same time, there is a broad literature on numerical methods for solving differential equations \cite{hairer-solving-1, hairer-solving-2}. 
 Although each method provides different guarantees and advantages depending on the use case, this means that the tools developed to compute gradients when using a solver need to be universal enough in order to be applied to all or at least to a large set of them. 
 Despite its success, integrating DP with differential equation-based models remains a significant challenge in high-performance scientific computing \cite{Naumann.2011}.
 % As coined by Uwe Naumann, \textit{the automatic generation of optimal (in terms of robustness and efficiency) adjoint versions of large-scale simulation code is one of the great open challenges in the field of High-Performance Scientific Computing} \cite{Naumann.2011}.
@@ -82,10 +80,12 @@ More broadly than AD, DP tools for ODE-models further include a family of method
 Furthermore, it is important to be aware that when using AD or any other technique we are differentiating the algorithm used to compute the numerical solution, not the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.
 
 
-The differences between methods to compute sensitivities arise both from their mathematical formulation, numerical considerations, and their computational implementation. 
+The differences between methods to compute gradients arise both from their mathematical formulation, numerical stability, and their computational implementation. 
 % The first provides different guarantees on the method returning the actual gradient or a good approximation thereof. 
 % The second involves how theory is translated to software, and what are the data structures and algorithms used to implement it. 
-Different methods have different computational complexities depending on the total number of parameters and size of the differential equation system, and these complexities are also balanced between total execution time and required memory. 
+% These various flavours affect the accuracy, the computational complexity, the required memory and application suitability for computing the gradient of DE-based models. 
+Different methods guarantee different levels of accuracy, have different computational complexity, and required different trade-offs between running time and memory usage. 
+These properties further depend of the total number of parameters and size of the differential equation system. 
 The third goal of this work, then, is to illustrate the different strengths and weaknesses of these methods, and how to use them in modern scientific software. 
 \begin{quote}
     \textbf{Question 3. }
