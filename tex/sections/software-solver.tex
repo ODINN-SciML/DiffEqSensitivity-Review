@@ -96,24 +96,24 @@ This complexity makes this method expensive for models with many ODEs and/or par
 
 All solver-based methods require the computation of JVPs or VJPs. 
 In the case of the sensitivity equation, this correspond to the JVPs resulting form the product $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
-For the adjoint equations, although an efficient trick has been used to remove the computationally expensive VJP, we still need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
+For the adjoint equations, we need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
 % Mention why these are different?
 Therefore, the choice of the algorithm to compute JVPS/VJPs can have a significant impact in the overall performance \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
 In \texttt{SUNDIALS}, the JVPs/VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In \texttt{FATODE}, they can be computed with finite differences, AD, or it can be provided by the user.
 In the the Julia SciML ecosystem, different AD packages are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, \texttt{Tracker.jl}.
-These will compute the JVPs/VJPs using some form of AD, which will result in correct calculations but potentially sub-optimal code. 
+These will compute the JVPs/VJPs using some form of AD, which will result in correct calculations with different performance trade-offs. 
 In Julia, the options \texttt{autodiff} and \texttt{autojacvec} allow one to customize if JVPs/VJPs are computed using AD or finite differences.  
-% For these cases, customized VJPs function can be passed to the sensitivity methods using the \texttt{autojacvec}. 
+
 
 \subsubsection{Adjoint methods}
 \label{section:computing-adjoints}
 
 For complex and large systems (e.g. of more than 50 parameters and ODEs), direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
 For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final gradient. 
-If done well the adjoint method offers considerate advantages when working with complex systems.
-Since adjoint methods rely on an additional set of differential equations which are solved, numerical efficiency and stability must be investigated.
+% If done well the adjoint method offers considerate advantages when working with complex systems.
+Since adjoint methods rely on an additional set of differential equations which are solved, numerical efficiency and stability must further taken into account at the moment of implementing adjoint methods.
 
 \paragraph{Discrete adjoint method}
 
@@ -191,7 +191,7 @@ In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on
 \end{table}
 
 The continuous adjoint methods offers a series of advantages over the discrete method and the rest of the forward methods previously discussed. 
-Just as the discrete adjoint methods and backpropagation, the bottleneck is how to solve for the adjoint $\lambda(t)$ due to its dependency with VJPs involving the state $u(t)$.
+Just as the discrete adjoint methods and reverse AD, the bottleneck is how to solve for the adjoint $\lambda(t)$ due to its dependency with VJPs involving the state $u(t)$.
 Effectively, notice that Equation \eqref{eq:casa-adjoint-equation} involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$, which are both functions of $u(t)$. 
 However, in contrast to the discrete adjoint methods, here the full continuous trajectory $u(t)$ is needed, instead of its discrete pointwise evaluation. 
 There are two solutions for addressing the evaluation of $u(t)$ during the backwards step.
@@ -280,7 +280,7 @@ The Sundials COVDE solver introduced this technique specifically for BDF methods
 In the Julia \texttt{DifferentialEquations.jl} solvers, this can be done using a callback (specifically the numerical integration callbacks form the \texttt{DiffEqCallbacks.jl} library). 
 The Gauss adjoint method uses the callback approach to allow for a simultaneous explicit evaluation the integral using Gaussian quadrature, similar to \cite{Norcliffe_gaussquadrature_2023} but using a different approximation to improve convergence.
 
-These differences in the schemes for computing $u(t)$ and the final quadrature give rise to the set of methods in Table \ref{table:adjoint}. 
-Excluding the sensitivity equation which was added for completeness, all of these are \textit{the adjoint method} with differences being in the way steps of the adjoint method are approximated, and notably Table \ref{table:adjoint} shows a general trade-off in stability, performance, and memory across the methods. 
+These differences in the strategies for computing $u(t)$ and the final quadrature give rise to the set of methods in Table \ref{table:adjoint}. 
+Excluding the sensitivity equation which was added for reference, all of these are \textit{the adjoint method} with differences being in the way steps of the adjoint method are approximated, and notably Table \ref{table:adjoint} shows a general trade-off in stability, performance, and memory across the methods. 
 While the Gauss adjoint achieves good properties according to this chart, the quadrature adjoint notably uses a global error control of the quadrature as opposed to the local error control of the Gauss adjoint, and thus can achieve more robust bounding of the error with respect to user chosen tolerances.
 

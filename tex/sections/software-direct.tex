@@ -72,6 +72,7 @@ end
 
 In the Julia ecosystem, \texttt{ForwardDiff.jl} implements forward mode AD with multidimensional dual numbers \cite{RevelsLubinPapamarkou2016}. 
 % and the sensitivity method \texttt{ForwardDiffSensitivity} implements forward differentiation inside the numerical solver using dual numbers. 
+While \texttt{ForwardDiff.jl} defines the interface for defining the tangent of primitive operations, the tangent of different operations are implemented in \texttt{DiffRules.jl}. 
 Figure \ref{fig:direct-methods} shows the result of performing forward AD inside the numerical solver.
 We can see that for this simple example forward AD performs as good as the best output of finite differences and complex step differentiation (see Section \ref{section:software-complex-step}) when optimizing by the stepsize $\varepsilon$. 
 % Further notice that AD is not subject to same level of numerical errors due to floating point arithmetic \cite{Griewank:2008kh}.
@@ -101,7 +102,7 @@ See Appendix \ref{appendix:dual-number-solver} for an example of this behaviour.
 \label{sec:software-reverse-AD}
 
 In contrast to finite differences, forward AD, and complex-step differentiation, reverse AD is the only of this family of methods that propagates the gradient in reverse mode by relying on analytical derivatives of primitive functions.
-%, implemented in Julia in \texttt{ChainRules.jl} and \texttt{Enzyme.jl!}
+The interface for defining primitives in implemented in \texttt{ChainRulesCore.jl}, while the primitives themselves are defined in different libraries (eg, \texttt{ChainRules.jl}, \texttt{SciMLSenstivity.jl}, \texttt{NNLib.jl}). 
 % Since reverse AD requires the evaluation of intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
 Reverse AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
 In the backward step, it executes a series of function calls, one for each elementary operation.

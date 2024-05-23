@@ -44,7 +44,7 @@ Differentiable programming is key in this process.
 
 \subsection{Domain-specific applications}
 
-Arguably, the notion of differentiable programming has a long tradition in computational physics which is founded on solving and/or inverting models based on differential equations.
+% Arguably, the notion of differentiable programming has a long tradition in computational physics which is founded on solving and/or inverting models based on differential equations.
 The overarching goal of inverse modelling is to find a set of optimal model parameters that minimizes an objective or cost function quantifying the misfit between observations and the simulated state.
 %, subject to the constraint that the model equations be fulfilled. 
 %The constrained optimization problem is transformed into an unconstrained problem by way of \emph{Lagrange multiplier method}\cite{Vadlamani.2020}, also referred to as the \emph{adjoint method}. 
@@ -56,8 +56,6 @@ Depending on the scientific problem, inverse modelling can be performed on diffe
     \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, leads to an optimal match between the observations and the simulated state (or diagnostics); variants thereof are used for optimal forecasting.
     \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produces an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
     \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications. Parametrization is a special case of parameter inversion, where a parametric function (e.g., a neural network) is used to approximate processes. 
-    % \cite{rasp2018, beucler2024, boussange2024}.
-    % \item \textbf{Model selection.} Estimating the model evidence for each candidate model to discriminate between competing hypotheses \cite{burnham2004}. Involves the calculation of the marginal likelihood for each model, or the calibration of each model and evaluation of their score in out-of-samples predictions. %which may be approximated by Laplace approximation and involves the calculation of the hessian of the likelihood function, or by the calculation of information-based criteria (AIC, BIC, see ref\cite{burnham2002}).
 \end{itemize}
 Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 
@@ -69,7 +67,8 @@ In the following, we present selected examples belonging to a wide range of scie
 
 \subsubsection{Computational physics and optimal design}
 
-There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines. These include examples in fluid dynamics, where sensitivity methods have been used for optimal design and optimal control
+There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines. 
+These include examples in fluid dynamics, where sensitivity methods have been used for optimal design and optimal control
 \cite{lions1971optimal, pironneau2005optimal}, aerodynamic design and shape optimization
 \cite{Jameson_1988,Giles_Pierce_2000, mohammadi2009applied,allaire2014shape} and 
 supersonic aircraft design \cite{hu2010supersonic, fike2013multi}.
@@ -120,7 +119,7 @@ Again, the value of the second-derivative for uncertainty quantification was rea
 Similar to the work on calculating singular vectors in the atmosphere based on tangent linear and adjoint versions of a GCM to solve a generalized eigenvalue problem, the question of El Ni\~no predictability invited model-based singular vector computations in models of the Tropical Pacific Ocean \cite{Moore.1997ah,Moore.1997}.
 Such model-based singular vectors were also later computed for optimal excitations of the North Atlantic thermohalince circulation \cite{Zanna.2010,Zanna:2011ge,Zanna:2012dw}.
 Notably in the context of this review, the consortium for Estimating the Circulation and Climate of the Ocean (ECCO) \cite{Stammer.2002} set out in around 1999 to develop a parameter and state estimation framework, whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient.
-Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using source-to-source automatic differentiation \cite{Marotzke:1999,Heimbach.2005}, initially using the \textit{Tangent linear and Adjoint Model Compiler} (TAMC)\cite{Giering:1998in} and then its commercial successor \textit{Transformation of Algorithms in Fortran} (TAF) \cite{Giering.2006}.
+Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using source-to-source automatic differentiation \cite{Marotzke:1999, Heimbach.2005}, initially using the \textit{Tangent linear and Adjoint Model Compiler} (TAMC)\cite{Giering:1998in} and then its commercial successor \textit{Transformation of Algorithms in Fortran} (TAF) \cite{Giering.2006}.
 Rigorous exploitation of AD enabled the simulation framework to be significantly extended over time in terms of vastly improved model numerics \cite{Forget.2015m9i} and coupling other Earth system components, including biogeochemistry \cite{Dutkiewicz:2006gw}, sea-ice \cite{Heimbach:2010fz}, and sub-ice shelf cavities \cite{Heimbach:2012iu}.
 Unlike NWP-type 4D-Var, the use of AD also enabled extension of the framework to the problem of parameter calibration from observations \cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. 
 Arguably, this work heralded much of today's efforts in online learning of parameterization schemes, where the functional representation between the parameters and the learning data are provided by the numerical implementation of a PDF rather than by a neural network.
