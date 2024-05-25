@@ -1,4 +1,4 @@
-\subsection{General guidelines}
+% \subsection{General guidelines}
 
 There is no sensitivity method that is universally suitable for all problems equally and that performs better under all conditions. 
 However, in light of the methods we explore in this work, we can give general guidelines on which methods to use in specific circumstances. In this section we provide a practical overview of which methods are the most suitable for different situations. 
@@ -60,14 +60,14 @@ In this cases, complex step differentiation may offer an interesting alternative
 While it is important to take into account the mathematical aspects of the problem in order to choose the right type of sensitivity method, in practice, code structure and characteristics have a very strong impact in the choice of which packages to use to compute the sensitivities. 
 In the context of Julia and Python, some packages using different AD implementations will be able to deal with certain situations, while others will fail. 
 Current limitations include:
-\begin{itemize}
+\begin{enumerate}[label=(\roman*)]
     \item The use of control flow (i.e.\texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for tape-based AD methods. 
     This is currently not supported by \texttt{ReverseDiff.jl} and partially supported by \texttt{JAX} in Python. 
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
     \item Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
     \item Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
     Some AD packages like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it, while other packages like \texttt{ReversDiff.jl} do not. 
-\end{itemize}
+\end{enumerate}
 
 It is important to bear in mind that direct methods are easier to implement in programming languages where AD already exists and sometimes does not required any special package, like for the Julia programming language.
 Nonetheless, users must be aware of the aforementioned convergence issues of AD naively applied to solvers (see Section XX). 
@@ -85,44 +85,3 @@ Thus we recommend the use of robust and tested software when available (e.g. the
 
 
 % See recommendations at \cite{Shen_diff_modelling}.
-
-\subsection{Generalization to PDEs and DAEs}
-
-Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to partial differential equations (PDEs) (when discretized via e.g. the method of lines \cite{ascher2008numerical}), and to differential algebraic equations (DAEs) \cite{hairer-solving-2}.
-The same recipe used here to derive the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000} and DAE \cite{Cao_Li_Petzold_2002}. 
-
-Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE and DAE systems. Discretized PDEs typically involve the solution of moderate to large systems of coupled (and possibly stiff) ODEs subject to some suitable boundary conditions. Explicit calculation and construction of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase. PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution. This may limit the practicality of sensitivity methods that require the storage of a dense forward solution, such as reverse-mode AD and (non-checkpointed) adjoint methods. This can be mitigated by using checkpointing to store the interpolated forward solution rather than the dense solution. However, the memory footprint for even moderate size PDE systems (e.g. $10^2$ to $10^3$ equations) over long time spans can still incur a large memory cost even with checkpointing adjoint methods.
-
-Another practical considerations when differentiating numerical PDE solvers arises from the way they are typically implemented. Due to the large size of the system, numerical calculations for PDEs are typically performed in-place, i.e. large memory buffers are often used to store intermediate calculations and system state thereby avoiding the need to repeatedly allocate large amounts of memory for each array operation. As mentioned in Section \ref{sec:model_arch}, this can preclude the use of many reverse-mode automatic differentiation tools which do not support in-place mutation of arrays.
-
-Therefore, PDEs remain some of the most challenging problems for computing sensitivities, due to the frequent combination of a large number of discretized stiff ODEs, with a large memory footprint. This makes it difficult to strike a balance between memory usage and computational performance.
-
-% TODO: more dicussion on solutions and recommendations; e.g. sparsity detection for large systems, checkpointing (already mentioned), combining parameter efficient reverse-mode AD with efficient mutation-supporting AD tools like Enzyme for the JVP calculation.
-
-% TODO: more commnets on DAEs?
-
-
-\subsection{Chaotic systems}
-
-% Integreate this paragraph in this section
-% It is important to remark that adjoint methods can fail in chaotic systems \cite{Wang2012-chaos-adjoint}.
-% Some works have shown that continuous adjoints can lead to unstable sensitivities \cite{Jensen_Nakshatrala_Tortorelli_2014}.
-% In the more general case, discrete and continuous adjoint methods can give different computational results \cite{Sirkes_Tziperman_1997}.
-
-% Intro: why we take this average quantities in chaotic system? Need to motivate this in a sentense.
-All the sensitivity methods discussed in the previous sections encounter challenges and become less useful when applied to chaotic systems \cite{Wang2012-chaos-adjoint}.
-To illustrate this, let us consider long-time-averaged quantities 
-\begin{equation}\label{eq:long_time_averaged_quantities}
-    \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T L(u(t), \theta) \, dt, 
-\end{equation}
-of chaotic systems, where $L(u(t), \theta)$ is the instantaneous objective and $u(t)$ denotes the state of the dynamical system at time $t$.
-For ergodic dynamical systems, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t)$. 
-In particular, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ does not depend on the initial condition. 
-Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$ \cite{ruelle1997differentiation,ruelle2009review}.
-However, computing derivatives using numerical methods of statistical quantities of the form \eqref{eq:long_time_averaged_quantities} with respect to the vector parameter $\theta$ in chaotic dynamical systems remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state \cite{Lorenz.1963}.
-As a consequence, the solutions of the forward and adjoint sensitivity equations blow up (exponentially fast) instead of converging to the actual derivative.
-To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.
-
-In Julia, this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}. 
-Standard derivative approximations are inappropriate for such systems and will not give convergent estimates.
-This includes AD of a solver.

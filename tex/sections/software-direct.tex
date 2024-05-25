@@ -189,3 +189,5 @@ This result emphasizes the observation made in Section \ref{section:comparison-d
 
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
 However, the difference between the methods also makes the complex step differentiation sometimes more efficient than both finite differences and AD \cite{Lantoine_Russell_Dargent_2012}, an effect that can be counterbalanced by the number of extra unnecessary operations that complex arithmetic requires (see last column in Figure \ref{fig:complex-step-AD}) \cite{Martins_Sturdza_Alonso_2003_complex_differentiation}.
+Further notice that complex-step differentiation will work as long as every function involved in the computation is locally analytical. 
+This is a problem with implementations using the absolute function, for example using complex step differentiation on the square function implemented as $f(z) = \text{abs}(z)^2$ will always return zero.

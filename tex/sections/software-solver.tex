@@ -240,6 +240,12 @@ There are two solutions for addressing the evaluation of $u(t)$ during the backw
     However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. In practice, this method is hardly stable for most complex (even non-stiff) differential equations. 
 \end{enumerate} 
 
+The following example shows how to implement the continuous adjoint method of the solution of Equation \eqref{eq:example-ode-direct-methods} using the backsolve strategy. 
+\begin{jllisting}
+    complete
+\end{jllisting}
+Notice that here we used the final state of the solution $u$ of the differential equation as starting point, which is then recalculated in backwards direction. 
+
 When dealing with stiff differential equations, special considerations need to be taken into account.
 Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$, then solve for $\lambda$ in reverse using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
 This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. 
