@@ -1,4 +1,4 @@
-% % When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters \cite{Giering_Kaminski_1998}.
+% % When working with unit operations that involve matrix operations dealing with vectors of different dimensions, the order in which we apply the chain rule matters .
 % When computing a gradient using AD, we can encounter vector-Jacobian products (VJPs) or Jacobian-vector products (JVPs).
 % % As their name indicates, the difference between them is that the quantity we are interested in is described by the product of a Jacobian times a vector on the left side (VJP) or the right (JVP).
 % % Furthermore, both forward and reverse AD can be thought of as a way of computing derivatives associated with JVPs (see Equation \eqref{eq:directional-derivative}) and VJPs, respectively. 
@@ -12,7 +12,7 @@ If we perturb the parameter $\theta \rightarrow \theta + \delta \theta$, this wi
      \delta L = \nabla_\theta L \cdot \delta \theta = \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1 \cdot \delta \theta , 
     \label{eq:deltaL}
 \end{equation}
-with $Dg_i$ the Jacobian of each intermediate function evaluated at the intermediate values $g_{i-1} \circ g_{i-2} \circ \ldots \circ g_i (\theta)$.
+with $Dg_i$ the Jacobian of each intermediate function evaluated at the intermediate values $g_{i-1} \circ g_{i-2} \circ \ldots \circ g_i (\theta)$ \cite{Giering_Kaminski_1998}.
 % , we can write 
 % \begin{equation}
 %     \delta L 
@@ -27,7 +27,7 @@ In forward AD, we can compute $\delta L$ from Equation \eqref{eq:deltaL} by defi
     \delta L &= \nabla \ell \cdot \delta g_{k}.
 \end{align}
 For $\| \delta \theta \|_2 = 1$, this procedure will return $\delta L$ as the value of the directional derivative of $L$ evaluated at $\theta$ in the direction $\delta \theta$ (see Equation \eqref{eq:directional-derivative}). 
-In order to compute the full gradient $\nabla L \in \R^p$, we need to perform this operation at least $p$ times, which requires a total of $p \, (d_2 d_1 + d_3 d_2 + \ldots + d_k d_{k-1} + d_k )= \mathcal O (kp)$ operations.
+In order to compute the full gradient $\nabla L \in \R^p$, we need to perform this operation $O(p)$ times, which requires a total of $p \, (d_2 d_1 + d_3 d_2 + \ldots + d_k d_{k-1} + d_k )= \mathcal O (kp)$ operations.
 
 In the case of reverse AD, we observe that $\nabla \ell \in \mathbb R^{d_k}$ is a vector, so we can instead compute $\delta L$ for all possible perturbations $\delta \theta$ by solving the multiplication involved in Equation \eqref{eq:deltaL} starting from the left-hand side. 
 This is carried by the sequential definition of intermediate variables $\bar g_j$ computed as VJPs that map between co-tangent (or normal spaces) $\bar y \mapsto \bar y^T \cdot Dg_j$:

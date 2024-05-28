@@ -22,7 +22,7 @@ Modern scientific software commonly support automatic differentiation, making fo
 
 \subsubsection*{\textit{Working with large systems}}
 
-For larger systems with more than 50 parameters and ODEs, reverse techniques are required. 
+For larger systems with either more than 50 parameters plus number of ODEs, reverse techniques are required. 
 As explained in section \ref{section:solver-methods}, the continuous adjoint method, particularly the Gauss adjoint, and for very specific cases, the interpolating adjoint and quadrature adjoint, are the most suitable methods to tackle large stiff systems. 
 The choice between these three types of adjoints will be problem-specific and will depend on the trade-off between numerical stability, performance and memory usage. 
 Adjoint methods supporting checkpointing present more flexibility in this sense, and can allow modulating the method depending on the performance vs memory constraints of each problem. 
@@ -61,8 +61,8 @@ While it is important to take into account the mathematical aspects of the probl
 In the context of Julia and Python, some packages using different AD implementations will be able to deal with certain situations, while others will fail. 
 Current limitations include:
 \begin{enumerate}[label=(\roman*)]
-    \item The use of control flow (i.e.\texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for tape-based AD methods. 
-    This is currently not supported by \texttt{ReverseDiff.jl} and partially supported by \texttt{JAX} in Python. 
+    \item The use of control flow (i.e. \texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for tape-based AD methods. 
+    This is currently not supported by \texttt{ReverseDiff.jl} (with tape compilation) and partially supported by \texttt{JAX} in Python. 
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
     \item Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
     \item Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
