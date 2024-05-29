@@ -5,7 +5,7 @@ These include finite differences, complex step differentiation, and both forward
 \label{section:software-finite-differences}
 
 Finite differences are easy to implement manually, do not require much software support, and provide a direct way of approximating a gradient. 
-In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl}, which already include subroutines to determine step-sizes.
+In Julia, these methods are implemented in \texttt{FiniteDiff.jl} and \texttt{FiniteDifferences.jl}, which already include subroutines to determine optimal step-sizes.
 However, finite differences are less accurate and as costly as forward AD \cite{Griewank_1989} and complex-step differentiation. 
 Figure \ref{fig:direct-methods} illustrates the error in computing the gradient of a simple loss function for both true analytical solution and numerical solution of a system of ODEs as a function of the stepsize $\varepsilon$ using finite differences.
 Here we consider the solution of the differential equation $u'' + \theta^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$, which has analytical solution $u^\text{true}_\theta(t) = \sin(\theta t) / \theta$.
@@ -36,19 +36,17 @@ For this experiment, both relative and absolute tolerances of the numerical solv
 
 \subsubsection{Automatic differentiation}
 
-The AD algorithms described in Section \ref{section:automatic-differentiation} can be implemented using different strategies, namely \textit{operator overloading} for AD based on dual numbers, and \textit{source code transformation} for both forward and reverse AD based on the computational graph \cite{martins2001connection}.
+The AD algorithms described in Section \ref{section:automatic-differentiation} can be implemented using different strategies, namely operator overloading for AD based on dual numbers, and source code transformation for both forward and reverse AD based on the computational graph \cite{martins2001connection}.
 In Section \ref{section:software-Forward-AD} we first cover how forward AD is implemented using dual numbers, postponing the discussion about the implementation using computational graphs for reverse AD in Section \ref{sec:software-reverse-AD}. 
 
 \paragraph{Forward AD based on dual numbers}
 \label{section:software-Forward-AD}
 
-Implementing forward AD using dual numbers is usually carried out using \textit{operator overloading} \cite{Neuenhofen_2018}. 
+Implementing forward AD using dual numbers is usually carried out using operator overloading \cite{Neuenhofen_2018}. 
 This means expanding the object associated with a numerical value to include the tangent and extending the definition of atomic algebraic functions. 
 In Julia, this can be done by relying on multiple dispatch \cite{Julialang_2017}. 
 The following example illustrates how to define a dual number and its associated binary addition and multiplication extensions $\clubsuit_\text{\code{code:dual-number}}$. 
 \begin{jllisting}
-using Base: @kwdef
-
 @kwdef struct DualNumber{F <: AbstractFloat}
     value::F
     derivative::F
@@ -104,7 +102,7 @@ See Appendix \ref{appendix:dual-number-solver} for an example of this behaviour.
 In contrast to finite differences, forward AD, and complex-step differentiation, reverse AD is the only of this family of methods that propagates the gradient in reverse mode by relying on analytical derivatives of primitive functions.
 The interface for defining primitives in implemented in \texttt{ChainRulesCore.jl}, while the primitives themselves are defined in different libraries (eg, \texttt{ChainRules.jl}, \texttt{SciMLSenstivity.jl}, \texttt{NNLib.jl}). 
 % Since reverse AD requires the evaluation of intermediate variables, reverse AD requires a more delicate protocol of how to store intermediate variables in memory and make them accessible during the backwards pass. 
-Reverse AD can be implemented via \textit{pullback} functions \cite{Innes_2018}, a method also known as \textit{continuation-passing style} \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
+Reverse AD can be implemented via pullback functions \cite{Innes_2018}, a method also known as continuation-passing style \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
 In the backward step, it executes a series of function calls, one for each elementary operation.
 If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all edges in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ (defined as $\bar v_i$) by applying the chain rule. 
 Consider the example of the multiplication $w = v_1 \cdot v_2$. 
@@ -122,15 +120,15 @@ which is equivalent to using the chain rule as
  \frac{\partial \ell}{\partial v_1} 
  = \frac{\partial}{\partial v_1}(v_1 \cdot v_2) \frac{\partial \ell}{\partial w}
  =
- v_2 \cdot \bar w.
+ v_2 \cdot \bar w \, , \qquad 
+ \frac{\partial \ell}{\partial v_2} = v_1 \cdot \bar \omega \, .
 \end{equation}
-
 
 A crucial distinction between AD implementations based on computational graphs is between \textit{static} and \textit{dynamic} methods \cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
 In the case of a static implementations, the computational graph is constructed before any code is executed, which are encoded and optimized for performance within the graph language. 
-For static structures such as neural networks, this is ideal \cite{abadi-tensorflow}, as it simplifies performance optimizations to be applied. 
+For static structures such as neural networks, this is ideal, as it simplifies performance optimizations to be applied \cite{abadi-tensorflow}. 
 However, two major drawbacks of static methods are composability with existing code, including support of custom types, and adaptive control flow, which is a common feature of numerical solvers. 
-These issues are addressed in reverse AD implementations using \textit{tracing}, where the program structure is transformed into a list of pullback functions that build the graph dynamically at runtime. 
+In the case of dynamic methods, these issues are addressed using \textit{tracing} or tape-based implementations, where the program structure is transformed into a list of pullback functions that build the graph dynamically at runtime. 
 Popular Julia libraries falling in this category are \texttt{Tracker.jl} and \texttt{ReverseDiff.jl}. 
 A major drawback of tracing systems is that the pullbacks are constructed with respect to the control flow of the input value and thus do not necessarily generalize to other inputs. 
 This means that the pullback must be reconstructed for each forward pass, limiting the reuse of computational optimizations and inducing higher overhead. 
@@ -138,7 +136,7 @@ Source-to-source AD systems can achieve higher performance by giving a static de
 These include \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme, Moses.2021}, and \texttt{Diffractor.jl}.
 The existence of multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows one to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
-It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
+% It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
 
 \paragraph{Discrete checkpointing}
 \label{section:checkpointing}
@@ -147,7 +145,7 @@ In contrast to forward methods, all reverse methods, including backpropagation a
 For a numerical solver or for time-stepping codes, the number of memory required to accomplish this can be very large, involving a total of at least $\mathcal O(nk)$ terms, with $k$ the number of steps of the numerical solver (or the number of time steps). 
 Checkpointing is a technique that can be used for all reverse methods. 
 It avoids storing all the intermediate states by balancing  storing and recomputation to recover the required state exactly \cite{Griewank:2008kh}.
-This is achieved by saving intermediate states of the solution in the forward pass and recalculating the solution between intermediate states in the reverse mode \cite{Griewank:2008kh}. 
+This is achieved by saving intermediate states of the solution in the forward pass and recalculating the solution between intermediate states in the reverse mode. 
 Different checkpointing algorithms have been proposed, ranging from static or uniform, multi-level (e.g., \cite{Giering:1998in,Heimbach.2005} to optimized, binomial checkpointing algorithms  \cite{Griewank.2000,Walther.2004,Bockhorn.2020,Checkpoiting_2023}.
 
 % Talk about MALI \cite{Zhuang_Dvornek_Tatikonda_Duncan_2021}. 

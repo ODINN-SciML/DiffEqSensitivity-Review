@@ -1,7 +1,8 @@
 % \subsection{General guidelines}
 
-There is no sensitivity method that is universally suitable for all problems equally and that performs better under all conditions. 
-However, in light of the methods we explore in this work, we can give general guidelines on which methods to use in specific circumstances. In this section we provide a practical overview of which methods are the most suitable for different situations. 
+There is no sensitivity method that is universally suitable for all types of DE problems and that performs better under all conditions. 
+However, in light of the methods we explore in this work, we can give general guidelines on which methods to use in specific circumstances.
+In this section we provide a practical guidance of which methods are the most suitable for different situations. 
 A simplified overview of this decision-making process is depicted in Figure \ref{fig:roadmap}. 
 
 \begin{figure}[tb]
@@ -13,11 +14,11 @@ A simplified overview of this decision-making process is depicted in Figure \ref
 
 \subsubsection*{\textit{Working with small systems}}
 
-For sufficiently small systems of less than $50$ parameters and ODEs, it has been shown that forward AD and forward sensitivity equations are the most efficient method, outperforming adjoint methods. 
+For sufficiently small systems of less than $50$ parameters and ODEs, that is $n + p < 50$, it has been shown that forward AD and forward sensitivity equations are the most efficient method, outperforming adjoint methods. 
 The original benchmark of these methods is included in \cite{ma2021comparison}, though the \texttt{SciMLBenchmarks} system continually updates the benchmarks and has revised the cutoff point as reverse-mode AD engines improved. 
 See \url{https://docs.sciml.ai/SciMLBenchmarksOutput/stable/} for continued updates.
-Furthermore, as we have shown in Section \ref{section:direct-methods}, automatic differentiation outperforms other forms of direct differentiation (finite differences, complex-step differentiation). 
-Modern scientific software commonly support automatic differentiation, making forward AD the best choice for small problems. 
+Furthermore, as we have shown in Section \ref{section:direct-methods}, AD outperforms other forms of direct differentiation (finite differences, complex-step differentiation). 
+Modern scientific software commonly support AD, making forward AD the best choice for small problems. 
 % We will make further comments in the choice between discrete and continuous methods later in this section.
 
 \subsubsection*{\textit{Working with large systems}}
@@ -30,14 +31,14 @@ Adjoint methods supporting checkpointing present more flexibility in this sense,
 Unlike for small systems of ODEs and a reduced number of parameters, differentiating large ODE systems (e.g. stiff discretized PDEs) with respect to a large number of parameters (e.g. in a neural network), is a much more complex problem. 
 Current state-of-the-art tools can easily work for a wide array of small systems \cite{rackauckas2020universal}, whereas methods for large systems are still under heavy development and are likely to see many changes and improvements in the future.
 
-Finally, it is worth mentioning that for complex stiff problems, following different strategies to avoid local minima will be absolutely necessary in order to achieve convergence (.e.g. using multiple shooting \cite{Kiehl:2006tb, Boussange2024} or progressively increasing the time span which is fitted).
+% Finally, it is worth mentioning that for complex stiff problems, following different strategies to avoid local minima will be absolutely necessary in order to achieve convergence (.e.g. using multiple shooting \cite{Kiehl:2006tb, Boussange2024} or progressively increasing the time span which is fitted).
 
 \subsubsection*{\textit{Efficiency vs stability}}
 
 When using discrete methods, it is important to be aware that the differentiation machinery is applied after the numerical solver for the differential equation has been specified, meaning that the derivatives are computed with respect to the time discretization instead of the solution \cite{Eberhard_Bischof_1996}.
 As discussed in Section \ref{section:software-Forward-AD}, this can mean the method is non-convergent in the case where the iterative solver has adaptive stepsize controllers that depend on the parameter to differentiate.
 Although some solutions have been proposed and implemented in Julia to solve this in the case of discrete methods \cite{Eberhard_Bischof_1996}, this is a problem that continuous methods do not have since they apply the differentiation step before the numerical algorithm has been specified. 
-Using many of the aforementioned \emph{tricks}, such as continuous checkpointing and Gaussian quadrature approximations, continuous sensitivity analysis tends to be more memory and computationally efficient. 
+Using many of the aforementioned tricks, such as continuous checkpointing and Gaussian quadrature approximations, continuous sensitivity analysis tends to be more memory and computationally efficient. 
 However, the errors of discrete adjoint method's derivative error may better represent the actual code being evaluated. 
 For this reason, discrete adjoint method have been found in some instances to lead to more stable optimizations. 
 
@@ -46,22 +47,27 @@ In a nutshell, continuous adjoint methods tend to be more efficient while discre
 
 \subsubsection*{\textit{Choosing a direct method}}
 
-When computing the gradient of a generic function other than a numerical solver, we further recommend the use of automatic differentiation (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
+When computing the gradient of a generic function other than a numerical solver, we further recommend the use of AD (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
 This recommendation applies also for the inner VJPs and JVPs calculations performed inside the numerical solver (Section \ref{section:computing-vjp-inside-solver}).
 As discussed in Section \ref{section:direct-methods}, finite differences and complex step differentiation do not really provide an advantage over AD in terms of precision and require the tuning of the stepsize $\varepsilon$. 
 On the other hand, if symbolic differentiation can be more efficient in nested cases (see ...) or when the spartity pattern of the Jacobian is known, in general this advantage is not drastic in most real cases and can generate difficulties when used inside the numerical solver. 
+
 However, this recommendation is constrained by the availability and interoperability of different AD and sensitivity software. 
 For example, when computing higher-order derivatives multiple layers of direct methods became more difficult to implement and may result in complicated computer programs.
 In this cases, complex step differentiation may offer an interesting alternative with similar performance than AD for small stepsizes. 
+It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
+
 
 \subsubsection*{\textit{Taking into account model architecture}}
 \label{sec:model_arch}
 
-While it is important to take into account the mathematical aspects of the problem in order to choose the right type of sensitivity method, in practice, code structure and characteristics have a very strong impact in the choice of which packages to use to compute the sensitivities. 
-In the context of Julia and Python, some packages using different AD implementations will be able to deal with certain situations, while others will fail. 
+% While it is important to take into account the mathematical aspects of the problem in order to choose the right type of sensitivity method, in practice, c
+Code structure and characteristics have a very strong impact in the choice of which packages to use to compute the sensitivities. 
+Within the Julia and Python ecosystems, each available AD package implements a specific AD technique which will face certain limitations.
+% In the context of Julia and Python, some packages using different AD implementations will be able to deal with certain situations, while others will fail. 
 Current limitations include:
 \begin{enumerate}[label=(\roman*)]
-    \item The use of control flow (i.e. \texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for tape-based AD methods. 
+    \item The use of control flow (i.e. \texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for dynamic (tape-based) AD methods (see Section \ref{sec:software-reverse-AD}). 
     This is currently not supported by \texttt{ReverseDiff.jl} (with tape compilation) and partially supported by \texttt{JAX} in Python. 
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
     \item Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
@@ -70,7 +76,7 @@ Current limitations include:
 \end{enumerate}
 
 It is important to bear in mind that direct methods are easier to implement in programming languages where AD already exists and sometimes does not required any special package, like for the Julia programming language.
-Nonetheless, users must be aware of the aforementioned convergence issues of AD naively applied to solvers (see Section XX). 
+Nonetheless, users must be aware of the aforementioned convergence issues of AD naively applied to solvers. 
 Thus we recommend the use of robust and tested software when available (e.g. the Julia SciML ecosystem or Diffrax in Python) as the solvers must apply corrections to AD implementations in order to guarantee numerically correct derivatives.
 
 % Furthermore, it is important to be aware than when using AD or any other technique we are differentiating the algorithm used to lead to the numerical solution, no the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.

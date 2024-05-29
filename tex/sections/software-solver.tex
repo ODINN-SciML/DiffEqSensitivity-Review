@@ -1,10 +1,7 @@
-
-% Sensitivity methods based on numerical solvers tend to be better adapted to the structure and properties of the underlying ODE (stiffness, stability, accuracy) but are also more difficult to implement.  
-% This difficulty arises from the fact that the sensitivity methods need to deal with some numerical and computational considerations, including
 Sensitivity methods based on numerical solvers need to deal with some numerical and computational considerations, including
 \begin{enumerate}[label=(\roman*)]
-    \item How to handle matrix/Jacobian-vector products
-    \item Numerical stability of the forward/reverse solver
+    \item How to handle VJPs and/or JPVs 
+    \item Stability of the numerical solver, including the original ODE but also the sensitivity/adjoint equations
     \item Memory-time tradeoff
 \end{enumerate}
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
@@ -19,20 +16,19 @@ These include
 \texttt{DASPKADJOINT} \cite{Cao_Li_Petzold_2002};
 and \texttt{Diffrax} \cite{kidger2021on} and \texttt{torchdiffeq} \cite{torchdiffeq} in Python. 
 
-It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
+% It is important to remark that the underlying machinery of all solvers relies on solvers for linear systems of equations, which can be solved in dense, band (sparse), and Krylov mode. 
 % This implies that methods based on numerical solvers are, in principle, more difficult to implement but also more efficient in computing gradients for complex differential equations. 
-Another important consideration is that all these methods have subroutines to compute the JVPs and VJPs involved in the sensitivity and adjoint equations, respectively. 
-This calculation is carried out by another sensitivity method, usually finite differences or AD, which plays a central role when analyzing the accuracy and stability of the adjoint method. 
+% Another important consideration is that all these methods have subroutines to compute the JVPs and VJPs involved in the sensitivity and adjoint equations, respectively. 
+% This calculation is carried out by another sensitivity method, usually finite differences or AD, which plays a central role when analyzing the accuracy and stability of the adjoint method. 
 
 \subsubsection{Forward sensitivity equation}
 \label{section:computing-sensitivity-equations}
 
-For systems of equations with few number of parameters, this method is useful since the system of $n(p+1)$ equations composed by Equations \eqref{eq:original_ODE} and \eqref{eq:sensitivity_equations} can be solved using the same precision for both solution and sensitivity numerical evaluation. 
+For systems of equations with few number of parameters, the forward sensitivity equation is useful since the system of $n(p+1)$ equations composed by Equations \eqref{eq:original_ODE} and \eqref{eq:sensitivity_equations} can be solved using the same precision for both solution and sensitivity numerical evaluation. 
 Furthermore, it does not required saving the solution in memory. 
-The following example illustrates how Equation \eqref{eq:example-ode-direct-methods} and the sensitivity equation can be solved simultaneously using the simple explicit Euler method $\clubsuit_\text{\code{code:sensitivity-equation}}$: 
+The following example illustrates how Equation \eqref{eq:example-ode-direct-methods} and the forward sensitivity equation can be solved simultaneously using the simple explicit Euler method $\clubsuit_\text{\code{code:sensitivity-equation}}$: 
 \begin{jllisting}
-ω = 0.2
-p = [ω]
+p = [0.2]
 u0 = [0.0, 1.0]
 tspan = [0.0, 10.0]
 
@@ -94,11 +90,12 @@ This complexity makes this method expensive for models with many ODEs and/or par
 \paragraph{Computing JVPs and VJPs inside the solver}
 \label{section:computing-vjp-inside-solver}
 
-All solver-based methods require the computation of JVPs or VJPs. 
-In the case of the sensitivity equation, this correspond to the JVPs resulting form the product $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
+An important consideration is that all solver-based methods have subroutines to compute the JVPs and VJPs involved in the sensitivity and adjoint equations, respectively. 
+This calculation is carried out by another sensitivity method, usually finite differences or AD, which plays a central role when analyzing the accuracy and stability of the adjoint method. 
+In the case of the forward sensitivity equation, this correspond to the JVPs resulting form the product $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
 For the adjoint equations, we need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
 % Mention why these are different?
-Therefore, the choice of the algorithm to compute JVPS/VJPs can have a significant impact in the overall performance \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
+Therefore, the choice of the algorithm to compute JVPs/VJPs can have a significant impact in the overall performance \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
 In \texttt{SUNDIALS}, the JVPs/VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In \texttt{FATODE}, they can be computed with finite differences, AD, or it can be provided by the user.
@@ -110,14 +107,14 @@ In Julia, the options \texttt{autodiff} and \texttt{autojacvec} allow one to cus
 \subsubsection{Adjoint methods}
 \label{section:computing-adjoints}
 
-For complex and large systems (e.g. of more than 50 parameters and ODEs), direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
+For complex and large systems (e.g. of more than 50 parameters and ODEs, as we will discuss in Section \ref{section:recomendations}), direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
 For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final gradient. 
 % If done well the adjoint method offers considerate advantages when working with complex systems.
 Since adjoint methods rely on an additional set of differential equations which are solved, numerical efficiency and stability must further taken into account at the moment of implementing adjoint methods.
 
 \paragraph{Discrete adjoint method}
 
-In order to illustrate how the discrete adjoint method may be implemented, the following example shows how to manually solve for the gradient of the solution of \eqref{eq:example-ode-direct-methods} using an explicit Euler method. 
+In order to illustrate how the discrete adjoint method can be implemented, the following example shows how to manually solve for the gradient of the solution of \eqref{eq:example-ode-direct-methods} using an explicit Euler method. 
 \begin{jllisting}
 function discrete_adjoint_method(u0, tspan, p, dt)
     u = u0
@@ -146,10 +143,9 @@ end
 ∂L∂θ = discrete_adjoint_method(u0, tspan, p, 0.001) 
 \end{jllisting}
 In this case, the full solution in the forward pass is stored in memory and used to compute the adjoint and integrate the loss function during the reverse pass. 
-As in the case of reverse AD, checkpointing can be used here. 
-
 While the previous example illustrates a manual implementation of the adjoint method, the discrete adjoint method can be directly implemented using reverse AD (Section \ref{section:comparison-discrete-adjoint-AD}).
 In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on the numerical solver via \texttt{ReverseDiff.jl}; \texttt{ZygoteAdjoint} via \texttt{Zygote.jl}; and \texttt{TrackerAdjoint} via \texttt{Tracker.jl}. 
+As in the case of reverse AD, checkpointing can be used here. 
 
 % Mention that in many cases this is implemented manually
 
@@ -167,21 +163,21 @@ In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on
  \cline{2-6}
  \hline
  \multirow{3}*{\rotatebox{90}{\textbf{Discrete}}}  
- &ReverseDiffAdjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
- &ZygoteAdjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
- &TrackerAdjoint & Good & & $\mathcal O (n^3 + p)$ & High
+ &ReverseDiffAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
+ &ZygoteAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
+ &TrackerAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High
  \\ [0.5ex] 
  \hline\hline
  \multirow{7}*{\rotatebox{90}{\textbf{Continuous}}} 
- & Sensitivity equation & Good & & $\mathcal O (n^3p^3)$ & $\mathcal O(1)$ \\
+ & Forward sensitivity eq. & Good & $\mathcal O (np)$ & $\mathcal O (n^3p^3)$ & $\mathcal O(1)$ \\
  \cline{2-6}
- &Backsolve adjoint & Poor & & $\mathcal O ((n+p)^3)$ & $\mathcal O(1)$ \\ 
- &Backsolve adjoint$^\blacktriangleleft$ & Medium & & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
- &Interpolating adjoint & Good & & $\mathcal O ((n+p)^3)$ & High \\ 
- &Interpolating adjoint$^\blacktriangleleft$ & Good & & $\mathcal O ((n+p)^3)$ & $\mathcal O (K)$ \\
- &Quadrature adjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
- &Gauss adjoint & Good & & $\mathcal O (n^3 + p)$ & High \\
- &Gauss adjoint$^\blacktriangleleft$ & Good & & $\mathcal O (n^3 + p)$ & $\mathcal O(K)$ \\
+ &Backsolve adjoint & Poor & $\mathcal O (n + p)$ & $\mathcal O ((n+p)^3)$ & $\mathcal O(1)$ \\ 
+ &Backsolve adjoint$^\blacktriangleleft$ & Medium & $\mathcal O (n + p)$ & $\mathcal O ((n+p)^3)$ & $\mathcal O (nK)$ \\
+ &Interpolating adjoint & Good & $\mathcal O (n + p)$ & $\mathcal O ((n+p)^3)$ & High \\ 
+ &Interpolating adjoint$^\blacktriangleleft$ & Good & $\mathcal O (n + p)$ & $\mathcal O ((n+p)^3)$ & $\mathcal O (nK)$ \\
+ &Quadrature adjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
+ &Gauss adjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
+ &Gauss adjoint$^\blacktriangleleft$ & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & $\mathcal O(nK)$ \\
  % name & .. & .. & .. \\
  \hline
 \end{tabular}
@@ -194,7 +190,7 @@ The continuous adjoint methods offers a series of advantages over the discrete m
 Just as the discrete adjoint methods and reverse AD, the bottleneck is how to solve for the adjoint $\lambda(t)$ due to its dependency with VJPs involving the state $u(t)$.
 Effectively, notice that Equation \eqref{eq:casa-adjoint-equation} involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$, which are both functions of $u(t)$. 
 However, in contrast to the discrete adjoint methods, here the full continuous trajectory $u(t)$ is needed, instead of its discrete pointwise evaluation. 
-There are two solutions for addressing the evaluation of $u(t)$ during the backwards step.
+There are two solutions for addressing the evaluation of $u(t)$ during the computation of $\lambda (t)$.
 \begin{enumerate}[label=(\roman*)]
     \item \textbf{Interpolation.} During the forward model, we can store in memory intermediate states of the numerical solution allowing the dense evaluation of the numerical solution at any given time. 
     % This leads to heavy-memory expensive algorithms. 
@@ -265,28 +261,22 @@ In the backsolve variation, the value $u$ in the reverse pass can be corrected t
 Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
 While one can solve the integral simultaneously with the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODEs are of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. 
 The interpolating adjoint and backsolve adjoint method use this ODE solver approach for computing the integrand. 
-On the other side, the quadrature adjoint approach avoids this computational cost by computing the dense solution $\lambda(t)$ and then computing the quadrature  
-\begin{align}
-    \frac{dL}{d\theta}
-    &= 
-    \lambda(t_0)^T s(t_0)
-    + 
+On the other side, the quadrature adjoint approach avoids this computational cost by computing the dense solution $\lambda(t)$ and then computing the quadrature 
+\begin{equation}
     \inttime
-    \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt \nonumber \\
-    &\approx
-    \lambda(t_0)^T s(t_0)
-    + 
+    \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) dt 
+    \approx
     \sum_{j=1}^N \omega_j \left( \frac{\partial h}{\partial \theta} + \lambda^T \frac{\partial f}{\partial \theta} \right) (\tau_i)
-\end{align}
+\end{equation}
 where $\omega_i$, $\tau_i$ are the weights and knots of a Gauss-Kronrod quadrature method for numerical integration from \texttt{QuadGK.jl} \cite{laurie1997calculation, gonnet2012review}. 
 This method results in global error control on the integration and removes the cubic scaling within implicit solvers. Nonetheless, it requires a larger memory cost by storing the adjoint pass continuous solution.
 
 Solvers designed for large implicit systems allow for solving explicit integrals based on the ODE solution simultaneously without including the equations in the ODE evaluation in order to avoid this expense. 
-The Sundials COVDE solver introduced this technique specifically for BDF methods \cite{SUNDIALS-hindmarsh2005sundials}. 
+The Sundials CVODE solver introduced this technique specifically for BDF methods \cite{SUNDIALS-hindmarsh2005sundials}. 
 In the Julia \texttt{DifferentialEquations.jl} solvers, this can be done using a callback (specifically the numerical integration callbacks form the \texttt{DiffEqCallbacks.jl} library). 
 The Gauss adjoint method uses the callback approach to allow for a simultaneous explicit evaluation the integral using Gaussian quadrature, similar to \cite{Norcliffe_gaussquadrature_2023} but using a different approximation to improve convergence.
 
 These differences in the strategies for computing $u(t)$ and the final quadrature give rise to the set of methods in Table \ref{table:adjoint}. 
-Excluding the sensitivity equation which was added for reference, all of these are \textit{the adjoint method} with differences being in the way steps of the adjoint method are approximated, and notably Table \ref{table:adjoint} shows a general trade-off in stability, performance, and memory across the methods. 
+Excluding the forward sensitivity equation which was added for reference, all of these are \textit{the adjoint method} with differences being in the way steps of the adjoint method are approximated, and notably Table \ref{table:adjoint} shows a general trade-off in stability, performance, and memory across the methods. 
 While the Gauss adjoint achieves good properties according to this chart, the quadrature adjoint notably uses a global error control of the quadrature as opposed to the local error control of the Gauss adjoint, and thus can achieve more robust bounding of the error with respect to user chosen tolerances.
 

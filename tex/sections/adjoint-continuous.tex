@@ -15,8 +15,8 @@ and its derivative with respect to the parameter $\theta$ given by the following
 \end{equation}
 Just as in the case of the discrete adjoint method, the complicated term to evaluate in the last expression is the sensitivity (Equation \eqref{eq:sensitivity-definition}).
 Again, the trick is to evaluate the VJP $\frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta}$ by first defining an intermediate adjoint variable. 
-The continuous adjoint equation now is obtained by finding the dual/adjoint equation of the sensitivity equation using the weak formulation of Equation \eqref{eq:sensitivity_equations}. 
-The adjoint equation is obtained by writing the sensitivity equation in the form 
+The continuous adjoint equation now is obtained by finding the dual/adjoint equation associated to the forward sensitivity equation using the weak formulation of Equation \eqref{eq:sensitivity_equations}. 
+The adjoint equation is obtained by writing the forward sensitivity equation in the form 
 \begin{equation}
     \inttime \lambda(t)^T \left( \frac{ds}{dt} - \frac{\partial f}{\partial u} \, s - \frac{\partial f}{\partial \theta}  \right) dt 
     = 
