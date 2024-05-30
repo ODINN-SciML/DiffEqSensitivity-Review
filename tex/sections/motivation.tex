@@ -114,15 +114,15 @@ In such models, calibrating model parameters is extremely challenging, due to da
 Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
 
 
-\paragraph{Meteorology}
+\paragraph{Numerical Weather Prediction}
 \label{section:meteorlogy}
 
 Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have played an important role \cite{Errico_1997}. 
-Adjoint methods were introduced to infer initial conditions that minimize the misfit between simulations and weather observations \cite{Talagrand.1987,Courtier.1987}, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
+Adjoint methods were introduced to infer initial conditions that minimize the misfit between simulations and weather observations \cite{Lewis.1985,Talagrand.1987,Courtier.1987}, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
 This led to the development of the \textit{four-dimensional variational} (4D-Var) technique at the European Centre for Medium-Range Weather Forecasts (ECMWF) as one the most advanced data assimilation approaches \cite{Rabier.1992,Rabier:2000uu}, and which contributed substantially to the \textit{quiet revolution} in NWP \cite{Bauer.2015}.
 Related, within the framework of transient non-normal amplification or optimal excitation \cite{Farrell.1988,Farrell:1996jx}, the adjoint method has been used to infer patterns in initial conditions that over a finite time contribute to maximum uncertainty growth in forecasts \cite{Palmer:1994br,Buizza:1995in} and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
-Except in very few instances and for experimental purposes \cite{Giering.2006}, AD has not been used in the development of adjoint models in NWP.
-Instead, the adjoint code has been derived and implemented manually.
+Except for early research applications \cite{Park.1996,Park.2000} and for experimental purposes \cite{Giering.2006}, AD has not been used in the development of adjoint models in NWP.
+Instead, the adjoint code has been, for the most part, derived and implemented manually.
 
 \paragraph{Oceanography}
 
@@ -140,11 +140,14 @@ predictability invited model-based singular vector computations in ocean models.
 %of the Tropical Pacific Ocean.
 %\cite{Moore.1997ah,Moore.1997}.
 %Such model-based singular vectors were also later computed for optimal excitations of the North Atlantic thermohalince circulation \cite{Zanna.2010,Zanna:2011ge,Zanna:2012dw}.
-The consortium for Estimating the Circulation and Climate of the Ocean (ECCO) \cite{Stammer.2002} set out in around 1999 to develop an adjoint-based parameter and state estimation framework.
+More recent data assimilation frameworks with fully hand-written adjoint codes include the NEMO model \cite{Weaver.2003,Vidard:2015kj} and the ROMS model \cite{Moore:2004fk,Moore:2011bc}.
+
+The consortium for Estimating the Circulation and Climate of the Ocean (ECCO) \cite{Stammer.2002} set out in around 1999 to develop a parameter and state estimation framework
 %whereby a state-of-the-art ocean general circulation model is fit to diverse observations by way of PDE-constrained, gradient-based optimization, with the adjoint model of the GCM computing the gradient.
-Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using source-to-source AD \cite{Marotzke:1999, Heimbach.2005}. 
+%Importantly, the adjoint model of the MIT general circulation model (MITgcm) is generated using 
+where the adjoint model is generated using source-to-source AD \cite{Marotzke:1999, Heimbach.2005}. 
 %initially using the \textit{Tangent linear and Adjoint Model Compiler} (TAMC)\cite{Giering:1998in} and then its commercial successor \textit{Transformation of Algorithms in Fortran} (TAF) \cite{Giering.2006}.
-Rigorous exploitation of AD enabled extensions to vastly improved model numerics \cite{Forget.2015m9i} and coupling to biogeochemistry \cite{Dutkiewicz:2006gw}, sea-ice \cite{Heimbach:2010fz}, and sub-ice shelf cavities \cite{Heimbach:2012iu}.
+Rigorous exploitation of AD enabled extensions to vastly improved model numerics \cite{Forget.2015m9i} and coupling to biogeochemistry \cite{Dutkiewicz:2006gw}, sea-ice \cite{Heimbach:2010fz}, and sub-ice shelf cavities \cite{Heimbach:2012iu,Goldberg:2020dl}.
 Unlike NWP-type 4D-Var, it also enabled extension to the problem of parameter calibration from observations \cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. 
 Arguably, this work heralded much of today's efforts in ``online learning'' of parameterization schemes.
 %, where the functional representation between the parameters and the learning data are provided by the numerical implementation of an empirical function rather than by a neural network.

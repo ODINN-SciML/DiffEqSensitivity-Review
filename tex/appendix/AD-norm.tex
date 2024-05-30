@@ -93,7 +93,7 @@ In particular, we further provide a script that demonstrates that Jax's diffrax 
 \begin{jllisting}
 import jax
 import jax.numpy as jnp
-from diffrax import diffeqsolve, ODETerm, Tsit5, SaveAt, PIDController, BacksolveAdjoint, RecursiveCheckpointAdjoint, DirectAdjoint
+from diffrax import diffeqsolve, ODETerm, Tsit5, SaveAt, PIDController, RecursiveCheckpointAdjoint, DirectAdjoint
 
 from jax import config
 config.update("jax_enable_x64", True)

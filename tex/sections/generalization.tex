@@ -11,15 +11,15 @@ The same recipe used here to derive the continuous adjoint method for a system o
 
 Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE and DAE systems. 
 Discretized PDEs typically involve the solution of moderate to large systems of coupled (and possibly stiff) ODEs subject to some suitable boundary conditions. 
-Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase.
-PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution. 
-This may limit the practicality of sensitivity methods that require the storage of a dense forward solution, such as reverse-mode AD and (non-checkpointed) adjoint methods.
-This can be mitigated by using checkpointing to store the interpolated forward solution rather than the dense solution.
+Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase, although recent developments in automated sparsity detection can help to mitigate this \cite{gowdaSparsityProgrammingAutomated2019}.
+PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy condition \cite{courantPartialDifferenceEquations1967}, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution. 
+This may limit the practicality of sensitivity methods that require the storage of a dense forward solution, such as (non-checkpointed) reverse-mode AD and adjoint methods.
+This can be mitigated by using checkpointing to store checkpoints of the forward solution rather than the dense solution.
 However, the memory footprint for even moderate size PDE systems (e.g. $10^2$ to $10^3$ equations) over long time spans can still incur a large memory cost even when checkpointing is used.
 
 Another practical consideration when differentiating numerical PDE solvers arises from the way they are typically implemented. 
 Due to the large size of the system, numerical calculations for PDEs are typically performed in-place, i.e. large memory buffers are often used to store intermediate calculations and system state thereby avoiding the need to repeatedly allocate large amounts of memory for each array operation. 
-As mentioned in Section \ref{sec:model_arch}, this can preclude the use of many reverse-mode automatic differentiation tools which do not support in-place mutation of arrays.
+This can preclude the use of many reverse-mode automatic differentiation tools which do not support in-place mutation of arrays.
 
 Therefore, PDEs remain some of the most challenging problems for computing sensitivities, due to the frequent combination of a large number of discretized possibly stiff ODEs, with a large memory footprint. 
 This makes it difficult to strike a balance between memory usage and computational performance.
