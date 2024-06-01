@@ -7,8 +7,8 @@ using RecursiveArrayTools
 function f_aug(z, p, t)
     u, λ, L = z
     du = f(u, p, t)
-    dλ = - ∂f∂u(u, p, t)' * λ
-    dL = - λ' * ∂f∂p(u, p, t)
+    dλ = ∂f∂u(u, p, t)' * λ
+    dL = λ' * ∂f∂p(u, p, t)
     VectorOfArray([du, vec(dλ), vec(dL)])
 end
 
@@ -24,4 +24,4 @@ aug_prob = ODEProblem(f_aug, z1, reverse(tspan), p)
 u0_, λ0, dLdp_cont = solve(aug_prob, Euler(), dt=-0.001).u[end]
 
 
-@test dLdp_cont ≈ dLdp_SciML[1]
+@test dLdp_cont[1] ≈ dLdp_SciML[1]

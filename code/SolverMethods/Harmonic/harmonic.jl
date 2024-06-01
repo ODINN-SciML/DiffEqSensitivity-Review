@@ -1,7 +1,11 @@
 """
 Harmonic oscilator
-
 """
+
+using OrdinaryDiffEq
+using SciMLSensitivity
+using Zygote
+using Test
 
 ω = 0.2
 p = [ω]
