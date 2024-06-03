@@ -93,15 +93,13 @@ This complexity makes this method expensive for models with many ODEs and/or par
 An important consideration is that all solver-based methods have subroutines to compute the JVPs and VJPs involved in the sensitivity and adjoint equations, respectively. 
 This calculation is carried out by another sensitivity method, usually finite differences or AD, which plays a central role when analyzing the accuracy and stability of the adjoint method. 
 In the case of the forward sensitivity equation, this correspond to the JVPs resulting form the product $\frac{\partial f}{\partial u} s $ in Equation \eqref{eq:sensitivity_equations}.
-For the adjoint equations, we need to evaluate the term $\lambda^T \frac{\partial G}{\partial \theta}$ for the discrete adjoint method in Equation \eqref{eq:def_adjoint}, and $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}. 
-% Mention why these are different?
+For the adjoint equations, we need to evaluate the term $\lambda^T \frac{\partial f}{\partial \theta}$ for the continuous adjoint method in Equation \eqref{eq:casa-final-loss-gradient}, while for the discrete adjoint method we need to compute the term $\lambda^T \frac{\partial G}{\partial \theta}$ in Equation \eqref{eq:def_adjoint} (which may further coincide with $\lambda^T \frac{\partial f}{\partial \theta}$ for some numerical solvers, but not in the general case). 
 Therefore, the choice of the algorithm to compute JVPs/VJPs can have a significant impact in the overall performance \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
 
 In \texttt{SUNDIALS}, the JVPs/VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In \texttt{FATODE}, they can be computed with finite differences, AD, or it can be provided by the user.
-In the the Julia SciML ecosystem, different AD packages are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, \texttt{Tracker.jl}.
-These will compute the JVPs/VJPs using some form of AD, which will result in correct calculations with different performance trade-offs. 
-In Julia, the options \texttt{autodiff} and \texttt{autojacvec} allow one to customize if JVPs/VJPs are computed using AD or finite differences.  
+In the Julia SciML ecosystem, the options \texttt{autodiff} and \texttt{autojacvec} allow one to customize if JVPs/VJPs are computed using AD or finite differences or to provide. 
+Different AD packages with different with different performance trade-offs are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl} \cite{RevelsLubinPapamarkou2016}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, \texttt{Tracker.jl}.
 
 
 \subsubsection{Adjoint methods}
@@ -238,9 +236,29 @@ There are two solutions for addressing the evaluation of $u(t)$ during the compu
 
 The following example shows how to implement the continuous adjoint method of the solution of Equation \eqref{eq:example-ode-direct-methods} using the backsolve strategy. 
 \begin{jllisting}
-    complete
+using RecursiveArrayTools
+
+# Augmented dynamics
+function f_aug(z, p, t)
+    u, λ, L = z
+    du = f(u, p, t)
+    dλ = ∂f∂u(u, p, t)' * λ
+    dL = λ' * ∂f∂p(u, p, t)
+    VectorOfArray([du, vec(dλ), vec(dL)])
+end
+
+# Solution of original ODE
+prob = ODEProblem(f, u0, tspan, p)
+sol = solve(prob, Euler(), dt=0.001)
+
+# Final state 
+u1 = sol.u[end]
+z1 = VectorOfArray([u1, [1.0, 0.0], zeros(length(p))])
+
+aug_prob = ODEProblem(f_aug, z1, reverse(tspan), p)
+u0_, λ0, dLdp_cont = solve(aug_prob, Euler(), dt=-0.001).u[end]
 \end{jllisting}
-Notice that here we used the final state of the solution $u$ of the differential equation as starting point, which is then recalculated in backwards direction. 
+Notice that here we used the final state of the solution $u$ of the differential equation as starting point, which is then recalculated in backwards direction (implemented via a negative stepsize \texttt{dt=-0.001}). 
 
 When dealing with stiff differential equations, special considerations need to be taken into account.
 Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$, then solve for $\lambda$ in reverse using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
@@ -249,6 +267,7 @@ A second similar approach is to use an implicit-explicit (IMEX) solver, where we
 This method also has a complexity of $\mathcal O (n^3 + p)$. 
 
 \paragraph{Continuous checkpointing}
+\label{section:checkpointint-cont}
 
 Both interpolating and backsolve adjoint methods can be implemented along with a checkpointing scheme. 
 This can be done by choosing save points in the forward pass. 

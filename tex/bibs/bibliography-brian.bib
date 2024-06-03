@@ -1,3 +1,14 @@
+@inproceedings{blondelEfficientModularImplicit2022a,
+  title = {Efficient and Modular Implicit Differentiation},
+  booktitle = {Advances in Neural Information Processing Systems},
+  author = {Blondel, Mathieu and Berthet, Quentin and Cuturi, Marco and Frostig, Roy and Hoyer, Stephan and {Llinares-Lopez}, Felipe and Pedregosa, Fabian and Vert, Jean-Philippe},
+  editor = {Koyejo, S. and Mohamed, S. and Agarwal, A. and Belgrave, D. and Cho, K. and Oh, A.},
+  year = {2022},
+  volume = {35},
+  pages = {5230--5242},
+  publisher = {Curran Associates, Inc.}
+}
+
 @article{courantPartialDifferenceEquations1967,
   title = {On the Partial Difference Equations of Mathematical Physics},
   author = {Courant, Richard and Friedrichs, Kurt and Lewy, Hans},
@@ -15,4 +26,37 @@
   booktitle = {Program Transformations for {{ML}} Workshop at {{NeurIPS}} 2019},
   author = {Gowda, Shashi and Ma, Yingbo and Churavy, Valentin and Edelman, Alan and Rackauckas, Christopher},
   year = {2019}
+}
+
+@article{knollJacobianfreeNewtonKrylov2004,
+  title = {Jacobian-Free {{Newton}}--{{Krylov}} Methods: A Survey of Approaches and Applications},
+  shorttitle = {Jacobian-Free {{Newton}}--{{Krylov}} Methods},
+  author = {Knoll, D. A. and Keyes, D. E.},
+  year = {2004},
+  month = jan,
+  journal = {Journal of Computational Physics},
+  volume = {193},
+  number = {2},
+  pages = {357--397},
+  issn = {0021-9991},
+  doi = {10.1016/j.jcp.2003.08.010},
+  urldate = {2024-05-30},
+  abstract = {Jacobian-free Newton--Krylov (JFNK) methods are synergistic combinations of Newton-type methods for superlinearly convergent solution of nonlinear equations and Krylov subspace methods for solving the Newton correction equations. The link between the two methods is the Jacobian-vector product, which may be probed approximately without forming and storing the elements of the true Jacobian, through a variety of means. Various approximations to the Jacobian matrix may still be required for preconditioning the resulting Krylov iteration. As with Krylov methods for linear problems, successful application of the JFNK method to any given problem is dependent on adequate preconditioning. JFNK has potential for application throughout problems governed by nonlinear partial differential equations and integro-differential equations. In this survey paper, we place JFNK in context with other nonlinear solution algorithms for both boundary value problems (BVPs) and initial value problems (IVPs). We provide an overview of the mechanics of JFNK and attempt to illustrate the wide variety of preconditioning options available. It is emphasized that JFNK can be wrapped (as an accelerator) around another nonlinear fixed point method (interpreted as a preconditioning process, potentially with significant code reuse). The aim of this paper is not to trace fully the evolution of JFNK, nor to provide proofs of accuracy or optimal convergence for all of the constituent methods, but rather to present the reader with a perspective on how JFNK may be applicable to applications of interest and to provide sources of further practical information.}
+}
+
+@article{montoisonKrylovJlJulia2023,
+  title = {Krylov.Jl: {{A Julia}} Basket of Hand-Picked {{Krylovmethods}}},
+  shorttitle = {Krylov.Jl},
+  author = {Montoison, Alexis and Orban, Dominique},
+  year = {2023},
+  month = sep,
+  journal = {Journal of Open Source Software},
+  volume = {8},
+  number = {89},
+  pages = {5187},
+  issn = {2475-9066},
+  doi = {10.21105/joss.05187},
+  urldate = {2024-05-30},
+  copyright = {http://creativecommons.org/licenses/by/4.0/},
+  langid = {english}
 }
