@@ -1,9 +1,9 @@
 % Introduction paragram with model based 
-Models based on differential equations (DE), including ordinary differential equations (ODE) and partial differential equations (PDE), play a central role in describing the behaviour of mechanistic systems in applied, natural and social sciences \cite{Ghattas.2021}.
+Models based on differential equations (DEs), including ordinary differential equations (ODEs) and partial differential equations (PDEs), play a central role in describing the behaviour of dynamical systems in applied, natural and social sciences \cite{Ghattas.2021}.
 % They consist of precise mathematical descriptions of physical mechanisms, including the modelling of causal interactions, feedback loops, and dependencies between components of the system under consideration \cite{rackauckas2020universal}.
 % Differential equations are the cornerstone of the physical sciences.
-For instance, ODEs are used for the modelling of the dynamics of the atmospheric and ocean circulation in climate science, for the modelling of ice or mantle flow in solid Earth geophysics, for the modelling of the spatio-temporal dynamics of species abundance in ecology, or for the modelling of cancer cell evolution in biology.  
-For centuries, scientists have relied on theoretical and analytical methods to solve differential equations. 
+For instance, DEs are used for the modelling of the dynamics of the atmospheric and ocean circulation in climate science, for the modelling of ice or mantle flow in solid Earth geophysics, for the modelling of the spatio-temporal dynamics of species abundance in ecology, or for the modelling of cancer cell evolution in biology.  
+For centuries, scientists have relied on theoretical and analytical methods to solve DEs. 
 The advent of computer and numerical methods has enabled numerical simulations of large-scale systems \cite{Dahlquist_1985, hey2009, Rude:2018jv}.
 With numerical methods to approximate their solutions, DE-based models led to fundamental advances in the understanding and prediction of physical, biological, and social systems, among others.
 
@@ -33,7 +33,7 @@ The broader set of tools known as automatic or algorithmic differentiation (AD) 
 The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication, that are individually easy to differentiate and their composition is easy to differentiate by using the chain rule \cite{Giering:1998in}. 
 During the last decades, reverse mode AD, also known as backpropagation, has enabled the fast growth of deep learning by efficiently computing gradients of deep neural networks \cite{griewank2012invented}.
 % One of the challenges in implementing efficient routines to compute gradients of DE-based models is the integration of the different methods with automatic differentiation.
-Consequently, some authors have recently suggested DP as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
+Some authors have recently suggested DP as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
 More broadly than AD, DP tools for DE-models further include adjoint and sensitivity methods that compute the gradient by relying on an auxiliary set of differential equations.
 
 
@@ -81,8 +81,8 @@ It reviews differentiable programming for differential equations from three diff
 In Section \ref{sectopn:motivation} we introduce some of the applications of DP for the modelling of complex systems in the natural and social sciences. 
 In Section \ref{section:methods} we present a coherent mathematical framework to understand the theoretical differences between all DP methods available.
 In Section \ref{sec:computational-implementation} we show how these methods can be computationally implemented and what are their numerical advantages and disadvantages.
-For the simplicity of our presentation, all the methods introduced in Sections \ref{section:methods} and \ref{sec:computational-implementation} will consider just the case of first-order ODEs. 
-Caveats and details of how this generalize to other DE-based models, including PDEs, are discussed in Section \ref{section:generalization}.
-We will conclude the paper with a series of recommendations in Section \ref{section:recomendations}.
+For simplicity, all the methods introduced in Sections \ref{section:methods} and \ref{sec:computational-implementation} focus exclusively on first-order ODEs. 
+How these methods generalize to other DE-based models, including PDEs, is discussed in Section \ref{section:generalization}.
+We conclude the paper with a series of recommendations in Section \ref{section:recomendations}.
 By providing a common framework across all methods and applications, we hope to facilitate the development of scalable, practical, and efficient differentiable DE-based models. 
 

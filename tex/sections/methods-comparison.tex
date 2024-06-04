@@ -192,7 +192,8 @@ which coincides with the Runge-Kutta scheme we would obtain for the original for
 This means that forward AD on Runge-Kutta methods leads to solutions for the sensitivity that have the same convergence properties of the forward solver. 
 
 Note that consistency does not imply that an ODE solver is necessarily correct or stable under such a transformation. 
-Consistency of the adjoint may involve other aspects of the solver, such as adaptivity and error control. 
+Consistency of the adjoint may involve other aspects of the solver, such as adaptivity, error control, and the choice of the discretization scheme. 
+A common case where continuous methods may fail is when the discretization step is applied without controlling for the join error of the solution of the DE and its sensitivity \cite{Gunzburger_2002}. 
 In Appendix \ref{appendix:dual-number-solver}, we demonstrate that common implementations of adaptive ODE solvers may not compute the right gradient when forward AD is applied to solver even though the process is mathematically consistent. 
 This highlights that additional factors beyond consistency must be considered when investigating whether an implementation is convergent.
 
@@ -203,8 +204,9 @@ As previously mentioned, the difference between the discrete and continuous adjo
 In contrast, continuous adjoint equations are derived analytically, without a priori consideration of the numerical scheme used to solve it. 
 In some sense, we can think of the discrete adjoint $\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_N)$ in Equation \eqref{eq:linea-adjoint-state-equation} as the discretization of the continuous adjoint $\lambda(t)$. 
 
-
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 
+In general, discrete and continuous adjoints will lead to different numerical solutions for the sensitivity, meaning that the discretization and differentiation step do not commute \cite{Jensen_Nakshatrala_Tortorelli_2014, Gunzburger_2002, nadarajah2000comparison}.
+However, as the error of the numerical solver decreases, we further expect the discrete and continuous adjoint to lead to the same correct solution. 
 Furthermore, since the continuous adjoint method requires to numerically solve the adjoint, we are interested in the relative accuracy of the forward and reverse step. 
 It has been shown that for both explicit and implicit Runge-Kutta methods, as long as the coefficients in the numerical scheme given in Equation \eqref{eq:Runge-Kutta-scheme} satisfy the condition $b_i \neq 0$ for all $i=1,2, \ldots, s$, then the discrete adjoint is a consistent estimate of the continuous adjoint with same level of convergence as for the forward numerical solver \cite{Hager_2000,Walther_2007, sandu2006properties, sandu2011solution}.
 To guarantee the same order of convergence, it is important that both the forward and backward solver use the same Runge-Kutta coefficients \cite{Alexe_Sandu_2009}.
