@@ -590,24 +590,6 @@
     publisher = "WWW"
 }
 
-@article{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et,
-    author = "Zubov, Kirill and McCarthy, Zoe and Ma, Yingbo and Calisto, Francesco and Pagliarino, Valerio and Azeglio, Simone and Bottero, Luca and Luján, Emmanuel and Sulzer, Valentin and Bharambe, Ashutosh and Vinchhi, Nand and Balakrishnan, Kaushik and Upadhyay, Devesh and Rackauckas, Chris",
-    title = "NeuralPDE: Automating Physics-Informed Neural Networks (PINNs) with Error Approximations",
-    DOI = "10.48550/arxiv.2107.09443",
-    abstractNote = "Physics-informed neural networks (PINNs) are an increasingly powerful way to solve partial differential equations, generate digital twins, and create neural surrogates of physical models. In this manuscript we detail the inner workings of NeuralPDE.jl and show how a formulation structured around numerical quadrature gives rise to new loss functions which allow for adaptivity towards bounded error tolerances. We describe the various ways one can use the tool, detailing mathematical techniques like using extended loss functions for parameter estimation and operator discovery, to help potential users adopt these PINN-based techniques into their workflow. We showcase how NeuralPDE uses a purely symbolic formulation so that all of the underlying training code is generated from an abstract formulation, and show how to make use of GPUs and solve systems of PDEs. Afterwards we give a detailed performance analysis which showcases the trade-off between training techniques on a large set of PDEs. We end by focusing on a complex multiphysics example, the Doyle-Fuller-Newman (DFN) Model, and showcase how this PDE can be formulated and solved with NeuralPDE. Together this manuscript is meant to be a detailed and approachable technical report to help potential users of the technique quickly get a sense of the real-world performance trade-offs and use cases of the PINN techniques.",
-    journal = "arXiv",
-    year = "2021"
-}
-
-@article{Lagergren_Nardini_Baker_Simpson_Flores_2020,
-    author = "Lagergren, John H and Nardini, John T and Baker, Ruth E and Simpson, Matthew J and Flores, Kevin B",
-    title = "Biologically-informed neural networks guide mechanistic modeling from sparse experimental data",
-    DOI = "10.1371/journal.pcbi.1008462",
-    abstractNote = "Biologically-informed neural networks (BINNs), an extension of physics-informed neural networks [1], are introduced and used to discover the underlying dynamics of biological systems from sparse experimental data. In the present work, BINNs are trained in a supervised learning framework to approximate in vitro cell biology assay experiments while respecting a generalized form of the governing reaction-diffusion partial differential equation (PDE). By allowing the diffusion and reaction terms to be multilayer perceptrons (MLPs), the nonlinear forms of these terms can be learned while simultaneously converging to the solution of the governing PDE. Further, the trained MLPs are used to guide the selection of biologically interpretable mechanistic forms of the PDE terms which provides new insights into the biological and physical mechanisms that govern the dynamics of the observed system. The method is evaluated on sparse real-world data from wound healing assays with varying initial cell densities [2].",
-    journal = "arXiv",
-    year = "2020"
-}
-
 @article{Cranmer_Brehmer_Louppe_2020,
     author = "Cranmer, Kyle and Brehmer, Johann and Louppe, Gilles",
     title = "The frontier of simulation-based inference.",
@@ -807,6 +789,47 @@
     eprint = "https://doi.org/10.1137/22M1477805"
 }
 
+@article{Vadlamani.2020,
+    author = "Vadlamani, Sri Krishna and Xiao, Tianyao Patrick and Yablonovitch, Eli",
+    year = "2020",
+    rating = "0",
+    title = "{Physics successfully implements Lagrange multiplier optimization}",
+    journal = "Proceedings of the National Academy of Sciences",
+    issn = "0027-8424",
+    doi = "10.1073/pnas.2015192117",
+    pmid = "33046659",
+    pmcid = "PMC7604416",
+    url = "http://www.pnas.org/lookup/doi/10.1073/pnas.2015192117",
+    abstract = "{Optimization is a major part of human effort. While being mathematical, optimization is also built into physics. For example, physics has the Principle of Least Action; the Principle of Minimum Power Dissipation, also called Minimum Entropy Generation; and the Variational Principle. Physics also has Physical Annealing, which, of course, preceded computational Simulated Annealing. Physics has the Adiabatic Principle, which, in its quantum form, is called Quantum Annealing. Thus, physical machines can solve the mathematical problem of optimization, including constraints. Binary constraints can be built into the physical optimization. In that case, the machines are digital in the same sense that a flip–flop is digital. A wide variety of machines have had recent success at optimizing the Ising magnetic energy. We demonstrate in this paper that almost all those machines perform optimization according to the Principle of Minimum Power Dissipation as put forth by Onsager. Further, we show that this optimization is in fact equivalent to Lagrange multiplier optimization for constrained problems. We find that the physical gain coefficients that drive those systems actually play the role of the corresponding Lagrange multipliers.}",
+    pages = "26639--26650",
+    number = "43",
+    volume = "117",
+    keywords = "",
+    local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2020/2020-Vadlamani-Proceedings\%20of\%20the\%20National\%20Academy\%20of\%20Sciences\%20of\%20the\%20United\%20States\%20of\%20America.pdf"
+}
+
+@article{meuwly2021machine,
+    author = "Meuwly, Markus",
+    title = "Machine learning for chemical reactions",
+    journal = "Chemical Reviews",
+    volume = "121",
+    number = "16",
+    pages = "10218--10239",
+    year = "2021",
+    publisher = "ACS Publications"
+}
+
+@INPROCEEDINGS{gorban_1998,
+    author = "Gorban, A.N. and Wunsch, D.C.",
+    booktitle = "1998 IEEE International Joint Conference on Neural Networks Proceedings. IEEE World Congress on Computational Intelligence (Cat. No.98CH36227)",
+    title = "The general approximation theorem",
+    year = "1998",
+    volume = "2",
+    number = "",
+    pages = "1271-1274 vol.2",
+    doi = "10.1109/IJCNN.1998.685957"
+}
+
 @article{zdeborova_understanding_2020,
     author = "Zdeborová, Lenka",
     title = "Understanding deep learning is also a job for physicists",
@@ -836,77 +859,22 @@
     local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2016/2016-Coveney-Philosophical\%20Transactions\%20of\%20the\%20Royal\%20Society\%20of\%20London.\%20Series\%20A-\%20Physical\%20and\%20Engineering\%20Sciences.pdf"
 }
 
-@article{Molnar.2020sisk,
-    author = "Molnar, Christoph and Casalicchio, Giuseppe and Bischl, Bernd",
-    year = "2020",
-    title = "{Interpretable Machine Learning -- A Brief History, State-of-the-Art and Challenges}",
+@article{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et,
+    author = "Zubov, Kirill and McCarthy, Zoe and Ma, Yingbo and Calisto, Francesco and Pagliarino, Valerio and Azeglio, Simone and Bottero, Luca and Luján, Emmanuel and Sulzer, Valentin and Bharambe, Ashutosh and Vinchhi, Nand and Balakrishnan, Kaushik and Upadhyay, Devesh and Rackauckas, Chris",
+    title = "NeuralPDE: Automating Physics-Informed Neural Networks (PINNs) with Error Approximations",
+    DOI = "10.48550/arxiv.2107.09443",
+    abstractNote = "Physics-informed neural networks (PINNs) are an increasingly powerful way to solve partial differential equations, generate digital twins, and create neural surrogates of physical models. In this manuscript we detail the inner workings of NeuralPDE.jl and show how a formulation structured around numerical quadrature gives rise to new loss functions which allow for adaptivity towards bounded error tolerances. We describe the various ways one can use the tool, detailing mathematical techniques like using extended loss functions for parameter estimation and operator discovery, to help potential users adopt these PINN-based techniques into their workflow. We showcase how NeuralPDE uses a purely symbolic formulation so that all of the underlying training code is generated from an abstract formulation, and show how to make use of GPUs and solve systems of PDEs. Afterwards we give a detailed performance analysis which showcases the trade-off between training techniques on a large set of PDEs. We end by focusing on a complex multiphysics example, the Doyle-Fuller-Newman (DFN) Model, and showcase how this PDE can be formulated and solved with NeuralPDE. Together this manuscript is meant to be a detailed and approachable technical report to help potential users of the technique quickly get a sense of the real-world performance trade-offs and use cases of the PINN techniques.",
     journal = "arXiv",
-    doi = "10.48550/arxiv.2010.09337",
-    eprint = "2010.09337",
-    abstract = "{We present a brief history of the field of interpretable machine learning (IML), give an overview of state-of-the-art interpretation methods, and discuss challenges. Research in IML has boomed in recent years. As young as the field is, it has over 200 years old roots in regression modeling and rule-based machine learning, starting in the 1960s. Recently, many new IML methods have been proposed, many of them model-agnostic, but also interpretation techniques specific to deep learning and tree-based ensembles. IML methods either directly analyze model components, study sensitivity to input perturbations, or analyze local or global surrogate approximations of the ML model. The field approaches a state of readiness and stability, with many methods not only proposed in research, but also implemented in open-source software. But many important challenges remain for IML, such as dealing with dependent features, causal interpretation, and uncertainty estimation, which need to be resolved for its successful application to scientific problems. A further challenge is a missing rigorous definition of interpretability, which is accepted by the community. To address the challenges and advance the field, we urge to recall our roots of interpretable, data-driven modeling in statistics and (rule-based) ML, but also to consider other areas such as sensitivity analysis, causal inference, and the social sciences.}",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/Molnar-Interpretable\%20Machine\%20Learning\%20--\%20A\%20Brief\%20History,\%20State-of-the-Art\%20and\%20Challenges-2020-arXiv.pdf"
+    year = "2021"
 }
 
-@article{Rudin.2022,
-    author = "Rudin, Cynthia and Chen, Chaofan and Chen, Zhi and Huang, Haiyang and Semenova, Lesia and Zhong, Chudi",
-    year = "2022",
-    title = "{Interpretable machine learning: Fundamental principles and 10 grand challenges}",
-    journal = "Statistic Surveys",
-    issn = "1935-7516",
-    doi = "10.1214/21-ss133",
-    abstract = "{Interpretability in machine learning (ML) is crucial for high stakes decisions and troubleshooting. In this work, we provide fundamental principles for interpretable ML, and dispel common misunderstandings that dilute the importance of this crucial topic. We also identify 10 technical challenge areas in interpretable machine learning and provide history and background on each problem. Some of these problems are classically important, and some are recent problems that have arisen in the last few years. These problems are: (1) Optimizing sparse logical models such as decision trees; (2) Optimization of scoring systems; (3) Placing constraints into generalized additive models to encourage sparsity and better interpretability; (4) Modern case-based reasoning, including neural networks and matching for causal inference; (5) Complete supervised disentanglement of neural networks; (6) Complete or even partial unsupervised disentanglement of neural networks; (7) Dimensionality reduction for data visualization; (8) Machine learning models that can incorporate physics and other generative or causal constraints; (9) Characterization of the “Rashomon set” of good models; and (10) Interpretable reinforcement learning. This survey is suitable as a starting point for statisticians and computer scientists interested in working in interpretable machine learning.}",
-    pages = "1--85",
-    number = "none",
-    volume = "16",
-    local-url = "file://localhost/Users/heimbach/Documents/Papers\%20Library/Rudin-Interpretable\%20machine\%20learning-\%20Fundamental\%20principles\%20and\%2010\%20grand\%20challenges-2022-Statistic\%20Surveys.pdf"
-}
-
-@article{Wigner.1960,
-    author = "Wigner, Eugene P",
-    year = "1960",
-    rating = "0",
-    title = "{The unreasonable effectiveness of mathematics in the natural sciences}",
-    journal = "Communications on Pure and Applied Mathematics",
-    doi = "10.1002/cpa.3160130102",
-    url = "https://doi.org/10.1002/cpa.3160130102",
-    abstract = "{Communications on Pure and Applied Mathematics 1960.13:1-14}",
-    pages = "1 -- 14",
-    volume = "13",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/1960/1960-Wigner-Communications\%20on\%20Pure\%20and\%20Applied\%20Mathematics.pdf"
-}
-
-@article{Tarantola:2007wu,
-    author = "Tarantola, Albert",
-    year = "2007",
-    rating = "0",
-    title = "{Mapping of Probabilities}",
-    journal = "Book",
-    pages = "1 -- 305",
-    keywords = "",
-    local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2007/2007-Tarantola-Book.pdf"
-}
-
-@article{meuwly2021machine,
-    author = "Meuwly, Markus",
-    title = "Machine learning for chemical reactions",
-    journal = "Chemical Reviews",
-    volume = "121",
-    number = "16",
-    pages = "10218--10239",
-    year = "2021",
-    publisher = "ACS Publications"
-}
-
-@INPROCEEDINGS{gorban_1998,
-    author = "Gorban, A.N. and Wunsch, D.C.",
-    booktitle = "1998 IEEE International Joint Conference on Neural Networks Proceedings. IEEE World Congress on Computational Intelligence (Cat. No.98CH36227)",
-    title = "The general approximation theorem",
-    year = "1998",
-    volume = "2",
-    number = "",
-    pages = "1271-1274 vol.2",
-    doi = "10.1109/IJCNN.1998.685957"
+@article{Lagergren_Nardini_Baker_Simpson_Flores_2020,
+    author = "Lagergren, John H and Nardini, John T and Baker, Ruth E and Simpson, Matthew J and Flores, Kevin B",
+    title = "Biologically-informed neural networks guide mechanistic modeling from sparse experimental data",
+    DOI = "10.1371/journal.pcbi.1008462",
+    abstractNote = "Biologically-informed neural networks (BINNs), an extension of physics-informed neural networks [1], are introduced and used to discover the underlying dynamics of biological systems from sparse experimental data. In the present work, BINNs are trained in a supervised learning framework to approximate in vitro cell biology assay experiments while respecting a generalized form of the governing reaction-diffusion partial differential equation (PDE). By allowing the diffusion and reaction terms to be multilayer perceptrons (MLPs), the nonlinear forms of these terms can be learned while simultaneously converging to the solution of the governing PDE. Further, the trained MLPs are used to guide the selection of biologically interpretable mechanistic forms of the PDE terms which provides new insights into the biological and physical mechanisms that govern the dynamics of the observed system. The method is evaluated on sparse real-world data from wound healing assays with varying initial cell densities [2].",
+    journal = "arXiv",
+    year = "2020"
 }
 
 @book{lions1971optimal,
