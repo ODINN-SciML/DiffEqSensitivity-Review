@@ -1,51 +1,16 @@
-% \subsection{On the importance of differentiable programming}
-
 Mechanistic (or process-based) models have played a central role in a wide range of scientific disciplines. 
 They consist of precise mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration \cite{rackauckas2020universal}. 
 These mathematical representations typically take the form of differential equations. 
-Together with the numerical methods to approximate their solutions, differential equations have led to fundamental advances in the understanding and prediction of physical and biological systems.
-They depend on uncertain inputs or parameters that determine the processes represented. 
-% I think we should remove this full next paragraph. I think is too specific to certain domains and misses a little bit the point
-% The parameter values have traditionally been estimated independently of the model, which poses several problems \cite{hartig2012}:
-% First, the independent estimation of parameters and processes rapidly becomes impossible as the number of state variables increases, especially when considering highly non-linear processes. 
-% Second, the measurement of some parameters, to the extent that they can be measured, are intrinsically difficult \cite{Schartau2017}. 
-% Third, parameter values estimated from laboratory experiments, or those representing subgrid-scale processes, may be specific to the experimental setting, or to the resolution of a simulation, and resulting simulations are likely to diverge from observations in the field.
+Together with the numerical methods to approximate their solutions, DEs have led to fundamental advances in the understanding and prediction of physical and biological systems.
 
-% I am removing this first sentence for now. I also think is to specific. 
-% Due to the difficulty of estimating parameter values in mechanistic models, and accompanying the massive growth of data upon which they depend, statistical (or machine learning) models have led the modelling field in the past decades \cite{Cox:2017hv}. 
-Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015}, allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
-However, whereas the use of machine learning models for predictions has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
-% Alternative: However, whereas the use of machine learning models for regression, i.e., interpolation, has shown great successes, its use for prediction, i.e., extrapolation, has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
-In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
-% Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
-
-
-The fields of mechanistic modelling and statistical modelling have mostly evolved independently \cite{zdeborova_understanding_2020}, due to several reasons. 
-On the one hand, domain scientists have often been reluctant to learning about machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. 
-On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any \textit{a priori} physical knowledge. 
-However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models \cite{Molnar.2020sisk,Rudin.2022,Schneider2017,rasp2018,Yazdani2020,Abarbanel2018,Carrassi2018,Bocquet2019,Gabor2015,Gharamti2017,Curtsdotter2019,Rosenbaum2019,Toms2020,Brajard2021}.
-% If both modelling approaches have different strengths, why not combine them and attempt to have the best of both worlds?
-% Inverse modelling consists in using observation data to recover the parameters of a mechanistic model that can best explain the data
-Inverse modelling bridges the statistical and mechanistic modelling fields \cite{Wigner.1960, Rude:2018jv, Tarantola:2007wu}. 
-Differentiable programming is key in this process and has the potential to revolutionize the way we approach and design scientific models and even the way we discover governing laws from data.
-
-% A key way to achieve this is through differentiable programming, i.e., being able to compute derivatives of any computer program describing a scientific model.
-% During the last decades, the backpropagation algorithm has enabled the fast growth of deep learning by efficiently computing gradients of large and complex neural networks with many parameters \cite{griewank2012invented}.
-% Nowadays, the differentiation of hybrid models comprising data-driven models (e.g., neural networks, gaussian processes) with differential equations poses complex technical problems, which are only starting to be explored in recent years \cite{ma_comparison_2021}. 
-% Being able to accurately estimate model parameters, ranging from a few ones in classic inversion problems to millions of them in 
-% % \todo{I disagree, many geophysical inversions involve millions of parmeters; it's not specific to NNs.}
-% large neural networks, opens many new possibilities. 
-
-
-\subsection{Domain-specific applications}
-
-Arguably, the notion of differentiable programming has a long tradition in computational physics which is founded on solving and/or inverting models based on their linearized versions, particularly, in the context of gradient-based inverse methods.
-The overarching goal of inverse modelling is to find a set of optimal model parameters that minimizes an objective or cost function quantifying the misfit between observations and the simulated state.
-%, subject to the constraint that the model equations be fulfilled. 
-%The constrained optimization problem is transformed into an unconstrained problem by way of \emph{Lagrange multiplier method}\cite{Vadlamani.2020}, also referred to as the \emph{adjoint method}. 
-% The corresponding \textit{adjoint model} computes the gradient of the objective function with respect to all inputs. 
+DEs usually depend on inputs or parameters that change the obtained solutions. 
+While forward modelling usually refers to understand how these parameters map into solutions or observations of the DE-based model, 
+% They depend on uncertain inputs or parameters that determine the processes represented. 
+% Arguably, the notion of differentiable programming has a long tradition in computational physics which is founded on solving and/or inverting models based on their linearized versions, particularly, in the context of gradient-based inverse methods.
+the overarching goal of inverse modelling is to find a set of optimal model parameters that minimizes an objective or cost function quantifying the misfit between observations and the simulated state.
+The constrained optimization problem is transformed into an unconstrained problem by way of Lagrange multiplier method, also referred to as the adjoint method \cite{Vadlamani.2020}. 
+The corresponding adjoint model computes the gradient of the objective function with respect to all inputs. 
 Gradient-based nonlinear optimization enables us to invert for optimal values of the unknown or uncertain inputs.
-%Depending on the scientific problem, inverse modelling can be performed on different quantities of interest of system under study, including:
 Depending on the nature of the inversion, we may distinguish between the following cases:
 \begin{itemize}
     \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, leads to an optimal match between the observations and the simulated state (or diagnostics); variants thereof are used for optimal forecasting.
@@ -55,13 +20,35 @@ Depending on the nature of the inversion, we may distinguish between the followi
 Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
 The availability of second derivatives (Hessian) further helps to improve the convergence rates of optimization algorithms.
 
-In recent years the use of machine learning methods has become more popular in many scientific domains \cite{rasp2018, pichler2023, meuwly2021machine, borowiec2022}. 
-Differential equations can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning any possible function if enough data is available \cite{gorban_1998}. 
-This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
-
 In the following, we present selected examples belonging to a wide range of scientific communities where differentiable programming techniques have been used. 
 
-\subsubsection{Computational physics and optimal design}
+\subsection{Machine learning}
+
+In recent years the use of machine learning methods has become more popular in many scientific domains \cite{rasp2018, pichler2023, meuwly2021machine, borowiec2022}. 
+DEs can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning a rich family of complex functions if enough data is available \cite{gorban_1998}. 
+This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
+
+Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015}, allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
+However, whereas the use of machine learning models for predictions has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
+In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
+% Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
+
+The fields of mechanistic modelling and statistical modelling have mostly evolved independently due to several reasons \cite{zdeborova_understanding_2020}. 
+On the one hand, domain scientists have often been reluctant to learning about machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. 
+On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any a priori physical knowledge. 
+However, there has been an increasing interest in making mechanistic models more flexible, as well as introducing domain-specific or physical constraints and interpretability in machine learning models. 
+% \cite{Molnar.2020sisk,Rudin.2022,Schneider2017,rasp2018,Yazdani2020,Abarbanel2018,Carrassi2018,Bocquet2019,Gabor2015,Gharamti2017,Curtsdotter2019,Rosenbaum2019,Toms2020,Brajard2021}.
+This sub-field, usually known as Physics-informed machine learning, refers to the collection of machine learning techniques that explicitly introduce biases to satisfy certain physical constraints. 
+These biases can be forced by the design of algorithms that include symmetries, conservation laws, and constraints in the form of differential equations \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}. 
+It includes methods that numerically solve differential equations, such as physics-informed neural networks \cite{PINNs_2019}, including NeuralPDEs \cite{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et} and biologically-informed neural networks \cite{Lagergren_Nardini_Baker_Simpson_Flores_2020}. 
+On the other hand, there has been an increased interest in augmenting DE-based models by embedding a rich family of parametric functions (e.g., neural networks) inside the differential equation.  
+This approach is known as such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also include the case of neural ordinary differential equations \cite{chen_neural_2019} and neural stochastic differential equations \cite{li2020scalable}.
+
+
+% Inverse modelling powered with DP bridges the statistical and mechanistic modelling fields \cite{Wigner.1960, Rude:2018jv, Tarantola:2007wu}. 
+% Differentiable programming is key in this process and has the potential to revolutionize the way we approach and design scientific models and even the way we discover governing laws from data.
+
+\subsection{Computational physics and optimal design}
 
 There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines, where sensitivity methods have been used for optimal design and optimal control since the 1960s \cite{lions1971optimal}. 
 These models are often based on PDEs and are applied in various fields to improve engineering designs or model parameters with respect to some objective function. 
@@ -69,7 +56,7 @@ The models can involve thousands of parameters, and they require efficient deriv
 % These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
 Both continuous and discrete adjoints methods, which we will introduce in Sections \ref{section:discrete-adjoint} and \ref{section:computing-adjoints}, have been used extensively, each having different benefits depending on the application.
 
-\paragraph{Computational fluid dynamics}
+\subsubsection{Computational fluid dynamics}
 
 DP methods, including AD and adjoint methods, have been crucial in advancing computational fluid dynamics (CFD) applications \cite{KENWAY2019100542}. 
 These techniques have been employed in optimizing the aerodynamics of aircraft for drag reduction, or for weight reduction in aircraft design, leading to significant fuel savings and enhanced performance. 
@@ -84,7 +71,7 @@ For aerospace applications, adjoint methods have been used to design supersonic 
 Entire aircraft configurations have also been optimized using adjoint methods \cite{chen2016aerodynamic}. 
 Beyond aerospace, other significant applications include optimizing ship hull designs to reduce drag and improve fuel efficiency, the aerodynamic shaping of cars to enhance speed and stability, and the design of wind turbines to maximize energy capture and structural resilience.
 
-\paragraph{Quantum physics}
+\subsubsection{Quantum physics}
 
 Quantum optimal control has diverse applications spanning a broad spectrum of quantum systems. 
 Optimal control methods have been used to optimize pulse sequences, enabling the design of high-fidelity quantum gates and the preparation of complex entangled quantum states \cite{koch2022quantum}. 
@@ -94,7 +81,7 @@ In cases where the analytical calculation of a gradient is impractical, numerica
 Specifically, AD streamlines the adjustment to diverse objectives or constraints, and its efficiency can be enhanced by employing custom derivative rules for the time propagation of quantum states as governed by solutions to the Schrödinger equation \cite{goerz:2022}. 
 Moreover, sensitivity methods for differential equations facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations \cite{schaefer:2021}.
 
-\paragraph{Other applications}
+\subsubsection{Other applications}
 
 Adjoint methods have also been applied successfully to a wide range of other computational physics problems. 
 In particle physics, they enable precise parameter estimation and simulation improvements \cite{Dorigo.2022}.
@@ -106,7 +93,7 @@ Sensitivity analysis methods are also very popular in topological and structural
 Additionally, biological applications, such as the modeling of physiological processes and the design of medical devices, use these techniques for improved performance and accuracy \cite{Strouwen2022}.
 
 
-\subsubsection{Geosciences}
+\subsection{Geosciences}
 
 Many geoscientific phenomena are governed by global and local conservation laws along with a set of empirical constitutive laws and subgrid-scale parametrization schemes. 
 Together, they enable efficient description of the system's spatio-temporal evolution in terms of a set of PDEs.
@@ -115,7 +102,7 @@ In such models, calibrating model parameters is extremely challenging, due to da
 Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
 
 
-\paragraph{Numerical Weather Prediction}
+\subsubsection{Numerical Weather Prediction}
 \label{section:meteorlogy}
 
 Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have played an important role \cite{Errico_1997}. 
@@ -125,7 +112,7 @@ Related, within the framework of transient non-normal amplification or optimal e
 Except for early research applications \cite{Park.1996,Park.2000} and for experimental purposes \cite{Giering.2006}, AD has not been used in the development of adjoint models in NWP.
 Instead, the adjoint code has been, for the most part, derived and implemented manually.
 
-\paragraph{Oceanography}
+\subsubsection{Oceanography}
 
 The recognition of the benefit of adjoint methods for use in data assimilation in the ocean coincided roughly with that in meteorology \cite{Thacker:1988kp,Thacker:1988ed,Thacker:1989jf,Tziperman.1989,Tziperman:1992hg,Tziperman:1992jw}. 
 %The first application appeared soon thereafter in the context of a basin-scale general circulation model \cite{Tziperman.1989,Tziperman:1992hg,Tziperman:1992jw}. 
@@ -155,7 +142,7 @@ Arguably, this work heralded much of today's efforts in ``online learning'' of p
 The desire to make AD for Earth system models written in Fortran (to date the vast majority) has  spurned the development of AD tools with powerful reverse modes, both commercial \cite{Giering:1998in,Giering.2006} and open-source \cite{Utke:2008ko,Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
 %There is enormous potential to seamlessly integrate the inverse-modeling and machine-learning based approaches through the concept of differentiable programming.
 
-\paragraph{Climate science}
+\subsubsection{Climate science}
 
 The same goals that have driven the use of sensitivity information in NWP (optimal initial conditions for forecasts) or ocean science (state and parameter estimation) apply in the world of climate modeling.
 The recognition that good initial conditions (e.g., such that are closest to the real or observed system) will lead to improved forecasts on subseasonal, seasonal, interannual, or even decadal time scales has driven major community efforts \cite{Meehl.2021}. 
@@ -166,7 +153,7 @@ Nevertheless, efforts are underway to enable adjoint-based parameter estimation 
 Complementary, recognizing the power of DP, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics
 \cite{Kochkov.2023}.
 
-\paragraph{Glaciology}
+\subsubsection{Glaciology}
 
 Due to the difficulty of taking direct measurements of internal and basal rheological processes of glaciers and ice sheets, inverse methods based on adjoint models have been widely used to study them, following the pioneering work by \cite{macayeal1992basal} in the 1990s. 
 Since then, the adjoint method has been applied to many different studies investigating parameter and state estimation \cite{Vieli.2006, goldberg2013parameter}, ice volume sensitivity to basal, surface and initial conditions \cite{heimbach2009greenland}, inversion of initial conditions \cite{mosbeux2016comparison} or inversion of basal friction \cite{Petra.2012, morlighem2013inversion}.
@@ -179,10 +166,9 @@ Recently, differentiable programming has also facilitated the development of hyb
 Alternatively, some other approaches have dropped the use of numerical solvers in favour of different flavours of physics-informed neural networks, exploring the inversion of rheological properties of glaciers \cite{wang2022discovering} and to accelerate ice thickness inversions and simulations by leveraging GPUs \cite{Jouvet_Cordonnier_Kim_Lüthi_Vieli_Aschwanden_2021, jouvet2023inversion}. 
 
 % \paragraph{Solid Earth geophysics}
-
 % Seismic inversion \cite{Zhu_Xu_Darve_Beroza_2021} for earthquake characterization and inversion of Earth's internal structure.
 
-\subsubsection{Biology and ecology}
+\subsection{Biology and ecology}
 % todo: maybe we need a subsection "systems biology" and one subsection "ecology and evolution".
 
 DE-based models have been broadly used in biology and ecology to model neural firing \cite{hodgkin1952quantitative}, the dynamics of genes and alleles \cite{Page2002}, immune and disease processes \cite{colijn2006high}, subcellular functions \cite{brown2003statistical}, the ecological and evolutionary dynamics of biological units from bacteria to ecological communities \cite{Gabor2015, Lion2018, Villa2021, Boussange2022, boussange2023a, Akesson2021, chalmandrier2021, VandenBerg2022}, and biomass and energy fluxes and transformation at ecosystem levels \cite{Weng2015, Schartau2017, Franklin2020, Geary2020}.
@@ -194,3 +180,5 @@ Sensitivity methods also play a crucial role in assessing model fit quality, spe
 
 While inverse modeling in biology has traditionally overlooked differentiable programming (DP), its potential has recently been highlighted \cite{frank2022, alsos2023}. New approaches involving DP are increasingly being proposed to accommodate the specific requirements of biological and ecological models \cite{Yazdani2020, Boussange2024, paredes2023}. Given that key processes are often not accurately represented in biological models \cite{hartig2012, Schartau2017, chalmandrier2021}, hybrid approaches that integrate data-driven parameterization of specific components of DE-based models are particularly relevant \cite{ramsay1996principal, cao2008estimating, paul2011semiparametric, chen2017network, rasp2018, dai2022kernel, Boussange2024}.
 The increasing availability of biological datasets, driven by advancements in monitoring technologies such as paleo-time series \cite{alsos2023}, environmental DNA \cite{Ruppert2019}, remote sensing \cite{Jetz2019}, bioacoustics \cite{Aide2013}, and citizen observations \cite{GBIF}, presents additional opportunities to enhance mechanistic models with data-driven components.
+
+
