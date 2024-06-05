@@ -1,31 +1,76 @@
+In this section we are briefly going to discuss how the ideas covered in Sections \ref{section:methods} and \ref{sec:computational-implementation} for first-order ODEs generalize to more complicated systems of DEs. 
+
+
+Notice that the application of all the direct methods (finite differences, ...) applies to more general systems of DE.
+However, adjoint methods, both continuous and discrete, need to be design for different types of DEs.
+
+% Generalization 
+% It is important to remark that direct methods to solve higher order systems of ODEs exist, including Nystrom methods, but we can usually reduce them to a extended systems of ODEs \cite{hairer-solving-1}. 
+% Partial differential equations (PDEs) can be solved via the method of lines by discretizing the spatial derivatives and just keeping the temporal derivatives in the form of a system of ODEs \cite{ascher2008numerical}.  
+% Furthermore, it is important to remark that finite elements methods also exist to solve PDEs.  
+
+
+\subsection{Higher-order ODEs}
+
 % Mention to higher order ODEs
+
+% These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
 
 \subsection{Partial differential equations}
 
 % We could also link to PDE-constrained optimization and the adjoint method1 Andrew M. Bradley
 
-% These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
+% Metion that imporant here is also meshes, which is an important solver controller sensitive to parameter
 
-Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented in this review can be extended to partial differential equations (PDEs) (when discretized via e.g. the method of lines \cite{ascher2008numerical}), and to differential algebraic equations (DAEs) \cite{hairer-solving-2}.
-The same recipe used here to derive the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000} and DAE \cite{Cao_Li_Petzold_2002}. 
+Systems of partial differential equations (PDEs) include derivatives with respect to more than one independent variables. 
+In physics, these variables are usually associated to time and space. 
+Furthermore, besides an initial condition for the solutions, boundary conditions needs to be provided. 
 
-Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE and DAE systems. 
+PDEs can be discretized and then solved as a system of ODEs using the methods of lines \cite{ascher2008numerical}, meaning all the sensitivity methods for ODEs now apply. 
+Let us consider the case of the one-dimensional heat equation
+\begin{equation}
+ \frac{\partial u}{\partial t}
+ = 
+ D \, 
+ \frac{\partial^2 u}{\partial x^2}, 
+ \quad u(0, t) = \alpha(t), 
+ \quad u(1, t) = \beta(t)
+ \label{eq:heat-equation}
+\end{equation}
+with $D > 0$ a global diffusivity coefficient. 
+% that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
+In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
+If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference
+\begin{equation}
+ \frac{d u_m}{dt} 
+ = 
+ D 
+ \frac{u_{m-1} - 2u_m + u_{m+1}}{\Delta x^2}
+ \label{eq:heat-equation-discrete}
+\end{equation}
+for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$).
+Now, equation \eqref{eq:heat-equation-discrete} is a system of first-order ODEs  (i.e. derivatives only with respect to time) with a total of $N-1$ equations.
+
+Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE systems. 
 Discretized PDEs typically involve the solution of moderate to large systems of coupled (and possibly stiff) ODEs subject to some suitable boundary conditions. 
 Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase.
+Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depend of the state value of the solution in the neighbour points in the grid.
 PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy condition \cite{courantPartialDifferenceEquations1967}, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution. 
 This may limit the practicality of sensitivity methods that require the storage of a dense forward solution, such as reverse-mode AD and adjoint methods, an effect that can be mitigated by using checkpointing (see Sections \ref{section:checkpointing} and \ref{section:checkpointint-cont}).
 However, the memory footprint for even moderate size PDE systems (e.g. $10^2$ to $10^3$ equations) over long time spans can still incur a large memory cost in cases where many checkpoints are required for stability in the reverse pass. 
-This again can be mitigated by a multi-level checkpointing approach that enables checkpointing to either memory or to disk (see section XXX).
-
+This again can be mitigated by a multi-level checkpointing approach that enables checkpointing to either memory or to disk.
 Another practical consideration when differentiating numerical PDE solvers arises from the way they are typically implemented. 
 Due to the large size of the system, numerical calculations for PDEs are typically performed in-place, i.e. large memory buffers are often used to store intermediate calculations and system state thereby avoiding the need to repeatedly allocate large amounts of memory for each array operation. 
 This can preclude the use of reverse AD implementations that do not support in-place mutation of arrays.
+
+Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe used here to derive the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000}. 
+
 
 PDEs therefore remain some of the most challenging problems for computing sensitivities due to the frequent combination of a large number of discretized possibly stiff ODEs, with a large memory footprint. 
 This makes it difficult to strike a balance between memory usage and computational performance. 
 There are, however, numerous recent developments that have made solutions to these challenges more accessible. 
 Automated sparsity detection \cite{gowdaSparsityProgrammingAutomated2019} and Newton-Krylov methods \cite{knollJacobianfreeNewtonKrylov2004,montoisonKrylovJlJulia2023} can drastically decrease both the time and space complexity of calculating JVPs or VJPs for large systems. 
-Recent advances in applying AD to implicit functions \cite{blondelEfficientModularImplicit2022a}, i.e. functions which require the solution of a nonlinear system, also provide a promising path forward for many complex PDE and DAE problems that often involve multiple nested numerical solvers. 
+Recent advances in applying AD to implicit functions, i.e. functions which require the solution of a nonlinear system, also provide a promising path forward for many complex PDE problems that often involve multiple nested numerical solvers \cite{blondelEfficientModularImplicit2022a}. 
 Finally, some state-of-the-art AD tools such as Enzyme \cite{moses_Enzyme} are able to support both in-place modification of arrays as well as complex control flow, making them directly applicable to many high efficiency numerical codes for solving PDEs.
 
 % In the case of PDEs, meshing is also sensitive to the value of the model parameters. This can lead to further error control problems... \cite{nadarajah2000comparison}
@@ -33,9 +78,11 @@ Finally, some state-of-the-art AD tools such as Enzyme \cite{moses_Enzyme} are a
 
 % TODO: more dicussion on solutions and recommendations; e.g. sparsity detection for large systems, checkpointing (already mentioned), combining parameter efficient reverse-mode AD with efficient mutation-supporting AD tools like Enzyme for the JVP calculation.
 
-% TODO: more commnets on DAEs?
 
 \subsection{Differential algebraic equations}
+
+% I think we need to remove references to DAEs in the previous section, I am not sure this applies to them. 
+Recipes to compute continuous adjoints for DAE \cite{Cao_Li_Petzold_2002}.
 
 \subsection{Stochastic differential equations}
 

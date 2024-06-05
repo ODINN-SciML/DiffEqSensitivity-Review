@@ -7,8 +7,8 @@ A simplified overview of this decision-making process is depicted in Figure \ref
 
 \begin{figure}[tb]
     \centering
-    \includegraphics[width=1\textwidth]{tex/figures/roadmap.pdf}
-    \caption{Decision-making tree summarizing the choice of sensitivity methods for different problems depending the type of differential equation, number of parameters, and memory-time trade-off.}
+    \includegraphics[width=1.02\textwidth]{tex/figures/roadmap.pdf}
+    \caption{Decision-making tree summarizing the choice of sensitivity methods for different problems depending on: the number of parameters $p$, the number of ODEs $n$, the need for an unmodified solution during differentiation vs a bounded error (e.g. in the presence of a numerical solver to ensure correct gradients) and memory-speed trade-off.}
     \label{fig:roadmap}
 \end{figure}
 
@@ -73,7 +73,7 @@ Current limitations include:
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
     \item Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
     \item Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
-    Some AD packages like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it, while other packages like \texttt{ReversDiff.jl} do not. 
+    Some AD packages like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it, while other packages like \texttt{ReverseDiff.jl} do not. 
 \end{enumerate}
 
 It is important to bear in mind that direct methods are easier to implement in programming languages where AD already exists and sometimes does not required any special package, like for the Julia programming language.

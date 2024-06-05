@@ -1,20 +1,20 @@
-Mechanistic (or process-based) models have played a central role in a wide range of scientific disciplines. 
-They consist of precise mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration \cite{rackauckas2020universal}. 
+Mechanistic (or process-based) models play a central role in a wide range of scientific disciplines. 
+They consist of mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration \cite{rackauckas2020universal}. 
 These mathematical representations typically take the form of differential equations. 
 Together with the numerical methods to approximate their solutions, DEs have led to fundamental advances in the understanding and prediction of physical and biological systems.
 
 DEs usually depend on inputs or parameters that change the obtained solutions. 
-While forward modelling usually refers to understand how these parameters map into solutions or observations of the DE-based model, 
+While forward modelling usually refers to understanding how these parameters map into solutions or observations of the DE-based model, 
 % They depend on uncertain inputs or parameters that determine the processes represented. 
 % Arguably, the notion of differentiable programming has a long tradition in computational physics which is founded on solving and/or inverting models based on their linearized versions, particularly, in the context of gradient-based inverse methods.
 the overarching goal of inverse modelling is to find a set of optimal model parameters that minimizes an objective or cost function quantifying the misfit between observations and the simulated state.
-The constrained optimization problem is transformed into an unconstrained problem by way of Lagrange multiplier method, also referred to as the adjoint method \cite{Vadlamani.2020}. 
+The constrained optimization problem is transformed into an unconstrained problem by way of a Lagrange multiplier method, also referred to as the adjoint method \cite{Vadlamani.2020}. 
 The corresponding adjoint model computes the gradient of the objective function with respect to all inputs. 
 Gradient-based nonlinear optimization enables us to invert for optimal values of the unknown or uncertain inputs.
 Depending on the nature of the inversion, we may distinguish between the following cases:
 \begin{itemize}
     \item \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, leads to an optimal match between the observations and the simulated state (or diagnostics); variants thereof are used for optimal forecasting.
-    \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produces an optimal match of the observations; variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
+    \item \textbf{Boundary conditions.} Inverting for uncertain surface (e.g., interface fluxes), bottom (e.g., bed properties), or lateral (e.g., open boundaries of a limited domain) boundaries, which, when used in the model, produce an optimal match of the observations. Variants thereof are used in tracer or boundary (air-sea) flux inversion problems, e.g., related to the global carbon cycle.
     \item \textbf{Model parameters.} Inverting for uncertain model parameters amounts to an optimal model calibration problem. As a \textit{learning of optimal parameters from data} problem, it is the closest to machine learning applications. Parametrization is a special case of parameter inversion, where a parametric function (e.g., a neural network) is used to approximate processes. 
 \end{itemize}
 Besides the use of sensitivity methods for optimization, inversion, estimation, or learning, gradients have also proven powerful tools for computing comprehensive sensitivities of quantities of interest; computing optimal perturbations (in initial or boundary conditions) that lead to maximum, non-normal amplification of specific norms of interest; and characterizing and quantifying uncertainties by way of second derivative (Hessian) information.
@@ -24,12 +24,12 @@ In the following, we present selected examples belonging to a wide range of scie
 
 \subsection{Machine learning}
 
-In recent years the use of machine learning methods has become more popular in many scientific domains \cite{rasp2018, pichler2023, meuwly2021machine, borowiec2022}. 
+In recent years the use of machine learning methods has become more popular in many scientific domains \cite{rasp2018, pichler2023, meuwly2021machine, borowiec2022, lai2024machine}. 
 DEs can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning a rich family of complex functions if enough data is available \cite{gorban_1998}. 
 This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
 
 Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015}, allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
-However, whereas the use of machine learning models for predictions has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
+However, the use of machine learning models for prediction has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
 In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
 % Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
 
@@ -95,10 +95,10 @@ Additionally, biological applications, such as the modeling of physiological pro
 
 \subsection{Geosciences}
 
-Many geoscientific phenomena are governed by global and local conservation laws along with a set of empirical constitutive laws and subgrid-scale parametrization schemes. 
+Many geoscientific phenomena are governed by conservation laws along with a set of empirical constitutive laws and subgrid-scale parametrization schemes. 
 Together, they enable efficient description of the system's spatio-temporal evolution in terms of a set of PDEs.
 Example are geophysical fluid dynamics \cite{Vallis:2016kv}, describing geophysical properties of many Earth system components, such as the atmosphere, ocean, land surface, and glaciers.
-In such models, calibrating model parameters is extremely challenging, due to datasets being sparse in both space and time, heterogeneous, and noisy; and computational models involving high-dimensional parameter spaces, often on the order of $O(10^3) - O(10^8)$.
+In such models, calibrating model parameters is extremely challenging, due to observational data being sparse in both space and time, heterogeneous, and noisy; and computational models involving high-dimensional parameter spaces, often on the order of $O(10^3) - O(10^8)$.
 Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
 
 
@@ -109,7 +109,7 @@ Numerical weather prediction (NWP) is among the most prominent fields where adjo
 Adjoint methods were introduced to infer initial conditions that minimize the misfit between simulations and weather observations \cite{Lewis.1985,Talagrand.1987,Courtier.1987}, with the value of second-derivative information also being recognized \cite{Dimet.2002}. 
 This led to the development of the \textit{four-dimensional variational} (4D-Var) technique at the European Centre for Medium-Range Weather Forecasts (ECMWF) as one the most advanced data assimilation approaches \cite{Rabier.1992,Rabier:2000uu}, and which contributed substantially to the \textit{quiet revolution} in NWP \cite{Bauer.2015}.
 Related, within the framework of transient non-normal amplification or optimal excitation \cite{Farrell.1988,Farrell:1996jx}, the adjoint method has been used to infer patterns in initial conditions that over a finite time contribute to maximum uncertainty growth in forecasts \cite{Palmer:1994br,Buizza:1995in} and to infer the so-called \textit{Forecast Sensitivity-based Observation Impact} (FSOI) \cite{Langland:2004jo}.
-Except for early research applications \cite{Park.1996,Park.2000} and for experimental purposes \cite{Giering.2006}, AD has not been used in the development of adjoint models in NWP.
+Except for early research applications \cite{Park.1996,Park.2000} and for experimental purposes \cite{Giering.2006}, AD has not been widely used in the development of adjoint models in NWP.
 Instead, the adjoint code has been, for the most part, derived and implemented manually.
 
 \subsubsection{Oceanography}
@@ -119,7 +119,7 @@ The recognition of the benefit of adjoint methods for use in data assimilation i
 An important detail is that their work already differed from the 4D-Var problem of NWP (Section \ref{section:meteorlogy}) in that sensitivities were computed not only with respect to initial conditions but surface boundary conditions.
 %, i.e., air-sea fluxes of buoyancy and momentum.
 %Again, the value of the second-derivative for uncertainty quantification was readily realized \cite{Thacker:1989jf}.
-Similar to the work on calculating singular vectors in the atmosphere 
+Similar to the work on calculating singular vectors in the atmosphere, 
 %based on tangent linear and adjoint versions of a GCM,
 %to solve a generalized eigenvalue problem, 
 the question of El Ni\~no \cite{Moore.1997ah,Moore.1997}

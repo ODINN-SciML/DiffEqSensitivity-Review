@@ -194,7 +194,7 @@ This means that forward AD on Runge-Kutta methods leads to solutions for the sen
 Note that consistency does not imply that an ODE solver is necessarily correct or stable under such a transformation. 
 Consistency of the adjoint may involve other aspects of the solver, such as adaptivity, error control, and the choice of the discretization scheme. 
 A common case where continuous methods may fail is when the discretization step is applied without controlling for the join error of the solution of the DE and its sensitivity \cite{Gunzburger_2002}. 
-In Appendix \ref{appendix:dual-number-solver}, we demonstrate that common implementations of adaptive ODE solvers may not compute the right gradient when forward AD is applied to solver even though the process is mathematically consistent. 
+In Section \ref{section:AD-incorrect}, we demonstrate that common implementations of adaptive ODE solvers may not compute the right gradient when forward AD is applied to solver even though the process is mathematically consistent. 
 This highlights that additional factors beyond consistency must be considered when investigating whether an implementation is convergent.
 
 \subsubsection{Consistency: discrete and continuous adjoints}

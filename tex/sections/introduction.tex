@@ -9,9 +9,9 @@ With numerical methods to approximate their solutions, DE-based models led to fu
 % In a more abstract sense, the solution of differential equations can be seen as functions that map model parameters parameter and initial conditions to state variables and observations, similar to forward models, statistics, and even machine learning. 
 
 % General statement: why gradients are important?
-Quantifying how much the output of a DE-based model changes with respect to its arguments and parameters, also known as model sensitivity, is fundamental to many scientific computing and machine learning applications. 
+Quantifying how much the output of a DE-based model changes with respect to its input parameters, also known as model sensitivity, is fundamental to many scientific computing and machine learning applications. 
 These include optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
-In most cases, the model sensitivity can be computed by the evaluation of one or multiple gradients of the model output. 
+In many cases, the model sensitivity can be computed by the evaluation of one or multiple gradients of the model output. 
 In sensitivity analysis, gradients are crucial for comprehending the relationships between model inputs and outputs, assessing the influence of each parameter, and evaluating the robustness of model predictions. 
 In optimization and inverse modelling, where the goal is to fit models to data and/or invert for unknown or uncertain parameters, gradient-based methods, including gradient descent and its many variants \cite{ruder2016overview-gradient-descent}, are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 In Bayesian inference, gradient-based sampling strategies are better at estimating the posterior distribution than gradient-free methods \cite{neal2011mcmc}.
@@ -48,8 +48,9 @@ This emerging sub-field is usually referred as physics-based machine learning \c
 % SciML and large scale models 
 The need for model gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when dealing with highly non-linear processes \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}.
 In such circumstances, the curse of dimensionality renders gradient-free optimization and sampling methods computationally intractable. 
-This is certainly the case in machine learning application where neural networks are used as the default method to approximate unknown non-linear function \cite{LeCun2015}. 
-Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference \cite{Cranmer_Brehmer_Louppe_2020}.
+This is certainly the case in machine learning applications where neural networks are used as the default method to approximate unknown non-linear function \cite{LeCun2015},
+or in inverse methods \cite{Tarantola:2007wu}. 
+Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference.
 The integration of differentiable programming, has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
 
 % Difficulties with ODE and numerical solvers
@@ -72,7 +73,7 @@ Different methods guarantee different levels of accuracy, have different computa
 These properties further depend of the total number of parameters and size of the differential equation system. 
 Despite its success, integrating DP with DE-based models remains a significant challenge in high-performance scientific computing \cite{Naumann.2011}.
 % As coined by Uwe Naumann, \textit{the automatic generation of optimal (in terms of robustness and efficiency) adjoint versions of large-scale simulation code is one of the great open challenges in the field of High-Performance Scientific Computing} \cite{Naumann.2011}.
-
+\\ \\
 This paper presents a comprehensive review of methods for calculating derivatives of the numerical solution of differential equations, with a focus on efficiently computing gradients. 
 We review differentiable programming methods for differential equations from three different perspectives: a domain science perspective (Section \ref{sectopn:motivation}), a mathematical perspective (Section \ref{section:methods}) and a computer science perspective (Section \ref{sec:computational-implementation}). 
 In Section \ref{sectopn:motivation} we introduce some of the applications of DP for the modelling of complex systems in the natural and social sciences. 
