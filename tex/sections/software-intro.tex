@@ -7,11 +7,11 @@ The former require a much different implementation since they are agnostic with 
 The latter family of methods that are based on numerical solvers include the forward sensitivity equations and the adjoint methods.
 This section is then divided in two parts:
 \begin{itemize}
-    \item \textbf{Direct methods.} (Section \ref{section:direct-methods}) Their implementation occurs at a higher hierarchy than the numerical solver software. They include finite differences, AD, complex step differentiation.
-    \item \textbf{Solver-based methods.} Their implementation occurs at the same level of the numerical solver. They include 
+    \item[$ \blacktriangleright$] \textbf{Direct methods.} (Section \ref{section:direct-methods}) Their implementation occurs at a higher hierarchy than the numerical solver software. They include finite differences, AD, complex step differentiation.
+    \item[$ \blacktriangleright$] \textbf{Solver-based methods.} Their implementation occurs at the same level of the numerical solver. They include 
     \begin{itemize}
-        \item Forward sensitivity equations (Section \ref{section:computing-sensitivity-equations})
-        \item Adjoint methods, both discrete and continuous (Section \ref{section:computing-adjoints})
+        \item [$\vartriangleright$] Forward sensitivity equations (Section \ref{section:computing-sensitivity-equations})
+        \item [$\vartriangleright$] Adjoint methods, both discrete and continuous (Section \ref{section:computing-adjoints})
     \end{itemize}
 \end{itemize}
 While these methods can be implemented in different programming languages, here we consider examples based on the Julia programming language. 

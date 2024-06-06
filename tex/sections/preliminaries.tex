@@ -61,10 +61,10 @@ with $\alpha_i$ a computed coefficient that includes the information of all past
 When choosing a numerical solver for differential equations, one crucial factor to consider is the stiffness of the equation.
 Stiffness encompasses various definitions, reflecting its historical development and different types of instabilities \cite{Dahlquist_1985}.
 Two definitions are noteworthy
-\begin{itemize}
-    \item Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
-    \item Stiff differential equations are characterized by dynamics with different time scales \cite{hairer-solving-2, kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
-\end{itemize} 
+\begin{enumerate}
+    \item[$ \blacktriangleright$] Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
+    \item[$ \blacktriangleright$] Stiff differential equations are characterized by dynamics with different time scales \cite{hairer-solving-2, kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
+\end{enumerate} 
 Stability properties can be achieved by different means, for example by the use of implicit methods or stabilized explicit methods, such as Runge–Kutta–Chebyshev \cite{van1980internal, hairer-solving-2}. 
 When using explicit methods, smaller timesteps may be required to guarantee stability. 
 
@@ -104,7 +104,7 @@ It is also common to restrict $\eta \in [\eta_\text{min}, \eta_\text{max}]$ so t
 
 In most applications, the need for differentiating the solution of ODEs stems from the need to obtain the gradient of a function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$, where $L$ can denote
 \begin{itemize}
-    \item \textbf{A loss function or an empirical risk function}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
+    \item[$ \blacktriangleright$] \textbf{A loss function or an empirical risk function}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
     \begin{equation}
          L(\theta) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}}(t_1) \|_2^2,
          \label{eq:quadratic-loss-function}
@@ -117,6 +117,7 @@ In most applications, the need for differentiating the solution of ODEs stems fr
         \frac{1}{2} \sum_{i=1}^N 
         \, \omega_i \,
         \| u(t_i; \theta) - u^{\text{target}}(t_i) \|_2^2.
+        \label{eq:quadratic-loss-point}
     \end{equation}
     with $\omega_i$ some arbitrary non-negative weights.
     More generally, misfit functions used in optimal estimation and control problems are composite maps from the parameter space $\theta$ via the model's state space, in this case, the solution $u(t)$, to the observation space defined by a new variable $y(t) = H(u(t, \theta))$, where $H: \R^n \mapsto \R^o$ is a given function mapping the latent state to observational space \cite{1975-Bryson-Ho-optimal-control}. 
@@ -139,7 +140,7 @@ In most applications, the need for differentiating the solution of ODEs stems fr
     Defining a loss function where just the empirical error is penalized is known as trajectory matching \cite{ramsay2017dynamic}. 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
     % \todo{this is unclear}
-    \item \textbf{The likelihood function or posterior probability.} From a statistical (and physical) perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
+    \item[$ \blacktriangleright$] \textbf{The likelihood function or posterior probability.} From a statistical (and physical) perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
     When $H$ is the identity, each $y_i$ corresponds to the noisy observation of the state $u(t_i; \theta)$.
     If $p(Y | t , \theta)$ is the probability distribution of $Y=(y_1, y_2, \ldots, y_N)$, 
     the maximum likelihood estimator (MLE) of $\theta$ is defined as 
@@ -168,7 +169,7 @@ In most applications, the need for differentiating the solution of ODEs stems fr
     In most realistic cases, the posterior distribution is approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. 
     Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian Monte Carlo \cite{Betancourt_2017}.
     % Add mention for variatinal inference problems
-    \item \textbf{A quantity of interest.} In some applications we are interested in quantifying how the solution of the differential equation changes as we vary the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
+    \item[$ \blacktriangleright$] \textbf{A quantity of interest.} In some applications we are interested in quantifying how the solution of the differential equation changes as we vary the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
 \end{itemize}
 In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the richer class of functions included in the previous examples. 
 

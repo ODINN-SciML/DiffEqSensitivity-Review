@@ -1,20 +1,33 @@
 In this section we are briefly going to discuss how the ideas covered in Sections \ref{section:methods} and \ref{sec:computational-implementation} for first-order ODEs generalize to more complicated systems of DEs. 
 
+Notice that the application of all the direct methods (finite differences, AD, complex step differentiation, symbolic differentiation) applies to more general systems of DE.
+The fundamental behaviour and implementations of these DP methods does not change, although new considerations about numerical accuracy may need to take into account, specially for discrete methods based on unmodified solution processes. 
+Continuous methods (forward sensitivity equations and continuous adjoint) also apply but 
+The mathematical derivation of continuous methods (forward sensitivity equations and continuous adjoint) followed in Sections \ref{section:sensitivity-equation} and \ref{section:continuous-adjoint} still applies, although more tailored details of the DEs may apply (e.g., inclusion for boundary conditions or other constraints). 
+The mathematical formulation of the discrete adjoint methods followed in Section \ref{section:discrete-adjoint} and its connection with reverse AD (Section \ref{section:comparison-discrete-adjoint-AD}) applies to more general solvers for DEs. 
 
-Notice that the application of all the direct methods (finite differences, ...) applies to more general systems of DE.
-However, adjoint methods, both continuous and discrete, need to be design for different types of DEs.
-
-% Generalization 
-% It is important to remark that direct methods to solve higher order systems of ODEs exist, including Nystrom methods, but we can usually reduce them to a extended systems of ODEs \cite{hairer-solving-1}. 
-% Partial differential equations (PDEs) can be solved via the method of lines by discretizing the spatial derivatives and just keeping the temporal derivatives in the form of a system of ODEs \cite{ascher2008numerical}.  
-% Furthermore, it is important to remark that finite elements methods also exist to solve PDEs.  
+In the next section we are going to consider the cases of higher-order ODEs, PDEs, and the particular case of chaotic systems of ODEs. 
+Further generalizations of sensitivity methods to other families of DEs include differential-algebraic equations (DAE) \cite{Cao_Li_Petzold_2002} and stochastic differential equations (SDE) \cite{li2020scalable}. 
 
 
 \subsection{Higher-order ODEs}
 
-% Mention to higher order ODEs
+Higher-order ODEs are characterized for the presence of second and higher order time derivatives in the differential equation. 
+A simple example popular in structural design consists in the linear dynamic equations used to model elastic structures given by 
+\begin{equation}
+    M \frac{d^2 u}{dt^2}
+    +
+    C \frac{du}{dt}
+    + 
+    K u
+    = 
+    F(u),
+\end{equation}
+subject to the initial condition $u(t_0) = u_0$, $\frac{du}{dt}(t_0) = v_0$, where $M, C, K \in \R^{n \times n}$ are the mass, damping, and stiffness matrices, respectively, and $F(t)$ is an external forcing \cite{min1999optimal, Jensen_Nakshatrala_Tortorelli_2014}.  
 
-% These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
+Just as we did in Section \ref{section:software-finite-differences}, higher-order ODEs can be transformed to first-order ODEs, after which the same sensitivity methods we discussed in this paper apply just the same. 
+However, there may be reason why we would prefer no to do this, for example the existence of more efficient higher-order ODEs solver, including Nystrom methods \cite{Butcher_Wanner_1996, hairer-solving-1}. 
+For this cases, the forward sensitivity equations and the continuous adjoint equation can be derived using the same strategies that in Sections \ref{section:sensitivity-equation} and \ref{section:continuous-adjoint} \cite{kang2006review}. 
 
 \subsection{Partial differential equations}
 
@@ -22,11 +35,12 @@ However, adjoint methods, both continuous and discrete, need to be design for di
 
 % Metion that imporant here is also meshes, which is an important solver controller sensitive to parameter
 
+% These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
+
 Systems of partial differential equations (PDEs) include derivatives with respect to more than one independent variables. 
 In physics, these variables are usually associated to time and space. 
 Furthermore, besides an initial condition for the solutions, boundary conditions needs to be provided. 
-
-PDEs can be discretized and then solved as a system of ODEs using the methods of lines \cite{ascher2008numerical}, meaning all the sensitivity methods for ODEs now apply. 
+PDEs can be semi-discretized and then solved as a system of ODEs using the methods of lines \cite{ascher2008numerical}, meaning all the sensitivity methods for ODEs now apply. 
 Let us consider the case of the one-dimensional heat equation
 \begin{equation}
  \frac{\partial u}{\partial t}
@@ -37,7 +51,7 @@ Let us consider the case of the one-dimensional heat equation
  \quad u(1, t) = \beta(t)
  \label{eq:heat-equation}
 \end{equation}
-with $D > 0$ a global diffusivity coefficient. 
+with $u = u(x, t)$, $x \in [0,1]$, $D > 0$ a global diffusivity coefficient, and $\alpha(t)$, $\beta(t)$ the boundary conditions at $x=0$ and $x=1$, respectively.
 % that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
 In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
 If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference
@@ -52,11 +66,12 @@ for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$
 Now, equation \eqref{eq:heat-equation-discrete} is a system of first-order ODEs  (i.e. derivatives only with respect to time) with a total of $N-1$ equations.
 
 Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE systems. 
-Discretized PDEs typically involve the solution of moderate to large systems of coupled (and possibly stiff) ODEs subject to some suitable boundary conditions. 
+Semi-discretized PDEs typically involve large systems of coupled and possibly stiff ODEs subject to some suitable boundary conditions. 
+
 Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase.
 Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depend of the state value of the solution in the neighbour points in the grid.
-PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy condition \cite{courantPartialDifferenceEquations1967}, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution. 
-This may limit the practicality of sensitivity methods that require the storage of a dense forward solution, such as reverse-mode AD and adjoint methods, an effect that can be mitigated by using checkpointing (see Sections \ref{section:checkpointing} and \ref{section:checkpointint-cont}).
+PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy (CFL) condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution \cite{courantPartialDifferenceEquations1967}. 
+This may limit the practicality of sensitivity methods that require the storage of a dense forward solution, such as reverse AD and adjoint methods, an effect that can be mitigated by using checkpointing (see Sections \ref{section:checkpointing} and \ref{section:checkpointint-cont}).
 However, the memory footprint for even moderate size PDE systems (e.g. $10^2$ to $10^3$ equations) over long time spans can still incur a large memory cost in cases where many checkpoints are required for stability in the reverse pass. 
 This again can be mitigated by a multi-level checkpointing approach that enables checkpointing to either memory or to disk.
 Another practical consideration when differentiating numerical PDE solvers arises from the way they are typically implemented. 
@@ -76,19 +91,30 @@ Finally, some state-of-the-art AD tools such as Enzyme \cite{moses_Enzyme} are a
 % In the case of PDEs, meshing is also sensitive to the value of the model parameters. This can lead to further error control problems... \cite{nadarajah2000comparison}
 % Changes in the parameter can lead to 
 
+% From Kenway:
+% The main disadvantages of the continuous approach are a low accuracy for coarser meshes and a challenging implementation. The fact
+% that the PDEs are first linearized and then discretized means that the
+% discretized form of these equations is guaranteed to result in a fully
+% consistent gradient only at the limit of an infinitely fine mesh [129].
+% Therefore, the continuous adjoint produces inaccurate gradients for
+% cases where the mesh or the numerical methods have an effect on the
+% solution accuracy [130].
+
 % TODO: more dicussion on solutions and recommendations; e.g. sparsity detection for large systems, checkpointing (already mentioned), combining parameter efficient reverse-mode AD with efficient mutation-supporting AD tools like Enzyme for the JVP calculation.
 
 
-\subsection{Differential algebraic equations}
+% \subsection{Differential algebraic equations}
 
-% I think we need to remove references to DAEs in the previous section, I am not sure this applies to them. 
-Recipes to compute continuous adjoints for DAE \cite{Cao_Li_Petzold_2002}.
+% % I think we need to remove references to DAEs in the previous section, I am not sure this applies to them. 
+% Recipes to compute continuous adjoints for DAE \cite{Cao_Li_Petzold_2002}.
 
-\subsection{Stochastic differential equations}
+% \subsection{Stochastic differential equations}
 
-% Just a few sentences of what is different here. Probably we first need to introduce what they are and where they are used. 
+% % Just a few sentences of what is different here. Probably we first need to introduce what they are and where they are used. 
 
-% Check on paper: https://arxiv.org/pdf/2001.01328
+% % Check on paper: https://arxiv.org/pdf/2001.01328
+
+% Furthermore, it is important to remark that finite elements methods also exist to solve PDEs.  
 
 \subsection{Chaotic systems}
 
@@ -98,19 +124,25 @@ Recipes to compute continuous adjoints for DAE \cite{Cao_Li_Petzold_2002}.
 % In the more general case, discrete and continuous adjoint methods can give different computational results \cite{Sirkes_Tziperman_1997}.
 
 % Intro: why we take this average quantities in chaotic system? Need to motivate this in a sentense.
-All the sensitivity methods discussed in the previous sections encounter challenges and become less useful when applied to chaotic systems \cite{Wang2012-chaos-adjoint}.
-To illustrate this, let us consider long-time-averaged quantities 
+
+Chaotic systems usually consists of systems of ODEs for with large Lyapunov exponents, meaning .. .
+If well more complicated to model, chaotic systems play a central role in ... 
+In all this cases, sensitivity analysis remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state \cite{Lorenz.1963}.
+As a consequence, all the sensitivity methods discussed in the previous sections become less useful when applied to chaotic systems and special considerations need to be taken under account \cite{Wang2012-chaos-adjoint}.
+
+The butterfly effect renders inverse modelling based on point evaluations of the trajectory unfeasible. 
+To illustrate this, let us consider the loss function consisting in the long-time-averaged quantitie 
 \begin{equation}\label{eq:long_time_averaged_quantities}
-    \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T L(u(t), \theta) \, dt, 
+    \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T h(u(t; \theta), \theta) \, dt, 
 \end{equation}
-of chaotic systems, where $L(u(t), \theta)$ is the instantaneous objective and $u(t)$ denotes the state of the dynamical system at time $t$.
-For ergodic dynamical systems, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t)$. 
-In particular, $\lim_{T\to\infty} \langle L(\theta) \rangle_T$ does not depend on the initial condition. 
-Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$ \cite{ruelle1997differentiation,ruelle2009review}.
-However, computing derivatives using numerical methods of statistical quantities of the form \eqref{eq:long_time_averaged_quantities} with respect to the parameter $\theta$ in chaotic dynamical systems remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state \cite{Lorenz.1963}.
-As a consequence, the solutions of the forward sensitivity equations and adjoint differential equation blow up (exponentially fast) instead of converging to the actual derivative.
+of chaotic systems, where $h(u(t; \theta), \theta)$ is the instantaneous loss and $u(t; \theta)$ denotes the state of the dynamical system at time $t$.
+For this example, solutions of the forward sensitivity equations and adjoint method to compute the gradient of $\langle L(\theta) \rangle_T$ with respect to $\theta$ blow up (exponentially fast) instead of converging to the actual gradient.
 To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.
 
-In Julia, this is implemented in the sensitivity method \texttt{AdjointLSS} and \texttt{NILSS}. % More explanation of what these do
+Another alternative that applies to ergodic dynamical systems is to instead consider the loss $L^\infty(\theta) = \lim_{T\to\infty} \langle L(\theta) \rangle_T$, which depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t; \theta)$. 
+In particular, $L^\infty(\theta)$ does not depend on the initial condition. 
+Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$ \cite{ruelle1997differentiation,ruelle2009review}.
+
+In Julia, this is implemented in the sensitivity methods, \texttt{ForwardLSS},  \texttt{AdjointLSS}, and \texttt{NILSS}. % More explanation of what these do
 Standard derivative approximations are inappropriate for such systems and will not give convergent estimates.
 % This includes AD of a solver.

@@ -20,31 +20,6 @@ Further notice the complex step method involves more terms in the calculation, a
     \label{fig:complex-step-AD}
 \end{figure}
 
-\subsubsection{AD and symbolic differentiation with sparsity}
-
-When sparsity patterns of the gradient/Jacobian to be computed are known, symbolic differentiation can be more efficient than AD \cite{Lantoine_Russell_Dargent_2012}.
-In Section \ref{sec:vjp-jvp} we discussed how colored AD can be used to efficiently compute a sparse Jacobian.
-However, colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. 
-Consider the arrowhead matrix given by
-\begin{equation}
-    J_{\text{arrowhead}} = \begin{bmatrix}
-        j_{11} & j_{12}   & j_{13} & j_{14}     & j_{15}   \\
-        j_{21} & j_{22}   &  0       & 0        & 0        \\
-        j_{31} & 0        & j_{33}   & 0        & 0        \\
-        j_{41} & 0        & 0        & j_{44}   & 0        \\
-        j_{51} & 0        & 0        & 0        & j_{55}
-    \end{bmatrix}.
-\end{equation}
-In this case, both reverse mode AD and forward mode AD will have to perform $n$ VJPs and JVPs, respectively (for $J_{\text{arrowhead}} \in \R^{n \times n}$ arrowhead matrix), and there is no computational benefit of coloring the matrix here. 
-Instead, symbolic differentiation constructs a symbolic representation of the sparse Jacobian and can fill the Jacobian with $n + 2 \cdot (n-1)$ computations, where each computation is significantly cheaper than each VJP or JVP. 
-Notice that for the arrowhead matrix example, a combination of forward and reverse AD can be used to color the Jacobian with two forward and one reverse AD evaluations. 
-% This may be worth adding, but not sure yet.
-% Consider the example given in \cite{Griewank:2008kh}
-% \begin{equation}
-%     L(x) = \ln \Psi_0 = \ln \sum_{i=1}^d w_i \Psi_i (e^{z_i \sin (x)}) 
-% \end{equation}
-% with $0 \geq w_i$ and $z_i \in \R$ some coefficients and $\Psi_i : \R \mapsto \R_{\geq 0}$. 
-% Computer algebra systems are able to handle the common sub-expression $\cos(x) / \Psi_0 $ in $L'(x)$ to reduce the total number of multiplication involved in the derivative with respect to both forward and reverse AD, which instead will evaluate the sub-product with respect to the term   $\cos(x) / \Psi_0$.
 
 \subsubsection{Discrete adjoints and reverse AD}
 \label{section:comparison-discrete-adjoint-AD}

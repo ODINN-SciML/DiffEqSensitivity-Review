@@ -48,8 +48,8 @@ This emerging sub-field is usually referred as physics-based machine learning \c
 % SciML and large scale models 
 The need for model gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when dealing with highly non-linear processes \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}.
 In such circumstances, the curse of dimensionality renders gradient-free optimization and sampling methods computationally intractable. 
-This is certainly the case in machine learning applications where neural networks are used as the default method to approximate unknown non-linear function \cite{LeCun2015},
-or in inverse methods \cite{Tarantola:2007wu}. 
+This is certainly the case in inverse methods \cite{Tarantola:2007wu}, and in
+machine learning applications where neural networks are used as the default method to approximate unknown non-linear function \cite{LeCun2015}.
 Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference.
 The integration of differentiable programming, has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
 

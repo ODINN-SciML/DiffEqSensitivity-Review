@@ -67,12 +67,13 @@ Code structure and characteristics have a very strong impact in the choice of wh
 Within the Julia and Python ecosystems, each available AD package implements a specific AD technique which will face certain limitations.
 % In the context of Julia and Python, some packages using different AD implementations will be able to deal with certain situations, while others will fail. 
 Current limitations include:
-\begin{enumerate}[label=(\roman*)]
-    \item The use of control flow (i.e. \texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for dynamic (tape-based) AD methods (see Section \ref{sec:software-reverse-AD}). 
+% \begin{enumerate}[label=(\roman*)]
+\begin{enumerate}
+    \item[$ \blacktriangleright$] The use of control flow (i.e. \texttt{if}/\texttt{else} statements; \texttt{for} and \texttt{while} loops) presents issues for dynamic (tape-based) AD methods (see Section \ref{sec:software-reverse-AD}). 
     This is currently not supported by \texttt{ReverseDiff.jl} (with tape compilation) and partially supported by \texttt{JAX} in Python. 
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
-    \item Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
-    \item Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
+    \item[$ \blacktriangleright$] Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
+    \item[$ \blacktriangleright$] Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
     Some AD packages like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it, while other packages like \texttt{ReverseDiff.jl} do not. 
 \end{enumerate}
 

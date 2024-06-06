@@ -1,8 +1,9 @@
 Sensitivity methods based on numerical solvers need to deal with some numerical and computational considerations, including
-\begin{enumerate}[label=(\roman*)]
-    \item How to handle VJPs and/or JPVs 
-    \item Stability of the numerical solver, including the original ODE but also the sensitivity/adjoint equations
-    \item Memory-time tradeoff
+% \begin{enumerate}[label=(\roman*)]
+\begin{enumerate}
+    \item[$ \blacktriangleright$] How to handle VJPs and/or JPVs 
+    \item[$ \blacktriangleright$] Stability of the numerical solver, including the original ODE but also the sensitivity/adjoint equations
+    \item[$ \blacktriangleright$] Memory-time tradeoff
 \end{enumerate}
 These factors are further exacerbated by the number of ODEs and parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
@@ -189,13 +190,14 @@ Just as the discrete adjoint methods and reverse AD, the bottleneck is how to so
 Effectively, notice that Equation \eqref{eq:casa-adjoint-equation} involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$, which are both functions of $u(t)$. 
 However, in contrast to the discrete adjoint methods, here the full continuous trajectory $u(t)$ is needed, instead of its discrete pointwise evaluation. 
 There are two solutions for addressing the evaluation of $u(t)$ during the computation of $\lambda (t)$.
-\begin{enumerate}[label=(\roman*)]
-    \item \textbf{Interpolation.} During the forward model, we can store in memory intermediate states of the numerical solution allowing the dense evaluation of the numerical solution at any given time. 
+% \begin{enumerate}[label=(\roman*)]
+\begin{enumerate}
+    \item[$ \blacktriangleright$] \textbf{Interpolation.} During the forward model, we can store in memory intermediate states of the numerical solution allowing the dense evaluation of the numerical solution at any given time. 
     % This leads to heavy-memory expensive algorithms. 
     % However, in opposition to discrete methods, solving for the adjoint in reverse mode requires to be able to evaluate the solution $u(t)$ at any given time $t$. 
     This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme (Equation \eqref{eq:Runge-Kutta-scheme}) that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
     % When using checkpointing, intermediate variables are saved and the interpolation between them is re-computed on demand. 
-    \item \textbf{Backsolve.} Solve again the original system of ODEs together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
+    \item[$ \blacktriangleright$] \textbf{Backsolve.} Solve again the original system of ODEs together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
     \begin{equation}
     \frac{d}{dt}
     \begin{bmatrix}
@@ -294,7 +296,7 @@ Solvers designed for large implicit systems allow for solving explicit integrals
 The Sundials CVODE solver introduced this technique specifically for BDF methods \cite{SUNDIALS-hindmarsh2005sundials}. 
 In the Julia \texttt{DifferentialEquations.jl} solvers, this can be done using a callback (specifically the numerical integration callbacks form the \texttt{DiffEqCallbacks.jl} library). 
 The Gauss adjoint method uses the callback approach to allow for a simultaneous explicit evaluation the integral using Gaussian quadrature, similar to \cite{Norcliffe_gaussquadrature_2023} but using a different approximation to improve convergence.
-
+\\ \\ 
 These differences in the strategies for computing $u(t)$ and the final quadrature give rise to the set of methods in Table \ref{table:adjoint}. 
 Excluding the forward sensitivity equation which was added for reference, all of these are \textit{the adjoint method} with differences being in the way steps of the adjoint method are approximated, and notably Table \ref{table:adjoint} shows a general trade-off in stability, performance, and memory across the methods. 
 While the Gauss adjoint achieves good properties according to this chart, the quadrature adjoint notably uses a global error control of the quadrature as opposed to the local error control of the Gauss adjoint, and thus can achieve more robust bounding of the error with respect to user chosen tolerances.
