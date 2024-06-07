@@ -24,6 +24,7 @@ jobs:
         with:
           root_file: main.tex
           working_directory: ./tex
+          continue_on_error: true
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
