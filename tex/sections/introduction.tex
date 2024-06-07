@@ -29,7 +29,7 @@ Differentiable programming (DP) refers to a set of techniques and software tools
 % This set of tools are particularly useful for the estimation and computation of the gradient of the model output with respect to certain input parameter.  
 % In the case of DE-based models, DP techniques include automatic or algorithmic differentiation (AD), sensitivity equations, and adjoint methods. 
 Arguably, the most celebrated DP method is automatic differentiation.
-The broader set of tools known as automatic or algorithmic differentiation (AD) aims to compute derivatives of a model rendered on a computer by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
+The set of tools known as automatic or algorithmic differentiation (AD) aims to compute derivatives of a model rendered on a computer by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
 The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication, that are individually easy to differentiate and their composition is easy to differentiate by using the chain rule \cite{Giering:1998in}. 
 During the last decades, reverse mode AD, also known as backpropagation, has enabled the fast growth of deep learning by efficiently computing gradients of deep neural networks \cite{griewank2012invented}.
 % One of the challenges in implementing efficient routines to compute gradients of DE-based models is the integration of the different methods with automatic differentiation.
@@ -49,12 +49,12 @@ This emerging sub-field is usually referred as physics-based machine learning \c
 The need for model gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when dealing with highly non-linear processes \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}.
 In such circumstances, the curse of dimensionality renders gradient-free optimization and sampling methods computationally intractable. 
 This is certainly the case in inverse methods \cite{Tarantola:2007wu}, and in
-machine learning applications where neural networks are used as the default method to approximate unknown non-linear function \cite{LeCun2015}.
+machine learning applications \cite{LeCun2015} where highly parametrized regressor functions are used to approximate unknown non-linear function.
 Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference.
 The integration of differentiable programming, has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
 
 % Difficulties with ODE and numerical solvers
-Computing gradients of functions, represented by DE-based simulation codes, with respect to their (high-dimensional) inputs is challenging due to the complexities in both the mathematical framework and the software implementation.
+Computing gradients of functions, represented by DE-based simulation codes, with respect to their (high-dimensional) inputs is challenging due to the complexities in both the mathematical framework and the software implementation involved.
 Except for a small set of particular cases, most differential equations require numerical methods to approximate their solution.
 This means that solutions cannot be differentiated analytically and necessitate numerical methods. 
 Furthermore, numerical solutions introduce approximation errors. 

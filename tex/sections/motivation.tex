@@ -10,7 +10,7 @@ While forward modelling usually refers to understanding how these parameters map
 the overarching goal of inverse modelling is to find a set of optimal model parameters that minimizes an objective or cost function quantifying the misfit between observations and the simulated state.
 The constrained optimization problem is transformed into an unconstrained problem using the Lagrangian formulation, also referred to as the adjoint method \cite{Vadlamani.2020, Givoli_2021}. 
 The corresponding adjoint model computes the gradient of the objective function with respect to all inputs. 
-Gradient-based nonlinear optimization enables us to invert for optimal values of the unknown or uncertain inputs.
+Gradient-based nonlinear optimization enables to invert for optimal values of the unknown or uncertain inputs.
 Depending on the nature of the inversion, we may distinguish between the following cases:
 \begin{itemize}
     \item[$\blacktriangleright$] \textbf{Initial conditions.} Inverting for uncertain initial conditions, which, when integrated using the model, leads to an optimal match between the observations and the simulated state (or diagnostics); variants thereof are used for optimal forecasting.
@@ -25,14 +25,10 @@ In the following, we present selected examples belonging to a wide range of scie
 \subsection{Machine learning}
 
 In recent years the use of machine learning methods has become more popular in many scientific domains \cite{rasp2018, pichler2023, meuwly2021machine, borowiec2022, lai2024machine}. 
-DEs can be used to describe a large variety of dynamical systems, while data-driven regression models (e.g., neural networks, Gaussian processes, reduced-order models, basis expansions) have been demonstrated to act as universal approximators, learning a rich family of complex functions if enough data is available \cite{gorban_1998}. 
-This combined flexibility can be exploited by many different domain-specific problems to tailor modelling needs to both dynamics and data characteristics.
-
-Advances in the field of machine learning, and particularly in deep learning \cite{LeCun2015}, allowed statistical models to learn at multiple levels of abstraction and capture extremely complex nonlinear patterns and information hidden in large datasets. 
+By learning nonlinear patterns from large datasets at multiple levels of abstraction \cite{LeCun2015}, these methods are highly flexible with respect to inputs and outputs required, and can be exploited by many different domain-specific problems.
 However, the use of machine learning models for prediction has been heavily criticized, as they critically assume that patterns contained in observed data will repeat in the future, which may not be the case \cite{dormann2007,Barnosky2012}. 
-In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions.
+In contrast to purely statistical models, the process knowledge embedded in the structure of mechanistic models renders them more robust for predicting dynamics under different conditions \cite{Barnosky2012}.
 % Nonetheless, in the 21st century, with the unstoppable wave of data flooding all scientific domains, progress with such traditional methods has become more complex. 
-
 The fields of mechanistic modelling and statistical modelling have mostly evolved independently due to several reasons \cite{zdeborova_understanding_2020}. 
 On the one hand, domain scientists have often been reluctant to learning about machine learning methods, judging them as opaque black boxes, unreliable, and not respecting domain-established knowledge \cite{Coveney:2016eb}. 
 On the other hand, the field of machine learning has mainly been developed around data-driven applications, without including any a priori physical knowledge. 
@@ -40,7 +36,7 @@ However, there has been an increasing interest in making mechanistic models more
 % \cite{Molnar.2020sisk,Rudin.2022,Schneider2017,rasp2018,Yazdani2020,Abarbanel2018,Carrassi2018,Bocquet2019,Gabor2015,Gharamti2017,Curtsdotter2019,Rosenbaum2019,Toms2020,Brajard2021}.
 This sub-field, usually known as physics-based machine learning, refers to the collection of machine learning techniques that explicitly introduce biases to satisfy certain physical constraints. 
 These biases can be forced by the design of algorithms that include symmetries, conservation laws, and constraints in the form of differential equations \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}. 
-It includes methods that numerically solve differential equations, such as physics-informed neural networks \cite{PINNs_2019}, including NeuralPDEs \cite{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et} and biologically-informed neural networks \cite{Lagergren_Nardini_Baker_Simpson_Flores_2020}. 
+It includes methods that numerically solve differential equations, such as physics-informed neural networks \cite{PINNs_2019}, biology-informed neural networks \cite{Yazdani2020,Lagergren_Nardini_Baker_Simpson_Flores_2020}, NeuralPDEs \cite{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et} and mesh-free methods for solving high-dimensional PDEs \cite{boussange2023a}. 
 On the other hand, there has been an increased interest in augmenting DE-based models by embedding a rich family of parametric functions (e.g., neural networks) inside the differential equation.  
 This approach is known as such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also include the case of neural ordinary differential equations \cite{chen_neural_2019} and neural stochastic differential equations \cite{li2020scalable}.
 
@@ -102,7 +98,7 @@ In such models, calibrating model parameters is extremely challenging, due to ob
 Moreover, many existing mechanistic models can only partially describe observations, with many detailed physical processes being ignored or poorly parameterized. 
 
 
-\subsubsection{Numerical Weather Prediction}
+\subsubsection{Numerical weather prediction}
 \label{section:meteorlogy}
 
 Numerical weather prediction (NWP) is among the most prominent fields where adjoint methods have played an important role \cite{Errico_1997}. 
@@ -174,11 +170,14 @@ Alternatively, some other approaches have dropped the use of numerical solvers i
 DE-based models have been broadly used in biology and ecology to model neural firing \cite{hodgkin1952quantitative}, the dynamics of genes and alleles \cite{Page2002}, immune and disease processes \cite{colijn2006high}, subcellular functions \cite{brown2003statistical}, the ecological and evolutionary dynamics of biological units from bacteria to ecological communities \cite{Gabor2015, Lion2018, Villa2021, Boussange2022, boussange2023a, Akesson2021, chalmandrier2021, VandenBerg2022}, and biomass and energy fluxes and transformation at ecosystem levels \cite{Weng2015, Schartau2017, Franklin2020, Geary2020}.
 Parameters in DE-based models are often estimated from direct laboratory experiments (e.g. \cite{hodgkin1952quantitative}) although this process is costly and difficult \cite{Schartau2017}, and may result in simulations failing in capturing real biological dynamics \cite{Watts2001}. 
 Alternatively, inverse modelling methods also have a substantial history for both parameter estimation \cite{ramsay2007parameter,ramsay2017dynamic,Schartau2017,ding2000h,fussmann2000crossing} and model selection \cite{Johnson2004,zhang2015selection,alsos2023,pantel2023}.
-When parameters are inferred along with their uncertainties, they can be interpreted to better understand the strengths and effects of the processes under consideration \cite{Pontarp2019, Higgins2010, Curtsdotter2019, godwin2020}. However, in high-dimensional models, such as those in systems biology, parameters are often non-identifiable \cite{transtrum2011geometry}. Model selection, which does not require parameter identifiability, involves deriving candidate models that embed competing hypotheses about causal processes and computing the relative evidence for each model given the data to discriminate between hypotheses \cite{Johnson2004, alsos2023}.
+When parameters are inferred along with their uncertainties, they can be interpreted to better understand the strengths and effects of the processes under consideration \cite{Pontarp2019, Higgins2010, Curtsdotter2019, godwin2020}. 
+However, in high-dimensional models, such as those in systems biology, parameters are often non-identifiable \cite{transtrum2011geometry}. 
+Model selection, which does not require parameter identifiability, involves deriving candidate models that embed competing hypotheses about causal processes and computing the relative evidence for each model given the data to discriminate between hypotheses \cite{Johnson2004, alsos2023}.
 The computation of the most likely model parameter values, or the evaluation of different model supports, critically involves sensitivity methods that must effectively handle the typically large number of parameters and the nonlinearities of biological models \cite{transtrum2011geometry, Gabor2015}.
 Sensitivity methods also play a crucial role in assessing model fit quality, specifying system states, detecting stochastic noise \cite{hooker2009forcing, hooker2015goodness, liu2023specification}, and designing experiments to optimize parameter estimation precision \cite{bauer2000numerical}.
 
-While inverse modeling in biology has traditionally overlooked differentiable programming (DP), its potential has recently been highlighted \cite{frank2022, alsos2023}. New approaches involving DP are increasingly being proposed to accommodate the specific requirements of biological and ecological models \cite{Yazdani2020, Boussange2024, paredes2023}. Given that key processes are often not accurately represented in biological models \cite{hartig2012, Schartau2017, chalmandrier2021}, hybrid approaches that integrate data-driven parameterization of specific components of DE-based models are particularly relevant \cite{ramsay1996principal, cao2008estimating, paul2011semiparametric, chen2017network, rasp2018, dai2022kernel, Boussange2024}.
+While inverse modeling based on AD in biology has traditionally overlooked, its potential has recently been highlighted \cite{frank2022, alsos2023}. 
+New approaches involving AD are increasingly being proposed to accommodate the specific requirements of biological and ecological models \cite{Yazdani2020, Boussange2024,Lagergren_Nardini_Baker_Simpson_Flores_2020,paredes2023}. 
+Given that key processes are often not accurately represented in biological models \cite{hartig2012, Schartau2017, chalmandrier2021}, hybrid approaches that integrate data-driven parameterization of specific components of DE-based models are particularly relevant \cite{ramsay1996principal, cao2008estimating, paul2011semiparametric, chen2017network, rasp2018, dai2022kernel, Boussange2024}.
+Sensitivities also play an important role in assessment of fit quality including specification of system states and detecting the presence of stochastic noise \cite{hooker2009forcing,hooker2015goodness,liu2023specification} and in the design of experiments to optimize the precision of parameter estimates \cite{bauer2000numerical}. 
 The increasing availability of biological datasets, driven by advancements in monitoring technologies such as paleo-time series \cite{alsos2023}, environmental DNA \cite{Ruppert2019}, remote sensing \cite{Jetz2019}, bioacoustics \cite{Aide2013}, and citizen observations \cite{GBIF}, presents additional opportunities to enhance mechanistic models with data-driven components.
-
-
