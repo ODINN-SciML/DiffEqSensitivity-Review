@@ -118,7 +118,6 @@
     number = "1",
     issn = "1532-4435",
     journal = "J. Mach. Learn. Res.",
-    month = "jan",
     pages = "5595–5637",
     numpages = "43",
     keywords = "backpropagation, differentiable programming"
@@ -480,7 +479,6 @@
     author = "Hey, Tony and Tansley, Stewart and Tolle, Kristin and Gray, Jim",
     title = "The Fourth Paradigm: Data-Intensive Scientific Discovery",
     year = "2009",
-    month = "October",
     publisher = "Microsoft Research",
     url = "https://www.microsoft.com/en-us/research/publication/fourth-paradigm-data-intensive-scientific-discovery/",
     isbn = "978-0-9825442-0-4"
@@ -672,7 +670,6 @@
     number = "9",
     urldate = "2022-02-25",
     journal = "Chaos: An Interdisciplinary Journal of Nonlinear Science",
-    month = "September",
     year = "2021",
     pages = "093122",
     file = "Versió enviada:/Users/Bolib001/Zotero/storage/J3MCWRAP/Kim et al. - 2021 - Stiff neural ordinary differential equations.pdf:application/pdf"
@@ -844,17 +841,6 @@
     year = "2024"
 }
 
-@INPROCEEDINGS{gorban_1998,
-    author = "Gorban, A.N. and Wunsch, D.C.",
-    booktitle = "1998 IEEE International Joint Conference on Neural Networks Proceedings. IEEE World Congress on Computational Intelligence (Cat. No.98CH36227)",
-    title = "The general approximation theorem",
-    year = "1998",
-    volume = "2",
-    number = "",
-    pages = "1271-1274 vol.2",
-    doi = "10.1109/IJCNN.1998.685957"
-}
-
 @article{zdeborova_understanding_2020,
     author = "Zdeborová, Lenka",
     title = "Understanding deep learning is also a job for physicists",
@@ -864,7 +850,6 @@
     language = "en",
     urldate = "2020-05-29",
     journal = "Nature Physics",
-    month = "May",
     year = "2020"
 }
 
@@ -884,15 +869,6 @@
     local-url = "file://localhost/Users/heimbach/Documents/Library-Papers-ReadCube/2016/2016-Coveney-Philosophical\%20Transactions\%20of\%20the\%20Royal\%20Society\%20of\%20London.\%20Series\%20A-\%20Physical\%20and\%20Engineering\%20Sciences.pdf"
 }
 
-@article{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et,
-    author = "Zubov, Kirill and McCarthy, Zoe and Ma, Yingbo and Calisto, Francesco and Pagliarino, Valerio and Azeglio, Simone and Bottero, Luca and Luján, Emmanuel and Sulzer, Valentin and Bharambe, Ashutosh and Vinchhi, Nand and Balakrishnan, Kaushik and Upadhyay, Devesh and Rackauckas, Chris",
-    title = "NeuralPDE: Automating Physics-Informed Neural Networks (PINNs) with Error Approximations",
-    DOI = "10.48550/arxiv.2107.09443",
-    abstractNote = "Physics-informed neural networks (PINNs) are an increasingly powerful way to solve partial differential equations, generate digital twins, and create neural surrogates of physical models. In this manuscript we detail the inner workings of NeuralPDE.jl and show how a formulation structured around numerical quadrature gives rise to new loss functions which allow for adaptivity towards bounded error tolerances. We describe the various ways one can use the tool, detailing mathematical techniques like using extended loss functions for parameter estimation and operator discovery, to help potential users adopt these PINN-based techniques into their workflow. We showcase how NeuralPDE uses a purely symbolic formulation so that all of the underlying training code is generated from an abstract formulation, and show how to make use of GPUs and solve systems of PDEs. Afterwards we give a detailed performance analysis which showcases the trade-off between training techniques on a large set of PDEs. We end by focusing on a complex multiphysics example, the Doyle-Fuller-Newman (DFN) Model, and showcase how this PDE can be formulated and solved with NeuralPDE. Together this manuscript is meant to be a detailed and approachable technical report to help potential users of the technique quickly get a sense of the real-world performance trade-offs and use cases of the PINN techniques.",
-    journal = "arXiv",
-    year = "2021"
-}
-
 @article{Lagergren_Nardini_Baker_Simpson_Flores_2020,
     author = "Lagergren, John H and Nardini, John T and Baker, Ruth E and Simpson, Matthew J and Flores, Kevin B",
     title = "Biologically-informed neural networks guide mechanistic modeling from sparse experimental data",
@@ -900,6 +876,15 @@
     abstractNote = "Biologically-informed neural networks (BINNs), an extension of physics-informed neural networks [1], are introduced and used to discover the underlying dynamics of biological systems from sparse experimental data. In the present work, BINNs are trained in a supervised learning framework to approximate in vitro cell biology assay experiments while respecting a generalized form of the governing reaction-diffusion partial differential equation (PDE). By allowing the diffusion and reaction terms to be multilayer perceptrons (MLPs), the nonlinear forms of these terms can be learned while simultaneously converging to the solution of the governing PDE. Further, the trained MLPs are used to guide the selection of biologically interpretable mechanistic forms of the PDE terms which provides new insights into the biological and physical mechanisms that govern the dynamics of the observed system. The method is evaluated on sparse real-world data from wound healing assays with varying initial cell densities [2].",
     journal = "arXiv",
     year = "2020"
+}
+
+@article{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et,
+    author = "Zubov, Kirill and McCarthy, Zoe and Ma, Yingbo and Calisto, Francesco and Pagliarino, Valerio and Azeglio, Simone and Bottero, Luca and Luján, Emmanuel and Sulzer, Valentin and Bharambe, Ashutosh and Vinchhi, Nand and Balakrishnan, Kaushik and Upadhyay, Devesh and Rackauckas, Chris",
+    title = "NeuralPDE: Automating Physics-Informed Neural Networks (PINNs) with Error Approximations",
+    DOI = "10.48550/arxiv.2107.09443",
+    abstractNote = "Physics-informed neural networks (PINNs) are an increasingly powerful way to solve partial differential equations, generate digital twins, and create neural surrogates of physical models. In this manuscript we detail the inner workings of NeuralPDE.jl and show how a formulation structured around numerical quadrature gives rise to new loss functions which allow for adaptivity towards bounded error tolerances. We describe the various ways one can use the tool, detailing mathematical techniques like using extended loss functions for parameter estimation and operator discovery, to help potential users adopt these PINN-based techniques into their workflow. We showcase how NeuralPDE uses a purely symbolic formulation so that all of the underlying training code is generated from an abstract formulation, and show how to make use of GPUs and solve systems of PDEs. Afterwards we give a detailed performance analysis which showcases the trade-off between training techniques on a large set of PDEs. We end by focusing on a complex multiphysics example, the Doyle-Fuller-Newman (DFN) Model, and showcase how this PDE can be formulated and solved with NeuralPDE. Together this manuscript is meant to be a detailed and approachable technical report to help potential users of the technique quickly get a sense of the real-world performance trade-offs and use cases of the PINN techniques.",
+    journal = "arXiv",
+    year = "2021"
 }
 
 @book{lions1971optimal,
@@ -2654,7 +2639,6 @@
     title = "Jacobian-Free {{Newton}}--{{Krylov}} Methods: A Survey of Approaches and Applications",
     shorttitle = "Jacobian-Free {{Newton}}--{{Krylov}} Methods",
     year = "2004",
-    month = "January",
     journal = "Journal of Computational Physics",
     volume = "193",
     number = "2",
@@ -3289,7 +3273,6 @@
     url = "https://doi.org/10.1145/42288.214371",
     doi = "10.1145/42288.214371",
     journal = "ACM Trans. Math. Softw.",
-    month = "mar",
     pages = "61–67",
     numpages = "7",
     keywords = "model error, sensitivity analysis, parameter variation, model prediction uncertainty"
