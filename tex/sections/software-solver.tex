@@ -236,7 +236,7 @@ There are two solutions for addressing the evaluation of $u(t)$ during the compu
     However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. In practice, this method is hardly stable for most complex (even non-stiff) differential equations. 
 \end{enumerate} 
 
-The following example shows how to implement the continuous adjoint method of the solution of Equation \eqref{eq:example-ode-direct-methods} using the backsolve strategy. 
+The following example shows how to implement the continuous adjoint method of the solution of Equation \eqref{eq:example-ode-direct-methods} using the backsolve strategy $\clubsuit_\text{\code{code:continuous-adjoint}}$. 
 \begin{jllisting}
 using RecursiveArrayTools
 
