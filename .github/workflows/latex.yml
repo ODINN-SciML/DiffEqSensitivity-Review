@@ -25,8 +25,8 @@ jobs:
           root_file: main.tex
           working_directory: ./tex
           continue_on_error: true
-          texlive_version: 2022
-          args: -f
+          texlive_version: 2023
+          # args: -f
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
