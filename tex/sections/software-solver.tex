@@ -113,7 +113,7 @@ Since adjoint methods rely on an additional set of differential equations which 
 
 \paragraph{Discrete adjoint method}
 
-In order to illustrate how the discrete adjoint method can be implemented, the following example shows how to manually solve for the gradient of the solution of \eqref{eq:example-ode-direct-methods} using an explicit Euler method. 
+In order to illustrate how the discrete adjoint method can be implemented, the following example shows how to manually solve for the gradient of the solution of \eqref{eq:example-ode-direct-methods} using an explicit Euler method $\clubsuit_\text{\code{code:discrete-adjoint}}$. 
 \begin{jllisting}
 function discrete_adjoint_method(u0, tspan, p, dt)
     u = u0
