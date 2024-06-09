@@ -264,11 +264,16 @@ In particular, we further provide a script that demonstrates that Jax's diffrax 
 % \end{jllisting}
 
 \paragraph{Differentiation with sparsity}
+\label{section:sparsity}
 
-The total numeber of computations required to evalaute a gradient/Jacobian using any direct method will depend of its sparsity.  
-When sparsity patterns of the gradient/Jacobian to be computed are known, symbolic differentiation can be more efficient than AD \cite{Lantoine_Russell_Dargent_2012}.
-In Section \ref{sec:vjp-jvp} we discussed how colored AD can be used to efficiently compute a sparse Jacobian.
-However, colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. 
+The total number of computations required to evaluate a gradient/Jacobian using any direct method will depend of its sparsity.  
+When the sparsity pattern is known, colored AD efficiently chunk the calculation of the Jacobian into multiple JVPs or VJPs \cite{gebremedhin2005color}. 
+This results in a smaller number of evaluations of VJPs/JVPs compared to the one required to compute all entries of a dense Jacobian \cite{pal2024nonlinearsolve}. 
+This can represent a significant advantage for large-scale nonlinear systems and discretized PDEs where sparse Jacobian are commonplace.  
+
+Furthermore, depending  of the sparsity pattern, symbolic differentiation can be more efficient than AD \cite{Lantoine_Russell_Dargent_2012}.
+% In Section \ref{sec:vjp-jvp} we discussed how colored AD can be used to efficiently compute a sparse Jacobian.
+This is because colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. 
 Consider the arrowhead matrix given by
 \begin{equation}
     J_{\text{arrowhead}} = \begin{bmatrix}

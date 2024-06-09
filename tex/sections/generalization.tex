@@ -8,7 +8,6 @@ Regarding discrete adjoint methods, the mathematical formulation covered in Sect
 In the next section we are going to consider the cases of higher-order ODEs, PDEs, and the particular case of chaotic systems of ODEs. 
 Further generalizations of sensitivity methods to other families of DEs include differential-algebraic equations (DAE) \cite{Cao_Li_Petzold_2002} and stochastic differential equations (SDE) \cite{li2020scalable}. 
 
-
 \subsection{Higher-order ODEs}
 
 Higher-order ODEs are characterized by the presence of second and higher order time derivatives in the differential equation. 
@@ -20,13 +19,39 @@ A simple example popular in structural design consists in the linear dynamic equ
     + 
     K u
     = 
-    F(u),
+    F(t, \theta),
 \end{equation}
-subject to the initial condition $u(t_0) = u_0$, $\frac{du}{dt}(t_0) = v_0$, where $M, C, K \in \R^{n \times n}$ are the mass, damping, and stiffness matrices, respectively, and $F(t)$ is an external forcing \cite{min1999optimal, Jensen_Nakshatrala_Tortorelli_2014}.  
+subject to the initial condition $u(t_0) = u_0$, $\frac{du}{dt}(t_0) = v_0$, where $M, C, K \in \R^{n \times n}$ are the mass, damping, and stiffness matrices function of some design parameter $\theta$, respectively, and $F(t, \theta)$ is an external forcing \cite{min1999optimal, Jensen_Nakshatrala_Tortorelli_2014}.  
 
 Just as we did in Section \ref{section:software-finite-differences}, higher-order ODEs can be transformed to first-order ODEs, after which the same sensitivity methods we discussed in this paper can be used. 
-However, there may be reasons why we would prefer to avoid this, such as the existence of more efficient higher-order ODEs solvers, including Nystrom methods \cite{Butcher_Wanner_1996, hairer-solving-1}. 
-For such cases, the forward sensitivity equations and the continuous adjoint equation can be derived using the same strategies explained in Sections \ref{section:sensitivity-equation} and \ref{section:continuous-adjoint} \cite{kang2006review}. 
+However, there may be reasons why we would prefer to avoid this, such as the existence of more efficient higher-order ODEs solvers, including Nystr\"{o}m methods for the case when $C = 0$ \cite{Butcher_Wanner_1996, hairer-solving-1}. 
+In this case, the forward sensitivity equations can be derived using the same strategy explained in Section \ref{section:sensitivity-equation}: 
+\begin{equation}
+    \frac{d}{d\theta} 
+    \left(
+    M \frac{d^2 u}{dt^2}
+    + 
+    K u
+    -
+    F(t, \theta)
+    \right) = 0,
+\end{equation}
+which results in the forward sensitivity equation for the sensitivity $s$
+\begin{equation}
+    M \frac{d^2 s}{dt^2}
+    + 
+    K s
+    = 
+    \frac{\partial F}{\partial \theta} 
+    - 
+    \frac{dM}{d\theta} \frac{d^2 u}{dt^2}
+    - 
+    \frac{dK}{d\theta} u. 
+\end{equation}
+Similarly, the same strategy introduced Section \ref{section:continuous-adjoint} can be followed to derive the continuous adjoint equation \cite{kang2006review}. 
+% For comprehensive review of sensitivity methods 
+
+
 
 \subsection{Partial differential equations}
 
@@ -37,23 +62,32 @@ For such cases, the forward sensitivity equations and the continuous adjoint equ
 % These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
 
 Systems of partial differential equations (PDEs) include derivatives with respect to more than one independent variable. 
-In physics, these variables are usually associated to time and space. 
+As we discussed in Section \ref{sectopn:motivation}, PDEs play a central solve in physics, optimal design, and geophysics, where these variables are usually associated to time and space. 
 Due to the spatial characteristics of such systems, generally boundary conditions need to be provided besides an initial condition for the solutions. 
+While in Section \ref{section:intro-numerical-solvers} we briefly introduced the fundamentals for numerical solvers of ODEs, there is a broader family of numerical methods to solve PDEs. 
+These include finite element method and the finite volute method, among others. 
+For these methods, a required ingredient is the spatial mesh use to discretize the spatial dimension. 
+In the case of the discrete adjoint method, all these methods will result in a series of discrete equations where the adjoint method introduced in Section \ref{section:discrete-adjoint} will still apply. 
+Continuous methods required a more careful manipulation of the PDE in order to derive correct sensitivity and adjoint equations. 
+
 PDEs can be semi-discretized and then solved as a system of ODEs using the methods of lines \cite{ascher2008numerical}. 
 This implies that all sensitivity methods for ODEs also apply to PDEs. 
 Let us consider the case of the one-dimensional heat equation
-\begin{equation}
+\begin{align}
+\begin{split}
  \frac{\partial u}{\partial t}
- = 
- D \, 
- \frac{\partial^2 u}{\partial x^2}, 
- \quad u(0, t) = \alpha(t), 
- \quad u(1, t) = \beta(t)
+ &= 
+ D(x,t) \, 
+ \frac{\partial^2 u}{\partial x^2} \qquad x \in [0,1], \, t \in [t_0, t_1]\\
+ u(x, 0) &= v(x) \\
+ u(0, t) &= \alpha(t) \\
+ u(1, t) &= \beta(t)
  \label{eq:heat-equation}
-\end{equation}
-with $u = u(x, t)$, $x \in [0,1]$, $D > 0$ a global diffusivity coefficient, and $\alpha(t)$, $\beta(t)$ the boundary conditions at $x=0$ and $x=1$, respectively.
+\end{split}
+\end{align}
+with $D(x, t) > 0$ a global diffusivity coefficient.
 % that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
-In order to numerically solve this equation, we can define a spatial grid with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
+In order to numerically solve this equation, we can define an uniform spatial mesh with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
 If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference
 \begin{equation}
  \frac{d u_m}{dt} 
@@ -64,18 +98,53 @@ If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in th
 \end{equation}
 for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$).
 Now, following this semi-discretization, equation \eqref{eq:heat-equation-discrete} is a system of first-order ODEs  (i.e. derivatives only with respect to time) with a total of $N-1$ equations.
-
-Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE systems. 
+% Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE systems. 
 Semi-discretized PDEs typically involve large systems of coupled and possibly stiff ODEs subject to some suitable boundary conditions. 
-
 Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase.
-Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depends on the state value of the solution in the neighbouring points in the grid.
+Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depends on the state value of the solution in the neighbouring points in the mesh (see Section \ref{section:sparsity}).
 PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy (CFL) condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution \cite{courantPartialDifferenceEquations1967}. 
 
-Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe used here to derive the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000}. 
 
+Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe used here to derive the forward sensitivity equations and the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000}. 
+Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design parameter $\theta$, the forward sensitivity equation is given by 
+\begin{equation}
+ \frac{\partial s}{\partial t}
+ = 
+ D \, 
+ \frac{\partial^2 s}{\partial x^2}
+ + 
+ \frac{\partial D}{\partial \theta} \frac{\partial^2 u}{\partial x^2}. 
+\end{equation}
+The continuous adjoint equation can be derived using the strategy followed in Section \ref{section:continuous-adjoint} by multiplying the forward sensitivity equation by the adjoint $\lambda (x,t)$ such that allows the efficient computation of the objective function
+\begin{equation}
+    L(\theta) = \int_{t_0}^{t_1} \int_0^1 h(u(x,t;\theta); \theta) dx \, dt. 
+\end{equation}
+In this case, it is easy to derive using integration by parts the adjoint differential equation given by 
+\begin{equation}
+    \frac{\partial \lambda}{\partial t}
+    = 
+    - 
+    D \, \frac{\partial^2 \lambda}{\partial x^2}
+    - 
+    \frac{\partial h^T}{\partial u}
+\end{equation}
+with zero final condition $\lambda(x, t_1) \equiv 0$ and boundary conditions $\lambda(0, t) \equiv \lambda(1, t) \equiv 0$ \cite{duchateau1996introduction}.
 
-PDEs therefore remain some of the most challenging problems for computing sensitivities due to the frequent combination of a large number of discretized possibly stiff ODEs, with a large memory footprint. 
+An important consideration when working with PDEs is that meshing may be sensitive to model parameters which can lead to errors in the calculation of derivatives \cite{nadarajah2000comparison}. 
+For example, this is a problem in finite differences since differences in the values of the objective function evaluated at $\theta$ and $\theta + \delta \theta$ can be affected by the choice of different meshes. 
+Another example include cases where of discrete methods where the sensitivity methods applies directly on the discretized set of differential equations. 
+The same errors induced by the adaptive stepsize controller in the case of AD (Section \ref{section:AD-incorrect}) can appear in cases of meshes that do not account for the join error of the original PDE and its sensitivity. 
+This can produce inaccurate gradients in the case of coarser meshes where the mesh or the numerical solver have an impact on the accuracy of the solution of the PDE \cite{economon2017adjoint, KENWAY2019100542}
+% From Kenway:
+% The main disadvantages of the continuous approach are a low accuracy for coarser meshes and a challenging implementation. The fact
+% that the PDEs are first linearized and then discretized means that the
+% discretized form of these equations is guaranteed to result in a fully
+% consistent gradient only at the limit of an infinitely fine mesh [129].
+% Therefore, the continuous adjoint produces inaccurate gradients for
+% cases where the mesh or the numerical methods have an effect on the
+% solution accuracy [130].
+
+Independently of how DP is implemented, PDEs remain some of the most challenging problems for computing sensitivities due to the frequent combination of a large number of discretized possibly stiff ODEs, with a large memory footprint. 
 This makes it difficult to strike a balance between memory usage and computational performance. 
 There are, however, numerous recent developments that have made solutions to these challenges more accessible. 
 As it will also be discussed in Section \ref{section:recomendations}, sensitivity methods that require the storage of a dense forward solution need special treatment, such as reverse AD and adjoint methods. 
@@ -89,17 +158,6 @@ Automated sparsity detection \cite{gowdaSparsityProgrammingAutomated2019} and Ne
 Recent advances in applying AD to implicit functions, i.e. functions which require the solution of a nonlinear system, also provide a promising path forward for many complex PDE problems that often involve multiple nested numerical solvers \cite{blondelEfficientModularImplicit2022a}. 
 Finally, some state-of-the-art AD tools such as Enzyme \cite{moses_Enzyme} are able to support both in-place modification of arrays as well as complex control flow, making them directly applicable to many high efficiency numerical codes for solving PDEs.
 
-% In the case of PDEs, meshing is also sensitive to the value of the model parameters. This can lead to further error control problems... \cite{nadarajah2000comparison}
-% Changes in the parameter can lead to 
-
-% From Kenway:
-% The main disadvantages of the continuous approach are a low accuracy for coarser meshes and a challenging implementation. The fact
-% that the PDEs are first linearized and then discretized means that the
-% discretized form of these equations is guaranteed to result in a fully
-% consistent gradient only at the limit of an infinitely fine mesh [129].
-% Therefore, the continuous adjoint produces inaccurate gradients for
-% cases where the mesh or the numerical methods have an effect on the
-% solution accuracy [130].
 
 % TODO: more dicussion on solutions and recommendations; e.g. sparsity detection for large systems, checkpointing (already mentioned), combining parameter efficient reverse-mode AD with efficient mutation-supporting AD tools like Enzyme for the JVP calculation.
 
