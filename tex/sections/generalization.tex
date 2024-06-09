@@ -104,7 +104,6 @@ Explicit calculation of the Jacobian quickly becomes cumbersome and eventually i
 Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depends on the state value of the solution in the neighbouring points in the mesh (see Section \ref{section:sparsity}).
 PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy (CFL) condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution \cite{courantPartialDifferenceEquations1967}. 
 
-
 Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe used here to derive the forward sensitivity equations and the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000}. 
 Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design parameter $\theta$, the forward sensitivity equation is given by 
 \begin{equation}
