@@ -1,5 +1,5 @@
 Mechanistic (or process-based) models play a central role in a wide range of scientific disciplines. 
-They consist of mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration \cite{rackauckas2020universal}. 
+They consist of mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration. 
 These mathematical representations typically take the form of differential equations. 
 Together with the numerical methods to approximate their solutions, DEs have led to fundamental advances in the understanding and prediction of physical and biological systems.
 
@@ -49,7 +49,6 @@ This approach is known as such as universal differential equations \cite{rackauc
 There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines, where sensitivity methods have been used for optimal design and optimal control since the 1960s \cite{lions1971optimal}. 
 These models are often based on PDEs and are applied in various fields to improve engineering designs or model parameters with respect to some objective function. 
 The models can involve thousands of parameters, and they require efficient derivative calculations for the use of gradient-based optimizers such as quasi-Newton methods. 
-% These techniques extend to time-dependent problems through the method-of-lines, where the problem is first discretized in space to produce a semi-discrete problem, which is then integrated in time using standard ODE solvers. 
 Both continuous and discrete adjoints methods, which we will introduce in Sections \ref{section:discrete-adjoint} and \ref{section:computing-adjoints}, have been used extensively, each having different benefits depending on the application.
 
 \subsubsection{Computational fluid dynamics}

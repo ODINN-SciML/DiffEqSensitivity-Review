@@ -274,16 +274,19 @@ This can represent a significant advantage for large-scale nonlinear systems and
 Furthermore, depending  of the sparsity pattern, symbolic differentiation can be more efficient than AD \cite{Lantoine_Russell_Dargent_2012}.
 % In Section \ref{sec:vjp-jvp} we discussed how colored AD can be used to efficiently compute a sparse Jacobian.
 This is because colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. 
-Consider the arrowhead matrix given by
+Consider the arrowhead matrix $J_{\text{arrowhead}} \in \R^{n \times n}$ given by
 \begin{equation}
     J_{\text{arrowhead}} = \begin{bmatrix}
-        j_{11} & j_{12}   & j_{13} & j_{14}     & j_{15}   \\
-        j_{21} & j_{22}   &  0       & 0        & 0        \\
-        j_{31} & 0        & j_{33}   & 0        & 0        \\
-        j_{41} & 0        & 0        & j_{44}   & 0        \\
-        j_{51} & 0        & 0        & 0        & j_{55}
-    \end{bmatrix}.
+        \bullet & \bullet & \bullet & \bullet & \cdots & \bullet  & \bullet   \\
+        \bullet & \bullet & 0  &  0    &   & 0        & 0        \\
+        \bullet & 0 & \bullet & 0 & & 0        & 0        \\
+        \bullet & 0 & 0 & \bullet & & 0 & 0 \\
+        \vdots & & & & \ddots & &  \\
+        \bullet & 0 & 0 & 0   &   & \bullet   & 0        \\
+        \bullet & 0 & 0        & 0    &    & 0        & \bullet
+    \end{bmatrix},
 \end{equation}
+where $\bullet$ indicate non trivial zero entries of the Jacobian.
 In this case, both reverse mode AD and forward mode AD will have to perform $n$ VJPs and JVPs, respectively (for $J_{\text{arrowhead}} \in \R^{n \times n}$ arrowhead matrix), and there is no computational benefit of coloring the matrix here. 
 Instead, symbolic differentiation constructs a symbolic representation of the sparse Jacobian and can fill the Jacobian with $n + 2 \cdot (n-1)$ computations, where each computation is significantly cheaper than each VJP or JVP. 
 Notice that for the arrowhead matrix example, a combination of forward and reverse AD can be used to color the Jacobian with two forward and one reverse AD evaluations. 

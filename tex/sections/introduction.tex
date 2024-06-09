@@ -9,9 +9,8 @@ With numerical methods to approximate their solutions, DE-based models led to fu
 % In a more abstract sense, the solution of differential equations can be seen as functions that map model parameters parameter and initial conditions to state variables and observations, similar to forward models, statistics, and even machine learning. 
 
 % General statement: why gradients are important?
-Quantifying how much the output of a DE-based model changes with respect to its input parameters, also known as model sensitivity, is fundamental to many scientific computing and machine learning applications. 
-These include optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
-In many cases, the model sensitivity can be computed by the evaluation of one or multiple gradients of the model output. 
+Quantifying how much the output of a DE-based model changes with respect to its input parameters is fundamental to many scientific computing and machine learning applications, including optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
+Mathematically, quantifying this change involves evaluating evaluating the gradient of the model, i.e., calculating a vector whose components are the partial derivatives of the model evaluated at the model parameter values. 
 In sensitivity analysis, gradients are crucial for comprehending the relationships between model inputs and outputs, assessing the influence of each parameter, and evaluating the robustness of model predictions. 
 In optimization and inverse modelling, where the goal is to fit models to data and/or invert for unknown or uncertain parameters, gradient-based methods, including gradient descent and its many variants \cite{ruder2016overview-gradient-descent}, are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 In Bayesian inference, gradient-based sampling strategies are better at estimating the posterior distribution than gradient-free methods \cite{neal2011mcmc}.
@@ -25,12 +24,13 @@ The techniques used to compute these gradients fall within the framework of diff
 % \end{displayquote} 
 
 % Gradiens are obtained with DP
-Differentiable programming (DP) refers to a set of techniques and software tools for computing gradients of a model's output, evaluated using a computer program, with respect to the model's input variables or parameters \cite{Shen_diff_modelling, Innes_Zygote, blondel2024elements}.
+Differentiable programming (DP) refers to a set of techniques and software tools for computing gradients/sensitivities of a model's output, evaluated using a computer program, with respect to the model's input variables or parameters \cite{Shen_diff_modelling, Innes_Zygote, blondel2024elements}.
 % This set of tools are particularly useful for the estimation and computation of the gradient of the model output with respect to certain input parameter.  
 % In the case of DE-based models, DP techniques include automatic or algorithmic differentiation (AD), sensitivity equations, and adjoint methods. 
 Arguably, the most celebrated DP method is automatic differentiation.
 The set of tools known as automatic or algorithmic differentiation (AD) aims to compute derivatives of a model rendered on a computer by sequentially applying the chain rule to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
-The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication, that are individually easy to differentiate and their composition is easy to differentiate by using the chain rule \cite{Giering:1998in}. 
+The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication.
+These operations are individually easy to differentiate, and their composition can be easily differentiated using the chain rule \cite{Giering:1998in}.
 During the last decades, reverse mode AD, also known as backpropagation, has enabled the fast growth of deep learning by efficiently computing gradients of deep neural networks \cite{griewank2012invented}.
 % One of the challenges in implementing efficient routines to compute gradients of DE-based models is the integration of the different methods with automatic differentiation.
 Some authors have recently suggested DP as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
@@ -48,8 +48,8 @@ This emerging sub-field is usually referred as physics-based machine learning \c
 % SciML and large scale models 
 The need for model gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when dealing with highly non-linear processes \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}.
 In such circumstances, the curse of dimensionality renders gradient-free optimization and sampling methods computationally intractable. 
-This is certainly the case in inverse methods \cite{Tarantola:2007wu}, and in
-machine learning applications \cite{LeCun2015} where highly parametrized regressor functions are used to approximate unknown non-linear function.
+This is the case in inverse methods \cite{Tarantola:2007wu}, and in
+machine learning applications \cite{LeCun2015} where highly parametrized regressor functions (e.g., neural networks) are used to approximate unknown non-linear function.
 Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference.
 The integration of differentiable programming, has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
 
@@ -58,9 +58,9 @@ Computing gradients of functions, represented by DE-based simulation codes, with
 Except for a small set of particular cases, most differential equations require numerical methods to approximate their solution.
 This means that solutions cannot be differentiated analytically and necessitate numerical methods. 
 Furthermore, numerical solutions introduce approximation errors. 
-These errors can be propagated to the computation of the gradient, leading to inaccurate or inconsistent gradient values. 
-At the same time, there is a broad literature on numerical methods for solving differential equations \cite{hairer-solving-1, hairer-solving-2}. 
-Although each method provides different guarantees and advantages depending on the use case, this means that the tools developed to compute gradients when using a solver need to be universal enough in order to be applied to all or at least to a large set of them. 
+These errors can be propagated to the computation of the gradient, leading to inaccurate or inconsistent gradient values.  
+Additional to these complexities, the broad family of numerical methods, each one of them with different advantages depending on the differential equation \cite{hairer-solving-1, hairer-solving-2}, means that the tools developed to compute gradients need to be universal enough in order to be applied to all or at least to a large set of them.
+
 
 % challenges and knowledge gap
 There exists a large family of methods to compute derivatives of DE-based models. 

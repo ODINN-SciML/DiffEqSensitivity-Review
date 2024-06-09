@@ -70,7 +70,7 @@ For these methods, a required ingredient is the spatial mesh use to discretize t
 In the case of the discrete adjoint method, all these methods will result in a series of discrete equations where the adjoint method introduced in Section \ref{section:discrete-adjoint} will still apply. 
 Continuous methods required a more careful manipulation of the PDE in order to derive correct sensitivity and adjoint equations. 
 
-PDEs can be semi-discretized and then solved as a system of ODEs using the methods of lines \cite{ascher2008numerical}. 
+The method of lines can be used to solve PDEs by applying a semi-discretization in the spacial coordinate and then numerically solve a new system of ODEs \cite{ascher2008numerical}. 
 This implies that all sensitivity methods for ODEs also apply to PDEs. 
 Let us consider the case of the one-dimensional heat equation
 \begin{align}
@@ -88,11 +88,11 @@ Let us consider the case of the one-dimensional heat equation
 with $D(x, t) > 0$ a global diffusivity coefficient.
 % that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
 In order to numerically solve this equation, we can define an uniform spatial mesh with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
-If we call $u_m(t) = u(m \Delta x, t)$ the value of the solution evaluated in the fixed points in the grid, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference
+If we call $u_m(t) = u(m \Delta x, t)$ and $D_m(t) = D(m\Delta x, t)$ the values of the solution and the diffusivity evaluated in the fixed points in the mesh, respectively, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference
 \begin{equation}
  \frac{d u_m}{dt} 
  = 
- D 
+ D_m(t) \, 
  \frac{u_{m-1} - 2u_m + u_{m+1}}{\Delta x^2}
  \label{eq:heat-equation-discrete}
 \end{equation}
@@ -104,8 +104,8 @@ Explicit calculation of the Jacobian quickly becomes cumbersome and eventually i
 Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depends on the state value of the solution in the neighbouring points in the mesh (see Section \ref{section:sparsity}).
 PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy (CFL) condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution \cite{courantPartialDifferenceEquations1967}. 
 
-Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe used here to derive the forward sensitivity equations and the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000}. 
-Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design parameter $\theta$, the forward sensitivity equation is given by 
+Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe introduced in this review to derive the forward sensitivity equations and the continuous adjoint method for ODEs can be employed for PDEs \cite{Giles_Pierce_2000}. 
+Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design parameter $\theta$, the forward sensitivity equation is obtain by differentiating Equation \eqref{eq:heat-equation} with respect to $\theta$ and define a new differential equation for the sensitivity $s(x,t) = \frac{d}{d\theta}u(x,t;\theta)$ as 
 \begin{equation}
  \frac{\partial s}{\partial t}
  = 
@@ -114,7 +114,7 @@ Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design param
  + 
  \frac{\partial D}{\partial \theta} \frac{\partial^2 u}{\partial x^2}. 
 \end{equation}
-The continuous adjoint equation can be derived using the strategy followed in Section \ref{section:continuous-adjoint} by multiplying the forward sensitivity equation by the adjoint $\lambda (x,t)$ such that allows the efficient computation of the objective function
+The continuous adjoint equation can be derived using the strategy followed in Section \ref{section:continuous-adjoint} by multiplying the forward sensitivity equation by the transpose of the adjoint $\lambda (x,t)$ such that allows the efficient computation of the objective function
 \begin{equation}
     L(\theta) = \int_{t_0}^{t_1} \int_0^1 h(u(x,t;\theta); \theta) dx \, dt. 
 \end{equation}
@@ -131,7 +131,7 @@ with zero final condition $\lambda(x, t_1) \equiv 0$ and boundary conditions $\l
 
 An important consideration when working with PDEs is that meshing may be sensitive to model parameters which can lead to errors in the calculation of derivatives \cite{nadarajah2000comparison}. 
 For example, this is a problem in finite differences since differences in the values of the objective function evaluated at $\theta$ and $\theta + \delta \theta$ can be affected by the choice of different meshes. 
-Another example include cases where of discrete methods where the sensitivity methods applies directly on the discretized set of differential equations. 
+% Another example include cases where of discrete methods where the sensitivity methods applies directly on the discretized set of differential equations. 
 The same errors induced by the adaptive stepsize controller in the case of AD (Section \ref{section:AD-incorrect}) can appear in cases of meshes that do not account for the join error of the original PDE and its sensitivity. 
 This can produce inaccurate gradients in the case of coarser meshes where the mesh or the numerical solver have an impact on the accuracy of the solution of the PDE \cite{economon2017adjoint, KENWAY2019100542}
 % From Kenway:
@@ -158,9 +158,6 @@ Recent advances in applying AD to implicit functions, i.e. functions which requi
 Finally, some state-of-the-art AD tools such as Enzyme \cite{moses_Enzyme} are able to support both in-place modification of arrays as well as complex control flow, making them directly applicable to many high efficiency numerical codes for solving PDEs.
 
 
-% TODO: more dicussion on solutions and recommendations; e.g. sparsity detection for large systems, checkpointing (already mentioned), combining parameter efficient reverse-mode AD with efficient mutation-supporting AD tools like Enzyme for the JVP calculation.
-
-
 % \subsection{Differential algebraic equations}
 
 % % I think we need to remove references to DAEs in the previous section, I am not sure this applies to them. 
@@ -183,24 +180,23 @@ Finally, some state-of-the-art AD tools such as Enzyme \cite{moses_Enzyme} are a
 
 % Intro: why we take this average quantities in chaotic system? Need to motivate this in a sentense.
 
-Chaotic systems usually consist of systems of ODEs for with large Lyapunov exponents, meaning .. .
-If well more complicated to model, chaotic systems play a central role in ... 
-In all this cases, sensitivity analysis remains challenging due to the \textit{butterfly effect}, i.e. small changes in the initial state or parameter can result in large differences in a later state \cite{Lorenz.1963}.
+Continuous (nonlinear or infinite-dimensional) dynamical systems described by ODEs or PDEs can exhibit chaotic behavior~\cite{strogatz2018nonlinear}. 
+In contrast to other systems we discussed previously, chaotic systems appear to become random after a certain, system-specific time scale, called the \textit{Lyapunov time}, making precise future predictions infeasible even though the underlying dynamical description might be completely deterministic.
+In particular, such systems are characterized by their strong sensitivity to small perturbations of the parameters or initial conditions, i.e. small changes in the initial state or parameter can result in large differences in a later state, which is popularly known under the term \textit{butterfly effect}~\cite{Lorenz.1963}. 
+% This sensitivity can be quantified using Lyapunov exponents, which measure the rate of separation of infinitesimally close trajectories.
 As a consequence, all the sensitivity methods discussed in the previous sections become less useful when applied to chaotic systems and special considerations need to be taken under account \cite{Wang2012-chaos-adjoint}.
 
-The butterfly effect renders inverse modelling based on point evaluations of the trajectory unfeasible. 
-To illustrate this, let us consider the loss function consisting in the long-time-averaged quantity 
+The butterfly effect makes inverse modelling based on point evaluations of the trajectory unpractical. 
+Therefore, we here resort to the loss function consisting in the long-time-averaged quantity 
 \begin{equation}\label{eq:long_time_averaged_quantities}
     \langle L(\theta) \rangle_T = \frac{1}{T} \int_0^T h(u(t; \theta), \theta) \, dt, 
 \end{equation}
-of chaotic systems, where $h(u(t; \theta), \theta)$ is the instantaneous loss and $u(t; \theta)$ denotes the state of the dynamical system at time $t$.
-For this example, solutions of the forward sensitivity equations and adjoint method to compute the gradient of $\langle L(\theta) \rangle_T$ with respect to $\theta$ blow up (exponentially fast) instead of converging to the actual gradient.
-To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}.
+where $h(u(t; \theta), \theta)$ is the instantaneous loss and $u(t; \theta)$ denotes the state of the dynamical system at time $t$.
+In the presence of positive Lyapunov exponents, solutions of the forward sensitivity equations and adjoint method to compute the gradient of $\langle L(\theta) \rangle_T$ with respect to $\theta$ blow up (exponentially fast) instead of converging to the actual gradient.
+To address these issues, various modifications and methods have been proposed, including approaches based on ensemble averages~\cite{lea2000sensitivity, eyink2004ruelle}, the Fokker-Planck equation~\cite{thuburn2005climate, blonigan2014probability}, the fluctuation-dissipation theorem~\cite{leith1975climate, abramov2007blended, abramov2008new}, shadowing lemma~\cite{wang2013forward, wang2014least, wang2014convergence, ni2017sensitivity, blonigan2017adjoint, blonigan2018multiple, ni2019adjoint, ni2019sensitivity}, and modifications of Ruelle's formula~\cite{chandramoorthy2022efficient, ni2020fast}, which provides closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$ under the assumption of uniform hyperbolic systems \cite{ruelle1997differentiation,ruelle2009review}.
 
-Another alternative that applies to ergodic dynamical systems is to instead consider the loss $L^\infty(\theta) = \lim_{T\to\infty} \langle L(\theta) \rangle_T$, which depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t; \theta)$. 
-In particular, $L^\infty(\theta)$ does not depend on the initial condition. 
-Under the assumption of uniform hyperbolic systems, it is possible to derive closed-form expressions and differentiability conditions for $ \langle L(\theta) \rangle_T$ \cite{ruelle1997differentiation,ruelle2009review}.
+%Another alternative that applies to ergodic dynamical systems is to instead consider the loss $L^\infty(\theta) = \lim_{T\to\infty} \langle L(\theta) \rangle_T$, which depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t; \theta)$. 
+%In particular, $L^\infty(\theta)$ does not depend on the initial condition. 
 
-In Julia, this is implemented in the sensitivity methods, \texttt{ForwardLSS},  \texttt{AdjointLSS}, and \texttt{NILSS}. % More explanation of what these do
-Standard derivative approximations are inappropriate for such systems and will not give convergent estimates.
-% This includes AD of a solver.
+In Julia, the following methods based on the shadowing lemma are currently supported \texttt{ForwardLSS},  \texttt{AdjointLSS}, \texttt{NILSS}, and \texttt{NILSAS}. 
+Standard derivative approximations are inappropriate for chaotic systems and will not give convergent estimates when the simulation time is a multiple of the Lyapunov time.
