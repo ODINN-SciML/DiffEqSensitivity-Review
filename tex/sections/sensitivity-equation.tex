@@ -18,6 +18,7 @@ Identifying the sensitivity matrix $s(t)$ defined in Equation \eqref{eq:sensitiv
  \frac{ds}{dt} = \frac{\partial f}{\partial u} s + \frac{\partial f}{\partial \theta}.
  \label{eq:sensitivity_equations}
 \end{equation}
+The initial condition is simply given by $s(t_0) = \frac{du_0}{d\theta}$, which is zero unless the initial condition explicitly depends on the parameter $\theta$.
 Both the original system of $n$ ODEs and the forward sensitivity equation of $np$ ODEs are solved simultaneously, which is necessary since the sensitivity differential equation directly depends on the value of $u(t)$.  
 This implies that as we solve the ODEs, we can ensure the same level of numerical precision for the two of them inside the numerical solver.
 
