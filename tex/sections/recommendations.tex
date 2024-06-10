@@ -54,7 +54,7 @@ In a nutshell, continuous adjoint methods tend to be more efficient while discre
 When computing the gradient of a generic function other than a numerical solver, we further recommend the use of AD (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
 This recommendation applies also for the inner VJPs and JVPs calculations performed inside the numerical solver (Section \ref{section:computing-vjp-inside-solver}).
 As discussed in Section \ref{section:direct-methods}, finite differences and complex step differentiation do not really provide an advantage over AD in terms of precision and require the tuning of the stepsize $\varepsilon$. 
-On the other hand, if symbolic differentiation can be more efficient in nested cases (see ...) or when the sparsity pattern of the Jacobian is known, in general this advantage is not drastic in most real cases and can generate difficulties when used inside the numerical solver. 
+On the other hand, if symbolic differentiation can be more efficient in nested cases or when the sparsity pattern of the Jacobian is known, in general this advantage is not drastic in most real cases and can generate difficulties when used inside the numerical solver. 
 
 However, this recommendation is constrained by the availability and interoperability of different AD and sensitivity software. 
 For example, when computing higher-order derivatives multiple layers of direct methods became more difficult to implement and may result in complicated computer programs.

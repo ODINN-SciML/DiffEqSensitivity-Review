@@ -48,14 +48,14 @@ This approach is known as such as universal differential equations \cite{rackauc
 
 There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines, where sensitivity methods have been used for optimal design and optimal control since the 1960s \cite{lions1971optimal}. 
 These models are often based on PDEs and are applied in various fields to improve engineering designs or model parameters with respect to some objective function. 
-The models can involve thousands of parameters, and they require efficient derivative calculations for the use of gradient-based optimizers such as quasi-Newton methods. 
+The models can involve thousands of parameters, and they require efficient derivative calculations for the use of gradient-based optimizers such as quasi-Newton methods \cite{nocedal1999numerical}. 
 Both continuous and discrete adjoints methods, which we will introduce in Sections \ref{section:discrete-adjoint} and \ref{section:computing-adjoints}, have been used extensively, each having different benefits depending on the application.
 
 \subsubsection{Computational fluid dynamics}
 
 DP methods, including AD and adjoint methods, have been crucial in advancing computational fluid dynamics (CFD) applications \cite{KENWAY2019100542}. 
-These techniques have been employed in optimizing the aerodynamics of aircraft for drag reduction, or for weight reduction in aircraft design, leading to significant fuel savings and enhanced performance. 
-In aeroacoustic designs, adjoint methods can be used to minimize noise emissions. 
+These techniques have been employed in optimizing the aerodynamics of aircraft for drag reduction, or for weight reduction in aircraft design, leading to significant fuel savings and enhanced performance \cite{jameson2003aerodynamic}. 
+In aeroacoustic designs, adjoint methods can be used to minimize noise emissions \cite{FREUND201054}. 
 The objective function in these applications typically relates to performance metrics or cost considerations, and a wide array of design parameters can be optimized.
 Entire geometries can be parameterized for \emph{shape optimization}, enabling the refinement of complex structures like airfoils, which are critical for aerodynamic efficiency. 
 Pironneau introduced fundamental methods for shape optimization in fluid mechanics \cite{Pironneau_1974}, and Jameson developed adjoint-based optimization methods that significantly improved aerodynamic designs \cite{Jameson_1988}. 
@@ -64,7 +64,7 @@ Adjoints have also been used for topology optimization \cite{allaire2014shape}.
 
 For aerospace applications, adjoint methods have been used to design supersonic aircraft, enhancing performance and reducing sonic boom impacts \cite{hu2010supersonic,fike2013multi}. 
 Entire aircraft configurations have also been optimized using adjoint methods \cite{chen2016aerodynamic}. 
-Beyond aerospace, other significant applications include optimizing ship hull designs to reduce drag and improve fuel efficiency, the aerodynamic shaping of cars to enhance speed and stability, and the design of wind turbines to maximize energy capture and structural resilience.
+Beyond aerospace, other significant applications include optimizing ship hull designs to reduce drag and improve fuel efficiency \cite{kroger2018ships}, the aerodynamic shaping of cars to enhance speed and stability \cite{Othmer2014caraerodynamics}, and the design of wind turbines to maximize energy capture and structural resilience \cite{dhert2017aerodynamic}.
 
 \subsubsection{Quantum physics}
 

@@ -65,10 +65,10 @@ Systems of partial differential equations (PDEs) include derivatives with respec
 As we discussed in Section \ref{sectopn:motivation}, PDEs play a central solve in physics, optimal design, and geophysics, where these variables are usually associated to time and space. 
 Due to the spatial characteristics of such systems, generally boundary conditions need to be provided besides an initial condition for the solutions. 
 While in Section \ref{section:intro-numerical-solvers} we briefly introduced the fundamentals for numerical solvers of ODEs, there is a broader family of numerical methods to solve PDEs. 
-These include finite element method and the finite volute method, among others. 
-For these methods, a required ingredient is the spatial mesh use to discretize the spatial dimension. 
+These include the finite element method and the finite volume method, among others \cite{tadmor2012review}. 
+For these methods, a required ingredient is the spatial mesh used to discretize the spatial dimension \cite{thompson1998handbook}. 
 In the case of the discrete adjoint method, all these methods will result in a series of discrete equations where the adjoint method introduced in Section \ref{section:discrete-adjoint} will still apply. 
-Continuous methods required a more careful manipulation of the PDE in order to derive correct sensitivity and adjoint equations. 
+Continuous methods require a more careful manipulation of the PDE in order to derive correct sensitivity and adjoint equations. 
 
 The method of lines can be used to solve PDEs by applying a semi-discretization in the spacial coordinate and then numerically solve a new system of ODEs \cite{ascher2008numerical}. 
 This implies that all sensitivity methods for ODEs also apply to PDEs. 
@@ -79,7 +79,7 @@ Let us consider the case of the one-dimensional heat equation
  &= 
  D(x,t) \, 
  \frac{\partial^2 u}{\partial x^2} \qquad x \in [0,1], \, t \in [t_0, t_1]\\
- u(x, 0) &= v(x) \\
+ u(x, t_0) &= v(x) \\
  u(0, t) &= \alpha(t) \\
  u(1, t) &= \beta(t)
  \label{eq:heat-equation}
@@ -87,7 +87,7 @@ Let us consider the case of the one-dimensional heat equation
 \end{align}
 with $D(x, t) > 0$ a global diffusivity coefficient.
 % that includes both spatial and temporal partial derivatives of the unknown function $u(x, t)$.
-In order to numerically solve this equation, we can define an uniform spatial mesh with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
+In order to numerically solve this equation, we can define a uniform spatial mesh with coordinates $m \Delta x$, $m=0, 1, 2, \ldots, N$ and $\Delta x = 1 / N$.
 If we call $u_m(t) = u(m \Delta x, t)$ and $D_m(t) = D(m\Delta x, t)$ the values of the solution and the diffusivity evaluated in the fixed points in the mesh, respectively, then we can replace the second order partial derivative in Equation \eqref{eq:heat-equation} by the corresponding second order finite difference
 \begin{equation}
  \frac{d u_m}{dt} 
@@ -100,7 +100,7 @@ for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$
 Now, following this semi-discretization, equation \eqref{eq:heat-equation-discrete} is a system of first-order ODEs  (i.e. derivatives only with respect to time) with a total of $N-1$ equations.
 % Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE systems. 
 Semi-discretized PDEs typically involve large systems of coupled and possibly stiff ODEs subject to some suitable boundary conditions. 
-Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and resolution of the PDE increase.
+Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and the complexity of the PDE increase.
 Further improvements can be made by exploiting the fact that the coupling in the ODE is sparse, that is, the temporal derivative depends on the state value of the solution in the neighbouring points in the mesh (see Section \ref{section:sparsity}).
 PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy (CFL) condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution \cite{courantPartialDifferenceEquations1967}. 
 
