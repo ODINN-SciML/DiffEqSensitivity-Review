@@ -152,13 +152,15 @@ For example, for the forward Euler method this gives
     &= 
     u^t +  s^t \, \epsilon + \Delta t \, f (u^t + s^t \, \epsilon, \theta + \epsilon, t) \\
     &= 
-    u^t + f(u^t, \theta, t) 
+    u^t + \Delta t f(u^t, \theta, t) 
     + 
-    \Delta t 
-    \left( 
-    \frac{\partial f}{\partial u} s^t + 
+    \left[
+    s^t + \Delta t
+    \left(
+    \frac{\partial f}{\partial u} s^t+ 
     \frac{\partial f}{\partial \theta}
-    \right) \epsilon.
+    \right)
+    \right] \epsilon.
 \end{split}
 \label{eq:sensitivity-equation-AD}
 \end{align}
