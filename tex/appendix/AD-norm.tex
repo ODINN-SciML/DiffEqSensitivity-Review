@@ -1,0 +1,89 @@
+\label{appendix:dual-number-solver}
+
+In this section, we are going to consider certain errors that can potentially show up when combining AD with a numerical solver. 
+Numerical solvers for differential equations usually estimate internally a scaled error computed as 
+define an error term computed as \cite{hairer-solving-1, Rackauckas_Nie_2016}
+\begin{equation}
+    \text{Err}_\text{scaled}^{n+1}
+    =
+    \left( \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \, \times \, M} \right)^2 \right)^{\frac{1}{2}},
+    \label{eq:internal-norm-wrong}
+\end{equation}
+with $\mathfrak{abstol}$ and $\mathfrak{reltol}$ the absolute and relative solver tolerances (customize), respectively; $M$ is the maximum expected value of the numerical solution; and $\text{err}_i^{n+1}$ is an estimation of the numerical error at step $n+1$. 
+Common choices for these include $M = \max (u_i^{n+1}, \hat u_i^{n+1})$ and $\text{err}_i^{n+1} = u_i^{n+1} - \hat u_i^{n+1}$, but these can vary between solvers. 
+Estimations of the local error $\text{err}_i^{n+1}$ can be based on two approximation to the solution based on Runge-Kutta pairs   \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022, hairer-solving-1}; or in theoretical upper bounds provided by the numerical solver. 
+The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a mere increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
+% Chris on https://discourse.julialang.org/t/default-norm-used-in-ode-error-control/70995/4 mention to this norm to be the defaul since 70s
+
+The goal of a stepize controller is to pick $\Delta t_{n+1}$ as large as possible (so the solver requires less total steps) at the same time that $\text{Err}_\text{scaled} \leq 1$. 
+One of the most used methods to archive this is the proportional-integral controller (PIC) that updates the stepsize according to \cite{hairer-solving-2, Ranocha_Dalcin_Parsani_Ketcheson_2022}
+\begin{equation}
+    \Delta t_{n+1} = \eta \, \Delta t_n
+    \qquad 
+    \eta = w_{n+1}^{\beta_1 / q} w_n^{\beta_2 / q} w_{n-1}^{\beta_3 / q}
+    \label{eq:PIC}
+\end{equation}
+with $w_{n+1} = 1 / \text{Err}_\text{scaled}^{n+1}$ the inverse of the scaled error estimates; $\beta_1$, $\beta_2$, and $\beta_3$ numerical coefficients defined by the controller; and $q$ the order of the numerical solver. 
+If the stepsize $\Delta t_{n+1}$ proposed in Equation \eqref{eq:PIC} to update from $u^{n+1}$ to $u^{n+2}$ does not satisfy $\text{Err}_\text{scaled}^{n+2} \leq 1$, a new smaller stepsize is proposed. 
+When $\eta < 1$ (which is the case for simple controllers with $\beta_2 = \beta_3 = 0$), Equation \eqref{eq:PIC} can be used for the local update. 
+It is also common to restrict $\eta \in [\eta_\text{min}, \eta_\text{max}]$ so the stepsize does not change abruptly \cite{hairer-solving-1}. 
+
+When performing forward AD though numerical solver, the error used in the stepsize controller needs to naturally account for both the errors induced in the numerical solution of the original ODE and the errors in the dual component carrying the value of the sensitivity. 
+This relation between the numerical solver and AD has been made explicit when we presented the relationship between forward AD and the sensitivity equations (Section \ref{section:sensitivity-equation}, Equation \eqref{eq:sensitivity-equation-AD}). 
+To illustrate this, let us consider the simple ODE example from Section \ref{section:software-Forward-AD}, consisting in the system of equations 
+\begin{equation}
+\begin{cases}
+ \frac{du_1}{dt} = a u_1 - u_1 u_2 & \quad u_1(0) = 1  \\ 
+ \frac{du_2}{dt} = - a u_2 + u_1 u_2 & \quad u_2(0) = 1.
+\end{cases}
+\end{equation}
+Notice that for $a = 1$ this ODE admits a simple analytical solution $u_1(t) = u_2(t) = 1$ for all times $t$, making this problem very simple to solve numerically.
+The following code solves for the derivative with respect to the parameter $a$ using two different methods\footnote{Full code available at ...}. 
+The second method using forward AD with dual numbers declares the \texttt{internalnorm} argument according to Equation \eqref{eq:internal-norm-wrong}.
+\begin{jllisting}
+using SciMLSensitivity, OrdinaryDiffEq, Zygote, ForwardDiff
+
+function fiip(du, u, p, t)
+    du[1] =  p[1] * u[1] - u[1] * u[2]
+    du[2] = -p[1] * u[2] + u[1] * u[2]
+end
+
+p = [1.]
+u0 = [1.0;1.0]
+prob = ODEProblem(fiip, u0, (0.0, 10.0), p);
+
+# Correct gradient computed using 
+grad0 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = ForwardSensitivity(), saveat = 0.1, abstol=1e-12, reltol=1e-12)), p)
+# grad0 = ([212.71042521681443],)
+
+# Original AD with wrong norm 
+grad1 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = ForwardDiffSensitivity(), saveat = 0.1, internalnorm = (u,t) -> sum(abs2,u/length(u)), abstol=1e-12, reltol=1e-12)), p)
+# grad1 = ([6278.15677493293],)
+\end{jllisting}
+The reason why the two methods give different answers is because the error estimation by the stepsize controller is ignoring numerical errors in the dual component. 
+In the later case, the local estimated error is drastically underestimated to $\text{err}_i^{n+1} = 0$, which makes the stepsize $\Delta t_{n+1}$ to increase by a multiplicative factor at evary step. 
+This can be fixed by instead considering a norm that accounts for both the primal and dual components in the forward pass, 
+\begin{align}
+    \text{Err}_\text{scaled}^{n+1}
+    =
+    \Bigg[ \frac{1}{n(p+1)} \Bigg( 
+    &\sum_{i=1}^n \left( \frac{u_i^{n+1} - \hat u_i^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \max (u_i^{n_1}, \hat u_i^{n+1})} \right)^2 \nonumber \\
+    + 
+    &\sum_{i=1}^n \sum_{j=1}^p  
+    \left( \frac{s_{ij}^{n+1} - \hat s_{ij}^{n+1}}{\mathfrak{abstol} + \mathfrak{reltol} \max (s_{ij}^{n_1}, \hat s_{ij}^{n+1})} \Bigg)^2 \right)
+    \Bigg]^{\frac{1}{2}},
+    \label{eq:internal-norm-correct} 
+\end{align}
+which now gives the right answer
+\begin{jllisting}
+sse(x::Number) = x^2
+sse(x::ForwardDiff.Dual) = sse(ForwardDiff.value(x)) + sum(sse, ForwardDiff.partials(x))
+
+totallength(x::Number) = 1
+totallength(x::ForwardDiff.Dual) = totallength(ForwardDiff.value(x)) + sum(totallength, ForwardDiff.partials(x))
+totallength(x::AbstractArray) = sum(totallength,x)
+
+grad3 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = ForwardDiffSensitivity(), saveat = 0.1, internalnorm = (u,t) -> sqrt(sum(x->sse(x),u) / totallength(u)), abstol=abstol, reltol=reltol)), p)
+# grad3 = ([212.71042521681392],)
+\end{jllisting}
+Notice that current implementations of forward AD inside \texttt{SciMLSensitivity.jl} already accounts for this and there is no need to specify the internal norm $\clubsuit_\text{\ref{code:AD-wrong}}$. 

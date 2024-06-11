@@ -1,39 +1,39 @@
 The simplest way of evaluating a derivative is by computing the difference between the evaluation of the function at a given point and a small perturbation of the function. 
-In the case of a loss function, we can approximate
+In the case of the function $L : \R^p \mapsto \R$, we can approximate
 \begin{equation}
- \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon},
+ \frac{dL}{d\theta_i} (\theta) = \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon} + \mathcal O (\varepsilon),
  \label{eq:finite_diff}
 \end{equation}
 with $e_i$ the $i$-th canonical vector and $\varepsilon$ the stepsize. 
-Even better, it is easy to see that the centered difference scheme
+Even better, the centered difference scheme leads to
 \begin{equation}
- \frac{dL}{d\theta_i} (\theta) \approx \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon},
+ \frac{dL}{d\theta_i} (\theta) 
+ =
+ \frac{L(\theta + \varepsilon e_i ) - L(\theta - \varepsilon e_i)}{2\varepsilon}
+ + \mathcal O (\varepsilon^2).
  \label{eq:finite_diff2}
 \end{equation}
-leads also to a more precise estimation of the derivative. 
-While Equation \eqref{eq:finite_diff} gives to an error of magnitude $\mathcal O (\varepsilon)$, the centered differences schemes improves to $\mathcal O (\varepsilon^2)$ \cite{ascher2008-numerical-methods}. 
+% leads to a more accurate estimation of the derivative. 
+While Equation \eqref{eq:finite_diff} gives the derivative to an error of magnitude $\mathcal O (\varepsilon)$, the centered differences schemes improves the accuracy to $\mathcal O (\varepsilon^2)$ \cite{ascher2008-numerical-methods}. 
+Further finite difference stencils of higher order exist in the literature \cite{Fornberg1988}. 
+% This method falls under the forward and discrete category, because...
  
-However, there are a series of problems associated with this approach.
-The first one is due to how this scales with the number of parameters $p$.
-Each directional derivative requires the evaluation of the loss function $L$ twice.
-For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations, which at the same time demands solving the differential equation in forward mode each time for a new set of parameters.
-
-A second problem is due to rounding errors.
-Every computer ultimately stores and manipulates numbers using floating points arithmetic \cite{Goldberg_1991_floatingpoint}. 
+Finite difference scheme are subject to a number of issues, related to the parameter vector dimension and rounding errors.
+Firstly, calculating directional derivatives requires at least one extra function evaluations per parameter dimension.
+For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations which demands solving the differential equation each time for a new set of parameters.
+Every computer ultimately stores and manipulates numbers using floating point arithmetic \cite{Goldberg_1991_floatingpoint}. 
 Equations \eqref{eq:finite_diff} and \eqref{eq:finite_diff2} involve the subtraction of two numbers that are very close to each other, which leads to large cancellation errors for small values of $\varepsilon$ that are amplified by the division by $\varepsilon$.
 On the other hand, large values of the stepsize give inaccurate estimations of the gradient. 
-Finding the optimal value of $\varepsilon$ that trade-offs these two effects is sometimes called the \textit{stepsize dilemma} \cite{mathur2012stepsize-finitediff}.
-Due to this, some heuristics and algorithms have been introduced in order to pick the value of $\varepsilon$ \cite{mathur2012stepsize-finitediff, BARTON_1992_finite_diff, SUNDIALS-hindmarsh2005sundials}, 
-Some of these methods require some a priori knowledge about the function to be differentiated, and others are based on arbitrary historical rules. 
-If many analytical functions, like polynomials and trigonometric functions, can be computed with machine precision, numerical solutions of differential equations have errors larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small. 
-We will further emphasize this point in Section \ref{sec:computational-implementation}.
+Finding the optimal value of $\varepsilon$ that balances these two effects is sometimes known as the \textit{stepsize dilemma}, for which algorithms based on prior knowledge of the function to be differentiated or algorithms based on heuristic rules have been introduced \cite{mathur2012stepsize-finitediff, BARTON_1992_finite_diff, SUNDIALS-hindmarsh2005sundials}. 
+% Victor suggestion: Second, finite differences involve the subtraction of two closely valued numbers, which can lead to significant cancellation errors when the step size $\varepsilon$ is small. numerical solutions of differential equations have errors that are typically larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small (see also \ref{sec:computational-implementation}).  This error is exacerbated by the division by $\varepsilon$, leading to what is known as the "stepsize dilemma".This dilemma concerns finding an optimal $\varepsilon$ that balances the accuracy of the gradient estimation against the amplification of rounding errors. Various methods, including those based on prior knowledge of the function or heuristic rules, have been proposed to address this challenge
+Furthermore, numerical solutions of differential equations have errors that are typically larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small (see also \ref{sec:computational-implementation}).
 
-Even with all these caveats, finite differences can be useful when computing Jacobian-vector products. 
-Given a Jacobian matrix $J = \frac{\partial f}{\partial u}$ (or the sensitivity $s = \frac{\partial u}{\partial \theta}$) and a vector $v$, the product $Jv$ corresponding to the directional derivative can be approximated as 
+Despite these caveats, finite differences can prove useful in specific contexts, such as computing Jacobian-vector products (JVPs). 
+Given a Jacobian matrix $J = \frac{\partial f}{\partial u}$ (or the sensitivity $s = \frac{\partial u}{\partial \theta}$) and a vector $v$, the product $Jv$ corresponding to the directional derivative and can be approximated as 
 \begin{equation}
     Jv \approx \frac{f(u + \varepsilon v, \theta, t) - f(u, \theta, t)}{\varepsilon}
 \end{equation}
-This approach is used in numerical solvers based on Krylow methods, where linear systems are solved by iterative solving matrix-vectors products \cite{Ipsen_Meyer_1998}.
+This approach is used in numerical solvers based on Krylov methods, where linear systems are solved by iteratively solving matrix-vectors products \cite{Ipsen_Meyer_1998}.
 
 % Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines} \cite{ascher2008numerical}. 
 % To illustrate this point, let us consider the case of the one-dimensional heat equation

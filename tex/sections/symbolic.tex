@@ -1,2 +1,12 @@
-Sometimes AD is compared against symbolic differentiation.
-According to \cite{Laue2020}, these two are the same and the only difference is in the data structures used to implement them, while \cite{Elliott_2018} suggests that AD is symbolic differentiation performed by a compiler.
+In symbolic differentiation, functions are represented algebraically instead of algorithmically, which is why many symbolic differentiation tools are included inside computer algebra systems (CAS) \cite{Symbolics_jl_2022}. 
+Instead of numerically evaluating the final value of a derivative, symbolic systems assign variable names, expressions, operations, and literals to \textit{algebraic} objects. 
+For example, the relation $y = x^2$ is interpreted as expression with two variables, $x$ and $y$, and the symbolic system generates the derivative $y' = 2 \times x$ with $2$ a numeric literal, $\times$ a binary operation, and $x$ the same variable assignment as in the original expression.
+When the function to differentiate is large, symbolic differentiation can lead to \textit{expression swell}, that is, exponentially large or complex symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
+Simplification routines implemented in CAS may however reduce the size and complexity of algebraic expressions by finding common sub-expressions.  
+This can make symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 
+
+It is important to acknowledge the close relationship between AD and symbolic differentiation.
+There is no agreement as to whether symbolic differentiation should be classified as AD \cite{juedes1991taxonomy, Elliott_2018, Laue2020} or as a different method \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.  
+Both are equivalent in the sense that they perform the same operations but the underlying data structure is different \cite{Laue2020}. 
+Here, expression swell is a consequence of the underlying representation when this does not allow for common sub-expressions. 
+This can also be understood as if AD is symbolic differentiation performed by a compiler \cite{Elliott_2018}, meaning that different AD can be classified based on the level of integration with the underlying source language \cite{juedes1991taxonomy}.

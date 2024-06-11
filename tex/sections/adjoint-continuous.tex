@@ -1,11 +1,9 @@
 The continuous adjoint method, also known as continuous adjoint sensitivity analysis (CASA), operates by defining a convenient set of new differential equations for the adjoint variable and using this to compute the gradient in a more efficient manner. 
-Mathematically speaking, the adjoint equations can be derived from a duality or Lagrangian point of view \cite{Giles_Pierce_2000}.
-We prefer to derive the equation using the former methods since we believe it gives better insights to how the method works and also allow to generalize to other user cases. 
-The derivation of both the discrete and continuous adjoint methods using Lagrangian multipliers can be found in Appendix \ref{appendix:lagrangian}.
-We encourage the interested reader to make the effort of following how the continuous adjoint method follows the same logic than the discrete methods, but where the discretization of the differential equation does not happen until the very last step, when the solutions of the differential equations involved need to be numerically evaluated. 
+We encourage the interested reader to make the effort of following how the continuous adjoint method follows the same logic as the discrete adjoint method, but where the discretization of the differential equation does not happen until the very last step, when the solutions of the differential equations involved need to be numerically evaluated. 
+The Lagrangian derivation of the continuous adjoint method can also be found in Appendix \ref{appendix:lagrangian}.
 %\footnote{Based on slides of Chris Rackauckas about "Data Efficient model discovery with Scientific Machine Learning", Neural ODE paper, video "The use and practice of scientific machine learning". Paper comparing CSA and DSA} 
 
-Consider an integrated loss function of the form 
+Consider an integrated loss function defined in Equation \eqref{eq:integrated-loss-function} of the form 
 \begin{equation}
     L(u; \theta) = \inttime h(u(t;\theta), \theta) dt
 \end{equation}
@@ -17,17 +15,17 @@ and its derivative with respect to the parameter $\theta$ given by the following
     \label{eq:casa-loss}
 \end{equation}
 Just as in the case of the discrete adjoint method, the complicated term to evaluate in the last expression is the sensitivity (Equation \eqref{eq:sensitivity-definition}).
-Just as in the case of the discrete adjoint method, the trick is to evaluate the VJP $\frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta}$ by defining an intermediate adjoint variable. 
+Again, the trick is to evaluate the VJP $\frac{\partial h}{\partial u} \frac{\partial u}{\partial \theta}$ by first defining an intermediate adjoint variable. 
 The continuous adjoint equation now is obtained by finding the dual/adjoint equation of the sensitivity equation using the weak formulation of Equation \eqref{eq:sensitivity_equations}. 
 The adjoint equation is obtained by writing the sensitivity equation in the form 
 \begin{equation}
-    \inttime \lambda(t)^T \left( \frac{ds}{dt} - f(u, \theta, t) \, s - \frac{\partial f}{\partial \theta}  \right) dt 
+    \inttime \lambda(t)^T \left( \frac{ds}{dt} - \frac{\partial f}{\partial u} \, s - \frac{\partial f}{\partial \theta}  \right) dt 
     = 
     0,
     \label{eq:integrated-sensitivity-equation}
 \end{equation}
-where this equation must be satisfied for every function $\lambda(t)$ in order for Equation \eqref{eq:continuous-adjoint} to be true. 
-The next step is to get rid of all time derivative applied to the sensitivity $s(t)$ using integration by parts: 
+where this equation must be satisfied for every function $\lambda(t)$ in order for Equation \eqref{eq:sensitivity_equations} to be true. 
+The next step is to get rid of the time derivative applied to the sensitivity $s(t)$ using integration by parts: 
 \begin{equation}
     \inttime \lambda(t)^T \frac{ds}{dt} dt
     = 
@@ -37,7 +35,7 @@ The next step is to get rid of all time derivative applied to the sensitivity $s
 \end{equation}
 Replacing this last expression into Equation \eqref{eq:integrated-sensitivity-equation} we obtain 
 \begin{equation}
-    \inttime \left( - \frac{d\lambda^T}{dt} -  \lambda(t)^T f(u, \theta, t) \right) s(t) dt
+    \inttime \left( - \frac{d\lambda^T}{dt} -  \lambda(t)^T \frac{\partial f}{\partial u} \right) s(t) dt
     =
     \inttime \lambda(t)^T \frac{\partial f}{\partial \theta} dt 
     - 
@@ -47,14 +45,14 @@ Replacing this last expression into Equation \eqref{eq:integrated-sensitivity-eq
     \label{eq:casa-semiadjoint}
 \end{equation}
 At first glance, there is nothing particularly interesting about this last equation. 
-However, both Equations \eqref{eq:casa-loss} and \eqref{eq:casa-semiadjoint} involved a VJP with $s(t)$. 
+However, both Equations \eqref{eq:casa-loss} and \eqref{eq:casa-semiadjoint} involve a VJP with $s(t)$. 
 Since Equation \eqref{eq:casa-semiadjoint} must hold for every function $\lambda(t)$, we can pick $\lambda(t)$ to make the terms involving $s(t)$ in Equations \eqref{eq:casa-loss} and \eqref{eq:casa-semiadjoint} to perfectly coincide. 
 This is done by defining the adjoint $\lambda(t)$ to be the solution of the new system of differential equations
 \begin{equation}
     \frac{d\lambda}{dt} 
     = 
     - 
-    f(u, \theta, t)^T \lambda  
+    \frac{\partial f}{\partial u}^T \lambda  
     - 
     \frac{\partial h^T}{\partial u} 
     \qquad \quad \lambda(t_1) = 0. 
@@ -80,8 +78,12 @@ Finally, replacing this inside the expression for the gradient of the loss funct
     \label{eq:casa-final-loss-gradient}
 \end{equation}
 The full algorithm to compute the full gradient $\frac{dL}{d\theta}$ can be described as follows:
-\begin{enumerate}
+\begin{enumerate}[label=(\roman*)]
+% \begin{enumerate}
     \item Solve the original differential equation $\frac{du}{dt} = f(u, t, \theta)$;
-    \item Solve the backwards adjoint differential equation \eqref{eq:casa-adjoint-equation};
+    \item Solve the backwards adjoint differential equation given by Equation \eqref{eq:casa-adjoint-equation};
     \item Compute the gradient using Equation \eqref{eq:casa-final-loss-gradient}.
 \end{enumerate}
+The same recipe used here to derived the continuous adjoint method for a system of ODEs can be employed to derive adjoint methods for PDEs \cite{Giles_Pierce_2000} and DAE \cite{Cao_Li_Petzold_2002}. 
+
+

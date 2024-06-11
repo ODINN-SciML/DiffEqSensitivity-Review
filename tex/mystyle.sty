@@ -1,0 +1,102 @@
+\ProvidesPackage{mystyle}
+
+\usepackage{graphicx} % Include figure files
+\usepackage{caption}
+\usepackage{dcolumn} % Align table columns on decimal point
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
+\usepackage{todonotes} % Taking notes
+\usepackage{csquotes}
+\usepackage{titlesec}
+\usepackage{multirow}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%  Page setup  %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-0.5in}
+\setlength{\textheight}{9in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   Colors   %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{color} % Include colors for document elements
+\definecolor{darkorange}{rgb}{.71,0.21,0.01}
+\definecolor{darkgreen}{rgb}{.12,.54,.11}
+\definecolor{darkviolet}{RGB}{142, 68, 173}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% Hyperlinks %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[pdftex,  % needed for pdflatex
+            breaklinks=true,  % so long urls are correctly broken across lines
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=darkorange,
+            citecolor=darkviolet,
+            ]
+    {hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% Bibliography %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xurl}
+\usepackage[
+            backend=biber,
+            style=authoryear-comp, 
+            sorting=nyt,
+            autocite=superscript,
+            % firstinits=false,
+            uniquename=false,
+            uniquelist=false,
+            giveninits=true,
+            url=false,
+            doi=true,
+            isbn=false,
+            eprint=false,
+            maxnames=1, 
+            maxcitenames=1,
+            maxbibnames=90,
+            sortcites=true,
+            uniquelist=false, 
+            ]
+    {biblatex}
+    
+% Redefinde cite command to be based on autocite with superscript
+\renewcommand{\cite}[1]{\parencite{#1}}
+
+% Define how to print a publication in the body of the text
+\newcommand{\printpublication}[1]{\AtNextCite{\defcounter{maxnames}{99}}\fullcite{#1}}
+
+% Font and format of printed bibliography
+% e.g., \renewcommand{\mkbibnamesuffix}[1]{\textsc{#1}}
+\renewcommand{\mkbibnamegiven}[1]{{#1}}
+\renewcommand{\mkbibnamefamily}[1]{{#1}}
+\renewcommand{\mkbibnameprefix}[1]{{#1}}
+\renewcommand{\mkbibnamesuffix}[1]{{#1}}
+
+% Font in blibliography
+\renewcommand{\bibfont}{\normal}
+\renewcommand{\bibitemsep}{0.2\itemsep}
+
+\DeclareFieldFormat{labelnumberwidth}{{#1\adddot}}
+
+% \DeclareNameAlias{author}{family-given}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   Captions   %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareCaptionFormat{custom}
+% #1 = Figure 
+% #2 = Number format
+% #3 = Caption text
+{
+    \begin{minipage}{0.90\textwidth}
+    \textbf{#1#2}\textit{\small #3}
+    \end{minipage}
+}
+\captionsetup{format=custom}

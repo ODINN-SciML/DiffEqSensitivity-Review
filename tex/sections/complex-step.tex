@@ -1,27 +1,34 @@
-An alternative to finite differences that avoids rounding errors is based on complex variable analysis. 
+An alternative to finite differences that avoids subtractive cancellation errors is based on complex variable analysis. 
 The first proposals originated in 1967 using the Cauchy integral theorem involving the numerical evaluation of a complex-valued integral \cite{Lyness_1967, Lyness_Moler_1967}.
-A new approach recently emerged that uses the Taylor expansion of a function to define its complex generalization \cite{Squire_Trapp_1998_complex_diff, Martins_Sturdza_Alonso_2003_complex_differentiation}. 
-Assuming that we have one single scalar parameter $\theta \in \R$, then the function $L(\theta)$ can be expanded as 
-the Taylor expansion
+A newer approach recently emerged that uses the complex generalization of a real function to evaluate its derivatives \cite{Squire_Trapp_1998_complex_diff, Martins_Sturdza_Alonso_2003_complex_differentiation}. 
+Assuming that the function $L(\theta)$ admits a holomorphic extension (that is, it can be extended to a complex-valued function that is analytical and differentiable \cite{stein2010complex}), the Cauchy-Riemann conditions can be used to evaluate the derivative with respect to one single scalar parameter $\theta \in \R$ as
+\begin{equation}
+    \frac{dL}{d\theta} = \lim_{\varepsilon \rightarrow 0} \frac{\text{Im}(L(\theta + i \varepsilon))}{\varepsilon},
+\end{equation}
+where $i$ is the imaginary unit satisfying $i^2 = -1$. 
+The order of this approximation can be found using the Taylor expansion of a function,
 \begin{equation}
     L(\theta + i \varepsilon)
     = 
-    L(\theta) + i \varepsilon L'(\theta) 
+    L(\theta) + i \varepsilon \frac{dL}{d\theta} 
     - 
-    \frac 1 2
-    L''(\theta) \varepsilon^2
+    \frac 1 2  \varepsilon^2
+    \frac{d^2 L}{d\theta^2}
     + 
-    \mathcal O (\varepsilon^3),
+    \mathcal O (\varepsilon^3).
 \end{equation}
-where $i$ is the imaginary unit satisfying $i^2 = -1$. 
-From this equation, we can observe that many factors vanish when we compute the imaginary part $\text{Im}(L(\theta + i \varepsilon))$, which leads to
+Computing the imaginary part $\text{Im}(L(\theta + i \varepsilon))$ leads to
 \begin{equation}
-    L'(\theta) 
+    \frac{dL}{d\theta} 
     = 
     \frac{\text{Im}(L(\theta + i \varepsilon))}{\varepsilon}
     + 
-    \mathcal{O} (\varepsilon^2)
+    \mathcal{O} (\varepsilon^2).
+    \label{eq:complex-step-definition}
 \end{equation}
 The method of \textit{complex step differentiation} consists then in estimating the gradient as $\text{Im}(L(\theta + i \varepsilon)) / \varepsilon$ for a small value of $\varepsilon$. 
 Besides the advantage of being a method with precision $\mathcal{O}(\varepsilon^2)$, the complex step method avoids subtracting cancellation error and then the value of $\varepsilon$ can be reduced to almost machine precision error without affecting the calculation of the derivative. 
+However, a major limitation of this method is that it only just for locally complex analytical functions \cite{Martins_Sturdza_Alonso_2003_complex_differentiation} and does not outperform AD. 
+One additional limitation is that it requires the evaluation of mathematical functions with small complex values, e.g., operations such as $\sin(1 + 10^{-16} i)$, which are not necessarily always computable to high accuracy with modern math libraries.
 Extension to higher order derivatives can be done by introducing multicomplex variables \cite{Lantoine_Russell_Dargent_2012}. 
+

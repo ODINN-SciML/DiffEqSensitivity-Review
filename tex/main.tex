@@ -1,42 +1,40 @@
-\documentclass[12pt]{article}
-
-\setlength{\oddsidemargin}{0in}
-\setlength{\textwidth}{6.5in}
-\setlength{\topmargin}{-0.5in}
-\setlength{\textheight}{9in}
+\documentclass[11pt]{article}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% General packages %%%%%
+%%%%%%% Customized packages %%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{graphicx} % Include figure files
-\usepackage{caption}
-\usepackage{color} % Include colors for document elements
-\usepackage{dcolumn} % Align table columns on decimal point
-\usepackage{float}
-\usepackage[hidelinks]{hyperref} % hidelinks added to not display red box for links
-\usepackage{algorithm}
-\usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%% Customized packages %%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Authors information
+\usepackage{mystyle}
 \usepackage{contributors}
-% Julia code
-\usepackage{jlcode}
-% Math 
 \usepackage{mymath}
-% Bibliography %
-\usepackage{mybib}
+\usepackage{jlcode}
+
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
+% IMPORTANT NOTE:
+% All the bib files are centralized here in bibliography.bib, which is 
+% automatically created by compiling all the required cites in the references contained inside ./bibs/
+% Please add your references in a different .bib file inside the bibs folder. 
+% It is ok if the first time you add the cites they don't show up, Facu will fix it.
 \addbibresource{bibliography.bib}
+% Alternative bib source
+% \addbibresource{bibs/bibliography-facu.bib}
+% \addbibresource{bibs/bibliography-heimbach.bib}
+% \addbibresource{bibs/bibliography-jordi.bib}
+% \addbibresource{bibs/bibliography-avik.bib}
+% For now, this file needs to be added manually:
+\addbibresource{bibs/bibliography-victor.bib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Document %%%%%
+%%%%%%%%%%%%% Document %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{A Review of Sensitivity Methods \\ for Differential Equations}
+
+\title{Differentiable Programming for Differential Equations: \\ A Review}
 
 \date{\today}
 
@@ -67,54 +65,71 @@
 \section{Introduction}
 \input{sections/introduction}
 
-\section{Scientific motivation}
+\section{Scientific motivation: A domain science perspective}
+\label{sectopn:motivation}
 \input{sections/motivation}
 
-\section{Methods}
+\section{Methods: A mathematical perspective}
 \label{section:methods}
 \input{sections/methods-intro}
 
 \subsection{Preliminaries}
+\label{section:preliminaries}
 \input{sections/preliminaries}
 
 \subsection{Finite differences}
+\label{section:finite-diffences}
 \input{sections/finite-differences}
 
-\subsection{Complex step differentiation}
-\input{sections/complex-step}
-
 \subsection{Automatic differentiation}
+\label{section:automatic-differentiation}
 \input{sections/automatic-differentiation}
 
+\subsection{Complex step differentiation}
+\label{section:comple-step-differentiation}
+\input{sections/complex-step}
+
 \subsection{Symbolic differentiation}
+\label{section:symbolic}
 \input{sections/symbolic}
 
 \subsection{Sensitivity equations}
+\label{section:sensitivity-equation}
 \input{sections/sensitivity-equation}
 
-\subsection{Adjoint methods}
-\label{section:adjoint-methods}
-\input{sections/adjoint-intro}
+% \subsection{Adjoint methods}
+% \label{section:adjoint-methods}
+% \input{sections/adjoint-intro}
 
-\subsubsection{Discrete adjoint method}
+\subsection{Discrete adjoint method}
+\label{section:discrete-adjoint}
 \input{sections/adjoint-state}
 
-\subsubsection{Continuous adjoint method}
+\subsection{Continuous adjoint method}
+\label{section:continuous-adjoint}
 \input{sections/adjoint-continuous}
 
-\section{Computational implementation}
+\subsection{Mathematical comparison of the methods}
+\label{section:compatison-math}
+\input{sections/methods-comparison}
+
+\section{Implementation: A computer science perspective}
 \label{sec:computational-implementation}
-\input{sections/software}
+\input{sections/software-intro}
+\subsection{Direct methods}
+\label{section:direct-methods}
+\input{sections/software-direct}
+\subsection{Solver-based methods}
+\label{section:solver-methods}
+\input{sections/software-solver}
 
 % \section{Extensions}
 
-% \section{Recommendations}
-% \input{sections/recommendations}
+\section{Recommendations}
+\input{sections/recommendations}
 
-% \section{Conclusions}
-% \input{sections/conclusions}
-
-% \section{Do we need full gradients?}
+\section{Conclusions}
+\input{sections/conclusions}
 
 % \section{Notation}
 % \input{sections/notation}
@@ -125,11 +140,18 @@
 \addcontentsline{toc}{section}{Appendices}
 \renewcommand{\thesubsection}{\Alph{subsection}}
 
-\subsection{Lagrangian derivation of adjoints}
+% \subsection{Statistical foundations of inverse modelling}
+% \input{sections/statistical-foundations}
+\subsection{Lagrangian formulation of the adjoint method}
 \input{appendix/lagrangian}
-
-\subsection{Supplementaty code}
+\newpage
+\subsection{When AD is algorithmically correct but numerically wrong}
+\input{appendix/AD-norm}
+\newpage
+\subsection{Supplementary code}
 \input{appendix/code}
+\label{appedix:code}
+
 
 % \section{Glossary} 
 

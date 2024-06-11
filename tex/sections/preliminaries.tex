@@ -1,73 +1,205 @@
-Consider a system of ordinary differential equations (ODEs) given by
+Consider a system of first-order ODEs given by
 \begin{equation}
- \frac{du}{dt} = f(u, \theta, t),
+ \frac{du}{dt} = f(u, \theta, t)
  \label{eq:original_ODE}
 \end{equation}
-where $u \in \mathbb{R}^n$ is the unknown solution; $f$ is a function that depends on the state $u$, some parameter $\theta \in \mathbb R^p$, and an independent variable $t$ which we will refer as time, but it can represent another quantity; and with initial condition $u(t_0) = u_0$.
-Here $n$ denotes the total number of ODEs and $p$ the size of a parameter embedded in the functional form of the differential equation.
-Although here we consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended of the case of partial differential equations (for example, via the method of lines \cite{ascher2008numerical}) and algebraic differential equations (ADE).
+subject to the initial condition $u(t_0) = u_0$, where $u \in \mathbb{R}^n$ is the unknown solution vector of the ODEs, $f: \R^n \times \R^p \times \R \mapsto \R^n$ is a function that depends on the state $u$, $\theta \in \mathbb R^p$ is a vector parameter, and $t$ refers to time.
+Here, $n$ denotes the total number of ODEs and $p$ the number of parameters of the differential equation.
+Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to the case, equation \eqref{eq:original_ODE} also extends to partial differential equations (PDEs) (when discretized via e.g. the method of lines \cite{ascher2008numerical}), and to differential algebraic equations (DAEs) \cite{hairer-solving-2}.
+% In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
 % Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
-Except for a minority of functions $f(u,\theta, t)$, solutions of the Equation \eqref{eq:original_ODE} need to be computed using a numerical solver. 
+Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqref{eq:original_ODE} need to be computed using numerical solvers. 
 
-We are interested in computing the gradient of a given function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$.
-Here we are using the letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes a broader class of functions. 
+\subsubsection{Numerical solvers for ordinary differential equations}
+\label{section:intro-numerical-solvers}
+% Work in progress due to refactoring
+
+Numerical solvers for the solution of ODEs or IVPs can be classified as one-step methods, among which Runge-Kutta methods are the most widely used, and multi-step methods \cite{hairer-solving-1}.
+% With a long historical record in numerical analysis, Runge-Kutta methods generalize quadrature rules to iteratively solve for the time discretization $u^{n} \approx u(t_n)$. 
+Given an integer $s$, $s$-stage Runge-Kutta methods are defined by generalizing numerical integration quadrature rules as follows
+\begin{align}
+\begin{split}
+    u^{n+1} 
+    &= 
+    u^n 
+    + 
+    \Delta t_n \sum_{i=1}^s b_i k_i \\
+    k_i 
+    &= 
+    f \left(u^n + \sum_{j=1}^s a_{ij} k_j , \, \theta , \, t_n + c_i \Delta t_n \right) \qquad i=1,2, \ldots, s.
+    \label{eq:Runge-Kutta-scheme}
+\end{split}
+\end{align}
+where $u^{n} \approx u(t_n)$ approximates the solution at time $t_n$, where $\Delta t_n = t_{n+1}-t_n$, and where $a_{ij}$, $b_i$, and $c_j$ are scalar coefficients with $i,j=1, 2,\ldots, j$, usually represented in the form of a tableau. 
+A Runge-Kutta method is called explicit if $a_{ij}=0$ for $i \leq j$; diagonally implicit if $a_{ij}=0$ for $i < j$; and fully implicit otherwise. 
+Different choices of the number of stages $s$ and coefficients give different orders of convergence of the numerical scheme \cite{Butcher_Wanner_1996, Butcher_2001}. 
+
+In contrast, multi-step linear solvers are of the form 
+\begin{equation}
+    \sum_{i=0}^{k_1} \alpha_{ni} u^{n-i} 
+    =
+    \Delta t_n \sum_{j=0}^{k_2} \beta_{nj} f(u^{n-j}, \theta, t_{n-j})
+\end{equation}
+where $\alpha_{ni}$ and $\beta_{nj}$ are numerical coefficients \cite{hairer-solving-1}.
+In most cases, including Adam method and backwards differentiation formulas (BDF), we have the coefficients $\alpha_{ni} = \alpha_i$ and $\beta_{nj}=\beta_j$, meaning that the coefficient do not depend on the iteration. 
+Notice that multi-step linear methods are linear in the function $f$, which is not the case in Runge-Kutta methods with intermediate evaluations \cite{ascher2008numerical}.
+Explicit methods are characterized by $\beta_{n, 0} = 0$ and are easy to solve by direct iterative updates. 
+For implicit methods, the usually non-linear equation 
+\begin{equation}
+    g_i(u_i; \theta) = u_i - h \beta_{n0} f(u_i, \theta, t_i) - \alpha_i = 0,
+    \label{eq:solver-constriant-example}
+\end{equation}
+with $\alpha_i$ a computed coefficient that includes the information of all past iterations, can be solved using predictor-corrector methods \cite{hairer-solving-1} or iteratively using Newton's method \cite{SUNDIALS-hindmarsh2005sundials}.  
+% \begin{equation}
+%     u_i^{(j+1)} 
+%     = 
+%     u_i^{(j)} - \left( \frac{\partial g_i}{\partial u_i} (u_i^{(j)}; \theta) \right)^{-1} g(u_i^{(j)}; \theta).
+%     \label{eq:newton-method}
+% \end{equation}
+
+% Stiffness
+When choosing a numerical solver for differential equations, one crucial factor to consider is the stiffness of the equation.
+Stiffness encompasses various definitions, reflecting its historical development and different types of instabilities \cite{Dahlquist_1985}.
+Two definitions are noteworthy
 \begin{itemize}
-    \item \textbf{Empirical loss functions}. This is usually a real-valued function that quantifies the accuracy or prediction power of a given model. Examples of loss functions include the squared error
+    \item Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
+    \item Stiff differential equations are characterized by dynamics with different time scales \cite{kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
+\end{itemize} 
+Stability properties can be achieved by different means, for example by the use of implicit methods or stabilized explicit methods, such as Runge–Kutta–Chebyshev \cite{van1980internal, hairer-solving-2}. 
+When using explicit methods, smaller timesteps may be required to guarantee stability. 
+
+% Timestep controller
+Another important consideration is the choice of the time-steps $\Delta t_i$ in a numerical solver \cite{hairer-solving-1}. 
+Modern solvers include stepsize controllers that pick $\Delta t_i$ as large as possible to minimize the total number of steps while preventing large errors in the numerical solution controlled by adjustable relative and absolute tolerances (see Appendix \ref{appendix:dual-number-solver}). 
+
+% Generalization 
+% It is important to remark that direct methods to solve higher order systems of ODEs exist, including Nystrom methods, but we can usually reduce them to a extended systems of ODEs \cite{hairer-solving-1}. 
+% Partial differential equations (PDEs) can be solved via the method of lines by discretizing the spatial derivatives and just keeping the temporal derivatives in the form of a system of ODEs \cite{ascher2008numerical}.  
+% Furthermore, it is important to remark that finite elements methods also exist to solve PDEs.  
+
+% to a system of ODEs Replacing derivatives by finite differences is also a common practice when solving partial differential equations (PDEs), a technique known as the \textit{method of lines} 
+% PDE, meshes, ... 
+
+% Krilov methods work well for non-stiff methods, but the inverse condition number coincides with the stiff index, meaning that in stiff cases we should solve the system with full inversion models, which requires cubic cost in the number of ODEs 
+
+\subsubsection{What to differentiate and why?}
+
+In most applications, the need for differentiating the solution of ODEs stems from the need to obtaining the gradient of a function $L(u(\cdot, \theta))$ with respect to the parameter $\theta$, where $L$ can denote
+\begin{itemize}
+    \item \textbf{A loss function or an empirical risk function}. This is usually a real-valued function that quantifies the level of agreement between the model prediction and observations. Examples of loss functions include the squared error
     \begin{equation}
-         L(u(\cdot, \theta)) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}(t_1)} \|_2^2,
+         L(\theta) = \frac{1}{2} \| u(t_1; \theta) - u^{\text{target}}(t_1) \|_2^2,
          \label{eq:quadratic-loss-function}
     \end{equation}
-    where $u^{\text{target}(t_1)}$ is the desired target observation at some later time $t_1$.
+    where $u^{\text{target}}(t_1)$ is the desired target observation at some later time $t_1$, and $\| \cdot \|_2$ is the Euclidean norm.
     More generally, we can evaluate the loss function at points of the time series for which we have observations, 
     \begin{equation}
-        L(u(\cdot, \theta)) = \frac{1}{2} \sum_{i=1}^N \| u(t_i; \theta) - u^{\text{target}(t_i)} \|_2^2.
+        L(\theta) 
+        = 
+        \frac{1}{2} \sum_{i=1}^N 
+        \, \omega_i \,
+        \| u(t_i; \theta) - u^{\text{target}}(t_i) \|_2^2.
+    \end{equation}
+    with $\omega_i$ some arbitrary non-negative weights.
+    More generally, misfit functions used in optimal estimation and control problems are composite maps from the parameter space $\theta$ via the model's state space, in this case, the solution $u(t)$, to the observation space defined by a new variable $y(t) = H(u(t, \theta))$, where $H: \R^n \mapsto \R^o$ is a given function mapping the latent state to observational space \cite{1975-Bryson-Ho-optimal-control}. 
+    In these cases, the loss function generalizes to 
+    \begin{equation}
+        L(\theta) 
+        =
+        \frac{1}{2} 
+        \sum_{i=1}^N
+        \, \omega_i \,
+        \| H(u(t_i; \theta)) - y^{\text{target}}(t_i) \|_2^2.
+        \label{eq:loss-state-observation}
     \end{equation}
     We can also consider the continuous evaluated loss function of the form
     \begin{equation}
-         L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta) ) dt, 
+         L(u(\cdot, \theta)) = \int_{t_0}^{t_1} h( u(t;\theta), \theta)  dt, 
+         \label{eq:integrated-loss-function}
     \end{equation}
     with $h$ being a function that quantifies the contribution of the error term at every time $t \in [t_0, t_1]$. 
-    Defining a loss function where just the empirical error is penalized is known as trajectory matching. 
+    Defining a loss function where just the empirical error is penalized is known as trajectory matching \cite{ramsay2017dynamic}. 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
-    \item \textbf{Likelihood profiles.} In statistical models, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = u(t_i; \theta) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
-    If $p(y | t , \theta)$ is the probability distribution of $y$, maximum likelihood estimation consists in finding the parameter $\theta$ as
+    % \todo{this is unclear}
+    \item \textbf{The likelihood function or posterior probability.} From a statistical (and physical) perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
+    When $H$ is the identity, each $y_i$ corresponds to the noisy observation of the state $u(t_i; \theta)$.
+    If $p(Y | t , \theta)$ is the probability distribution of $Y=(y_1, y_2, \ldots, y_N)$, 
+    the maximum likelihood estimator (MLE) of $\theta$ is defined as 
     \begin{equation}
         \theta^* 
         = 
-        \argmax{\theta} \, \ell (y | \theta) 
+        \argmax{\theta} \,\, \ell (Y | \theta) 
         = 
         \prod_{i=1}^n p(y_i | \theta, t_i) .
     \end{equation}
-    When $\varepsilon \sim N(0, \sigma_i^2)$ is Gaussian, the maximum likelihood principle is the same as minimizing $- \log \ell(y | \theta)$ which results in the mean squared error
+    When $\varepsilon_i \sim N(0, \sigma_i^2 \I)$ is the isotropic multivariate normal distribution, the maximum likelihood principle is the same as minimizing $- \log \ell(Y | \theta)$ which coincides with the mean squared error of Equation \eqref{eq:loss-state-observation} \cite{hastie2009elements},
     \begin{equation}
         \theta^* 
         = 
-        \argmin{\theta} \, \left \{ - \log \ell (y | \theta) \right \}
+        \argmin{\theta} \, \left \{ - \log \ell (Y | \theta) \right \}
         = 
-        \argmin{\theta} \, \sum_{i=1}^n \left( y_i - u(t_i; \theta) \right)^2 .
+        \argmin{\theta} \, \sum_{i=1}^N 
+        \, \frac{1}{2\sigma_i^2} \,
+        \| y_i - H(u(t_i; \theta)) \|_2^2 .
+        \label{eq:MLE}
     \end{equation}
-    Provided with a prior distribution $p(\theta)$ for the parameter $\theta$, we can further compute a posterior distribution for $\theta$ given the observations $y_1, y_2, \ldots, y_n$ following Bayes theorem 
-    \begin{equation}
-        p(\theta | y) = \frac{p(y | \theta) p (\theta)}{p(y)}. 
-    \end{equation}
-    In practice, the posterior is difficult to evaluate and needs to be approximated using Markov chain Monte Carlo sampling methods \cite{gelman2013bayesian}.
-    \item \textbf{Quantity of interest.} Another important example is when $L$ returns the value of the solution at one or many points, which is useful when we want to know how the solution itself changes as we move the parameter values. 
-    \item \textbf{Diagnosis of the solution.} In many cases we are interested in optimizing the value of some variable that is a function of the solution of a differential equation. This is the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988}. 
+    A Bayesian formulation of equation \eqref{eq:MLE} would consist in deriving a point estimate $\theta^*$, the posterior mean of the maximum a posteriori (MAP), based on the posterior distribution for $\theta$ following Bayes theorem as $p(\theta | Y) = {p(Y | \theta) \, p (\theta)}/{p(Y)}$ where $p(\theta)$ is the prior distribution \cite{pml1Book}.
+    % \begin{equation}
+    %     p(\theta | Y) = \frac{p(Y | \theta) \, p (\theta)}{p(Y)}. 
+    % \end{equation}
+    In most realistic cases, the posterior distribution is approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. 
+    Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian Monte Carlo \cite{Betancourt_2017}.
+    % Add mention for variatinal inference problems
+    \item \textbf{A quantity of interest.} This is useful when we want to know how the solution itself changes as we move the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles:2000wp,Mohammadi:2004dg}. 
 \end{itemize}
+In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the richer class of functions included in the previous examples. 
 
-We are interested in computing the gradient of the loss function with respect to the parameter $\theta$, which can be written using the chain rule as
+\subsubsection{Gradient-based optimization}
+
+% Add one line adding general framework for optimization, since the following formula is no the more general optimization strategy.
+In the context of optimization, the gradient of the loss allows performing gradient-based updates on the parameter $\theta$ by 
+\begin{equation}\label{eq:gradient-descent}
+    \theta^{k+1} 
+    = 
+    \theta^k 
+    - 
+    \alpha_k 
+    \frac{dL}{d\theta^k}.
+\end{equation}
+Gradient-based methods tend to outperform gradient-free optimization schemes, as they are not prone to the curse of dimensionality \cite{Schartau2017}. 
+A direct implementation of gradient descent following Equation \eqref{eq:gradient-descent} is prone to converge to a local minimum and slows down in a neighborhood of saddle points. 
+To address these issues, variants of this scheme employing more advanced updating strategies have been proposed \cite{ruder2016overview-gradient-descent}.
+These methods include Newton-type methods \cite{second-order-optimization}, quasi-Newton methods, acceleration techniques \cite{JMLR:v22:20-207}, and natural gradient descent methods \cite{doi:10.1137/22M1477805}. 
+For instance, ADAM is an adaptive, momentum-based algorithm  that remembers the solution update at each iteration, and determines the next update as a linear combination of the gradient and the previous update \cite{Kingma2014}.
+ADAM been widely adopted to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}).
+Other widely employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
+ADAM is less prone to converge to a local minimum, while (L-)BFGS has a faster converge rate. 
+Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 
+% Furthermore, gradient-free methods (also known as global optimization techniques \todo{Some gradient free methods are not necessarily global optimization techniques, e.g. evolutionary algorithms \cite{wilke2001evolution,Rodriguez-Fernandez2006} }) rely in heuristics\cite{Pearl-heuristics} that are not guaranteed to find the solution. 
+% I will mentioned that other methods for optimization based on the gradient exists (e.g., majorization) but not giving much details on it. 
+
+% 
+
+\subsubsection{Sensitivity matrix}
+
+In general, loss functions considered are of the form $L(\theta) = L(u(\cdot, \theta), \theta)$. 
+Using the chain rule we can derive 
 \begin{equation} 
- \frac{dL}{d\theta} = \frac{dL}{du} \frac{\partial u}{\partial \theta}.
+ \frac{dL}{d\theta} = \frac{\partial L}{\partial u} \frac{\partial u}{\partial \theta} + \frac{\partial L}{\partial \theta}.
  \label{eq:dLdtheta_VJP}
 \end{equation} 
-Notice that this includes also the case where we want to compute the gradient of $L$ with respect to the initial condition of the system.
-The first term on the right-hand side is usually easy to evaluate since it just involves the partial derivative of the scalar loss function with respect to the solution.
-For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} this is simply
+Notice here the distinction between the direct derivative $\frac{d}{d\theta}$ and partial derivative $\frac{\partial}{\partial \theta}$.
+The two partial derivatives of the loss function on the right-hand side are usually easy to evaluate.
+For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} these are simply given by 
 \begin{equation}
-    \frac{dL}{du} = u - u^{\text{target}(t_1)}.
+    \frac{\partial L}{\partial u} = u - u^{\text{target}}(t_1)
+    \qquad 
+    \frac{\partial L}{\partial \theta} = 0.
     \label{eq:dLdu}
 \end{equation}
-The second term on the right-hand side is more difficult to compute and it is usually referred to as the \textit{sensitivity},
+In most applications, the empirical component of the loss function $L(\theta)$, that is, the part of the loss that is a function on the data, will depend on $\theta$ just through $u$, meaning $\frac{\partial L}{\partial \theta} = 0$. 
+However, regularization terms added to the loss can directly depend on the parameter $\theta$, that is $\frac{\partial L}{\partial \theta} \neq 0$.
+In both cases, the complicated term to compute is the matrix of derivatives $\frac{\partial u}{\partial \theta}$, usually referred to as the \textit{sensitivity} $s$, and represents how much the full solution $u$ varies as a function of the parameter $\theta$, 
 \begin{equation}
  s 
  = 
@@ -81,11 +213,20 @@ The second term on the right-hand side is more difficult to compute and it is us
  \in \mathbb R^{n \times p}.
  \label{eq:sensitivity-definition}
 \end{equation}
-Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
-When a function depends on more than one argument, we are going to use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
-On the other side, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
-Also notice that the sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is what is called a \textit{Jacobian}, that is, a matrix of first derivatives for general vector-valued functions.
+The sensitivity $s$ defined in Equation \eqref{eq:sensitivity-definition} is a \textit{Jacobian}, that is, a matrix of first derivatives of a vector-valued function. 
+Methods involved in the calculation of $s$ are naturally part of sensitivity methods.
+As mentioned earlier, most of forward sensitivity methods compute the full sensitivity matrix $s$, while reverse methods only deal with Jacobian-vector products (JVPs) of the form $\frac{\partial u}{\partial \theta} v$, for some vector $v \in \R^p$, saving unnecessary calculations at the expenses of larger memory cost.
+The product $\frac{\partial u}{\partial \theta}v$ is the directional derivative of the function $u(\theta)$, also known as the Gateaux derivative of $u(\theta)$ in the direction $v$, given by 
+\begin{equation}
+    \frac{\partial u}{\partial \theta} v 
+    = 
+    \lim_{h \rightarrow 0} \frac{u(\theta + h v) - u(\theta)}{h},
+    \label{eq:directional-derivative}
+\end{equation}
+representing how much the function $u$ changes when we perturb $\theta$ in the direction of $v$. 
 
-% In this article we are going to use the word gradient or derivative to refer to the first order derivatives of a given function. 
-% Although the names adjoint and tangent are sometime used to refer to the same object, we are going to skip the use of these to avoid confusion.
-% The same nature of the adjoint methods deserves to be treated entirely in Section \ref{section:adjoint-methods}.
+% Notice here the distinction between the total derivative (indicated with the $d$) and partial derivative symbols ($\partial$). 
+% When a function depends on more than one argument, we use the partial derivative symbol to emphasize this distinction (e.g., Equation \eqref{eq:sensitivity-definition}). 
+% On the other hand, when this is not the case, we will use the total derivative symbol (e.g., Equation \eqref{eq:dLdu}).
+
+
