@@ -3,8 +3,7 @@ Models based on differential equations (DEs), including ordinary differential eq
 % Differential equations are the cornerstone of the physical sciences.
 For instance, DEs are used for the modelling of the dynamics of the atmospheric and ocean circulation in climate science, for the modelling of ice or mantle flow in solid Earth geophysics, for the modelling of the spatio-temporal dynamics of species abundance in ecology, or for the modelling of cancer cell evolution in biology.  
 For centuries, scientists have relied on theoretical and analytical methods to solve DEs. 
-The advent of computer and numerical methods has enabled numerical simulations of large-scale systems \cite{Dahlquist_1985, hey2009, Rude:2018jv}.
-With numerical methods to approximate their solutions, DE-based models led to fundamental advances in the understanding and prediction of physical, biological, and social systems, among others.
+Allowing to approximate the solutions of large, nonlinear DE-based models, numerical methods and computers have lead to fundamental advances in the understanding and prediction of physical, biological, and social systems, among others \cite{Dahlquist_1985, hey2009, Rude:2018jv}.
 
 % In a more abstract sense, the solution of differential equations can be seen as functions that map model parameters parameter and initial conditions to state variables and observations, similar to forward models, statistics, and even machine learning. 
 
@@ -12,7 +11,7 @@ With numerical methods to approximate their solutions, DE-based models led to fu
 Quantifying how much the output of a DE-based model changes with respect to its input parameters is fundamental to many scientific computing and machine learning applications, including optimization, sensitivity analysis, Bayesian inference, inverse methods, and uncertainty quantification, among many \cite{Razavi.2021}. 
 Mathematically, quantifying this change involves evaluating the gradient of the model, i.e., calculating a vector whose components are the partial derivatives of the model evaluated at the model parameter values. 
 In sensitivity analysis, gradients are crucial for comprehending the relationships between model inputs and outputs, assessing the influence of each parameter, and evaluating the robustness of model predictions. 
-In optimization and inverse modelling, where the goal is to fit models to data and/or invert for unknown or uncertain parameters, gradient-based methods, including gradient descent and its many variants \cite{ruder2016overview-gradient-descent}, are more efficient at finding a minimum and converge faster to them than gradient-free methods.
+In optimization and inverse modelling, where the goal is to fit models to data and/or invert for unknown or uncertain parameters, gradient-based methods are more efficient at finding a minimum and converge faster to them than gradient-free methods.
 In Bayesian inference, gradient-based sampling strategies are better at estimating the posterior distribution than gradient-free methods \cite{neal2011mcmc}.
 Therefore, accurately determining model gradients is essential for robust model understanding and effective data assimilation that leverage strong physical priors while offering flexibility to adapt to observations. 
 This is very appealing in fields such as computational physics, geophysics, and biology, to mention a few, where there is a broad literature on DE-based models.
@@ -30,7 +29,7 @@ Differentiable programming (DP) refers to a set of techniques and software tools
 Arguably, the most celebrated DP method is automatic differentiation.
 The set of tools known as automatic or algorithmic differentiation (AD) aims to compute derivatives of a model rendered on a computer by applying the chain rule to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
 The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication.
-These operations are individually easy to differentiate, and their composition can be easily differentiated using the chain rule \cite{Giering:1998in}.
+These operations are individually easy to differentiate, and their composition can be easily differentiated using the chain rule \cite{Giering_Kaminski_1998}.
 During the last decades, reverse mode AD, also known as backpropagation, has enabled the fast growth of deep learning by efficiently computing gradients of deep neural networks \cite{griewank2012invented}.
 % One of the challenges in implementing efficient routines to compute gradients of DE-based models is the integration of the different methods with automatic differentiation.
 Some authors have recently suggested DP as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 

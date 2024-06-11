@@ -4,7 +4,7 @@ In this section, we compare one-to-one these methods and highlight differences a
 
 \subsubsection{Forward AD and complex step differentiation}
 
-Both AD based on dual numbers and complex-step differentiation introduce an abstract unit ($\epsilon$ and $i$, respectively) associated with the imaginary part of the dual variable that carries forward the numerical value of the gradient.
+Both AD based on dual numbers and complex-step differentiation introduce an abstract unit, $\epsilon$ and $i$, respectively, associated with the imaginary part of the dual variable that carries forward the numerical value of the gradient.
 % This resemblance between the methods makes them susceptible to the same advantages and disadvantages: easiness of implementation with operator overloading; and inefficient scaling with respect to the number of variables to differentiate. 
 Although these methods seem similar, AD gives the exact gradient value, whereas complex step differentiation relies on numerical approximations that are valid only when the stepsize $\varepsilon$ is small. 
 In Figure \ref{fig:complex-step-AD} we show how the calculation of the gradient of the function $\sin (x^2)$ is performed by these two methods.
@@ -26,22 +26,22 @@ Further notice the complex step method involves more terms in the calculation, a
 
 Both discrete adjoint methods and reverse AD are classified as discrete and reverse methods (see Figure \ref{fig:scheme-all-methods}). 
 Furthermore, both methods introduce an intermediate adjoint associated with the partial derivative of the loss function (output variable) with respect to intermediate variables of the forward computation.
-In the case of reverse AD, this adjoint is defined with the notation $\bar w$ (Equation \eqref{eq:reverse-mode-ad-definition}), while in the discrete adjoint method this correspond to each one of the variables $\lambda_1, \lambda_2, \ldots, \lambda_N$ (Equation \eqref{eq:linea-adjoint-state-equation}).
+In the case of reverse AD, this adjoint is defined with the notation $\bar w$ (Equation \eqref{eq:reverse-mode-ad-definition}), while in the discrete adjoint method this correspond to each one of the variables $\lambda_1, \lambda_2, \ldots, \lambda_M$ (Equation \eqref{eq:linea-adjoint-state-equation}).
 In this section we show that both methods are mathematically equivalent \cite{Zhu_Xu_Darve_Beroza_2021, li2020coupled}, but naive implementations using reverse AD can result in sub-optimal performances compared to the one obtained by directly employing the discrete adjoint method \cite{Alexe_Sandu_2009}. 
 
-In order to have a better idea of how this works in the case of a numerical solver, let us consider again the case of a one-step explicit method, not necessarily linear, where the updates $u_{i}$ satisfy the equation $u_{i+1} = g_{i}(u_{i}, \theta)$.
-Following the same schematics as in Figure \ref{fig:discrete-adjoint}, we represent the computational graph of the numerical method using the intermediate variables $g_1, g_2, \ldots, g_{N-1}$.
+In order to have a better idea of how this works in the case of a numerical solver, let us consider again the case of a one-step explicit method, not necessarily linear, where the updates $u^m$ satisfy the equation $u^{m+1} = g_{m}(u^{m}; \theta)$.
+Following the same schematics as in Figure \ref{fig:discrete-adjoint}, we represent the computational graph of the numerical method using the intermediate variables $g_1, g_2, \ldots, g_{M-1}$.
 The dual/adjoint variables defined in reverse AD in this computational graph are given by 
 \begin{equation}
-    \bar g_i
+    \bar g_m
     = 
-    \frac{\partial u_{i+1}}{\partial g_i} \bar u_{i+1}
+    \frac{\partial u^{m+1}}{\partial g_m} \bar u^{m+1}
     = 
-    \frac{\partial L}{\partial u_{i+1}} 
+    \frac{\partial L}{\partial u^{m+1}} 
     +
-    \frac{\partial g_{i+1}}{\partial u_i} \bar g_{i+1}.
+    \frac{\partial g_{m+1}}{\partial u^m} \bar g_{m+1}.
 \end{equation}
-The updates of $\bar g_i$ then mathematically coincide with the updates in reverse mode of the adjoint variable $\lambda_i$ (see Equation \eqref{eq:adjoint-discrete-linear-example}).
+The updates of $\bar g_m$ then mathematically coincide with the updates in reverse mode of the adjoint variable $\lambda_m$ (see Equation \eqref{eq:adjoint-discrete-linear-example}).
 
 \begin{figure}[t]
     \centering
@@ -50,15 +50,14 @@ The updates of $\bar g_i$ then mathematically coincide with the updates in rever
     \label{fig:ad-vs-discrete-adjoint}
 \end{figure}
 
-Modern numerical solvers use functions $g_i$ that correspond to nested functions, meaning $g_i = g_i^{(k_i)} \circ g_i^{(k_i-1)} \circ \ldots \circ g_i^{(1)} $. 
+Modern numerical solvers use functions $g_m$ that correspond to nested functions, meaning $g_m = g_m^{(k_m)} \circ g_m^{(k_m-1)} \circ \ldots \circ g_m^{(1)}$. 
 % When in an explicit solver this happens? 
-This is certainly the case for implicit methods when $u_{i+1}$ is the solution of an iterative Newton method \cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
-If the number of intermediate function is large, reverse AD will result in a large computational graph, potentially leading to excessive memory usage and slow computation \cite{Margossian_2018, Alexe_Sandu_2009}.
-A solution to this problem is to introduce a customized \textit{super node} that directly encapsulates the contribution to the full adjoint in $g_i$ without computing the adjoint for each intermediate function $g_i^{(j)}$.
-Provided with the value of the Jacobian matrices $\frac{\partial g_i}{\partial u_i}$ and $\frac{\partial g_i}{\partial \theta}$, we can use the implicit function theorem to find 
-the $\frac{\partial u_i}{\partial \theta}$ as the solution of the linear system of equations
+This is certainly the case for implicit methods when $u^{m+1}$ is the solution of an iterative Newton method \cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
+If the number of intermediate function is large, reverse AD will result in a large computational graph, potentially leading to excessive memory usage and slow computation \cite{Margossian.2019, Alexe_Sandu_2009}.
+A solution to this problem is to introduce a customized \textit{super node} that directly encapsulates the contribution to the full adjoint in $\bar g_m$ without computing the adjoint for each intermediate function $g_m^{(j)}$.
+Provided with the value of the Jacobian matrices $\frac{\partial g_m}{\partial u^m}$ and $\frac{\partial g_m}{\partial \theta}$, we can use the implicit function theorem to find $\frac{\partial u^m}{\partial \theta}$ as the solution of the linear system of equations
 \begin{equation}
-    \frac{\partial g_i}{\partial u_i} \frac{\partial u_i}{\partial \theta} = -\frac{\partial g_i}{\partial \theta}
+    \frac{\partial g_m}{\partial u^m} \frac{\partial u^m}{\partial \theta} = -\frac{\partial g_m}{\partial \theta}
 \end{equation}
 and implement AD by directly solving this new system of equations \cite{christianson1994reverse, christianson1998reverse, Bell_Burke_2008}. 
 % (this is equivalent to Equation \eqref{eq:adjoint-inversion-implicit-theorem})
@@ -106,7 +105,7 @@ The dependency of the solution $u$ of the ODE on the parameter $\theta$ is now e
     u_1 + \sum_{j=1}^p \frac{\partial u_1}{\partial \theta_j} \epsilon_j \\
     u_2 + \sum_{j=1}^p \frac{\partial u_2}{\partial \theta_j} \epsilon_j \\
     \vdots \\
-    u_p + \sum_{j=1}^p \frac{\partial u_n}{\partial \theta_j} \epsilon_j
+    u_n + \sum_{j=1}^p \frac{\partial u_n}{\partial \theta_j} \epsilon_j
     \end{bmatrix}
     = 
     u \, + \, s \, 
@@ -122,36 +121,36 @@ This implies forward AD applied to any multistep linear solver will result in th
 For example, for the forward Euler method this gives 
 \begin{align}
 \begin{split}
-    u^{t+1} + s^{t+1} \, \epsilon 
+    u^{m+1} + s^{m+1} \, \epsilon 
     &= 
-    u^t +  s^t \, \epsilon + \Delta t \, f (u^t + s^t \, \epsilon, \theta + \epsilon, t) \\
+    u^m +  s^m \, \epsilon + \Delta t \, f (u^m + s^m \, \epsilon, \theta + \epsilon, t_m) \\
     &= 
-    u^t + \Delta t \, f(u^t, \theta, t) 
+    u^m + \Delta t_m \, f(u^m, \theta, t_m) 
     + 
     \left [
-    s^t
+    s^m
     + 
-    \Delta t \,
+    \Delta t_m \,
     \left( 
-    \frac{\partial f}{\partial u} s^t + 
+    \frac{\partial f}{\partial u} s^m + 
     \frac{\partial f}{\partial \theta}
     \right) 
     \right ] \epsilon.
 \end{split}
 \label{eq:sensitivity-equation-AD}
 \end{align}
-The dual component corresponds to the forward Euler discretization of the forward sensitivity equation, with $s^t$ the temporal discretization of the sensitivity $s(t)$.
+The dual component corresponds to the forward Euler discretization of the forward sensitivity equation, with $s^m$ the temporal discretization of the sensitivity $s(t)$.
 
 The consistency result for discrete and continuous methods also holds for Runge-Kutta methods \cite{Walther_2007}. 
 When introducing dual numbers, the Runge-Kutta scheme in Equation \eqref{eq:Runge-Kutta-scheme} gives the following identities
 \begin{align}
-    u^{n+1} + s^{n+1} \epsilon 
+    u^{m+1} + s^{m+1} \epsilon 
     &= 
-    s_n + \Delta t_n \sum_{i=1}^s b_i \dot k_i
+    u^m + s^m  \epsilon + \Delta t_m \sum_{i=1}^s b_i (k_i + \dot k_i \epsilon)
     \\
     k_i + \dot k_i \epsilon
     &= 
-    f \left(u^n + \sum_{j=1}^s a_{ij} k_j + \left( s^n + \sum_{j=1}^s a_{ij} \dot k_j \right) \epsilon , \theta + \epsilon ,  t_n + c_i \Delta t_n \right) \label{eq:rk-sensitivity-2}
+    f \left(u^m + \sum_{j=1}^s a_{ij} k_j + \left( s^m + \sum_{j=1}^s a_{ij} \dot k_j \right) \epsilon , \theta + \epsilon ,  t_m + c_i \Delta t_m \right) \label{eq:rk-sensitivity-2}
 \end{align}
 with $\dot k_i$ the dual variable associated to $k_i$.
 The partial component in Equation \eqref{eq:rk-sensitivity-2} carrying the coefficient $\epsilon$ gives 
@@ -160,11 +159,11 @@ The partial component in Equation \eqref{eq:rk-sensitivity-2} carrying the coeff
     \dot k_i
     &= 
     \frac{\partial f}{\partial u} 
-    \left(u^n + \sum_{j=1}^s a_{ij} k_j, \theta,  t_n + c_i \Delta t_n \right)
-    \left( s^n + \sum_{j=1}^s a_{ij} \dot k_j \right) \\
+    \left(u^m + \sum_{j=1}^s a_{ij} k_j, \theta,  t_m + c_i \Delta t_m \right)
+    \left( s^m + \sum_{j=1}^s a_{ij} \dot k_j \right) \\
     &+ 
     \frac{\partial f}{\partial \theta} 
-    \left(u^n + \sum_{j=1}^s a_{ij} k_j, \theta,  t_n + c_i \Delta t_n \right),
+    \left(u^m + \sum_{j=1}^s a_{ij} k_j, \theta,  t_m + c_i \Delta t_m \right),
 \end{split}
 \end{align}
 which coincides with the Runge-Kutta scheme we would obtain for the original forward sensitivity equation. 
@@ -181,7 +180,7 @@ This highlights that additional factors beyond consistency must be considered wh
 % There is a large family of adjoint methods that in first order can be classified as discrete and continuous adjoints. 
 As previously mentioned, the difference between the discrete and continuous adjoint methods is that the former follows the discretize-then-differentiate approach (also known as finite difference of adjoints \cite{Sirkes_Tziperman_1997}).
 In contrast, continuous adjoint equations are derived analytically, without a priori consideration of the numerical scheme used to solve it. 
-In some sense, we can think of the discrete adjoint $\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_N)$ in Equation \eqref{eq:linea-adjoint-state-equation} as the discretization of the continuous adjoint $\lambda(t)$. 
+In some sense, we can think of the discrete adjoint $\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_M)$ in Equation \eqref{eq:linea-adjoint-state-equation} as the discretization of the continuous adjoint $\lambda(t)$. 
 
 A natural question then is if these two methods effectively compute the same gradient, i.e., if the discrete adjoint consistently approximate its continuous counterpart. 
 In general, discrete and continuous adjoints will lead to different numerical solutions for the sensitivity, meaning that the discretization and differentiation step do not commute \cite{Jensen_Nakshatrala_Tortorelli_2014, Gunzburger_2002, nadarajah2000comparison}.

@@ -1,6 +1,6 @@
 Finite differences are arguably the simplest scheme to obtain the derivative of a function. 
 % The simplest way of evaluating a derivative is by computing the difference between the evaluation of the function at a given point and a small perturbation of the function. 
-In the case of the function $L : \R^p \mapsto \R$, a first-order Taylor expansion yields to 
+In the case of the function $L : \R^p \mapsto \R$, a first-order Taylor expansion yields to the following expression for the directional derivative
 \begin{equation}
  \frac{dL}{d\theta_i} (\theta) = \frac{L(\theta + \varepsilon e_i ) - L(\theta)}{\varepsilon} + \mathcal O (\varepsilon),
  \label{eq:finite_diff}
@@ -21,11 +21,11 @@ Further finite difference stencils of higher order exist in the literature \cite
  
 Finite difference scheme are subject to a number of issues, related to the parameter vector dimension and rounding errors.
 Firstly, calculating directional derivatives requires at least one extra function evaluations per parameter dimension.
-For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations which demands solving the differential equation each time for a new set of parameters.
+For the centered differences approach in Equation \eqref{eq:finite_diff2}, this requires a total of $2p$ function evaluations which demands solving the DE each time for a new set of parameters.
 Second, finite differences involve the subtraction of two closely valued numbers, which can lead to floating point cancellation errors when the step size $\varepsilon$ is small \cite{Goldberg_1991_floatingpoint}. 
 % Both Equations \eqref{eq:finite_diff} and \eqref{eq:finite_diff2} involve the subtraction of two numbers that are very close to each other, which leads to large cancellation errors for small values of $\varepsilon$ that are amplified by the division by $\varepsilon$.
 While small values of $\varepsilon$ lead to cancellation errors, large values of the stepsize give inaccurate estimations of the derivative. 
-Furthermore, numerical solutions of differential equations have errors that are typically larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small (see also Section \ref{sec:computational-implementation}).
+Furthermore, numerical solutions of DEs have errors that are typically larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small (see also Section \ref{section:software-finite-differences}).
 Finding the optimal value of $\varepsilon$ that balances these two effects is sometimes known as the \textit{stepsize dilemma}, for which algorithms based on prior knowledge of the function to be differentiated or algorithms based on heuristic rules have been introduced \cite{mathur2012stepsize-finitediff, BARTON_1992_finite_diff, SUNDIALS-hindmarsh2005sundials}. 
 % Victor suggestion: Second, finite differences involve the subtraction of two closely valued numbers, which can lead to significant cancellation errors when the step size $\varepsilon$ is small. numerical solutions of differential equations have errors that are typically larger than machine precision, which leads to inaccurate estimations of the gradient when $\varepsilon$ is too small (see also \ref{sec:computational-implementation}).  This error is exacerbated by the division by $\varepsilon$, leading to what is known as the "stepsize dilemma".This dilemma concerns finding an optimal $\varepsilon$ that balances the accuracy of the gradient estimation against the amplification of rounding errors. Various methods, including those based on prior knowledge of the function or heuristic rules, have been proposed to address this challenge
 

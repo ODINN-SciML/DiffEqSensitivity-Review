@@ -3,7 +3,7 @@
 
 In this section, we address how these different methods are computationally implemented and how to decide which method to use depending on the scientific task.
 In order to address this point, it is important to make one further distinction between the methods introduced in Section \ref{section:methods}, i.e., between those that apply direct differentiation at the algorithmic level and those that are based on numerical solvers.  
-The former require a much different implementation since they are agnostic with respect to the mathematical and numerical properties of the system of ODEs.
+The former require a much different implementation since they are agnostic with respect to the mathematical and numerical properties of the ODE.
 The latter family of methods that are based on numerical solvers include the forward sensitivity equations and the adjoint methods.
 This section is then divided in two parts:
 \begin{itemize}
@@ -11,13 +11,13 @@ This section is then divided in two parts:
     \item[$ \blacktriangleright$] \textbf{Solver-based methods.} Their implementation occurs at the same level of the numerical solver. They include 
     \begin{itemize}
         \item [$\vartriangleright$] Forward sensitivity equations (Section \ref{section:computing-sensitivity-equations})
-        \item [$\vartriangleright$] Adjoint methods, both discrete and continuous (Section \ref{section:computing-adjoints})
+        \item [$\vartriangleright$] Discrete and continuous adjoint methods (Section \ref{section:computing-adjoints})
     \end{itemize}
 \end{itemize}
 While these methods can be implemented in different programming languages, here we consider examples based on the Julia programming language. 
-Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance differentiable programming \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}, which a strong emphasis on differential equation solvers \cite{Rackauckas_Nie_2016} and sensitivity analysis \cite{rackauckas2020universal}.
+Julia is a recent but mature programming language that has already a large tradition in implementing packages aiming to advance DP \cite{Bezanson_Karpinski_Shah_Edelman_2012, Julialang_2017}, which a strong emphasis on DE solvers \cite{Rackauckas_Nie_2016, rackauckas2020universal}.
 Nevertheless, in reviewing existing work, we also point to applications developed in other programming languages.
 
-The GitHub repository \href{https://github.com/ODINN-SciML/DiffEqSensitivity-Review}{\texttt{DiffEqSensitivity-Review}} contains both text and code used in this manuscript. 
+The GitHub repository \url{https://github.com/ODINN-SciML/DiffEqSensitivity-Review} contains both text and code used in this manuscript. 
 See Appendix \ref{appedix:code} for a complete description of the scripts provided. 
 We use the symbol $\clubsuit$ to reference code. 

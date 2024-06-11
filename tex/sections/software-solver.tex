@@ -1,13 +1,14 @@
-Sensitivity methods based on numerical solvers need to deal with some numerical and computational considerations, including
+We now move our discussion to DP methods based on numerical solvers.
+These need to deal with some numerical and computational considerations, including:
 % \begin{enumerate}[label=(\roman*)]
 \begin{enumerate}
     \item[$ \blacktriangleright$] How to handle VJPs and/or JPVs 
     \item[$ \blacktriangleright$] Stability of the numerical solver, including the original ODE but also the sensitivity/adjoint equations
     \item[$ \blacktriangleright$] Memory-time tradeoff
 \end{enumerate}
-These factors are further exacerbated by the number of ODEs and parameters in the model. 
+These factors are further exacerbated by the size $n$ of the ODE and the number $p$ of parameters in the model. 
 % While explicit methods can be preferable for non-stiff problems, Rosenblock methods can be 
-Just a few modern scientific software implementations have the capabilities of solving forward ODE and computing their sensitivities at the same time. 
+Just a few modern scientific software implementations have the capabilities of solving ODE and computing their sensitivities at the same time. 
 These include 
 \texttt{CVODES} within \texttt{SUNDIALS} in C \cite{serban2005cvodes, SUNDIALS-hindmarsh2005sundials}; 
 \texttt{ODESSA} \cite{ODESSA} and \texttt{FATODE} (discrete adjoints) \cite{FATODE2014} both in Fortram; 
@@ -82,11 +83,11 @@ end
 prob = ODEForwardSensitivityProblem(f!, u0, tspan, p)
 sol = solve(prob, Tsit5())
 \end{jllisting}
-Notice that in the last example we needed to re-define the out-of-place function \texttt{f} to the in-place version \texttt{f!}.
+% Notice that in the last example we needed to re-define the out-of-place function \texttt{f} to the in-place version \texttt{f!}.
 
 For stiff systems of ODEs the use of the forward sensitivity equations can be computationally unfeasible \cite{kim_stiff_2021}.
 This is because stiff ODEs require the use of stable solvers with cubic cost with respect to the number of ODEs \cite{hairer-solving-2}, making the total complexity of the sensitivity method $\mathcal{O}(n^3p^3)$. 
-This complexity makes this method expensive for models with many ODEs and/or parameters unless the solver is able to further specialize on sparsity or properties of the linear solver (i.e. through Newton-Krylov methods). 
+This complexity makes this method expensive for models with large $n$ and/or $p$ unless the solver is able to further specialize on sparsity or properties of the linear solver (i.e. through Newton-Krylov methods). 
 
 \paragraph{Computing JVPs and VJPs inside the solver}
 \label{section:computing-vjp-inside-solver}
@@ -99,17 +100,17 @@ Therefore, the choice of the algorithm to compute JVPs/VJPs can have a significa
 
 In \texttt{SUNDIALS}, the JVPs/VJPs involved in the sensitivity and adjoint method are handled using finite differences unless specified by the user \cite{SUNDIALS-hindmarsh2005sundials}.
 In \texttt{FATODE}, they can be computed with finite differences, AD, or it can be provided by the user.
-In the Julia SciML ecosystem, the options \texttt{autodiff} and \texttt{autojacvec} allow one to customize if JVPs/VJPs are computed using AD or finite differences or to provide. 
-Different AD packages with different with different performance trade-offs are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl} \cite{RevelsLubinPapamarkou2016}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, \texttt{Tracker.jl}.
+In the Julia SciML ecosystem, the options \texttt{autodiff} and \texttt{autojacvec} allow one to customize if JVPs/VJPs are computed using AD, finite differences, or alternatively these are provided by the user. 
+Different AD packages with different performance trade-offs are available for this task (see Section \ref{sec:software-reverse-AD}), including \texttt{ForwardDiff.jl} \cite{RevelsLubinPapamarkou2016}, \texttt{ReverseDiff.jl}, \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme}, \texttt{Tracker.jl}.
 
 
 \subsubsection{Adjoint methods}
 \label{section:computing-adjoints}
 
-For complex and large systems (e.g. of more than 50 parameters and ODEs, as we will discuss in Section \ref{section:recomendations}), direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
+For complex and large systems (e.g. for $n + p > 50$, as we will discuss in Section \ref{section:recomendations}), direct methods for computing the gradient on top of the numerical solver can be memory expensive due to the large number of function evaluations required by the solver and the later store of the intermediate states. 
 For these cases, adjoint-based methods allows us to compute the gradients of a loss function by instead computing the adjoint that serves as a bridge between the solution of the ODE and the final gradient. 
 % If done well the adjoint method offers considerate advantages when working with complex systems.
-Since adjoint methods rely on an additional set of differential equations which are solved, numerical efficiency and stability must further taken into account at the moment of implementing adjoint methods.
+Since adjoint methods rely on an additional set of ODEs which are solved, numerical efficiency and stability must further taken into account at the moment of implementing adjoint methods.
 
 \paragraph{Discrete adjoint method}
 
@@ -189,15 +190,15 @@ The continuous adjoint methods offers a series of advantages over the discrete m
 Just as the discrete adjoint methods and reverse AD, the bottleneck is how to solve for the adjoint $\lambda(t)$ due to its dependency with VJPs involving the state $u(t)$.
 Effectively, notice that Equation \eqref{eq:casa-adjoint-equation} involves the terms $f(u, \theta, t)$ and $\frac{\partial h}{\partial u}$, which are both functions of $u(t)$. 
 However, in contrast to the discrete adjoint methods, here the full continuous trajectory $u(t)$ is needed, instead of its discrete pointwise evaluation. 
-There are two solutions for addressing the evaluation of $u(t)$ during the computation of $\lambda (t)$.
+There are two solutions for addressing the evaluation of $u(t)$ during the computation of $\lambda (t)$:
 % \begin{enumerate}[label=(\roman*)]
 \begin{enumerate}
     \item[$ \blacktriangleright$] \textbf{Interpolation.} During the forward model, we can store in memory intermediate states of the numerical solution allowing the dense evaluation of the numerical solution at any given time. 
     % This leads to heavy-memory expensive algorithms. 
     % However, in opposition to discrete methods, solving for the adjoint in reverse mode requires to be able to evaluate the solution $u(t)$ at any given time $t$. 
-    This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme (Equation \eqref{eq:Runge-Kutta-scheme}) that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
+    This can be done using dense output formulas, for example by adding extra stages to the Runge-Kutta scheme that allows to define a continuous interpolation, a method known as continuous Runge-Kutta \cite{hairer-solving-2, Alexe_Sandu_2009}. 
     % When using checkpointing, intermediate variables are saved and the interpolation between them is re-computed on demand. 
-    \item[$ \blacktriangleright$] \textbf{Backsolve.} Solve again the original system of ODEs together with the adjoint as the solution of the reversed augmented system \cite{chen_neural_2019}
+    \item[$ \blacktriangleright$] \textbf{Backsolve.} Solve again the original ODE together with the adjoint as the solution of the following reversed augmented system \cite{chen_neural_2019}:
     \begin{equation}
     \frac{d}{dt}
     \begin{bmatrix}
@@ -231,7 +232,7 @@ There are two solutions for addressing the evaluation of $u(t)$ during the compu
        \lambda(t_0)^T s(t_0)
     \end{bmatrix}.
     \end{equation}
-    An important problem with this approach is that computing the ODE backwards (the differential equation $\frac{du}{dt} = - f(u,\theta, t)$) can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
+    An important problem with this approach is that computing the ODE backwards $\frac{du}{dt} = - f(u,\theta, t)$ can be unstable and lead to large numerical errors \cite{kim_stiff_2021, Zhuang_2020}. 
     Implicit methods may be used to ensure stability when solving this system of equations. 
     However, this requires cubic time in the total number of ordinary differential equations, leading to a total complexity of $\mathcal O((n+p)^3)$ for the adjoint method. In practice, this method is hardly stable for most complex (even non-stiff) differential equations. 
 \end{enumerate} 
@@ -260,11 +261,11 @@ z1 = VectorOfArray([u1, [1.0, 0.0], zeros(length(p))])
 aug_prob = ODEProblem(f_aug, z1, reverse(tspan), p)
 u0_, λ0, dLdp_cont = solve(aug_prob, Euler(), dt=-0.001).u[end]
 \end{jllisting}
-Notice that here we used the final state of the solution $u$ of the differential equation as starting point, which is then recalculated in backwards direction (implemented via a negative stepsize \texttt{dt=-0.001}). 
+Notice that here we used the final state of the solution $u$ of the ODE as starting point, which is then recalculated in backwards direction (implemented via a negative stepsize \texttt{dt=-0.001}). 
 
 When dealing with stiff differential equations, special considerations need to be taken into account.
 Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$, then solve for $\lambda$ in reverse using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
-This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the number of ODEs comes from the fact that we still need to solve the original stiff differential equation in the forward step. 
+This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the size $n$ of the ODE comes from the fact that we still need to solve the original stiff ODE in the forward step. 
 A second similar approach is to use an implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. 
 This method also has a complexity of $\mathcal O (n^3 + p)$. 
 
@@ -280,7 +281,7 @@ In the backsolve variation, the value $u$ in the reverse pass can be corrected t
 \paragraph{Solving the quadrature}
 
 Another computational consideration is how the integral in Equation \eqref{eq:casa-final-loss-gradient} is numerically evaluated. 
-While one can solve the integral simultaneously with the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODEs are of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. 
+While one can solve the integral simultaneously with the other equations using an ODE solver, this is only recommended with explicit methods as with implicit methods these additional ODE is of size $p$ and thus can increase the complexity of an implicit solve by $O(p^3)$. 
 The interpolating adjoint and backsolve adjoint method use this ODE solver approach for computing the integrand. 
 On the other side, the quadrature adjoint approach avoids this computational cost by computing the dense solution $\lambda(t)$ and then computing the quadrature 
 \begin{equation}

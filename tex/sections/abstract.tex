@@ -1,16 +1,16 @@
 {\footnotesize
-The differentiable programming paradigm is a central component of modern scientific computing. 
-A long tradition of this paradigm exists in the context of inverse methods, in particular in differential equation-constrained, gradient-based optimization.
-Even more recently, there has been an increasing interest in hybrid models combining differential equations with machine learning. 
-The recognition of strong synergies between inverse methods and machine learning offers the opportunity to lay out a coherent framework applicable to both fields.
-However, for models described by differential equations, the calculation of the associated gradient loss requires to differentiate the numerical solution of the differential equation. 
-This task is non-trivial and requires careful algebraic and numerical manipulations and computational implementations.
+The differentiable programming paradigm is a cornerstone of modern scientific computing. 
+It refers to numerical methods for computing the gradient of a numerical model's output. 
+Many scientific models are based on differential equations, where differentiable programming plays a crucial role in calculating model sensitivities, inverting model parameters, and training hybrid models that combine differential equations with data-driven approaches.
+Furthermore, recognizing the strong synergies between inverse methods and machine learning offers the opportunity to establish a coherent framework applicable to both fields.
+Differentiating functions based on the numerical solution of differential equations is non-trivial. 
+Numerous methods, based on a wide variety of paradigms, have been proposed in the literature, each with pros and cons specific to the type of problem investigated.
 Here, we provide a comprehensive review of existing techniques to compute derivatives of numerical solutions of differential equations.
 We first discuss the importance of gradients of solutions of differential equations in a variety of scientific domains.
 % , covering computational fluid dynamics, electromagnetism, geosciences, meteorology, oceanograpgy, climate science, flux inversion, glaciology, solid earth geophysics, biology and ecology, and quantum physics.
 Second, we lay out the mathematical foundations of the various approaches and compare them with each other. 
 Third, we cover the computational considerations and explore the solutions available in modern scientific software.
-We finalize our discussion with a series of recommendations for practitioners. 
+Last but not least, we provide best-practices and recommendations for practitioners. 
 % By delivering an exhaustive review of sensitivity methods, 
 We hope that this work accelerates the fusion of scientific models and data, and fosters a modern approach to scientific modelling.
 \\ \\

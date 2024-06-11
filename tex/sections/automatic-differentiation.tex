@@ -36,8 +36,7 @@ For example, given two dual numbers $x_\epsilon = x_1 + \epsilon x_2$ and $y_\ep
  %\qquad
  %\frac{x_\epsilon}{y_\epsilon} = \frac{x_1}{y_1} + \epsilon \, \frac{x_2 y_1 - x_1 y_2}{y_1^2}.
 \end{equation}
-From these last examples, we can see that the derivative component of the dual number carries the information of the derivatives when combining operations.
-For example, suppose that in the last example the dual variables $x_2$ and $y_2$ carry the value of the derivative of $x_1$ and $x_2$ with respect to a parameter $\theta$, respectively. 
+From these last examples, we can see that the derivative component of the dual number carries the information of the derivatives when combining operations (e.g., when the dual variables $x_2$ and $y_2$ carry the value of the derivative of $x_1$ and $x_2$ with respect to a parameter $\theta$, respectively). 
 
 Intuitively, we can think of $\epsilon$ as being a differential in the Taylor series expansion, as evident in how the output of any scalar functions is extended to a dual number output:
 \begin{align}
@@ -58,7 +57,7 @@ Intuitively, we can think of $\epsilon$ as being a differential in the Taylor se
 \end{align}
 When computing first order derivatives, we can ignore everything of order $\epsilon^2$ or larger, which is represented in the condition $\epsilon^2 = 0$.
 This implies that we can use dual numbers to implement forward AD through a numerical algorithm. 
-In Section \ref{sec:computational-implementation} we will explore how this is implemented. 
+In Section \ref{section:software-Forward-AD} we will explore how this is implemented. 
 
 Multidimensional dual number generalize dual number to include a different dual variable $\epsilon_i$ for each variable we want to differentiate with respect to \cite{Neuenhofen_2018, RevelsLubinPapamarkou2016}.
 A multidimensional dual number is then defined as $x_\epsilon = x + \sum_{i=1}^p x_i \epsilon_i$, with the property that $\epsilon_i \epsilon_j = 0$ for all pairs $i$ and $j$.
@@ -70,11 +69,11 @@ Another extension of dual numbers that should not be confused with multidimensio
 \paragraph{Computational graph}
 
 A useful way of representing a computer program is via a computational graph with intermediate variables that relate the input and output variables. 
-Most scalar functions of interest can be represented as a acyclic directed graph with nodes associated to variables and edges to atomic operations \cite{Griewank:2008kh, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or its linearized representation via a Wengert trace/tape \cite{Wengert_1964, Bauer_1974, Griewank:2008kh}. 
+Most scalar functions of interest can be represented as a directed acyclic graph (DAG) with nodes associated to variables and edges to atomic operations \cite{Griewank:2008kh, Griewank_1989}, known as Kantorovich graph \cite{kantorovich1957mathematical} or its linearized representation via a Wengert trace/tape \cite{Wengert_1964, Bauer_1974, Griewank:2008kh}. 
 % Although notation can be a little bit difficult to digest here, the mathematics behind is rather simple. 
-We can define $v_{-p+1}, v_{-p+2}, \ldots, v_0 = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{1}, \ldots, v_{m-1}$ the set of all the intermediate variables, and finally $v_m = L(\theta)$ the final output of a computer program. 
+We can define $v_{-p+1}, v_{-p+2}, \ldots, v_0 = \theta_1, \theta_2, \ldots, \theta_p$ the input set of variables; $v_{1}, \ldots, v_{m-1}$ the set of all the intermediate variables; and $v_m = L(\theta)$ the final output of a computer program. 
 This can be done in such a way that the order is strict, meaning that each variable $v_i$ is computed just as a function of the previous variables $v_j$ with $j < i$. 
-Once the graph is constructed, we can compute the derivative of every node with respect to the other (a quantity known as the tangent) using the Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
+Once the graph is constructed, we can compute the derivative of every node with respect to the other, a quantity known as the tangent, using the Bauer formula \cite{Bauer_1974, Oktay_randomized-AD}
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
@@ -83,7 +82,7 @@ Once the graph is constructed, we can compute the derivative of every node with 
     \prod_{k=0}^{K-1} \frac{\partial w_{k+1}}{\partial w_{k}},
 \end{equation}
 where the sum is calculated with respect to all the directed paths in the graph connecting the input and target node.
-Instead of evaluating the last expression for all possible paths, a simplification is to increasingly evaluate $j=1, \ldots, m$ using the recursion 
+Instead of evaluating the last expression for all possible paths, a simplification is to increasingly evaluate $j=-p+1, -p+1, \ldots, m$ using the recursion 
 \begin{equation}
     \frac{\partial v_j}{\partial v_i}
     = 
@@ -99,15 +98,15 @@ The only requirement for differentiation is being able to compute the derivative
 \subsubsection{Reverse mode}
 
 Reverse mode AD is also known as the adjoint, or cotangent linear mode, or backpropagation in the field of machine learning. 
-The reverse mode of automatic differentiation has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computational cost of the gradient of a function and the function itself can be bounded by a constant that does not depend on the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
-Given a directed graph of operations defined by a Wengert list, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in reverse mode as
+The reverse mode of AD has been introduced in different contexts \cite{griewank2012invented} and materializes the observation made by Phil Wolfe that if the chain rule is implemented in reverse mode, then the ratio between the computational cost of the gradient of a function and the function itself can be bounded by a constant that does not depend on the number of parameters to differentiate \cite{Griewank_1989, Wolfe_1982}, a point known as the \textit{cheap gradient principle} \cite{griewank2012invented}.  
+Given a DAG of operations defined by a Wengert list, we can compute gradients of any given function in the same fashion as Equation \eqref{eq:AD-graph-recursion} but in decreasing order $j=m, m-1, \ldots, -p+1$ as
 \begin{equation}
     \bar v_i 
     = 
     \frac{\partial \ell}{\partial v_i}
     = 
     \sum_\text{$w$\text{ such that} $v_i \rightarrow w$}
-    \frac{\partial w}{\partial v_i} \bar{w}.
+    \bar{w} \, \frac{\partial w}{\partial v_i}.
     \label{eq:reverse-mode-ad-definition}
 \end{equation}
 In this context, the notation $\bar{w} = \frac{\partial L}{\partial w}$ is introduced to signify the partial derivative of the output variable, here associated to the loss function, with respect to input and intermediate variables. 

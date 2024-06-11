@@ -21,7 +21,7 @@ A simple example popular in structural design consists in the linear dynamic equ
     = 
     F(t, \theta),
 \end{equation}
-subject to the initial condition $u(t_0) = u_0$, $\frac{du}{dt}(t_0) = v_0$, where $M, C, K \in \R^{n \times n}$ are the mass, damping, and stiffness matrices function of some design parameter $\theta$, respectively, and $F(t, \theta)$ is an external forcing \cite{min1999optimal, Jensen_Nakshatrala_Tortorelli_2014}.  
+subject to the initial condition $u(t_0) = u_0 \in \R^n$, $\frac{du}{dt}(t_0) = v_0 \in \R^n$, where $M, C, K \in \R^{n \times n}$ are the mass, damping, and stiffness matrices function of some design parameter $\theta$, respectively, and $F(t, \theta)$ is an external forcing \cite{min1999optimal, Jensen_Nakshatrala_Tortorelli_2014}.  
 
 Just as we did in Section \ref{section:software-finite-differences}, higher-order ODEs can be transformed to first-order ODEs, after which the same sensitivity methods we discussed in this paper can be used. 
 However, there may be reasons why we would prefer to avoid this, such as the existence of more efficient higher-order ODEs solvers, including Nystr\"{o}m methods for the case when $C = 0$ \cite{Butcher_Wanner_1996, hairer-solving-1}. 
@@ -97,7 +97,7 @@ If we call $u_m(t) = u(m \Delta x, t)$ and $D_m(t) = D(m\Delta x, t)$ the values
  \label{eq:heat-equation-discrete}
 \end{equation}
 for $m = 1, 2, \ldots, N-1$ (in the extremes we simply have $u_0(t) = \alpha(t)$ and $u_N(t)=\beta(t)$).
-Now, following this semi-discretization, equation \eqref{eq:heat-equation-discrete} is a system of first-order ODEs  (i.e. derivatives only with respect to time) with a total of $N-1$ equations.
+Now, following this semi-discretization, equation \eqref{eq:heat-equation-discrete} is a system of first-order ODEs of size $N-1$.
 % Significant challenges remain, however, in the practical implementation of sensitivity methods for PDE systems. 
 Semi-discretized PDEs typically involve large systems of coupled and possibly stiff ODEs subject to some suitable boundary conditions. 
 Explicit calculation of the Jacobian quickly becomes cumbersome and eventually intractable as the spatial dimension and the complexity of the PDE increase.
@@ -105,7 +105,7 @@ Further improvements can be made by exploiting the fact that the coupling in the
 PDEs are often also subject to additional time stepping constraints, such as the Courant-Fredrichs-Lewy (CFL) condition, which may limit the maximum time step size and thus increase the number of time steps required to obtain a valid solution \cite{courantPartialDifferenceEquations1967}. 
 
 Besides the methods of lines which already involves a first discretization of the original PDE, the same recipe introduced in this review to derive the forward sensitivity equations and the continuous adjoint method for ODEs can be employed for PDEs \cite{Giles_Pierce_2000}. 
-Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design parameter $\theta$, the forward sensitivity equation is obtain by differentiating Equation \eqref{eq:heat-equation} with respect to $\theta$ and define a new differential equation for the sensitivity $s(x,t) = \frac{d}{d\theta}u(x,t;\theta)$ as 
+Assuming that the diffusivity $D = D(x, t; \theta)$ depends on some design parameter $\theta$, the forward sensitivity equation is obtain by differentiating Equation \eqref{eq:heat-equation} with respect to $\theta$ and define a new PDE for the sensitivity $s(x,t) = \frac{d}{d\theta}u(x,t;\theta)$ as 
 \begin{equation}
  \frac{\partial s}{\partial t}
  = 
@@ -118,7 +118,7 @@ The continuous adjoint equation can be derived using the strategy followed in Se
 \begin{equation}
     L(\theta) = \int_{t_0}^{t_1} \int_0^1 h(u(x,t;\theta); \theta) dx \, dt. 
 \end{equation}
-In this case, it is easy to derive using integration by parts the adjoint differential equation given by 
+In this case, it is easy to derive using integration by parts the adjoint PDE given by 
 \begin{equation}
     \frac{\partial \lambda}{\partial t}
     = 
@@ -148,7 +148,7 @@ This makes it difficult to strike a balance between memory usage and computation
 There are, however, numerous recent developments that have made solutions to these challenges more accessible. 
 As it will also be discussed in Section \ref{section:recomendations}, sensitivity methods that require the storage of a dense forward solution need special treatment, such as reverse AD and adjoint methods. 
 Their huge memory footprint can be mitigated by using checkpointing (see Sections \ref{section:checkpointing} and \ref{section:checkpointint-cont}).
-However, the memory requirements for even moderate size PDE systems (e.g. $10^2$ to $10^3$ equations) over long time spans can still incur a large memory cost in cases where many checkpoints are required for stability in the reverse pass. 
+However, the memory requirements for even moderate size PDEs (e.g. $10^2$ to $10^3$ equations) over long time spans can still incur a large memory cost in cases where many checkpoints are required for stability in the reverse pass. 
 This again can be mitigated by a multi-level checkpointing approach that enables checkpointing to either memory or to disk.
 Another practical consideration when differentiating numerical PDE solvers arises from the way they are typically implemented. 
 Due to the large size of the system, numerical calculations for PDEs are typically performed in-place, i.e. large memory buffers are often used to store intermediate calculations and system state thereby avoiding the need to repeatedly allocate large amounts of memory for each array operation. 

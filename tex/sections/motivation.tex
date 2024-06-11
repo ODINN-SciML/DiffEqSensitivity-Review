@@ -71,10 +71,10 @@ Beyond aerospace, other significant applications include optimizing ship hull de
 Quantum optimal control has diverse applications spanning a broad spectrum of quantum systems. 
 Optimal control methods have been used to optimize pulse sequences, enabling the design of high-fidelity quantum gates and the preparation of complex entangled quantum states \cite{koch2022quantum}. 
 Typically, the objective is to maximize the fidelity to a target state or unitary operation, accompanied by additional constraints or costs specific to experimental demands. 
-The predominant control algorithms are gradient-based optimization methods, such as gradient ascent pulse engineering (GRAPE), and rely on the computation of derivatives for solutions of the DEs modeling the time evolution of the quantum system. 
+The predominant control algorithms are gradient-based optimization methods, such as gradient ascent pulse engineering (GRAPE), and rely on the computation of derivatives for solutions of the ODEs modeling the time evolution of the quantum system. 
 In cases where the analytical calculation of a gradient is impractical, numerical evaluation using AD becomes a viable alternative \cite{jirari:2009, leung:2017, abdelhafez:2019, jirari2019quantum, abdelhafez:2020, schaefer:2020, goerz:2022}. 
 Specifically, AD streamlines the adjustment to diverse objectives or constraints, and its efficiency can be enhanced by employing custom derivative rules for the time propagation of quantum states as governed by solutions to the Schrödinger equation \cite{goerz:2022}. 
-Moreover, sensitivity methods for DEs facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations \cite{schaefer:2021}.
+Moreover, sensitivity methods for ODEs facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations \cite{schaefer:2021}.
 
 \subsubsection{Other applications}
 
@@ -134,7 +134,7 @@ Rigorous exploitation of AD enabled extensions to vastly improved model numerics
 Unlike NWP-type 4D-Var, it also enabled extension to the problem of parameter calibration from observations \cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. 
 Arguably, this work heralded much of today's efforts in ``online learning'' of parameterization schemes.
 %, where the functional representation between the parameters and the learning data are provided by the numerical implementation of an empirical function rather than by a neural network.
-The desire to make AD for Earth system models written in Fortran (to date the vast majority) has  spurned the development of AD tools with powerful reverse modes, both commercial \cite{Giering:1998in,Giering.2006} and open-source \cite{Utke:2008ko,Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
+The desire to make AD for Earth system models written in Fortran (to date the vast majority) has  spurned the development of AD tools with powerful reverse modes, both commercial \cite{Giering_Kaminski_1998,Giering.2006} and open-source \cite{Utke:2008ko,Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
 %There is enormous potential to seamlessly integrate the inverse-modeling and machine-learning based approaches through the concept of differentiable programming.
 
 \subsubsection{Climate science}
