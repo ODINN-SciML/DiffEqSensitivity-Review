@@ -119,7 +119,7 @@ A major drawback of tracing systems is that the pullbacks are constructed with r
 This means that the pullback must be reconstructed for each forward pass, limiting the reuse of computational optimizations and inducing higher overhead. 
 Source-to-source AD systems can achieve higher performance by giving a static derivative representation to arbitrary control flow structure, thus allowing for the construction and optimization of pullbacks independent of the input value. 
 These include \texttt{Zygote.jl} \cite{Innes_Zygote}, \texttt{Enzyme.jl} \cite{moses_Enzyme, Moses.2021}, and \texttt{Diffractor.jl}.
-The existence of these multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} which allows one to combine different methods \cite{Schäfer_Tarek_White_Rackauckas_2021}. 
+The existence of these multiple AD packages lead to the development of \texttt{AbstractDifferentiation.jl} \cite{Schäfer_Tarek_White_Rackauckas_2021} and \texttt{DifferentiationInterface.jl} \cite{dalle_2024_11573435}, which allows one to combine different methods under the same framework. 
 
 % It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
 

@@ -85,7 +85,7 @@ Current limitations include:
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
     \item[$ \blacktriangleright$] Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
     \item[$ \blacktriangleright$] Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
-    Certain AD Packages like \texttt{ReverseDiff.jl} do not support GPU (Graphical Processing Units) operations, while others like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it. 
+    Certain AD packages like \texttt{ReverseDiff.jl} do not support GPU operations, while others like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it. 
     This makes the former unsuitable for problems involving large neural networks (Neural ODEs) that rely on GPUs for scalability.
 \end{enumerate}
 
