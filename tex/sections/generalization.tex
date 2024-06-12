@@ -136,14 +136,6 @@ For example, this is a problem in finite differences since differences in the va
 % Another example include cases where of discrete methods where the sensitivity methods applies directly on the discretized set of differential equations. 
 The same errors induced by the adaptive stepsize controller in the case of AD (Section \ref{section:AD-incorrect}) can appear in cases of meshes that do not account for the joint error of the original PDE and its sensitivity. 
 This can produce inaccurate gradients in the case of coarser meshes where the mesh or the numerical solver have an impact on the accuracy of the solution of the PDE \cite{economon2017adjoint, KENWAY2019100542}
-% From Kenway:
-% The main disadvantages of the continuous approach are a low accuracy for coarser meshes and a challenging implementation. The fact
-% that the PDEs are first linearized and then discretized means that the
-% discretized form of these equations is guaranteed to result in a fully
-% consistent gradient only at the limit of an infinitely fine mesh [129].
-% Therefore, the continuous adjoint produces inaccurate gradients for
-% cases where the mesh or the numerical methods have an effect on the
-% solution accuracy [130].
 
 Independently of how DP is implemented, PDEs remain some of the most challenging problems for computing sensitivities due to the frequent combination of a large number of discretized possibly stiff ODEs, with a large memory footprint. 
 This makes it difficult to strike a balance between memory usage and computational performance. 
