@@ -48,7 +48,7 @@ end
 
 u, s = sensitivityequation(u0, tspan , p, 0.001)
 
-using OrdinaryDiffEq, ForwardDiff, Test 
+using OrdinaryDiffEq, ForwardDiff, Test
 
 s_AD = ForwardDiff.jacobian(p -> solve(ODEProblem(f, u0, tspan, p), Tsit5()).u[end], p)
 @test s_AD ≈ s rtol=0.01
@@ -56,7 +56,7 @@ s_AD = ForwardDiff.jacobian(p -> solve(ODEProblem(f, u0, tspan, p), Tsit5()).u[e
 ### Let's do this with forward sensitivity
 
 function loss(p)
-    solve(ODEProblem(f!, u0, tspan, p), Tsit5(), u0=u0, p=p, sensealg=ForwardSensitivity())[end]
+    solve(ODEProblem(f!, u0, tspan, p), Tsit5(), sensealg=ForwardSensitivity())[end]
 end
 
 using Zygote, SciMLSensitivity
@@ -65,7 +65,7 @@ s_sens = Zygote.jacobian(loss, p)
 
 
 using Zygote, SciMLSensitivity
-s = Zygote.jacobian(p->solve(ODEProblem(f!, u0, tspan, p), Tsit5(), u0=u0, p=p, sensealg=ForwardSensitivity())[end], p)
+s = Zygote.jacobian(p->solve(ODEProblem(f!, u0, tspan, p), Tsit5(), sensealg=ForwardSensitivity())[end], p)
 
 
 # Discrete adjoint method
@@ -95,7 +95,3 @@ function discrete_adjoint_method(u0, tspan, p, dt)
 end
 
 ∂L∂θ = discrete_adjoint_method(u0, tspan, p, 0.001)
-
-
-
-

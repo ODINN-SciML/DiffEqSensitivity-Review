@@ -74,10 +74,6 @@ function finitediff_solver(h, t, u0, p, reltol, abstol)
     return (sol₊.u[end][1] - sol₋.u[end][1]) /(2h)
 end
 
-function complexdiff_numerical(h, t, u0)
-    return ComplexDiff.derivative(ω -> solution(t, u0, [ω]), p[1], h)
-end
-
 ######### Simulation with differerent stepsizes ###########
 
 stepsizes = 2.0.^collect(round(log2(eps(Float64))):1:0)
@@ -101,6 +97,8 @@ derivative_solver_high = finitediff_solver.(stepsizes, Ref(t₁), Ref(u0), Ref(p
 error_finitediff_high = abs.((derivative_solver_high .- derivative_true)./derivative_true)
 
 # Complex step differentiation with solution from solver and high tolerance
+u0_complex = ComplexF64.(u0)
+
 derivative_complex_low = complexstep_differentiation.(Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol=1e-6, abstol=1e-6).u[end][1]), Ref(p[1]), stepsizes)
 error_complex_low = abs.((derivative_true .- derivative_complex_low) ./ derivative_true)
 derivative_complex_high = complexstep_differentiation.(Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol=1e-12, abstol=1e-12).u[end][1]), Ref(p[1]), stepsizes)
@@ -127,30 +125,44 @@ color_complex_low = RGBf(52/255, 152/255, 219/255)
 color_AD = RGBf(142/255, 68/255, 173/255)
 color_AD_low = RGBf(155/255, 89/255, 182/255)
 
-fig = Figure(resolution=(1000, 400)) 
-ax = Axis(fig[1, 1], xlabel = L"Stepsize ($\varepsilon$)", ylabel = L"\text{Relative error}", 
+fig = Figure(resolution=(1000, 400))
+ax = Axis(fig[1, 1], xlabel = L"Stepsize ($\varepsilon$)", ylabel = L"\text{Relative error}",
           xscale = log10, yscale=log10)
 
 # Plot derivatived of true solution (no numerical solver)
-lines!(ax, stepsizes, error_finitediff_exact, xscale=log10, yscale=log10, label=L"\text{Finite differences (exact solution)}", zorder=2, color=color_finitediff, linewidth=1, linestyle = :dash)
-lines!(ax, stepsizes, error_complex_exact, xscale=log10, yscale=log10, label=L"\text{Complex step differentiation (exact solution)}", zorder=1, color=color_complex, linewidth=1, linestyle = :dash)
+lines!(ax, stepsizes, error_finitediff_exact, label=L"\text{Finite differences (exact solution)}",
+    color=color_finitediff, linewidth=1, linestyle = :dash)
+lines!(ax, stepsizes, error_complex_exact,
+    label=L"\text{Complex step differentiation (exact solution)}",
+    color=color_complex, linewidth=1, linestyle = :dash)
 
 # Plot derivatives computed on top of numerical solver with finite differences
-scatter!(ax, stepsizes, error_finitediff_low, xscale=log10, yscale=log10, label=L"Finite differences on solver (tol=$10^{-6}$)", color=color_finitediff_low, zorder=4, marker ='•', markersize=15)
-scatter!(ax, stepsizes, error_finitediff_high, xscale=log10, yscale=log10, label=L"Finite differences on solver (tol=$10^{-12}$)", color=color_finitediff, zorder=3, marker ='•', markersize=30)
+scatter!(ax, stepsizes, error_finitediff_low,
+    label=L"Finite differences on solver (tol=$10^{-6}$)", color=color_finitediff_low,
+    marker ='•', markersize=15)
+scatter!(ax, stepsizes, error_finitediff_high,
+    label=L"Finite differences on solver (tol=$10^{-12}$)", color=color_finitediff,
+    marker ='•', markersize=30)
 
 # Plot derivatives computed on top of numerical solver with complex step method
-scatter!(ax, stepsizes, error_complex_low, xscale=log10, yscale=log10, label=L"Complex step differentiation on solver (tol=$10^{-6}$)", color=color_complex_low, zorder=4, marker ='∘', markersize=15)
-scatter!(ax, stepsizes, error_complex_high, xscale=log10, yscale=log10, label=L"Complex step differentiation on solver (tol=$10^{-12}$)", color=color_complex, zorder=3, marker ='∘', markersize=30)
+scatter!(ax, stepsizes, error_complex_low,
+    label=L"Complex step differentiation on solver (tol=$10^{-6}$)",
+    color=color_complex_low, marker ='∘', markersize=15)
+scatter!(ax, stepsizes, error_complex_high,
+    label=L"Complex step differentiation on solver (tol=$10^{-12}$)", color=color_complex,
+    marker ='∘', markersize=30)
 
 # AD
 hlines!(ax, [error_AD_low, error_AD_high], color=color_AD, linewidth=1.5)
-plot!(ax, [stepsizes[begin], stepsizes[end]],[error_AD_low, error_AD_low], color=color_AD_low, label=L"Forward AD (tol=$10^{-6}$)", marker='∘', markersize=15)
-plot!(ax, [stepsizes[begin], stepsizes[end]],[error_AD_high, error_AD_high], color=color_AD, label=L"Forward AD (tol=$10^{-12}$)", marker='•', markersize=25)
+plot!(ax, [stepsizes[begin], stepsizes[end]],[error_AD_low, error_AD_low],
+    color=color_AD_low, label=L"Forward AD (tol=$10^{-6}$)", marker='∘', markersize=15)
+plot!(ax, [stepsizes[begin], stepsizes[end]],[error_AD_high, error_AD_high],
+    color=color_AD, label=L"Forward AD (tol=$10^{-12}$)", marker='•', markersize=25)
 
 # Add legend
 fig[1, 2] = Legend(fig, ax)
 
+!ispath("Figures") && mkpath("Figures")
 save("Figures/DirectMethods_comparison.pdf", fig)
 
 

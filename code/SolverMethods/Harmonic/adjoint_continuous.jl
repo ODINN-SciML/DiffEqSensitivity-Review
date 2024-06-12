@@ -16,7 +16,7 @@ end
 prob = ODEProblem(f, u0, tspan, p)
 sol = solve(prob, Euler(), dt=0.001)
 
-# Final state 
+# Final state
 u1 = sol.u[end]
 z1 = VectorOfArray([u1, [1.0, 0.0], zeros(length(p))])
 
