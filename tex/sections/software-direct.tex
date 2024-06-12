@@ -29,7 +29,7 @@ For this experiment, both relative and absolute tolerances of the numerical solv
 \begin{figure}[tb]
     \centering
     % \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
-    \includegraphics[width=0.95\textwidth]{figures/direct_derivatives.pdf}
+    \includegraphics[width=1.0\textwidth]{figures/direct_derivatives.pdf}
     \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\theta t)/\theta$ with respect to $\theta$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here, $u(t)$ corresponds to the solution of the differential equation $u'' + \theta^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where the relative error is computed with finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. $\clubsuit_\text{\code{code:figure-comparison}}$}
     \label{fig:direct-methods}
 \end{figure}
