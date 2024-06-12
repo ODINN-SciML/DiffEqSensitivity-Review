@@ -28,6 +28,14 @@ Base.:(^)(a::DualNumber, b::AbstractFloat) = DualNumber(value      = a.value ^ b
                                                         derivative = b * a.value^(b-1) * a.derivative)
 
 
+# Special functions
+
+function Base.:(sin)(a::DualNumber)
+    value = sin(a.value)
+    derivative = a.derivative * cos(a.value)
+    return DualNumber(value=value, derivative=derivative)
+end
+
 # Now we define a series of variables. We are interested in computing the derivative with respect to the variable "a":
 
 a = DualNumber(value=1.0, derivative=1.0)
