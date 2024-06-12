@@ -61,8 +61,12 @@ Replacing this last expression into Equation \eqref{eq:dhdtheta0}, we obtain
     \frac{\partial G}{\partial \theta}.
     \label{eq:dhdtheta}
 \end{equation}
-Importantly, the right-hand side of Equation \eqref{eq:dhdtheta} can be resolved as a VJP, with $\frac{\partial L}{\partial U}$ being the vector.
-Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the VJP operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
+% Importantly, the right-hand side of Equation \eqref{eq:dhdtheta} can be resolved as a VJP, with $\frac{\partial L}{\partial U}$ being the vector.
+% Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the VJP operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
+The important trick used in the discrete adjoint method is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
+Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices (Equation \eqref{eq:adjoint-inversion-implicit-theorem}). 
+However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
+By rearranging these terms and relying on the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
 This leads to the definition of the adjoint $\lambda \in \R^{nM}$ as the solution of the linear system of equations 
 \begin{equation}
     \left( \frac{\partial G}{\partial U}\right)^T \lambda 
@@ -84,10 +88,6 @@ Replacing Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta} yields
     \lambda^T \frac{\partial G}{\partial \theta}.
     \label{eq:gradient-adjoint-state-method}
 \end{equation}
-The important trick used in the adjoint method is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
-Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices. 
-However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
-By rearranging these terms and relying on the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
 These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, where we can also see an interpretation of the adjoint as being equivalent to $\lambda^T = - \frac{\partial L}{\partial G}$. 
 
 \begin{figure}[t]

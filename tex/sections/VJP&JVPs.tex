@@ -5,7 +5,7 @@
 % For each intermediate function $h: \R^{d_1} \mapsto \R^{d_2}$ that is evaluated when executing a given program, AD will perform the JVP operation $\dot x \mapsto Dh (x) \cdot \dot x$ in forward mode and the VJP operation $\bar y \mapsto \bar y^T \cdot Dh (x)$ (VJP) in reverse mode.
 % Equivalently, forward AD map directional derivatives between tangent spaces, while reverse AD map vectors from co-tangent (or normal) spaces \cite{Griewank:2008kh}. 
 
-Forward and reverse AD are based in the sequential evaluation of Jacobian-vector products (JVPs) and vector-Jacobian products (VJPs), respectively. 
+Forward and reverse AD is based on the sequential evaluation of Jacobian-vector products (JVPs) and vector-Jacobian products (VJPs), respectively. 
 Let us consider for example the case of a loss function $L : \mathbb R^p \mapsto \mathbb R$ taking a total of $p$ arguments as inputs that is computed using the evaluation procedure $L(\theta) = \ell \circ g_{k} \circ \ldots \circ g_2 \circ g_1(\theta)$, with $\ell : \mathbb R^{d_k} \mapsto \mathbb R$ the final evaluation of the loss function after we apply in order a sequence of intermediate functions $g_i : \mathbb R^{d_{i-1}} \mapsto \mathbb R^{d_i}$, where we define $d_0 = p$ for simplicity. 
 If we perturb the parameter $\theta \rightarrow \theta + \delta \theta$, this will produce a perturbation $L (\theta) \rightarrow L(\theta) + \delta L$ in the loss function that can be computed at first order in $\delta \theta$ using the chain rule as: 
 \begin{equation}

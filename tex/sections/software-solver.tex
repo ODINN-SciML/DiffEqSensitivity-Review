@@ -2,7 +2,7 @@ We now move our discussion to DP methods based on numerical solvers.
 These need to deal with some numerical and computational considerations, including:
 % \begin{enumerate}[label=(\roman*)]
 \begin{enumerate}
-    \item[$ \blacktriangleright$] How to handle VJPs and/or JPVs 
+    \item[$ \blacktriangleright$] How to handle VJPs and/or JVPs 
     \item[$ \blacktriangleright$] Stability of the numerical solver, including the original ODE but also the sensitivity/adjoint equations
     \item[$ \blacktriangleright$] Memory-time tradeoff
 \end{enumerate}
@@ -144,31 +144,30 @@ end
 \end{jllisting}
 In this case, the full solution in the forward pass is stored in memory and used to compute the adjoint and integrate the loss function during the reverse pass. 
 While the previous example illustrates a manual implementation of the adjoint method, the discrete adjoint method can be directly implemented using reverse AD (Section \ref{section:comparison-discrete-adjoint-AD}).
-In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on the numerical solver via \texttt{ReverseDiff.jl}; \texttt{ZygoteAdjoint} via \texttt{Zygote.jl}; and \texttt{TrackerAdjoint} via \texttt{Tracker.jl}. 
+In the Julia SciML ecosystem, \texttt{ReverseDiffAdjoint} performs reverse AD on the numerical solver via \texttt{ReverseDiff.jl},  and \texttt{TrackerAdjoint} via \texttt{Tracker.jl}. 
 As in the case of reverse AD, checkpointing can be used here. 
 
-% Mention that in many cases this is implemented manually
 
 \paragraph{Continuous adjoint method}
 
 \begin{table}[bt]
 \centering
 \setlength{\tabcolsep}{6pt} % Default value: 6pt
-\renewcommand{\arraystretch}{1.5} % Default value: 1
+\renewcommand{\arraystretch}{1.75} % Default value: 1
 \small
 \begin{tabular}{ c |c c c c c|} 
  \cline{2-6}
  &\textbf{Method} & \textbf{Stability} & \textbf{Non-Stiff Performance} & \textbf{Stiff Performance} & \textbf{Memory} 
  \\ [0.5ex] 
- \cline{2-6}
- \hline
- \multirow{3}*{\rotatebox{90}{\textbf{Discrete}}}  
+ \cline{2-6} 
+ \hline 
+ \multirow{2}*{\rotatebox{90}{\scriptsize\textbf{Discrete}}} 
  &ReverseDiffAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
- &ZygoteAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
+ % &ZygoteAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High \\
  &TrackerAdjoint & Good & $\mathcal O (n + p)$ & $\mathcal O (n^3 + p)$ & High
  \\ [0.5ex] 
  \hline\hline
- \multirow{7}*{\rotatebox{90}{\textbf{Continuous}}} 
+ \multirow{7}*{\rotatebox{90}{\scriptsize\textbf{Continuous}}} 
  & Forward sensitivity eq. & Good & $\mathcal O (np)$ & $\mathcal O (n^3p^3)$ & $\mathcal O(1)$ \\
  \cline{2-6}
  &Backsolve adjoint & Poor & $\mathcal O (n + p)$ & $\mathcal O ((n+p)^3)$ & $\mathcal O(1)$ \\ 

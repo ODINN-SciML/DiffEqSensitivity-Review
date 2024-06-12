@@ -65,7 +65,7 @@ Two definitions are noteworthy
     \item[$ \blacktriangleright$] Stiff equations are equations for which explicit methods do not work and implicit methods work better \cite{hairer-solving-2}.
     \item[$ \blacktriangleright$] Stiff differential equations are characterized by dynamics with different time scales \cite{hairer-solving-2, kim_stiff_2021}, also characterized by the phenomena of increasing oscillations \cite{Dahlquist_1985}.
 \end{enumerate} 
-Stability properties can be achieved by different means, for example by the use of implicit methods or stabilized explicit methods, such as Runge–Kutta–Chebyshev \cite{van1980internal, hairer-solving-2}. 
+Stability properties can be achieved by different means, for example, by using implicit methods or stabilized explicit methods, such as Runge–Kutta–Chebyshev \cite{van1980internal, hairer-solving-2}. 
 When using explicit methods, smaller timesteps may be required to guarantee stability. 
 
 % Timestep controller
@@ -169,7 +169,7 @@ In most applications, the need for differentiating the solution of ODEs stems fr
     In most realistic cases, the posterior distribution is approximated using Markov chain Monte Carlo (MCMC) sampling methods \cite{gelman2013bayesian}. 
     Being able to further compute gradients of the likelihood allows to design more efficient sampling methods, such as Hamiltonian Monte Carlo \cite{Betancourt_2017}.
     % Add mention for variatinal inference problems
-    \item[$ \blacktriangleright$] \textbf{A quantity of interest.} In some applications we are interested in quantifying how the solution of the differential equation changes as we vary the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The later corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles_Pierce_2000,Mohammadi:2004dg}. 
+    \item[$ \blacktriangleright$] \textbf{A quantity of interest.} In some applications we are interested in quantifying how the solution of the differential equation changes as we vary the parameter values; or more generally when it returns the value of some variable that is a function of the solution of a differential equation. The latter corresponds to the case in design control theory, a popular approach in aerodynamics modelling where goals include maximizing the speed of an airplane or the lift of a wing given the solution of the flow equation for a given geometry profile \cite{Jameson_1988,Giles_Pierce_2000,Mohammadi:2004dg}. 
 \end{itemize}
 In the rest of the manuscript we will use letter $L$ to emphasize that in many cases this will be a loss function, but without loss of generality this includes the richer class of functions included in the previous examples. 
 
@@ -211,7 +211,7 @@ Using the chain rule we can derive
 \end{equation} 
 Notice here the distinction between the direct derivative $\frac{d}{d\theta}$ and partial derivative $\frac{\partial}{\partial \theta}$.
 The two partial derivatives involving the loss function on the right-hand side are usually easy to evaluate.
-For example, for the loss function in Equation \eqref{eq:quadratic-loss-function} these are simply given by 
+For example, for the loss function in Equation \eqref{eq:quadratic-loss-function}, these are simply given by 
 \begin{equation}
     \frac{\partial L}{\partial u} = u - u^{\text{target}}(t_1)
     \qquad 

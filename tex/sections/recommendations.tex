@@ -15,6 +15,7 @@ A simplified overview of this decision-making process is depicted in Figure \ref
     \label{fig:roadmap}
 \end{figure}
 
+\subsection*{Size of the system}
 
 \subsubsection*{\textit{Working with small systems}}
 
@@ -27,7 +28,7 @@ Modern scientific software commonly support AD, making forward AD the best choic
 
 \subsubsection*{\textit{Working with large systems}}
 
-For larger systems with either more than 50 parameters plus number of ODEs, reverse techniques are required. 
+For larger systems with more than 50 parameters plus number of ODEs, reverse techniques are required. 
 As explained in section \ref{section:solver-methods}, the continuous adjoint method, particularly the Gauss adjoint, and for very specific cases, the interpolating adjoint and quadrature adjoint, are the most suitable methods to tackle large stiff systems. 
 The choice between these three types of adjoints will be problem-specific and will depend on the trade-off between numerical stability, performance and memory usage. 
 Adjoint methods supporting checkpointing present more flexibility in this sense, and can allow modulating the method depending on the performance vs memory or input/output constraints of each problem. 
@@ -36,9 +37,14 @@ Unlike for small systems of ODEs and a reduced number of parameters, differentia
 Current state-of-the-art tools can easily work for a wide array of small systems \cite{rackauckas2020universal}, whereas methods for large systems are still under heavy development or require tailored approaches and are likely to see many changes and improvements in the future.
 We refer to Table \ref{table:adjoint} for considerations of which adjoint method to use depending the stability, performance, and memory trade-offs. 
 
-% Finally, it is worth mentioning that for complex stiff problems, following different strategies to avoid local minima will be absolutely necessary in order to achieve convergence (.e.g. using multiple shooting \cite{Kiehl:2006tb, Boussange2024} or progressively increasing the time span which is fitted).
+~\\
+\noindent
+\textit{Special considerations for neural networks in DEs.} While the general guidelines for large systems hold for computing sensitivities for problems involving neural networks, it might be beneficial to use discrete methods when the training cost for the former is prohibitively high. 
+For example, \cite{Onken_Ruthotto_2020} demonstrates that discrete methods speed up neural ODE training by 6x. 
+Additionally, \cite{pal2021opening} show that discrete methods enable using information from the DE solver to speed up training and inference of neural ODEs and SDEs by 1.4x and 1.8x, respectively. 
+These methods are available in \texttt{SciMLSensitivity.jl} via \texttt{TrackerAdjoint} and \texttt{DiffEqCallbacks.jl}.
 
-\subsubsection*{\textit{Efficiency vs stability}}
+\subsection*{Efficiency vs stability}
 
 When using discrete methods, it is important to be aware that the differentiation machinery is applied after the numerical solver for the differential equation has been specified, meaning that the derivatives are computed with respect to the time discretization instead of the solution \cite{Eberhard_Bischof_1996}.
 As discussed in Section \ref{section:software-Forward-AD}, this can mean the method is non-convergent in the case where the iterative solver has adaptive stepsize controllers that depend on the parameter to differentiate.
@@ -52,7 +58,7 @@ This is reflected in the fact that discrete methods usually differentiate the un
 
 % An important distiction between discrete and continuous methods is that discrete methods compute the exact gradient of the discretize functional, while the numerical solution of continuous methods does not neccesaraly correspond to the gradient of any functional \cite{Gunzburger_2002}.
 
-\subsubsection*{\textit{Choosing a direct method}}
+\subsection*{Choosing a direct method}
 
 When computing the gradient of a generic function other than a numerical solver, we further recommend the use of AD (reverse or forward depending the number of parameters) as the direct method of choice, outperforming finite differences, complex step differentiation, and symbolic differentiation. 
 This recommendation applies also for the inner JVPs and VJPs calculations performed inside the numerical solver (Section \ref{section:computing-vjp-inside-solver}).
@@ -65,11 +71,11 @@ In this cases, complex step differentiation may offer an interesting alternative
 It is important to mention that incorrect implementations of both forward and reverse AD can lead to \textit{perturbation confusion}, an existing problem in some AD software where either repeated applications of AD or differentiation with respect to different dual variables result indistinguishable \cite{siskind2005perturbation, manzyuk2019perturbation}. 
 
 
-\subsubsection*{\textit{Taking into account model architecture}}
+\subsubsection*{Taking into account model architecture}
 
 % While it is important to take into account the mathematical aspects of the problem in order to choose the right type of sensitivity method, in practice, c
 Code structure and characteristics have a very strong impact in the choice of which packages to use to compute the sensitivities. 
-Within the Julia and Python ecosystems, each available AD package implements a specific AD technique which will face certain limitations.
+Within the Julia and Python ecosystems, each available AD package implements a specific AD technique that will face certain limitations.
 % In the context of Julia and Python, some packages using different AD implementations will be able to deal with certain situations, while others will fail. 
 Current limitations include:
 % \begin{enumerate}[label=(\roman*)]
@@ -79,12 +85,13 @@ Current limitations include:
     Non-tape-based AD methods tend to support this, like \texttt{Enzyme.jl} and \texttt{Zygote.jl}.
     \item[$ \blacktriangleright$] Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
     \item[$ \blacktriangleright$] Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
-    Some AD packages like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it, while other packages like \texttt{ReverseDiff.jl} do not. 
+    Certain AD Packages like \texttt{ReverseDiff.jl} do not support GPU (Graphical Processing Units) operations, while others like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it. 
+    This makes the former unsuitable for problems involving large neural networks (Neural ODEs) that rely on GPUs for scalability.
 \end{enumerate}
 
-It is important to bear in mind that direct methods are easier to implement in programming languages where AD already exists and sometimes does not required any special package, like for the Julia programming language.
+It is important to bear in mind that direct methods are easier to implement in programming languages where AD already exists and sometimes does not require any special package, like for the Julia programming language.
 Nonetheless, users must be aware of the aforementioned convergence issues of AD naively applied to solvers. 
-Thus we recommend the use of robust and tested software when available (e.g. the Julia SciML ecosystem or Diffrax in Python) as the solvers must apply corrections to AD implementations in order to guarantee numerically correct derivatives.
+Thus, we recommend the use of robust and tested software when available (e.g., the Julia SciML ecosystem or Diffrax in Python), as the solvers must apply corrections to AD implementations in order to guarantee numerically correct derivatives.
 
 % Furthermore, it is important to be aware than when using AD or any other technique we are differentiating the algorithm used to lead to the numerical solution, no the numerical solution itself, which can lead to wrong results \cite{Eberhard_Bischof_1996}.
 % When comparing between discrete and continuous methods, more than talking about computational efficiency we are focusing on the mathematical consistency of the method, that is, \textit{is the method estimating the right gradient?}. 

@@ -1,5 +1,5 @@
 Mechanistic (or process-based) models play a central role in a wide range of scientific disciplines. 
-They consist of mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration. 
+They consist of mathematical descriptions of physical mechanisms that include the modelling of causal interactions, feedback loops and dependencies between components of the system under consideration \cite{rackauckas2020universal}. 
 These mathematical representations typically take the form of DEs. 
 Together with the numerical methods to approximate their solutions, DEs have led to fundamental advances in the understanding and prediction of physical and biological systems.
 
@@ -74,7 +74,7 @@ Typically, the objective is to maximize the fidelity to a target state or unitar
 The predominant control algorithms are gradient-based optimization methods, such as gradient ascent pulse engineering (GRAPE), and rely on the computation of derivatives for solutions of the ODEs modeling the time evolution of the quantum system. 
 In cases where the analytical calculation of a gradient is impractical, numerical evaluation using AD becomes a viable alternative \cite{jirari:2009, leung:2017, abdelhafez:2019, jirari2019quantum, abdelhafez:2020, schaefer:2020, goerz:2022}. 
 Specifically, AD streamlines the adjustment to diverse objectives or constraints, and its efficiency can be enhanced by employing custom derivative rules for the time propagation of quantum states as governed by solutions to the Schrödinger equation \cite{goerz:2022}. 
-Moreover, sensitivity methods for ODEs facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations \cite{schaefer:2021}.
+Moreover, sensitivity methods facilitate the design of feedback control schemes necessitating the differentiation of solutions to stochastic differential equations \cite{schaefer:2021}.
 
 \subsubsection{Other applications}
 
