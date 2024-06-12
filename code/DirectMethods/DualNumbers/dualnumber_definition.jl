@@ -1,8 +1,6 @@
-using Base: @kwdef
-
 @kwdef struct DualNumber{F <: AbstractFloat}
     value::F
-    derivative::F
+    derivative::F = 0.0
     # Inner constructors
     # DualNumber(value, derivative) = new(value, derivative)
     # function DualNumber(value::F) where {F <: AbstractFloat}
@@ -12,22 +10,20 @@ end
 
 # Outer constructor
 function DualNumber(value::F) where {F <: AbstractFloat}
-    DualNumber(value, 0.0)
+    DualNumber(value, F(0.0))
 end 
-
-# Do we need to define this on Base? 
 
 # Chain rules for binary opperators
 
 # Binary sum
-Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value      = a.value + b.value, 
+Base.:(+)(a::DualNumber, b::DualNumber) = DualNumber(value      = a.value + b.value,
                                                      derivative = a.derivative + b.derivative)
 
-# Binary product 
-Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value      = a.value * b.value, 
+# Binary product
+Base.:(*)(a::DualNumber, b::DualNumber) = DualNumber(value      = a.value * b.value,
                                                      derivative = a.value*b.derivative + a.derivative*b.value)
 
-# Power 
+# Power
 Base.:(^)(a::DualNumber, b::AbstractFloat) = DualNumber(value      = a.value ^ b, 
                                                         derivative = b * a.value^(b-1) * a.derivative)
 
