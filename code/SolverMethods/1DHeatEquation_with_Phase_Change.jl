@@ -1,6 +1,5 @@
 using ComponentArrays
 using FreezeCurves
-using IfElse
 using LinearAlgebra
 using OrdinaryDiffEq
 using SciMLSensitivity
@@ -61,12 +60,12 @@ function enthalpyinv(H, p)
     C = heatcapacity(θw, p)
     T_f = H / C
     T_t = (H - Lθ) / C
-    T = IfElse.ifelse(
+    T = ifelse(
         H < zero(θwi),
         # Case 1: H < 0 -> frozen
         T_f,
         # Case 2: H >= 0
-        IfElse.ifelse(
+        ifelse(
             H >= Lθ,
             # Case 2a: H >= Lθ -> thawed
             T_t,
