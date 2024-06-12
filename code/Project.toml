@@ -1,7 +1,7 @@
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+ComplexDiff = "79852310-0c84-4a19-a2da-89f133eb5081"
 ComponentArrays = "b0b7db55-cfe3-40fc-9ded-d10e2dbeff66"
-Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 FreezeCurves = "71e4ad71-e4f2-45a3-aa0a-91ffaa9676be"
 IfElse = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
