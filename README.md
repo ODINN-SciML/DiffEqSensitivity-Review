@@ -89,15 +89,16 @@ We are driving by learning and undersranding and the original authors of this re
 We encourage contributors to participate in this project! If you are interested in contributing, there are many ways in which you can help build this:
 - :collision: **Report bugs in the code.** You can report problems with the code by oppening issues under the `Issues` tab in this repository. Please explain the problem you encounter and try to give a complete description of it so we can follow up on that.
 - :books: **Suggest new bibliography.** If you are aware of references that may be useful to explore and expand this review, you can report it by creating an `Issue` in this repository, with the title of the issue being the title of the paper and adding the label `paper` to the issue.
-- :deciduous_tree: **Add contents.** You are more than welcome to directly contribute to this repository and add contents to it. In order to do so, you can directly make a Pull Request to this repository and we will review the changes before being accepted. If you want to get more and more involved in the project.
+% - :deciduous_tree: **Add contents.** You are more than welcome to directly contribute to this repository and add contents to it. In order to do so, you can directly make a Pull Request to this repository and we will review the changes before being accepted. If you want to get more and more involved in the project.
 - :bulb: **Request new features and explanations.** If there is an important topic or example that you feel falls under the scope of this review and you would like us to include it, please request it! We are looking for new insights into what the community wants to learn.
 
-### Make a Pull Request! :octocat:
+% ### Make a Pull Request! :octocat:
 
-The easiest way to contribute by adding code and/or text is to [create a new fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of this repository and then [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to the main
-repository. You can add changes and explore new things in your own fork of this repository and then make a pull request to the repository asking to include some of the contents in the repository. Pull requests are the best way of merging different versions of a repository since it allows to open a conversation about the new implemented changes and solve potential merge conflicts at the same time.
+% The easiest way to contribute by adding code and/or text is to [create a new fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of this repository and then [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to the main repository. 
+% You can add changes and explore new things in your own fork of this repository and then make a pull request to the repository asking to include some of the contents in the repository. Pull requests are the best way of merging different versions of a repository since it allows to open a conversation about the new implemented changes and solve potential merge conflicts at the same time.
 
-**working from Overleaf?** You can create a Overleaf project that is synchronized with a GitHub repository (see [here](https://www.overleaf.com/learn/how-to/Git_Integration_and_GitHub_Synchronization) for more information). This allows you to do edits on the text file directly from Overleaf and then push your changes directly to your fork, from where you can make a pull request to the main repository.
+% **working from Overleaf?** You can create a Overleaf project that is synchronized with a GitHub repository (see [here](https://www.overleaf.com/learn/how-to/Git_Integration_and_GitHub_Synchronization) for more information). 
+% This allows you to do edits on the text file directly from Overleaf and then push your changes directly to your fork, from where you can make a pull request to the main repository.
 
 ## Contact 
 
