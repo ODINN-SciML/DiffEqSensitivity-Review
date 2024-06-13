@@ -32,7 +32,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% Hyperlinks %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[pdftex,  % needed for pdflatex
+
+\usepackage[pdftex,  % needed for pdflatex $ Do I really need this?
             breaklinks=true,  % so long urls are correctly broken across lines
             colorlinks=true,
             urlcolor=blue,
@@ -47,7 +48,7 @@
 \usepackage{xurl}
 \usepackage[
             backend=biber,
-            style=authoryear-comp, 
+            style=authoryear-comp,
             sorting=nyt,
             autocite=superscript,
             % firstinits=false,
@@ -65,6 +66,10 @@
             uniquelist=false, 
             ]
     {biblatex}
+
+\setcounter{biburlnumpenalty}{100}  % allow breaks at numbers
+\setcounter{biburlucpenalty}{100}   % allow breaks at uppercase letters
+\setcounter{biburllcpenalty}{100}   % allow breaks at lowercase letters
     
 % Redefinde cite command to be based on autocite with superscript
 \renewcommand{\cite}[1]{\parencite{#1}}
@@ -80,7 +85,7 @@
 \renewcommand{\mkbibnamesuffix}[1]{{#1}}
 
 % Font in blibliography
-\renewcommand{\bibfont}{\normal}
+\renewcommand{\bibfont}{\small}
 \renewcommand{\bibitemsep}{0.2\itemsep}
 
 \DeclareFieldFormat{labelnumberwidth}{{#1\adddot}}
@@ -100,3 +105,42 @@
     \end{minipage}
 }
 \captionsetup{format=custom}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   Title   %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength\aftertitskip     \newlength\beforetitskip
+\newlength\interauthorskip  \newlength\aftermaketitskip
+
+%% Changeable parameters.
+\setlength\aftertitskip{0.1in}% plus 0.2in minus 0.2in}
+\setlength\beforetitskip{0.05in}% plus 0.08in minus 0.08in}
+\setlength\interauthorskip{0.05in}% plus 0.1in minus 0.1in}
+\setlength\aftermaketitskip{0.3in}% plus 0.1in minus 0.1in}
+
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}
+   \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}
+   \@maketitle \@thanks
+ \endgroup
+\setcounter{footnote}{0}
+ \let\maketitle\relax \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+
+\def\@startauthor{\noindent \normalsize\bf}
+\def\@endauthor{}
+\def\@starteditor{\noindent \small {\bf Editor:~}}
+\def\@endeditor{\normalsize}
+\def\@maketitle{\vbox{\hsize\textwidth
+ \linewidth\hsize \vskip \beforetitskip
+ {\begin{center} \LARGE\bf \@title \par \end{center}} \vskip \aftertitskip
+ {\def\and{\unskip\enspace{\rm and}\enspace}%
+  % \def\affil{\hspace*{0pt}\hfill\small\it}%
+  \def\affil{\footnotesize\it}%
+  \def\email{\hfill\footnotesize\tt}%
+  \def\name{\normalsize\bf}%
+  \def\AND{\@endauthor\rm\hss \vskip \interauthorskip \@startauthor}
+  \@startauthor \@author \@endauthor}
+}}

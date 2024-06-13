@@ -12,7 +12,7 @@ define an error term computed as \cite{hairer-solving-1, Rackauckas_Nie_2016}
 with $\mathfrak{abstol}$ and $\mathfrak{reltol}$ the absolute and relative solver tolerances (customize), respectively; $M$ is the maximum expected value of the numerical solution; and $\text{err}_i^{n+1}$ is an estimation of the numerical error at step $n+1$. 
 Common choices for these include $M = \max (u_i^{n+1}, \hat u_i^{n+1})$ and $\text{err}_i^{n+1} = u_i^{n+1} - \hat u_i^{n+1}$, but these can vary between solvers. 
 Estimations of the local error $\text{err}_i^{n+1}$ can be based on two approximation to the solution based on Runge-Kutta pairs   \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022, hairer-solving-1}; or in theoretical upper bounds provided by the numerical solver. 
-The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a mere increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
+The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time\cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a small increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
 % Chris on https://discourse.julialang.org/t/default-norm-used-in-ode-error-control/70995/4 mention to this norm to be the defaul since 70s
 
 The goal of a stepize controller is to pick $\Delta t_{n+1}$ as large as possible (so the solver requires less total steps) at the same time that $\text{Err}_\text{scaled} \leq 1$. 
@@ -29,8 +29,8 @@ When $\eta < 1$ (which is the case for simple controllers with $\beta_2 = \beta_
 It is also common to restrict $\eta \in [\eta_\text{min}, \eta_\text{max}]$ so the stepsize does not change abruptly \cite{hairer-solving-1}. 
 
 When performing forward AD though numerical solver, the error used in the stepsize controller needs to naturally account for both the errors induced in the numerical solution of the original ODE and the errors in the dual component carrying the value of the sensitivity. 
-This relation between the numerical solver and AD has been made explicit when we presented the relationship between forward AD and the sensitivity equations (Section \ref{section:sensitivity-equation}, Equation \eqref{eq:sensitivity-equation-AD}). 
-To illustrate this, let us consider the simple ODE example from Section \ref{section:software-Forward-AD}, consisting in the system of equations 
+This relation between the numerical solver and AD has been made explicit when we presented the relationship between forward AD and the forward sensitivity equations (Section \ref{section:sensitivity-equation}, Equation \eqref{eq:sensitivity-equation-AD}). 
+To illustrate this, let us consider the simple ODE example consisting in the system of equations 
 \begin{equation}
 \begin{cases}
  \frac{du_1}{dt} = a u_1 - u_1 u_2 & \quad u_1(0) = 1  \\ 
@@ -61,7 +61,7 @@ grad1 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = Forwa
 # grad1 = ([6278.15677493293],)
 \end{jllisting}
 The reason why the two methods give different answers is because the error estimation by the stepsize controller is ignoring numerical errors in the dual component. 
-In the later case, the local estimated error is drastically underestimated to $\text{err}_i^{n+1} = 0$, which makes the stepsize $\Delta t_{n+1}$ to increase by a multiplicative factor at evary step. 
+In the later case, the local estimated error is drastically underestimated to $\text{err}_i^{n+1} = 0$, which makes the stepsize $\Delta t_{n+1}$ to increase by a multiplicative factor at every step. 
 This can be fixed by instead considering a norm that accounts for both the primal and dual components in the forward pass, 
 \begin{align}
     \text{Err}_\text{scaled}^{n+1}
@@ -87,3 +87,59 @@ grad3 = Zygote.gradient(p->sum(solve(prob, Tsit5(), u0=u0, p=p, sensealg = Forwa
 # grad3 = ([212.71042521681392],)
 \end{jllisting}
 Notice that current implementations of forward AD inside \texttt{SciMLSensitivity.jl} already accounts for this and there is no need to specify the internal norm $\clubsuit_\text{\ref{code:AD-wrong}}$. 
+
+To highlight the pervasiveness of this issue with respect to automatic differentiation, we demonstrate the existence of the non-convergence with solvers in other languages which rely on direct automatic differentiation but do not use corrective practices like is done within Julia's SciML. 
+In particular, we further provide a script that demonstrates that Jax's diffrax does not converge to the correct derivative as tolerance is decreased to zero $\clubsuit_\text{\ref{code:AD-wrong}}$.
+\begin{jllisting}
+import jax
+import jax.numpy as jnp
+from diffrax import diffeqsolve, ODETerm, Tsit5, SaveAt, PIDController, RecursiveCheckpointAdjoint, DirectAdjoint
+
+from jax import config
+config.update("jax_enable_x64", True)
+
+def vector_field(t, u, args):
+    x, y = u
+    a = args
+    dx = a * x - x * y
+    dy = -a * y + x * y
+    return dx, dy
+
+def run(p0, adjoint = RecursiveCheckpointAdjoint(), tol = 1e-12):
+    term = ODETerm(vector_field)
+    solver = Tsit5(scan_kind="bounded")
+    stepsize_controller = PIDController(rtol=tol, atol=tol)
+    t0 = 0
+    t1 = 10.0
+    ts = jnp.linspace(t0, t1, 101)
+    dt0 = 0.1
+    y0 = (jnp.array(1.0), jnp.array(1.0))
+    saveat = SaveAt(ts=ts)
+
+    sol = diffeqsolve(term, solver, t0, t1, dt0, y0, 
+                      adjoint = adjoint,
+                      stepsize_controller = stepsize_controller,
+                      args=p0,
+                      saveat=saveat)
+    return sum(sum(sol.ys))
+
+p0 = 1.0
+run(p0, RecursiveCheckpointAdjoint())
+    
+J = jax.jacrev(run)(y0)
+# Array(6217.6080555, dtype=float64, weak_type=True)
+
+J = jax.jacrev(lambda y0: run(y0, RecursiveCheckpointAdjoint(), tol = 1e-3))(y0)
+# Array(6217.6080555, dtype=float64, weak_type=True)
+
+J = jax.jacfwd(lambda y0: run(y0, DirectAdjoint()))(y0)
+# Array(6217.6080555, dtype=float64)
+
+J = jax.jacfwd(lambda y0: run(y0, DirectAdjoint(), tol = 1e-3))(y0)
+# Array(6217.6080555, dtype=float64)
+
+y1 = 1.000001
+y0 = 1.0
+(run(y1) - run(y0)) / .000001
+# Array(212.71060729, dtype=float64)
+\end{jllisting}

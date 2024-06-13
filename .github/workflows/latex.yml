@@ -20,10 +20,13 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v3
       - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
           working_directory: ./tex
+          continue_on_error: true
+          texlive_version: 2023
+          # args: -f
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
         with:
