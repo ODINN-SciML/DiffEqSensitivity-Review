@@ -1,5 +1,3 @@
-# using Pkg; Pkg.activate("../../."); Pkg.instantiate()
-
 using Plots; gr()
 using Statistics
 using LinearAlgebra
