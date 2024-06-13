@@ -1,10 +1,10 @@
 Also known as the adjoint state method, it is another example of a discrete method that aims to find the gradient by solving an alternative system of linear equations, known as the \textit{adjoint equations}, simultaneously with the original system of equations defined by the numerical solver. 
 These methods are extremely popular in optimal control theory in fluid dynamics, for example for the design of geometries for vehicles and airplanes that optimize performance \cite{Elliott_Peraire_1996, Giles_Pierce_2000} or in ocean state estimation \cite{Wunsch.2007,Wunsch:2008fp}.
 
-The idea of the adjoint method is to treat the differential equation as a constraint in an optimization problem and then differentiate an objective function subject to that constraint. 
+The idea of the adjoint method is to treat the DE as a constraint in an optimization problem and then differentiate an objective function subject to that constraint. 
 Mathematically speaking, this can be treated both from a duality or Lagrangian perspective \cite{Giles_Pierce_2000}.
-In agreement with other authors, we prefer to derive the equation using the former as it may give better insights to how the method works and it allows generalization to other user cases \cite{Givoli_2021}. 
-The derivation of adjoint methods using the Lagrangian formulation can be found in Appendix \ref{appendix:lagrangian}.
+In agreement with other authors, we prefer to derive the equation using the former as it gives better insights to how the method works and it allows generalization to other user cases \cite{Givoli_2021}. 
+% The derivation of adjoint methods using the Lagrangian formulation can be found in Appendix \ref{appendix:lagrangian}.
 % Mathematically, reverse mode AD is related to the adjoint differential equations \cite{Griewack-on-AD}
 
 % \subsubsection{Discrete differential equation}
@@ -13,17 +13,17 @@ The derivation of adjoint methods using the Lagrangian formulation can be found 
 % reference: Sensitivity theory of non-linear systems
 
 The derivation of the discrete adjoint equations is carried out once the numerical scheme for solving Equation \eqref{eq:original_ODE} has been specified.  
-Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_N$, we aim to find approximate numerical solutions $u_i \approx u(t_i; \theta)$. 
-Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_N) \in \R^{nN}$, and we have combined the system of equations defined by the iterative solver as $G(U; \theta) = (g_1(u_1; \theta), \ldots, g_N(u_N; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
+Given a discrete sequence of timesteps $t_0, t_1, \ldots, t_M$, we aim to find approximate numerical solutions $u^m \approx u(t_m; \theta)$. 
+Any numerical solver, including the ones discussed in Section \ref{section:intro-numerical-solvers}, can be understood as solving the (in general nonlinear) system of equations defined by $G(U; \theta) = 0$, where $U$ is the super-vector $U = (u_1, u_2, \ldots, u_M) \in \R^{nM}$, and we have combined the system of equations defined by the iterative solver as $G(U; \theta) = (g_1(u^1; \theta), \ldots, g_M(u^M; \theta)) = 0$ (see Equation \eqref{eq:solver-constriant-example}).
 
-We are interested in differentiating an objective or loss function $L(U, \theta)$ with respect to the parameter $\theta$. 
+We are interested in differentiating an objective or loss function $L(\theta) = L(U(\theta), \theta)$ with respect to the parameter $\theta$. 
 Since here $U$ is the discrete set of evaluations of the solver, examples of loss functions now include 
 \begin{equation}
     L(U, \theta) 
     = 
-    \frac{1}{2} \sum_{i=1}^N \| u_i - u_i^\text{obs} \|^2, 
+    \frac{1}{2} \sum_{m=1}^M w_m \left \| u^m - u_m^\text{obs} \right \|_2^2, 
 \end{equation}
-with $u_i^\text{obs}$ the observed time-series. 
+with $u_m^\text{obs}$ the observed time-series, and $w_m \geq 0$ some arbitrary weights (potentially, many of them equal to zero). 
 Similarly to Equation \eqref{eq:dLdtheta_VJP} we have 
 \begin{equation}
     \frac{dL}{d\theta} 
@@ -61,9 +61,13 @@ Replacing this last expression into Equation \eqref{eq:dhdtheta0}, we obtain
     \frac{\partial G}{\partial \theta}.
     \label{eq:dhdtheta}
 \end{equation}
-Importantly, the right-hand side of Equation \eqref{eq:dhdtheta} can be resolve as a vector-Jacobian product (VJP), with $\frac{\partial L}{\partial U}$ being the vector.
-Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the VJP operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
-This leads to the definition of the adjoint $\lambda \in \R^{nN}$ as the solution of the linear system of equations 
+% Importantly, the right-hand side of Equation \eqref{eq:dhdtheta} can be resolved as a VJP, with $\frac{\partial L}{\partial U}$ being the vector.
+% Instead of computing the product of the matrices $\left( \frac{\partial G}{\partial U} \right)^{-1}$ and $\frac{\partial G}{\partial \theta}$, it is computationally more efficient first to compute the resulting vector from the VJP operation $\frac{\partial L}{\partial U} \left( \frac{\partial G}{\partial U} \right)^{-1}$ and then multiply this by $\frac{\partial G}{\partial \theta}$.
+The important trick used in the discrete adjoint method is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
+Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices (Equation \eqref{eq:adjoint-inversion-implicit-theorem}). 
+However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
+By rearranging these terms and relying on the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
+This leads to the definition of the adjoint $\lambda \in \R^{nM}$ as the solution of the linear system of equations 
 \begin{equation}
     \left( \frac{\partial G}{\partial U}\right)^T \lambda 
     =  
@@ -84,11 +88,7 @@ Replacing Equation \eqref{eq:def_adjoint} into \eqref{eq:dhdtheta} yields
     \lambda^T \frac{\partial G}{\partial \theta}.
     \label{eq:gradient-adjoint-state-method}
 \end{equation}
-The important trick used in the adjoint method is the rearrangement of the multiplicative terms involved in equation \eqref{eq:dhdtheta}. 
-Computing the full Jacobian/sensitivity $\partial U / \partial \theta$ will be computationally expensive and involves the product of two matrices. 
-However, we are not interested in the calculation of the Jacobian, but instead in the VJP given by $\frac{\partial L}{\partial U} \frac{\partial U}{\partial \theta}$. 
-By rearranging these terms and relying on the intermediate variable $G(U; \theta)$, we can make the same computation more efficient. 
-These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, where we can also see an interesting interpretation of the adjoint as being equivalent to $\lambda^T = - \frac{\partial L}{\partial G}$. 
+These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, where we can also see an interpretation of the adjoint as being equivalent to $\lambda^T = - \frac{\partial L}{\partial G}$. 
 
 \begin{figure}[t]
     \centering
@@ -98,14 +98,13 @@ These ideas are summarized in the diagram in Figure \ref{fig:discrete-adjoint}, 
     \label{fig:discrete-adjoint}
 \end{figure}
 
-
 Notice that the algebraic equation of the adjoint $\lambda$ in Equation \eqref{eq:adjoint-state-equation} is a linear system of equations, even when the original system $G(U; \theta)=0$ is not necessarily linear in $U$.
-This means that while solving the original system of ODEs may require multiple iterations in order to solve the non-linear system $G(U) = 0$ (e.g., by using Krylov methods), the backwards step to compute the adjoint is one single linear system of equations. 
+This means that while solving the original ODE may require multiple iterations in order to solve the non-linear system $G(U; \theta) = 0$ (e.g., by using Krylov methods), the backwards step to compute the adjoint is one single linear system of equations. 
 
 \subsubsection{Simple linear system}
 
-To gain further intuition about the discrete adjoint method, let us consider the simple case of the explicit linear one-step methods, where at every step we need to solve the equation $u_{i+1} = g_i (u_i; \theta) = A_i (\theta) \, u_i + b_i(\theta)$, where $A_i(\theta) \in \R^{n \times n}$ and $b_i(\theta) \in \R^n$ are defined by the numerical solver \cite{Johnson}. 
-This condition can be written in a more compact manner as $G(U)=A(\theta) U - b(\theta) = 0$, that is 
+To gain further intuition about the discrete adjoint method, let us consider the simple case of the explicit linear one-step numerical solver, where at every step we need to solve the equation $u^{m+1} = g_m (u^m; \theta) = A_m (\theta) \, u^m + b_m(\theta)$, where $A_m(\theta) \in \R^{n \times n}$ and $b_m(\theta) \in \R^n$ are defined by the numerical solver \cite{Johnson}. 
+This condition can be written in a more compact manner as $G(U; \theta)=A(\theta) U - b(\theta) = 0$, that is 
 \begin{equation}
     A(\theta) U 
     = 
@@ -114,14 +113,14 @@ This condition can be written in a more compact manner as $G(U)=A(\theta) U - b(
         -A_1 & \I_{n} & 0 &  &  \\
           & -A_2 & \I_{n} & 0 &  \\
          &  &   & \ddots &   \\
-         &  &  & -A_{N-1} & \I_{n}
+         &  &  & -A_{M-1} & \I_{n}
     \end{bmatrix}
     \begin{bmatrix}
-        u_1 \\
-        u_2 \\
-        u_3 \\
+        u^1 \\
+        u^2 \\
+        u^3 \\
         \vdots \\
-        u_N
+        u^M
     \end{bmatrix}
     = 
     \begin{bmatrix}
@@ -129,7 +128,7 @@ This condition can be written in a more compact manner as $G(U)=A(\theta) U - b(
         b_1 \\
         b_2 \\
         \vdots \\
-        b_{N-1}
+        b_{M-1}
     \end{bmatrix}
     = 
     b(\theta), 
@@ -163,7 +162,7 @@ with $\lambda$ the discrete adjoint obtained by solving the linear system in Equ
         \I_{n} & -A_1^T &   &  & \\
         0 & \I_{n} & -A_2^T &  &  \\
           & 0 & \I_{n} & -A_3^T &  \\
-         &  &   & \ddots & -A_{N-1}^T  \\
+         &  &   & \ddots & -A_{M-1}^T  \\
          &  &  & 0 & \I_{n}
     \end{bmatrix}
     \begin{bmatrix}
@@ -171,15 +170,15 @@ with $\lambda$ the discrete adjoint obtained by solving the linear system in Equ
         \lambda_2 \\
         \lambda_3 \\
         \vdots \\
-        \lambda_N
+        \lambda_M
     \end{bmatrix}
     = 
     \begin{bmatrix}
-        u_1 - u_1^\text{obs} \\
-        u_2 - u_2^\text{obs} \\
-        u_3 - u_3^\text{obs} \\
+        w_1 (u^1 - u_1^\text{obs}) \\
+        w_2 (u^2 - u_2^\text{obs}) \\
+        w_3 (u^3 - u_3^\text{obs}) \\
         \vdots \\
-        u_N - u_N^\text{obs}     
+        w_M (u^M - u_M^\text{obs})     
     \end{bmatrix}
     = 
     \frac{\partial L}{\partial U}^T.
@@ -189,11 +188,11 @@ This is a linear system of equations with the same size as the original $A(\thet
 Computationally this also means that if we can solve the original system of discretized equations then we can also solve the adjoint at the same computational cost (e.g., by using the LU factorization of $A(\theta)$). 
 % One way of doing this is relying on matrix factorization. 
 % Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrix, $A (\theta) = LU$, which then can be used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
-Another more natural way of finding the adjoints $\lambda$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the final value problem 
+Another more natural way of finding the adjoints $\lambda_m$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the final value problem 
 \begin{equation}
-    \lambda_{i} = A_{i}^T \lambda_{i+1} + (u_i - u_i^\text{obs})
+    \lambda_{m} = A_{m}^T \lambda_{m+1} + w_m(u^m - u_m^\text{obs})
     \label{eq:adjoint-discrete-linear-example}
 \end{equation}
-with final condition $\lambda_N$. 
-This means that we can solve the adjoint equation backwards, i.e., in reverse mode, starting from the final state $\lambda_N$ and computing the values of $\lambda_i$ in decreasing index order. 
-Unless the loss function $L$ is linear in $U$, this procedure requires knowledge of the value of $u_i$ (or some equivalent form of it) at any given timestep. 
+with final condition $\lambda_M$. 
+This means that we can efficiently compute the adjoint equation in reverse mode, starting from the final state $\lambda_M$ and computing the values of $\lambda_m$ in decreasing index order. 
+Unless the loss function $L$ is linear in $U$, this procedure requires knowledge of the value of $u^m$ (or some equivalent form of it) at any given timestep $t_m$. 

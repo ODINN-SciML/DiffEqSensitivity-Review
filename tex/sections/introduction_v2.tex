@@ -1,0 +1,45 @@
+\textit{Why gradients are important?}
+Gradients play a pivotal role in scientific computing and machine learning, underpinning essential techniques such as sensitivity analysis, optimization, Bayesian inference, inverse methods, and uncertainty quantification \cite{Razavi.2021}.
+In sensitivity analysis, the gradient of a scientific model is crucial for comprehending the relationships between model inputs and outputs, assessing the influence of each parameter, and evaluating the robustness of model predictions. 
+In inverse methods, optimization, Bayesian inference and inverse methods, gradients allow for efficient navigation across the potentially high-dimensional parameter spaces of models to find optimal parameter values that best match observational data. 
+Gradient-free optimization and sampling methods become computationally prohibitive in high-dimensional spaces due to the curse of dimensionality, whereas gradient-based methods like gradient descent and its variants \cite{ruder2016overview-gradient-descent} maintain efficiency regardless of dimensionality, thus converging more quickly. 
+Furthermore, gradient-based sampling strategies are superior in numerically computing the posterior of probabilistic models \cite{neal2011mcmc}, with higher order derivatives enhancing convergence rates \cite{BuiThanh:2012ul}. 
+Therefore, accurately determining model gradients, is essential for robust model understanding and effective data assimilation. 
+Since scientific models are resolved numerically, obtaining a model gradient generally involves differentiating a computer program, which can be obtained through differentiable programming.
+
+\textit{What is DP?}
+Differentiable programming (DP) refers to a suite of software tools designed to automatically compute gradients of computer programs, enabling automatic differentiation (AD) \cite{Innes_Zygote}. 
+AD computes derivatives by sequentially applying the chain rule to each basic operation within a computer program \cite{Griewank:2008kh, Naumann.2011}.
+This method transforms complex models into differentiable entities, greatly enhancing the development of data-driven models, especially neural networks. 
+Despite its success in the field of machine learning for supporting the development of data-driven models, integrating AD with differential equation-based models remains a significant challenge in high-performance scientific computing \cite{Naumann.2011}.
+
+\textit{How do DE-based models differ from data-driven models?}
+Differentiable programming has traditionally been developped for data-driven models, such as neural networks.
+These types of models are constructed by simple operations (e.g., matrix multiplications and nonlinear functions) which composition enables a high interpolation capability. 
+There, the model parameters do not rely on scientific priors and are learned fully learnt from data, by minimizing loss functions that plain-vanilla AD can efficiently differentiate. 
+In contrast, differential equation-based models are built on scientific knowledge. 
+They encapsulate physical processes determining the system dynamics, which constrain the model predictions and make these models ideal for predicions under a low data regime, or for out-of-sample predictions. 
+However, their mathematical structure and numerical implementation poses a challenge for obtaining their gradients.
+Specifically, for making a prediction, ODE-based models must be integrated with a numerical solver, that approximates the solution to the underlying set of equations. 
+This solution can be seen as a function that maps parameter and initial conditions to state variables, similar to machine learning models. 
+Yet, this maps has a high computational complexity, as it involves under the hood an ODE solvers.
+The computational complexity of ODE solvers and their wide variety necessitate a special treatment for efficient gradient calculations, that differ from standard ML models. 
+Efficient gradient computation for these models promises enhanced extrapolation accuracy and advances in scientific machine learning \cite{chen_neural_2019, rackauckas2020universal, li2020scalable}.
+
+\textit{What is scientific machine learning?}
+Scientific Machine Learning (SciML) leverages principles from machine learning and scientific computing to improve out-of-sample forecasting ability of data-driven models and compensate for ODE-based models inaccuracies. 
+SciML includes machine learning workflows that incorporate additional constraints in the form of differential equations, such as physics-informed neural networks \cite{PINNs_2019}. 
+SciML also includes the augmentation of differential equation models with data-driven components \cite{rackauckas2020universal, Dandekar_2020, chen_neural_2019, li2020scalable}, facilitating data assimilation and the creation of hybrid models that leverage robust physical priors while adapting to empirical data. 
+SciML crucially depends on the efficient calculation of gradients of the numerical solution of differential equations.
+
+\textit{How to efficiently compute the gradient of a function that depends on the numerical solution of a differential equation?}
+Efficiently computing gradients of functions dependent on differential equation solutions, a process known as sensitivity analysis, is complex due to the computational complexity of the algorithms underlying ODE solvers, and the diversity of these algorithms \cite{hairer-solving-1, hairer-solving-2}. 
+The direct differentiation of these algorithms with standard AD is usually not computationally optimal.
+In the recent years, a large variety of sensitivity methods for differential equations have been proposed, differing in their mathematical underpinning and computational implementations. 
+These various flavours affect the accuracy, the computational complexity, the required memory and application suitability for computing the gradient of DE-based models. 
+Understanding these methods is crucial for their effective adoption in scientific research. 
+
+\textit{How should I read this review?}
+This paper aims at presenting a comprehensive review of methods for calculating gradients of the numerical solution of differential equations. 
+It reviews differentiable programming for differential equations from three different perspectives: a domain science perspective (Section \ref{sectopn:motivation}), a mathematical perspective (Section \ref{section:methods}) and a computer science perspective (Section \ref{sec:computational-implementation}). 
+By providing a coherent background across all methods and applications, we hope to facilitate the development of scalable, practical, and efficient data-driven frameworks for real world applications.

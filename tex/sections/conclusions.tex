@@ -1,9 +1,17 @@
-In the present work, we presented a comprehensive overview of the different existing methods for calculating the sensitivity or gradients of forward maps involving numerical solutions of differential equations.
+We presented a comprehensive overview of the different existing methods for calculating the sensitivity and gradients of functions, including loss functions, involving numerical solutions of differential equations.
 This task has been approached from three different angles.
-First, we presented the existing literature in different scientific communities where adjoints and sensitivities have been used before and play a central modelling role, especially for inverse modeling.
-Secondly, we reviewed the mathematical foundations of these methods and their classification as forward-reverse and discrete-continuous.
-Then, we have shown how the different methods are implemented in the Julia programming language and the different computational considerations that we must take into account when implementing or using a sensitivity algorithm.
-There exist a myriad of options and combinations to compute sensitivities of functions involving differential equations, further complicated by jargon and scientific cultures of different communities. We believe this review paper provides a clearer overview on this topic, and can serve as an entry point to navigate this field and help in terms of decision-making of the most suitable methods for many different scientific problems. 
+First, we presented the existing literature in different scientific communities where differential programming tools have been used before and play a central modelling role, especially for inverse modeling.
+Secondly, we reviewed the mathematical foundations of these methods and their classification as forward vs reverse and discrete vs continuous.
+We further compare the mathematical and computational foundations of these methods, which we believe enlightens the discussion on sensitivity methods and helps to demystify  misconceptions around the sometimes apparent differences between methods.  
+Then, we have shown how these methods can be translated to software implementations, evaluating considerations that we must take into account when implementing or using a sensitivity algorithm. 
+We further exemplified how these methods are implemented in the Julia programming language. 
 
+There exists a myriad of options and combinations to compute sensitivities of functions involving differential equations, further complicated by jargon and scientific cultures of different communities. 
+We hope this review paper provides a clearer overview on this topic, and can serve as an entry point to navigate this field and guide researchers in choosing the most appropriate method for their scientific application.
 
-% We also encourage the interested reader to direct their attention to other comprehensive works on automatic differentiation \cite{Baydin_Pearlmutter_Radul_Siskind_2015}; adjoint methods, ...
+Differentiable programming is opening new ways of doing research across different domains of science and engineering. 
+Arguably, its potential has so far been under-explored but is being rediscovered in the age of data-driven science. 
+Realizing its full potential, requires collaboration between domain scientists, methodological scientists, computational scientists, and computer scientists in order to develop successful, scalable, practical, and efficient frameworks for real world applications.
+As we make progress in the use of these tools, new methodological questions emerge. 
+% How do these methods compare? How can they be improved? 
+% In this review we present a comprehensive list of methods that exists at the intersection of differentiable programming and differential equation modelling. 
