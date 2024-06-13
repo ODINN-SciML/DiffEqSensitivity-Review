@@ -1,7 +1,7 @@
 % Introduction paragram with model based 
-Models based on differential equations (DEs), including ordinary differential equations (ODEs) and partial differential equations (PDEs), play a central role in describing the behaviour of dynamical systems in applied, natural and social sciences.
+Models based on differential equations (DEs), including ordinary differential equations (ODEs) and partial differential equations (PDEs), play a central role in describing the behaviour of dynamical systems in applied, natural, and social sciences.
 % Differential equations are the cornerstone of the physical sciences.
-For instance, DEs are used for the modelling of the dynamics of the atmospheric and ocean circulation in climate science, for the modelling of ice or mantle flow in solid Earth geophysics, for the modelling of the spatio-temporal dynamics of species abundance in ecology, or for the modelling of cancer cell evolution in biology.  
+For instance, DEs are used for the modelling of the dynamics of the atmospheric and ocean circulation in climate science, for the modelling of ice or mantle flow in solid Earth geophysics, for the modelling of the spatio-temporal dynamics of species abundance in ecology, and for the modelling of cancer cell evolution in biology.  
 For centuries, scientists have relied on theoretical and analytical methods to solve DEs. 
 Allowing to approximate the solutions of large, nonlinear DE-based models, numerical methods and computers have lead to fundamental advances in the understanding and prediction of physical, biological, and social systems, among others \cite{Dahlquist_1985, hey2009, Rude:2018jv}.
 
@@ -30,7 +30,7 @@ Arguably, the most celebrated DP method is automatic differentiation.
 The set of tools known as automatic or algorithmic differentiation (AD) aims to compute derivatives of a model rendered on a computer by applying the chain rule to the sequence of unit operations that constitute a computer program \cite{Griewank:2008kh, Naumann.2011}. 
 The premise is simple: every computer program is ultimately an algorithm described by a nested concatenation of elementary algebraic operations, such as addition and multiplication.
 These operations are individually easy to differentiate, and their composition can be easily differentiated using the chain rule \cite{Giering_Kaminski_1998}.
-During the last decades, reverse mode AD, also known as backpropagation, has enabled the fast growth of deep learning by efficiently computing gradients of deep neural networks \cite{griewank2012invented}.
+During the last decades, reverse mode AD, also known as backpropagation, has enabled the fast growth of deep learning by efficiently computing gradients of neural networks \cite{griewank2012invented}.
 % One of the challenges in implementing efficient routines to compute gradients of DE-based models is the integration of the different methods with automatic differentiation.
 Some authors have recently suggested DP as the bridge between modern machine learning and traditional scientific models \cite{Ramsundar_Krishnamurthy_Viswanathan_2021, Shen_diff_modelling, Gelbrecht-differential-programming-Earth, rackauckas2021generalized}. 
 More broadly than AD, DP tools for DE-models further include forward sensitivity and adjoint methods that compute the gradient by relying on an auxiliary set of differential equations.
@@ -47,17 +47,16 @@ This emerging sub-field is usually referred as physics-based or physics-informed
 % SciML and large scale models 
 The need for model gradients is even more critical as the total number of parameters and the expressivity of the model increases, especially when dealing with highly non-linear processes.
 In such circumstances, the curse of dimensionality renders gradient-free optimization and sampling methods computationally intractable. 
-This is the case in inverse methods \cite{Tarantola:2007wu, Ghattas.2021}, and in machine learning applications \cite{LeCun2015} where highly parametrized regressor functions (e.g., neural networks) are used to approximate unknown non-linear function.
+This is the case in inverse methods \cite{Tarantola:2007wu, Ghattas.2021} and in machine learning applications \cite{LeCun2015}, where highly parametrized regressor functions (e.g., neural networks) are used to approximate unknown non-linear function.
 Furthermore, for stochastic forward models, the intractability of the likelihood function represents a major challenge for statistical inference.
 The integration of DP has provided new tools for resolving complex simulation-based inference problems \cite{Cranmer_Brehmer_Louppe_2020}.
 
 % Difficulties with ODE and numerical solvers
 Computing gradients of functions, represented by DE-based simulation codes, with respect to their (high-dimensional) inputs is challenging due to the complexities in both the mathematical framework and the software implementation involved.
-Except for a small set of particular cases, most differential equations require numerical methods to approximate their solution.
-This means that solutions cannot be differentiated analytically and necessitate numerical methods. 
+Except for a small set of particular cases, most DEs require numerical methods to approximate their solution, which means that solutions cannot be differentiated analytically. 
 Furthermore, numerical solutions introduce approximation errors. 
 These errors can be propagated to the computation of the gradient, leading to inaccurate or inconsistent gradient values.  
-Additional to these complexities, the broad family of numerical methods, each one of them with different advantages depending on the differential equation \cite{hairer-solving-1, hairer-solving-2}, means that the tools developed to compute gradients need to be universal enough in order to be applied to all or at least to a large set of them.
+Additional to these complexities, the broad family of numerical methods, each one of them with different advantages depending on the DE \cite{hairer-solving-1, hairer-solving-2}, means that the tools developed to compute gradients need to be universal enough in order to be applied to all or at least to a large set of them.
 
 
 % challenges and knowledge gap
@@ -69,7 +68,7 @@ They can be roughly classified as continuous (differentiate-then-discretize) or 
 % These various flavours affect the accuracy, the computational complexity, the required memory and application suitability for computing the gradient of DE-based models. 
 Different methods guarantee different levels of accuracy, have different computational complexity, and require different trade-offs between run time and memory usage. 
 These properties further depend of the total number of parameters and size of the DE. 
-Despite its success, integrating DP with DE-based models remains a significant challenge in high-performance scientific computing \cite{Naumann.2011}.
+Despite their independent success, integrating DP with DE-based models remains a significant challenge in high-performance scientific computing \cite{Naumann.2011}.
 % As coined by Uwe Naumann, \textit{the automatic generation of optimal (in terms of robustness and efficiency) adjoint versions of large-scale simulation code is one of the great open challenges in the field of High-Performance Scientific Computing} \cite{Naumann.2011}.
 \\ \\
 This paper presents a comprehensive review of methods for calculating derivatives of the numerical solution of differential equations, with a focus on efficiently computing gradients. 

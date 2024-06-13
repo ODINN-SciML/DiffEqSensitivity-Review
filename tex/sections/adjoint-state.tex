@@ -21,9 +21,9 @@ Since here $U$ is the discrete set of evaluations of the solver, examples of los
 \begin{equation}
     L(U, \theta) 
     = 
-    \frac{1}{2} \sum_{m=1}^M \left \| u^m - u_m^\text{obs} \right \|_2^2, 
+    \frac{1}{2} \sum_{m=1}^M w_m \left \| u^m - u_m^\text{obs} \right \|_2^2, 
 \end{equation}
-with $u_m^\text{obs}$ the observed time-series. 
+with $u_m^\text{obs}$ the observed time-series, and $w_m \geq 0$ some arbitrary weights (potentially, many of them equal to zero). 
 Similarly to Equation \eqref{eq:dLdtheta_VJP} we have 
 \begin{equation}
     \frac{dL}{d\theta} 
@@ -174,11 +174,11 @@ with $\lambda$ the discrete adjoint obtained by solving the linear system in Equ
     \end{bmatrix}
     = 
     \begin{bmatrix}
-        u^1 - u_1^\text{obs} \\
-        u^2 - u_2^\text{obs} \\
-        u^3 - u_3^\text{obs} \\
+        w_1 (u^1 - u_1^\text{obs}) \\
+        w_2 (u^2 - u_2^\text{obs}) \\
+        w_3 (u^3 - u_3^\text{obs}) \\
         \vdots \\
-        u^M - u_M^\text{obs}     
+        w_M (u^M - u_M^\text{obs})     
     \end{bmatrix}
     = 
     \frac{\partial L}{\partial U}^T.
@@ -190,9 +190,9 @@ Computationally this also means that if we can solve the original system of disc
 % Using the LU factorization we can write the matrix $A(\theta)$ as the product of a lower and upper triangular matrix, $A (\theta) = LU$, which then can be used for solving the adjoint equation since $A^T(\theta)=U^TL^T$.
 Another more natural way of finding the adjoints $\lambda_m$ is by noticing that the system of equations \eqref{eq:linea-adjoint-state-equation} is equivalent to the final value problem 
 \begin{equation}
-    \lambda_{m} = A_{m}^T \lambda_{m+1} + (u^m - u_m^\text{obs})
+    \lambda_{m} = A_{m}^T \lambda_{m+1} + w_m(u^m - u_m^\text{obs})
     \label{eq:adjoint-discrete-linear-example}
 \end{equation}
 with final condition $\lambda_M$. 
 This means that we can efficiently compute the adjoint equation in reverse mode, starting from the final state $\lambda_M$ and computing the values of $\lambda_m$ in decreasing index order. 
-Unless the loss function $L$ is linear in $U$, this procedure requires knowledge of the value of $u_i$ (or some equivalent form of it) at any given timestep. 
+Unless the loss function $L$ is linear in $U$, this procedure requires knowledge of the value of $u^m$ (or some equivalent form of it) at any given timestep $t_m$. 

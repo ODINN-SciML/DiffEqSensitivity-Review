@@ -37,7 +37,7 @@ However, there has been an increasing interest in making mechanistic models more
 This sub-field, usually known as physics-informed machine learning, refers to the collection of machine learning techniques that explicitly introduce biases to satisfy certain physical constraints. 
 These biases can be forced by the design of algorithms that include symmetries, conservation laws, and constraints in the form of DEs \cite{Karniadakis_Kevrekidis_Lu_Perdikaris_Wang_Yang_2021}. 
 It includes methods that numerically solve DEs, such as physics-informed neural networks \cite{PINNs_2019}, biology-informed neural networks \cite{Yazdani2020,Lagergren_Nardini_Baker_Simpson_Flores_2020}, NeuralPDEs \cite{Zubov_McCarthy_Ma_Calisto_Pagliarino_Azeglio_Bottero_Luján_Sulzer_Bharambe_et} and mesh-free methods for solving high-dimensional PDEs \cite{boussange2023a}. 
-On the other hand, there has been an increased interest in augmenting DE-based models by embedding a rich family of parametric functions (e.g., neural networks) inside the differential equation.  
+On the other hand, there has been an increased interest in augmenting DE-based models by embedding a rich family of parametric functions (e.g., neural networks) inside the DE.  
 This approach is known as such as universal differential equations \cite{rackauckas2020universal, Dandekar_2020}, which also include the case of neural ordinary differential equations \cite{chen_neural_2019} and neural stochastic differential equations \cite{li2020scalable}.
 
 
@@ -46,7 +46,7 @@ This approach is known as such as universal differential equations \cite{rackauc
 
 \subsection{Computational physics and optimal design}
 
-There is a long tradition of computational physics models based on adjoint methods and automatic differentiation pipelines, where sensitivity methods have been used for optimal design and optimal control since the 1960s \cite{lions1971optimal}. 
+There is a long tradition of computational physics models based on adjoint methods and AD pipelines, where sensitivity methods have been used for optimal design and optimal control since the 1960s \cite{lions1971optimal}. 
 These models are often based on PDEs and are applied in various fields to improve engineering designs or model parameters with respect to some objective function. 
 The models can involve thousands of parameters, and they require efficient derivative calculations for the use of gradient-based optimizers such as quasi-Newton methods \cite{nocedal1999numerical}. 
 Both discrete and continuous adjoints methods, which we will introduce in Sections \ref{section:discrete-adjoint} and \ref{section:continuous-adjoint}, respectively, have been used extensively, each having different benefits depending on the application.
@@ -68,7 +68,7 @@ Beyond aerospace, other significant applications include optimizing ship hull de
 
 \subsubsection{Quantum physics}
 
-Quantum optimal control has diverse applications spanning a broad spectrum of quantum systems. 
+Quantum optimal control has applications spanning a broad spectrum of quantum systems. 
 Optimal control methods have been used to optimize pulse sequences, enabling the design of high-fidelity quantum gates and the preparation of complex entangled quantum states \cite{koch2022quantum}. 
 Typically, the objective is to maximize the fidelity to a target state or unitary operation, accompanied by additional constraints or costs specific to experimental demands. 
 The predominant control algorithms are gradient-based optimization methods, such as gradient ascent pulse engineering (GRAPE), and rely on the computation of derivatives for solutions of the ODEs modeling the time evolution of the quantum system. 
@@ -132,7 +132,7 @@ where the adjoint model is generated using source-to-source AD \cite{Marotzke:19
 %initially using the \textit{Tangent linear and Adjoint Model Compiler} (TAMC)\cite{Giering:1998in} and then its commercial successor \textit{Transformation of Algorithms in Fortran} (TAF) \cite{Giering.2006}.
 Rigorous exploitation of AD enabled extensions to vastly improved model numerics \cite{Forget.2015m9i} and coupling to biogeochemistry \cite{Dutkiewicz:2006gw}, sea-ice \cite{Heimbach:2010fz}, and sub-ice shelf cavities \cite{Heimbach:2012iu,Goldberg:2020dl}.
 Unlike NWP-type 4D-Var, it also enabled extension to the problem of parameter calibration from observations \cite{Ferreira.2005,Stammer:2005dw,Liu:2012jd}. 
-Arguably, this work heralded much of today's efforts in ``online learning'' of parameterization schemes.
+Arguably, this work heralded much of today's efforts in \textit{online learning} of parameterization schemes.
 %, where the functional representation between the parameters and the learning data are provided by the numerical implementation of an empirical function rather than by a neural network.
 The desire to make AD for Earth system models written in Fortran (to date the vast majority) has  spurned the development of AD tools with powerful reverse modes, both commercial \cite{Giering_Kaminski_1998,Giering.2006} and open-source \cite{Utke:2008ko,Hascoet.2013,Gaikwad.2023,Gaikwad.2024}.
 %There is enormous potential to seamlessly integrate the inverse-modeling and machine-learning based approaches through the concept of differentiable programming.
@@ -145,7 +145,7 @@ However, there has been a lack so far in exploiting the use of gradient informat
 One conceptual challenge is the presence of multiple timescales in the coupled system and the utility of gradient information beyond many synoptic time scales in the atmosphere and ocean \cite{lea2000sensitivity,Lea:2002cv}.
 Nevertheless, efforts are underway to enable adjoint-based parameter estimation of coupled atmosphere-ocean climate models, with AD again playing a crucial role in generating the corresponding adjoint model
 \cite{Blessing.2014,Lyu.2018,Stammer:2018de}.
-Complementary, recognizing the power of DP, efforts are also targeting the development of \textit{neural atmospheric general circulation models} in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics \cite{Kochkov.2023}.
+Complementary, recognizing the power of DP, efforts are also targeting the development of neural atmospheric general circulation models in \texttt{JAX}, which combine a differentiable dynamical core with neural operators as surrogate models of unresolved physics \cite{Kochkov.2023}.
 
 \subsubsection{Glaciology}
 

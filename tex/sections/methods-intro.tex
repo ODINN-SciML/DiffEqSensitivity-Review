@@ -29,13 +29,12 @@ On the other side, continuous methods lead to consistency error calculation of t
 % However, one has to keep in mind that AD computes the exact derivative of an approximation of the objective and may not yield an approximation to the exact derivatives of the objective (Section \ref{section:forwardAD-sensitivity}).
 
 The distinction between \textit{forward} and \textit{reverse} regards whether sensitivities are computed for intermediate variables with respect to the input variable or parameter to differentiate (forward) or, on the contrary, we compute the sensitivity of the output variable with respect to each intermediate variable by defining a new adjoint variable (reverse). 
-
 Mathematically speaking, this distinction translated to the fact that forward methods compute directional derivatives by mapping sequential mappings between tangent spaces, while reverse methods apply sequential mappings between co-tangent spaces from the direction of the output variable to the input variable (Section \ref{sec:vjp-jvp}).   
 In all forward methods the DE is solved sequentially and simultaneously with the directional derivative during the forward pass of the numerical solver. 
 On the contrary, reverse methods compute the gradient by solving a new problem that moves in the opposite direction as the original numerical solver.
 In DE-based models, intermediate variables correspond to intermediate solutions of the DE.
 In the case of ODEs and time-dependant PDEs, most numerical methods solve the DE by progressively moving forward in time, meaning that reverse methods solve for the gradient moving backwards in time. 
-In other words, forward methods compute directional derivatives as they simultaneously solve the original differential equation, while reverse methods compute adjoints as they solve the problem from output to input.
+In other words, forward methods compute directional derivatives as they simultaneously solve the original DE, while reverse methods compute adjoints as they solve the problem from output to input.
 % \todo[inline]{That doesn't sound right, see Griewank, section 3: the forward model computes directional derivatives, not gradients (tangent mode), the reverse mode computes gradients (adjoint mode). I.e., forward mode maps between tangent spaces, reverse mode maps between cotangent spaces. The text can be corrected if you replace "gradient" more generically by "derivative" (but it then misses the point).}
 
 As discussed in the following sections, forward methods are very efficient for problems with a small number of parameters we want to differentiate with respect to. 

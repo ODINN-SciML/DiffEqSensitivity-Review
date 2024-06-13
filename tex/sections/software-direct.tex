@@ -30,7 +30,7 @@ For this experiment, both relative and absolute tolerances of the numerical solv
     \centering
     % \includegraphics[width=0.85\textwidth]{../code/finite_differences/finite_difference_derivative.pdf}
     \includegraphics[width=1.0\textwidth]{figures/direct_derivatives.pdf}
-    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\theta t)/\theta$ with respect to $\theta$ at $t=10.0$ as a function of the stepsize $\varepsilon$. Here, $u(t)$ corresponds to the solution of the differential equation $u'' + \theta^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The blue dots correspond to the case where the relative error is computed with finite differences. The red and orange lines are for the case where $u(t)$ is numerically computed using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. $\clubsuit_\text{\code{code:figure-comparison}}$}
+    \caption{Absolute relative error when computing the gradient of the function $u(t) = \sin (\theta t)/\theta$ with respect to $\theta$ at $t=10.0$ as a function of the stepsize $\varepsilon$ for different direct methods. Here, $u(t)$ corresponds to the solution of the differential equation $u'' + \theta^2 u = 0$ with initial condition $u(0)=0$ and $u'(0)=1$. The two dashed lines correspond to the case where differentiation is applied on the analytical solution. Dots correspond to the differentiation of the numerically computed solution using the default Tsitouras solver \cite{Tsitouras_2011} from \texttt{OrdinaryDiffEq.jl} using different tolerances. Horizontal lines correspond to AD (either forward or reverse). The error when using a numerical solver is larger and it is dependent on the numerical precision of the numerical solver. $\clubsuit_\text{\code{code:figure-comparison}}$}
     \label{fig:direct-methods}
 \end{figure}
 
@@ -90,23 +90,23 @@ The interface for defining primitives in implemented in \texttt{ChainRulesCore.j
 Reverse AD can be implemented via pullback functions \cite{Innes_2018}, a method also known as continuation-passing style \cite{Wang_Zheng_Decker_Wu_Essertel_Rompf_2019}.
 In the backward step, it executes a series of function calls, one for each elementary operation.
 If one of the nodes in the graph $w$ is the output of an operation involving the nodes $v_1, \ldots, v_m$, where $v_i \rightarrow w$ are all edges in the graph, then the pullback $\bar v_1, \ldots, \bar v_m = \mathcal B_w(\bar w)$ is a function that accepts gradients with respect to $w$ (defined as $\bar w$) and returns gradients with respect to each $v_i$ (defined as $\bar v_i$) by applying the chain rule. 
-Consider the example of the multiplication $w = v_1 \cdot v_2$. 
+Consider the example of the multiplication $w = v_1 \times v_2$. 
 Then
 \begin{equation}
  \bar v_1, \, \bar v_2 
  \,=\,
- v_2 \cdot \bar w , \,
- v_1 \cdot \bar w 
+ v_2 \times \bar w , \,
+ v_1 \times \bar w 
  \,=\,
  \mathcal{B}_w (\bar w),
 \end{equation}
 which is equivalent to using the chain rule as
 \begin{equation}
  \frac{\partial \ell}{\partial v_1} 
- = \frac{\partial}{\partial v_1}(v_1 \cdot v_2) \frac{\partial \ell}{\partial w}
+ = \frac{\partial}{\partial v_1}(v_1 \times v_2) \frac{\partial \ell}{\partial w}
  =
- v_2 \cdot \bar w \, , \qquad 
- \frac{\partial \ell}{\partial v_2} = v_1 \cdot \bar \omega \, .
+ v_2 \times \bar w \, , \qquad 
+ \frac{\partial \ell}{\partial v_2} = v_1 \times \bar \omega \, .
 \end{equation}
 
 A crucial distinction between AD implementations based on computational graphs is between \textit{static} and \textit{dynamic} methods \cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
@@ -156,7 +156,7 @@ To illustrate this, let us consider the following first-order ODE:
 \end{equation}
 Notice that for the value of the parameter $a = 1$, this ODE admits an analytical solution $u_1(t) \equiv u_2(t) \equiv 1$, making this problem very simple to solve numerically.
 The following code solves for the derivative with respect to the parameter $a$ using two different methods. 
-The second method using forward AD with dual numbers declares the \texttt{internalnorm} argument according to Equation \eqref{eq:internal-norm-wrong} $\clubsuit_\text{\code{code:AD-wrong}}$.
+The second method using forward AD with dual numbers declares the \texttt{internalnorm} argument for the stepsize controller according to Equation \eqref{eq:internal-norm-wrong} $\clubsuit_\text{\code{code:AD-wrong}}$.
 \begin{jllisting}
 using SciMLSensitivity, OrdinaryDiffEq, Zygote, ForwardDiff
 
@@ -213,7 +213,7 @@ To highlight the pervasiveness of this issue with respect to AD, we further prov
 
 The total number of computations required to evaluate a gradient/Jacobian using any direct method will depend of its sparsity.  
 When the sparsity pattern is known, colored AD efficiently chunk the calculation of the Jacobian into multiple JVPs or VJPs \cite{gebremedhin2005color}. 
-This results in a smaller number of evaluations of VJPs/JVPs compared to the one required to compute all entries of a dense Jacobian \cite{pal2024nonlinearsolve}. 
+This results in a smaller number of evaluations of JVPs/VJPs compared to the one required to compute all entries of a dense Jacobian \cite{pal2024nonlinearsolve}. 
 This can represent a significant advantage for large-scale nonlinear systems and discretized PDEs where sparse Jacobian are commonplace.  
 
 Generally AD is recommended as a direct differentiation method due to its generality on programs and the lack of potential memory issues by avoiding expression swell, though there are some situations where symbolic differentiation may be appropriate. 
@@ -235,7 +235,7 @@ An example of this is given by the arrowhead matrix $J_{\text{arrowhead}} \in \R
 \end{equation}
 where $\bullet$ indicate non trivial zero entries of the Jacobian.
 In this case, both forward and reverse AD will have to perform $n$ VJPs and JVPs, respectively, and there is no computational benefit of using colored AD. 
-Instead, symbolic differentiation constructs a symbolic representation of the sparse Jacobian entry-by-entry and can fill the Jacobian with $n + 2 \cdot (n-1)$ computations, where each computation is significantly cheaper than each VJP or JVP. 
+Instead, symbolic differentiation constructs a symbolic representation of the sparse Jacobian entry-by-entry and can fill the Jacobian with $3n-2$ computations, where each computation is significantly cheaper than each VJP or JVP. 
 Notice that for the arrowhead matrix example, a combination of forward and reverse AD can be used to color the Jacobian with two forward and one reverse AD evaluation. 
 % This may be worth adding, but not sure yet.
 % Consider the example given in \cite{Griewank:2008kh}

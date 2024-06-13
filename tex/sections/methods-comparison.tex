@@ -33,15 +33,15 @@ In order to have a better idea of how this works in the case of a numerical solv
 Following the same schematics as in Figure \ref{fig:discrete-adjoint}, we represent the computational graph of the numerical method using the intermediate variables $g_1, g_2, \ldots, g_{M-1}$.
 The dual/adjoint variables defined in reverse AD in this computational graph are given by 
 \begin{equation}
-    \bar g_m
+    \bar g_m^T
     = 
-    \frac{\partial u^{m+1}}{\partial g_m} \bar u^{m+1}
+    (\bar u^{m+1})^T \frac{\partial u^{m+1}}{\partial g_m} 
     = 
-    \frac{\partial L}{\partial u^{m+1}} 
-    +
-    \frac{\partial g_{m+1}}{\partial u^m} \bar g_{m+1}.
+    (\bar g_{m+1})^T \frac{\partial g_{m+1}}{\partial u^{m+1}}
+    + 
+    \left(\frac{\partial L}{\partial u^{m+1}}\right)^T.
 \end{equation}
-The updates of $\bar g_m$ then mathematically coincide with the updates in reverse mode of the adjoint variable $\lambda_m$ (see Equation \eqref{eq:adjoint-discrete-linear-example}).
+The updates of $\bar g_m$ then mathematically coincide with the updates in reverse mode of the adjoint variable $\lambda_m$ (see Equation \eqref{eq:adjoint-discrete-linear-example}) mapping between tangent spaces (see Section \ref{sec:vjp-jvp}).
 
 \begin{figure}[t]
     \centering
@@ -52,7 +52,7 @@ The updates of $\bar g_m$ then mathematically coincide with the updates in rever
 
 Modern numerical solvers use functions $g_m$ that correspond to nested functions, meaning $g_m = g_m^{(k_m)} \circ g_m^{(k_m-1)} \circ \ldots \circ g_m^{(1)}$. 
 % When in an explicit solver this happens? 
-This is certainly the case for implicit methods when $u^{m+1}$ is the solution of an iterative Newton method \cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
+This is certainly the case for implicit methods when $u^{m}$ is computed as the solution of $g_m(u^m; \theta) = 0$ using an iterative Newton method \cite{SUNDIALS-hindmarsh2005sundials}; or in cases where the numerical solver includes internal iterative sub-routines \cite{Alexe_Sandu_2009}.
 If the number of intermediate function is large, reverse AD will result in a large computational graph, potentially leading to excessive memory usage and slow computation \cite{Margossian.2019, Alexe_Sandu_2009}.
 A solution to this problem is to introduce a customized \textit{super node} that directly encapsulates the contribution to the full adjoint in $\bar g_m$ without computing the adjoint for each intermediate function $g_m^{(j)}$.
 Provided with the value of the Jacobian matrices $\frac{\partial g_m}{\partial u^m}$ and $\frac{\partial g_m}{\partial \theta}$, we can use the implicit function theorem to find $\frac{\partial u^m}{\partial \theta}$ as the solution of the linear system of equations
@@ -123,7 +123,7 @@ For example, for the forward Euler method this gives
 \begin{split}
     u^{m+1} + s^{m+1} \, \epsilon 
     &= 
-    u^m +  s^m \, \epsilon + \Delta t \, f (u^m + s^m \, \epsilon, \theta + \epsilon, t_m) \\
+    u^m +  s^m \, \epsilon + \Delta t_m \, f (u^m + s^m \, \epsilon, \theta + \epsilon, t_m) \\
     &= 
     u^m + \Delta t_m \, f(u^m, \theta, t_m) 
     + 

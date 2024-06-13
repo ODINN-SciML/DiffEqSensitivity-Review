@@ -20,6 +20,14 @@ with $Dg_i$ the Jacobian of each intermediate function evaluated at the intermed
 %     \nabla \ell \cdot Dg_{k} \cdot Dg_{k-1} \cdot \ldots \cdot Dg_2 \cdot Dg_1 \cdot \delta \theta.
 % \end{equation}
 
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/AD-VJPJVP.pdf}
+    \caption{Comparison between forward and reverse AD. Changing the order of Jacobian and vector multiplications changes the total number of floating-point operations, which leads to different computational complexities between forward and reverse mode. When computing directional derivatives with forward AD, there is a total of $\mathcal O (k)$ JVPs that need to be computed, which considering we need to repeat this procedure $p$ times gives a total complexity of $\mathcal O (kp)$. This is the opposite of what happens when we carry the VJPs from the left side of the expression, where the matrix of size $d_1 \times p$ has no effect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$ and a total complexity of $\mathcal O (k + p)$. }
+    % However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
+    \label{fig:vjp-jvp}
+\end{figure}
+
 In forward AD, we can compute $\delta L$ from Equation \eqref{eq:deltaL} by defining the intermediate perturbation $\delta g_j$ as the sequential evaluation of the JVP given by the map between tangent spaces ${\delta x \mapsto Dg_j (x) \cdot \delta x}$ \cite{Griewank:2008kh}:
 \begin{align}
     \delta g_0 &= \delta \theta \\
@@ -44,14 +52,6 @@ In the general case of a function $L : \R^p \mapsto \R^q$ with multiple outputs 
 When the function to differentiate has a larger input space than output ($q \ll p$), AD in reverse mode is more efficient as it propagates the chain rule by computing VJPs.
 For this reason, reverse AD is often preferred in both modern machine learning and inverse methods.
 However, notice that reverse mode AD requires saving intermediate variables through the forward run in order to run backwards afterwards \cite{Bennett_1973}, leading to performance overhead that makes forward AD more efficient when $p \lesssim q$ \cite{Griewank_1989, Margossian.2019, Baydin_Pearlmutter_Radul_Siskind_2015}. 
-
-\begin{figure}[p]
-    \centering
-    \includegraphics[width=0.85\textwidth]{figures/AD-VJPJVP.pdf}
-    \caption{Comparison between forward and reverse mode AD. Changing the order of Jacobian and vector multiplications changes the total number of floating-point operations, which leads to different computational complexities between forward and reverse mode. When computing directional derivatives with forward AD, there is a total of $\mathcal O (k)$ JVPs that need to be computed, which considering we need to repeat this procedure $p$ times gives a total complexity of $\mathcal O (kp)$. This is the opposite of what happens when we carry the VJPs from the left side of the expression, where the matrix of size $d_1 \times p$ has no effect in the intermediate calculations, making all the intermediate calculations $\mathcal O (1)$ with respect to $p$ and a total complexity of $\mathcal O (k + p)$. }
-    % However, backwards mode requires storing in memory information about the forward execution of the program, while forward mode can update the gradient on running time.}
-    \label{fig:vjp-jvp}
-\end{figure}
 
 In practice, most AD systems are reduced to the computation of only directional derivatives (JVPs) or gradients (VJPs) \cite{Griewank:2008kh}.
 Full Jacobians $J \in \R^{n \times p}$ (e.g., the sensitivity $s = \frac{\partial u}{\partial \theta} \in \R^{n \times p}$) can be fully reconstructed by the independent computation of the $p$ columns of $J$ via the JVPs $J e_i$, with $e_i \in \R^p$ the canonical vectors; or by the calculation of the $m$ rows of $J$ via the VJPs $e_j^T J$, with $e_j \in \R^n$.

@@ -28,7 +28,7 @@ Modern scientific software commonly support AD, making forward AD the best choic
 
 \subsubsection*{\textit{Working with large systems}}
 
-For larger systems with more than 50 parameters plus number of ODEs, reverse techniques are required. 
+For larger systems with more than 50 parameters plus size of the ODE, reverse techniques are required. 
 As explained in section \ref{section:solver-methods}, the continuous adjoint method, particularly the Gauss adjoint, and for very specific cases, the interpolating adjoint and quadrature adjoint, are the most suitable methods to tackle large stiff systems. 
 The choice between these three types of adjoints will be problem-specific and will depend on the trade-off between numerical stability, performance and memory usage. 
 Adjoint methods supporting checkpointing present more flexibility in this sense, and can allow modulating the method depending on the performance vs memory or input/output constraints of each problem. 
@@ -86,7 +86,7 @@ Current limitations include:
     \item[$ \blacktriangleright$] Mutation of arrays (i.e. in-place operations) is sometimes problematic, since it does not allow to preserve the chain rule during reverse differentation. As such, mutations are not possible for packages like \texttt{Zygote.jl} or \texttt{JAX}. It is however currently supported by \texttt{ReverseDiff.jl} and \texttt{Enzyme.jl}.
     \item[$ \blacktriangleright$] Compatibility with GPUs (Graphical Processing Units) is still greatly under development for sensitivity methods. 
     Certain AD packages like \texttt{ReverseDiff.jl} do not support GPU operations, while others like \texttt{JAX}, \texttt{Enzyme.jl} and \texttt{Zygote.jl} support it. 
-    This makes the former unsuitable for problems involving large neural networks (Neural ODEs) that rely on GPUs for scalability.
+    This makes the former unsuitable for problems involving large neural networks (e.g, neural ODEs \cite{chen_neural_2019}) that rely on GPUs for scalability.
 \end{enumerate}
 
 It is important to bear in mind that direct methods are easier to implement in programming languages where AD already exists and sometimes does not require any special package, like for the Julia programming language.

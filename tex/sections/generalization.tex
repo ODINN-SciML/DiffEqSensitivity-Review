@@ -1,6 +1,6 @@
 In this section, we briefly discuss how the ideas covered in Sections \ref{section:methods} and \ref{sec:computational-implementation} for first-order ODEs generalize to more complicated systems of DEs. 
 
-Notice that the application of all the direct methods (finite differences, AD, complex step differentiation, symbolic differentiation) applies to more general systems of DE.
+Notice that the application of all the direct methods (finite differences, AD, complex step differentiation, symbolic differentiation) applies to more general systems of DEs.
 The fundamental behaviour and implementation of these DP methods does not change, although new considerations about numerical accuracy may need to be taken into account, especially for discrete methods based on unmodified solution processes.  
 The mathematical derivation of continuous methods (forward sensitivity equations and continuous adjoint) covered in Sections \ref{section:sensitivity-equation} and \ref{section:continuous-adjoint} still applies, although more specific details of the DEs may apply (e.g., inclusion for boundary conditions or other constraints). 
 Regarding discrete adjoint methods, the mathematical formulation covered in Section \ref{section:discrete-adjoint} and its connection with reverse AD (Section \ref{section:comparison-discrete-adjoint-AD}) applies to more general solvers for DEs. 
@@ -36,7 +36,7 @@ In this case, the forward sensitivity equations can be derived using the same st
     F(t, \theta)
     \right) = 0,
 \end{equation}
-which results in the forward sensitivity equation for the sensitivity $s$
+which results in the forward sensitivity equation for the sensitivity $s(t)$:
 \begin{equation}
     M \frac{d^2 s}{dt^2}
     + 
@@ -172,5 +172,5 @@ To address these issues, various modifications and methods have been proposed, i
 %Another alternative that applies to ergodic dynamical systems is to instead consider the loss $L^\infty(\theta) = \lim_{T\to\infty} \langle L(\theta) \rangle_T$, which depends solely on the governing dynamical system and is independent of the specific choice of trajectory $u(t; \theta)$. 
 %In particular, $L^\infty(\theta)$ does not depend on the initial condition. 
 
-In Julia, the following methods based on the shadowing lemma are currently supported \texttt{ForwardLSS},  \texttt{AdjointLSS}, \texttt{NILSS}, and \texttt{NILSAS}. 
+In Julia, the following methods based on the shadowing lemma are currently supported in the packages \texttt{AdjointLSS}, \texttt{ForwardLSS}, \texttt{NILSAS}, and \texttt{NILSS}. 
 Standard derivative approximations are inappropriate for chaotic systems and will not give convergent estimates when the simulation time is a multiple of the Lyapunov time.

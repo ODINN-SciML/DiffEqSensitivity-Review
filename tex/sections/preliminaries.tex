@@ -4,10 +4,7 @@ Consider the first-order ODE given by
  \label{eq:original_ODE}
 \end{equation}
 subject to the initial condition $u(t_0) = u_0$, where $u \in \mathbb{R}^n$ is the unknown solution vector of the ODE, $f: \R^n \times \R^p \times \R \mapsto \R^n$ is a function that depends on the state $u$, $\theta \in \mathbb R^p$ is a vector parameter, and $t \in [t_0, t_1]$ refers to time.
-Here, $n$ denotes the total number of ODEs and $p$ the number of parameters of the differential equation.
-% Although we here consider the case of ODEs, that is, when the derivatives are just with respect to the time variable $t$, the ideas presented here can be extended to partial differential equations (PDEs) (when discretized via e.g. the method of lines \cite{ascher2008numerical}), and to differential algebraic equations (DAEs) \cite{hairer-solving-2}.
-% In fact, PDEs play an essential role when formulating equations of motion via local conservation (and constitutive) laws in physics-based simulations.
-% Furthermore, the fact that both $u$ and $\theta$ are one-dimensional vectors does not prevent the use of higher-dimension objects (e.g. when $u$ is a matrix or a tensor). 
+Here, $n$ denotes the size of the ODE and $p$ the number of parameters.
 Except for a minority of functions $f(u,\theta, t)$, solutions to Equation \eqref{eq:original_ODE} need to be computed using numerical solvers. 
 
 \subsubsection{Numerical solvers for ODEs}
@@ -26,7 +23,7 @@ Given an integer $s$, $s$-stage Runge-Kutta methods are defined by generalizing 
     \Delta t_m \sum_{i=1}^s b_i k_i \\
     k_i 
     &= 
-    f \left(u^m + \sum_{j=1}^s a_{ij} k_j , \, \theta , \, t_n + c_i \Delta t_m \right) \qquad i=1,2, \ldots, s.
+    f \left(u^m + \sum_{j=1}^s a_{ij} k_j , \, \theta , \, t_m + c_i \Delta t_m \right) \qquad i=1,2, \ldots, s.
     \label{eq:Runge-Kutta-scheme}
 \end{split}
 \end{align}
@@ -77,12 +74,12 @@ Numerical solvers usually estimate internally a scaled error computed as
     \text{Err}_\text{scaled}^{m}
     =
     \sqrt{
-    \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{m}}{\mathfrak{abstol} + \mathfrak{reltol} \, \times \, M} \right)^2 },
+    \frac{1}{n} \sum_{i=1}^n \left( \frac{\text{err}_i^{m}}{\mathfrak{abstol} + \mathfrak{reltol} \, \times \, M^m_i} \right)^2 },
     \label{eq:internal-norm-wrong}
 \end{equation}
 with $\mathfrak{abstol}$ and $\mathfrak{reltol}$ the adjustable absolute and relative solver tolerances, respectively, $M$ is the maximum expected value of the numerical solution, and $\text{err}^m$ is an estimation of the numerical error at step $m$ \cite{hairer-solving-1, Rackauckas_Nie_2016}. 
 Estimations of the local error $\text{err}^{m}$ can be based on two approximation to the solution based on embedded Runge-Kutta pairs \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022, hairer-solving-1}, or in theoretical upper bounds provided by the numerical solver. 
-In the first case, common choices for these include $M = \max \{ u_i^{m}, \hat u_i^{m} \}$ and $\text{err}_i^{m} = u_i^{m} - \hat u_i^{m}$ where $u^m$ and $\hat u^m$ two different approximations for $u(t_m)$, but these can vary between solvers. 
+In the first case, common choices for these include $M^m_i = \max \{ u_i^{m}, \hat u_i^{m} \}$ and $\text{err}_i^{m} = u_i^{m} - \hat u_i^{m}$ with $u^m$ and $\hat u^m$ two different approximations for $u(t_m)$, but these can vary between solvers. 
 % The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a small increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
 
 Modern solvers include stepsize controllers that pick $\Delta t_m$ as large as possible to minimize the total number of steps while preventing large errors by keeping $\text{Err}^m_\text{scaled} \leq 1$. 
@@ -120,7 +117,7 @@ In most applications, the need for differentiating the solution of ODEs stems fr
         \label{eq:quadratic-loss-point}
     \end{equation}
     with $w_i$ some arbitrary non-negative weights.
-    More generally, misfit functions used in optimal estimation and control problems are composite maps from the parameter space $\theta$ via the model's state space, in this case, the solution $u(t; \theta)$, to the observation space defined by a new variable $y(t) = H(u(t; \theta))$, where $H: \R^n \mapsto \R^o$ is a given function mapping the latent state to observational space \cite{1975-Bryson-Ho-optimal-control}. 
+    More generally, misfit functions used in optimal estimation and control problems are composite maps from the parameter space $\theta$ via the model's state space (in this case, the solution $u(t; \theta)$) to the observation space defined by a new variable $y(t) = H(u(t; \theta))$, where $H: \R^n \mapsto \R^o$ is a given function mapping the latent state to observational space \cite{1975-Bryson-Ho-optimal-control}. 
     In these cases, the loss function generalizes to 
     \begin{equation}
         L(\theta) 
@@ -140,7 +137,7 @@ In most applications, the need for differentiating the solution of ODEs stems fr
     Defining a loss function where just the empirical error is penalized is known as trajectory matching \cite{ramsay2017dynamic}. 
     Other methods like gradient matching and generalized smoothing the loss depends on smooth approximations of the trajectory and their derivatives. 
     % \todo{this is unclear}
-    \item[$ \blacktriangleright$] \textbf{The likelihood function or posterior probability.} From a statistical (and physical) perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
+    \item[$ \blacktriangleright$] \textbf{The likelihood function or posterior probability.} From a statistical and physical perspective, it is common to assume that observations correspond to noisy observations of the underlying dynamical system, $y_i = H(u(t_i; \theta)) + \varepsilon_i$, with $\varepsilon_i$ errors or residual that are independent of each other and of the trajectory $u(\cdot ; \theta)$ \cite{ramsay2017dynamic}.
     When $H$ is the identity, each $y_i$ corresponds to the noisy observation of the state $u(t_i; \theta)$.
     If $p(Y | t , \theta)$ is the probability distribution of $Y=(y_1, y_2, \ldots, y_N)$, 
     the maximum likelihood estimator (MLE) of $\theta$ is defined as 
@@ -179,7 +176,7 @@ In the rest of the manuscript we will use letter $L$ to emphasize that in many c
 In the context of optimization, the goal is to find the parameter $\theta$ that is a minimizer of $L(\theta)$. 
 There exists a broad literature of optimization methods based on gradients, including gradient descent and its many variants \cite{ruder2016overview-gradient-descent}.
 Gradient-based methods tend to outperform gradient-free optimization schemes when $1 \ll p$, as they are not prone to the curse of dimensionality \cite{Schartau2017}. 
-In the case of gradient descent, the parameter $\theta$ is updated using the following iterative procedure based on gradient-based updates:
+In the case of gradient descent, the parameter $\theta$ is updated based on the iterative procedure given by
 \begin{equation}\label{eq:gradient-descent}
     \theta^{m+1} 
     = 

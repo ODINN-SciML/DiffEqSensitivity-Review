@@ -2,7 +2,7 @@ We now move our discussion to DP methods based on numerical solvers.
 These need to deal with some numerical and computational considerations, including:
 % \begin{enumerate}[label=(\roman*)]
 \begin{enumerate}
-    \item[$ \blacktriangleright$] How to handle VJPs and/or JVPs 
+    \item[$ \blacktriangleright$] How to handle JVPs and/or VJPs 
     \item[$ \blacktriangleright$] Stability of the numerical solver, including the original ODE but also the sensitivity/adjoint equations
     \item[$ \blacktriangleright$] Memory-time tradeoff
 \end{enumerate}
@@ -262,7 +262,7 @@ u0_, λ0, dLdp_cont = solve(aug_prob, Euler(), dt=-0.001).u[end]
 \end{jllisting}
 Notice that here we used the final state of the solution $u$ of the ODE as starting point, which is then recalculated in backwards direction (implemented via a negative stepsize \texttt{dt=-0.001}). 
 
-When dealing with stiff differential equations, special considerations need to be taken into account.
+When dealing with stiff DEs, special considerations need to be taken into account.
 Two alternatives are proposed in \cite{kim_stiff_2021}, the first referred to as \textit{Quadrature Adjoint} produces a high order interpolation of the solution $u(t)$, then solve for $\lambda$ in reverse using an implicit solver and finally integrating $\frac{dL}{d\theta}$ in a forward step.
 This reduces the complexity to $\mathcal O (n^3 + p)$, where the cubic cost in the size $n$ of the ODE comes from the fact that we still need to solve the original stiff ODE in the forward step. 
 A second similar approach is to use an implicit-explicit (IMEX) solver, where we use the implicit part for the original equation and the explicit for the adjoint. 
@@ -272,7 +272,7 @@ This method also has a complexity of $\mathcal O (n^3 + p)$.
 \label{section:checkpointint-cont}
 
 Both interpolating and backsolve adjoint methods can be implemented along with a checkpointing scheme. 
-This can be done by choosing save points in the forward pass. 
+This can be done by choosing saved points in the forward pass. 
 For the interpolating methods, the interpolation is reconstructed in the backwards pass between two save points. 
 This reduces the total memory requirement of the interpolating method to simply the maximum cost of holding an interpolation between two save points, but requires a total additional computational effort equal to one additional forward pass. 
 In the backsolve variation, the value $u$ in the reverse pass can be corrected to be the saved point, thus resetting the numerical error introduced during the backwards evaluation and thus improving the accuracy.
