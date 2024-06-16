@@ -89,6 +89,17 @@
         "mentoring",
         "research"
       ]
+    },
+    {
+      "login": "gileshooker",
+      "name": "gileshooker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12737775?v=4",
+      "profile": "https://github.com/gileshooker",
+      "contributions": [
+        "doc",
+        "ideas",
+        "mentoring"
+      ]
     }
   ]
 }
