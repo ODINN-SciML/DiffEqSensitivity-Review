@@ -55,6 +55,17 @@
         "doc",
         "ideas"
       ]
+    },
+    {
+      "login": "avik-pal",
+      "name": "Avik Pal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30564094?v=4",
+      "profile": "https://avik-pal.github.io",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ]
 }
