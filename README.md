@@ -43,6 +43,7 @@ The goal of this review is to revisit all this methods and compare them.
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gileshooker"><img src="https://avatars.githubusercontent.com/u/12737775?v=4?s=100" width="100px;" alt="gileshooker"/><br /><sub><b>gileshooker</b></sub></a><br /><a href="#doc-gileshooker" title="Documentation">📖</a> <a href="#ideas-gileshooker" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-gileshooker" title="Mentoring">🧑‍🏫</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://statistics.berkeley.edu/people/fernando-perez"><img src="https://avatars.githubusercontent.com/u/57394?v=4?s=100" width="100px;" alt="Fernando Pérez"/><br /><sub><b>Fernando Pérez</b></sub></a><br /><a href="#doc-fperez" title="Documentation">📖</a> <a href="#financial-fperez" title="Financial">💵</a> <a href="#ideas-fperez" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-fperez" title="Mentoring">🧑‍🏫</a></td>
     </tr>
   </tbody>
 </table>
