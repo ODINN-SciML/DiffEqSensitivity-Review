@@ -27,8 +27,6 @@ The goal of this review is to revisit all this methods and compare them.
 
 ## Contributors
 
-## Contributors
-
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
