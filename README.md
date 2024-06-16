@@ -27,26 +27,11 @@ The goal of this review is to revisit all this methods and compare them.
 
 ## Contributors
 
+## Contributors
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="http://facusapienza.org"><img src="https://avatars.githubusercontent.com/u/39526081?v=4?s=100" width="100px;" alt="Facundo Sapienza"/><br /><sub><b>Facundo Sapienza</b></sub></a><br /><a href="#code-facusapienza21" title="Code">💻</a> <a href="#doc-facusapienza21" title="Documentation">📖</a> <a href="#infra-facusapienza21" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-facusapienza21" title="Maintenance">🚧</a> <a href="#projectManagement-facusapienza21" title="Project Management">📆</a> <a href="#research-facusapienza21" title="Research">🔬</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://jordibolibar.wordpress.com"><img src="https://avatars.githubusercontent.com/u/2025815?v=4?s=100" width="100px;" alt="Jordi Bolibar"/><br /><sub><b>Jordi Bolibar</b></sub></a><br /><a href="#doc-JordiBolibar" title="Documentation">📖</a> <a href="#example-JordiBolibar" title="Examples">💡</a> <a href="#ideas-JordiBolibar" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://statistics.berkeley.edu/people/fernando-perez"><img src="https://avatars.githubusercontent.com/u/57394?v=4?s=100" width="100px;" alt="Fernando Perez"/><br /><sub><b>Fernando Perez</b></sub></a><br /><a href="#ideas-fperez" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-fperez" title="Mentoring">🧑‍🏫</a> <a href="#financial-fperez" title="Financial">💵</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://frankschae.github.io"><img src="https://avatars.githubusercontent.com/u/42201748?v=4?s=100" width="100px;" alt="frankschae"/><br /><sub><b>frankschae</b></sub></a><br /><a href="#code-frankschae" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://bgroenke.com"><img src="https://avatars.githubusercontent.com/u/841306?v=4?s=100" width="100px;" alt="Brian Groenke"/><br /><sub><b>Brian Groenke</b></sub></a><br /><a href="#code-bgroenks96" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://www.chrisrackauckas.com"><img src="https://avatars.githubusercontent.com/u/1814174?v=4?s=100" width="100px;" alt="Christopher Rackauckas"/><br /><sub><b>Christopher Rackauckas</b></sub></a><br /><a href="#ideas-ChrisRackauckas" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gileshooker"><img src="https://avatars.githubusercontent.com/u/12737775?v=4?s=100" width="100px;" alt="gileshooker"/><br /><sub><b>gileshooker</b></sub></a><br /><a href="#ideas-gileshooker" title="Ideas, Planning, & Feedback">🤔</a> <a href="#mentoring-gileshooker" title="Mentoring">🧑‍🏫</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/heimbach"><img src="https://avatars.githubusercontent.com/u/5150349?v=4?s=100" width="100px;" alt="Patrick Heimbach"/><br /><sub><b>Patrick Heimbach</b></sub></a><br /><a href="#ideas-heimbach" title="Ideas, Planning, & Feedback">🤔</a> <a href="#doc-heimbach" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://vboussange.github.io"><img src="https://avatars.githubusercontent.com/u/28376122?v=4?s=100" width="100px;" alt="vboussange"/><br /><sub><b>vboussange</b></sub></a><br /><a href="#doc-vboussange" title="Documentation">📖</a> <a href="#ideas-vboussange" title="Ideas, Planning, & Feedback">🤔</a></td>
-    </tr>
-  </tbody>
-</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
