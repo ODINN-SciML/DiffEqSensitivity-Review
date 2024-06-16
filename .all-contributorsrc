@@ -66,6 +66,17 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "vboussange",
+      "name": "vboussange",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28376122?v=4",
+      "profile": "https://vboussange.github.io",
+      "contributions": [
+        "doc",
+        "ideas",
+        "research"
+      ]
     }
   ]
 }
