@@ -21,6 +21,17 @@
         "projectManagement",
         "research"
       ]
+    },
+    {
+      "login": "JordiBolibar",
+      "name": "Jordi Bolibar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2025815?v=4",
+      "profile": "https://jordibolibar.wordpress.com",
+      "contributions": [
+        "doc",
+        "ideas",
+        "research"
+      ]
     }
   ]
 }
