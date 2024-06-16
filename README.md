@@ -34,6 +34,7 @@ The goal of this review is to revisit all this methods and compare them.
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://facusapienza.org"><img src="https://avatars.githubusercontent.com/u/39526081?v=4?s=100" width="100px;" alt="Facundo Sapienza"/><br /><sub><b>Facundo Sapienza</b></sub></a><br /><a href="#code-facusapienza21" title="Code">💻</a> <a href="#doc-facusapienza21" title="Documentation">📖</a> <a href="#ideas-facusapienza21" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-facusapienza21" title="Maintenance">🚧</a> <a href="#projectManagement-facusapienza21" title="Project Management">📆</a> <a href="#research-facusapienza21" title="Research">🔬</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://frankschae.github.io"><img src="https://avatars.githubusercontent.com/u/42201748?v=4?s=100" width="100px;" alt="frankschae"/><br /><sub><b>frankschae</b></sub></a><br /><a href="#code-frankschae" title="Code">💻</a> <a href="#doc-frankschae" title="Documentation">📖</a> <a href="#ideas-frankschae" title="Ideas, Planning, & Feedback">🤔</a> <a href="#research-frankschae" title="Research">🔬</a></td>
     </tr>
   </tbody>
 </table>
