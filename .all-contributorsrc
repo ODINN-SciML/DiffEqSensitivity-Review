@@ -100,6 +100,18 @@
         "ideas",
         "mentoring"
       ]
+    },
+    {
+      "login": "fperez",
+      "name": "Fernando Pérez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57394?v=4",
+      "profile": "https://statistics.berkeley.edu/people/fernando-perez",
+      "contributions": [
+        "doc",
+        "financial",
+        "ideas",
+        "mentoring"
+      ]
     }
   ]
 }
