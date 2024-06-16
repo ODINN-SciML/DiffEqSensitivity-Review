@@ -1,4 +1,23 @@
 {
   "projectName": "DiffEqSensitivity-Review",
-  "projectOwner": "ODINN-SciML"
+  "projectOwner": "ODINN-SciML",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "JordiBolibar",
+      "name": "Jordi Bolibar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2025815?v=4",
+      "profile": "https://jordibolibar.wordpress.com",
+      "contributions": [
+        "doc",
+        "ideas",
+        "research"
+      ]
+    }
+  ]
 }
