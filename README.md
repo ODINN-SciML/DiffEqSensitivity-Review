@@ -4,6 +4,24 @@
 
 # Differentiable programming for Differential equations: a review
 
+### ⚠️ New preprint available! 📖 ⚠️
+
+The review paper is now available as a preprint on arXiv: https://arxiv.org/abs/2406.09699 
+
+If you want to cite this work, please use this BibTex citation:
+```
+@misc{sapienza2024differentiable,
+      title={Differentiable Programming for Differential Equations: A Review}, 
+      author={Facundo Sapienza and Jordi Bolibar and Frank Schäfer and Brian Groenke and Avik Pal and Victor Boussange and Patrick Heimbach and Giles Hooker and Fernando Pérez and Per-Olof Persson and Christopher Rackauckas},
+      year={2024},
+      eprint={2406.09699},
+      archivePrefix={arXiv},
+      primaryClass={id='math.NA' full_name='Numerical Analysis' is_active=True alt_name='cs.NA' in_archive='math' is_general=False description='Numerical algorithms for problems in analysis and algebra, scientific computation'}
+}
+```
+
+---
+
 This respository contains all the text, code and figures used for the review paper about sentitivity methods for differential equations. This topic received different names in different communities, but the core problem is quite simple. Given a system of differential equations
 ```math
 \frac{du}{dt} = f(u, \theta, t),
