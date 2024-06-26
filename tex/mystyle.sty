@@ -1,0 +1,146 @@
+\ProvidesPackage{mystyle}
+
+\usepackage{graphicx} % Include figure files
+\usepackage{caption}
+\usepackage{dcolumn} % Align table columns on decimal point
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
+\usepackage{todonotes} % Taking notes
+\usepackage{csquotes}
+\usepackage{titlesec}
+\usepackage{multirow}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%  Page setup  %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-0.5in}
+\setlength{\textheight}{9in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   Colors   %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{color} % Include colors for document elements
+\definecolor{darkorange}{rgb}{.71,0.21,0.01}
+\definecolor{darkgreen}{rgb}{.12,.54,.11}
+\definecolor{darkviolet}{RGB}{142, 68, 173}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% Hyperlinks %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[pdftex,  % needed for pdflatex $ Do I really need this?
+            breaklinks=true,  % so long urls are correctly broken across lines
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=darkorange,
+            citecolor=darkviolet,
+            ]
+    {hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% Bibliography %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xurl}
+\usepackage[
+            backend=biber,
+            style=authoryear-comp,
+            sorting=nyt,
+            autocite=superscript,
+            % firstinits=false,
+            uniquename=false,
+            uniquelist=false,
+            giveninits=true,
+            url=false,
+            doi=true,
+            isbn=false,
+            eprint=false,
+            maxnames=1, 
+            maxcitenames=1,
+            maxbibnames=90,
+            sortcites=true,
+            uniquelist=false, 
+            ]
+    {biblatex}
+
+\setcounter{biburlnumpenalty}{100}  % allow breaks at numbers
+\setcounter{biburlucpenalty}{100}   % allow breaks at uppercase letters
+\setcounter{biburllcpenalty}{100}   % allow breaks at lowercase letters
+    
+% Redefinde cite command to be based on autocite with superscript
+\renewcommand{\cite}[1]{\parencite{#1}}
+
+% Define how to print a publication in the body of the text
+\newcommand{\printpublication}[1]{\AtNextCite{\defcounter{maxnames}{99}}\fullcite{#1}}
+
+% Font and format of printed bibliography
+% e.g., \renewcommand{\mkbibnamesuffix}[1]{\textsc{#1}}
+\renewcommand{\mkbibnamegiven}[1]{{#1}}
+\renewcommand{\mkbibnamefamily}[1]{{#1}}
+\renewcommand{\mkbibnameprefix}[1]{{#1}}
+\renewcommand{\mkbibnamesuffix}[1]{{#1}}
+
+% Font in blibliography
+\renewcommand{\bibfont}{\small}
+\renewcommand{\bibitemsep}{0.2\itemsep}
+
+\DeclareFieldFormat{labelnumberwidth}{{#1\adddot}}
+
+% \DeclareNameAlias{author}{family-given}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   Captions   %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareCaptionFormat{custom}
+% #1 = Figure 
+% #2 = Number format
+% #3 = Caption text
+{
+    \begin{minipage}{0.90\textwidth}
+    \textbf{#1#2}\textit{\small #3}
+    \end{minipage}
+}
+\captionsetup{format=custom}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   Title   %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength\aftertitskip     \newlength\beforetitskip
+\newlength\interauthorskip  \newlength\aftermaketitskip
+
+%% Changeable parameters.
+\setlength\aftertitskip{0.1in}% plus 0.2in minus 0.2in}
+\setlength\beforetitskip{0.05in}% plus 0.08in minus 0.08in}
+\setlength\interauthorskip{0.05in}% plus 0.1in minus 0.1in}
+\setlength\aftermaketitskip{0.3in}% plus 0.1in minus 0.1in}
+
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}
+   \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}
+   \@maketitle \@thanks
+ \endgroup
+\setcounter{footnote}{0}
+ \let\maketitle\relax \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+
+\def\@startauthor{\noindent \normalsize\bf}
+\def\@endauthor{}
+\def\@starteditor{\noindent \small {\bf Editor:~}}
+\def\@endeditor{\normalsize}
+\def\@maketitle{\vbox{\hsize\textwidth
+ \linewidth\hsize \vskip \beforetitskip
+ {\begin{center} \LARGE\bf \@title \par \end{center}} \vskip \aftertitskip
+ {\def\and{\unskip\enspace{\rm and}\enspace}%
+  % \def\affil{\hspace*{0pt}\hfill\small\it}%
+  \def\affil{\footnotesize\it}%
+  \def\email{\hfill\footnotesize\tt}%
+  \def\name{\normalsize\bf}%
+  \def\AND{\@endauthor\rm\hss \vskip \interauthorskip \@startauthor}
+  \@startauthor \@author \@endauthor}
+}}

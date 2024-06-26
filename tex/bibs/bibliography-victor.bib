@@ -39,10 +39,7 @@
   publisher = {{Nature Publishing Group}},
   issn = {00280836},
   doi = {10.1038/nature11018},
-  url = {http://dx.doi.org/10.1038/nature11018},
-  abstract = {Localized ecological systems are known to shift abruptly and irreversibly from one state to another when they are forced across critical thresholds. Here we review evidence that the global ecosystem as a whole can react in the same way and is approaching a planetary-scale critical transition as a result of human influence. The plausibility of a planetary-scale ‘tipping point’ highlights the need to improve biological forecasting by detecting early warning signs of critical transitions on global as well as local scales, and by detecting feedbacks that promote such transitions. It is also necessary to address root causes of how humans are forcing biological changes.},
-  isbn = {1476-4687 (Electronic)\textbackslash r0028-0836 (Linking)},
-  keywords = {biodiversity,climatechangebiodiversity,tippingpoints}
+  url = {http://dx.doi.org/10.1038/nature11018}
 }
 
 @article{Bocquet2019,
@@ -355,7 +352,7 @@
 }
 @article{Page2002,
   title = {Unifying {{Evolutionary Dynamics}}},
-  author = {PAGE, KAREN M. and NOWAK, MARTIN A.},
+  author = {Page, Karen M. and Nowak, Martin A.},
   date = {2002-11},
   journaltitle = {Journal of Theoretical Biology},
   volume = {219},
@@ -379,10 +376,7 @@
   publisher = {{Vietnam Journal of Mathematics}},
   issn = {2305-221X},
   doi = {10.1007/s10013-020-00445-9},
-  url = {http://link.springer.com/10.1007/s10013-020-00445-9},
-  abstract = {We consider a mathematical model for the evolutionary dynamics of tumour cells in vascularised tumours under chemotherapy. The model comprises a system of coupled partial integro-differential equations for the phenotypic distribution of tumour cells, the concentration of oxygen and the concentration of a chemotherapeutic agent. In order to disentangle the impact of different evolutionary parameters on the emergence of intra-tumour phenotypic heterogeneity and the development of resistance to chemotherapy, we construct explicit solutions to the equation for the phenotypic distribution of tumour cells and provide a detailed quantitative characterisation of the long-time asymptotic behaviour of such solutions. Analytical results are integrated with numerical simulations of a calibrated version of the model based on biologically consistent parameter values. The results obtained provide a theoretical explanation for the observation that the phenotypic properties of tumour cells in vascularised tumours vary with the distance from the blood vessels. Moreover, we demonstrate that lower oxygen levels may correlate with higher levels of phenotypic variability, which suggests that the presence of hypoxic regions supports intra-tumour phenotypic heterogeneity. Finally, the results of our analysis put on a rigorous mathematical basis the idea, previously suggested by formal asymptotic results and numerical simulations, that hypoxia favours the selection for chemoresistant phenotypic variants prior to treatment. Consequently, this facilitates the development of resistance following chemotherapy.},
-  isbn = {1001302000445},
-  file = {/Users/victorboussange/Zotero/storage/24RZZ5WE/Villa2021_Article_EvolutionaryDynamicsInVascular.pdf}
+  url = {http://link.springer.com/10.1007/s10013-020-00445-9}
 }
 @article{Lion2018,
   title = {Theoretical Approaches in Evolutionary Ecology: {{Environmental}} Feedback as a Unifying Perspective},
@@ -668,13 +662,12 @@
   keywords = {monitoring},
   file = {/Users/victorboussange/Zotero/storage/362APE5A/1-s2.0-S2351989418303500-main.pdf}
 }
-@article{GBIF,
+@online{GBIF,
   title = {What Is {{GBIF}}?},
   author = {{GBIF: The Global Biodiversity Information Facility}},
   date = {2022},
   url = {https://www.gbif.org/what-is-gbif},
   keywords = {monitoring},
-  file = {/Users/victorboussange/Zotero/storage/8EQ6ZHJ6/What is GBIF.pdf}
 }
 @article{Aide2013,
   title = {Real-Time Bioacoustics Monitoring and Automated Species Identification},
@@ -691,12 +684,19 @@
   keywords = {monitoring},
   file = {/Users/victorboussange/Zotero/storage/V8FPB3V3/peerj-01-103.pdf}
 }
-@article{Boussange2022a,
-  title = {Mini-Batching Ecological Data to Improve Ecosystem Models with Machine Learning},
-  author = {Boussange, Victor and Vilimelis, Pau and Pellissier, Loïc},
-  date = {2022},
-  file = {/Users/victorboussange/Zotero/storage/SR4SPAWN/2022.07.25.501365v1.full.pdf}
+@article {Boussange2024,
+	author = {Victor Boussange and Pau Vilimelis Aceituno and Frank Sch{\"a}fer and Lo{\"\i}c Pellissier},
+	title = {Partitioning time series to improve process-based models with machine learning},
+	elocation-id = {2022.07.25.501365},
+	year = {2024},
+	doi = {10.1101/2022.07.25.501365},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {Process-based community models are required to extrapolate beyond current dynamics and anticipate biodiversity response to global change, but their adoption has been limited in practice because of issues with model parameter estimation and model inaccuracies. While observation data could be used to directly estimate parameters and refine model structures, model nonlinearities, sparse and noisy datasets and the complexity of ecological dynamics complicate this process. Here, we propose an inverse modelling framework designed for addressing these issues, that relies on a segmentation method combined with automatic differentiation, deep learning gradient-based optimizers, minibatching, and a parameter normalization technique. By partitioning the data into time series with a short time horizon, we show that the segmentation method regularizes the inverse problem. Implemented in the Julia package PiecewiseInference.jl, the resulting framework enables the efficient calibration of realistic dynamical community models and supports the use of neural networks to represent complex ecological processes within the model. We evaluate the performance of the inverse modelling framework on simulated food-web dynamics of increasing complexity, including scenarios with partial observations. Our results demonstrate its performance in inferring model parameters and providing forecasts. We further showcase that the regularization induced by the framework, together with its efficiency, are instrumental for the online training of neural network-based parametrizations, alongside the other model parameters. Neural network-based parametrizations not only mitigate model inaccuracies but can also contribute to the refinement of ecological theory through their offline examination. The proposed inverse modelling framework is data-efficient, interpretable and capable of extrapolating beyond observed dynamics, showing promise in improving our ability to understand and forecast biodiversity dynamics.Competing Interest StatementThe authors have declared no competing interest.},
+	URL = {https://www.biorxiv.org/content/early/2024/04/11/2022.07.25.501365},
+	eprint = {https://www.biorxiv.org/content/early/2024/04/11/2022.07.25.501365.full.pdf},
+	journal = {bioRxiv}
 }
+
 @online{paredes2023,
   title = {Rsofun: {{A}} Model-Data Integration Framework for Simulating Ecosystem Processes},
   shorttitle = {Rsofun},
@@ -757,4 +757,37 @@
   doi = {10.1038/s41559-022-01746-7},
   url = {https://www.nature.com/articles/s41559-022-01746-7},
   file = {/Users/victorboussange/Zotero/storage/7F49Z5HS/s41559-022-01746-7-2.pdf}
+}
+
+@article{borowiec2022,
+  title = {Deep Learning as a Tool for Ecology and Evolution},
+  author = {Borowiec, Marek L. and Dikow, Rebecca B. and Frandsen, Paul B. and McKeeken, Alexander and Valentini, Gabriele and White, Alexander E.},
+  year = {2022},
+  month = aug,
+  journal = {Methods in Ecology and Evolution},
+  volume = {13},
+  number = {8},
+  pages = {1640--1660},
+  issn = {2041-210X, 2041-210X},
+  doi = {10.1111/2041-210X.13901},
+  urldate = {2023-07-01},
+  langid = {english},
+  keywords = {ai-ecology},
+  file = {/Users/victorboussange/Zotero/storage/SLVZUBBP/Borowiec et al. - 2022 - Deep learning as a tool for ecology and evolution.pdf}
+}
+@article{pichler2023,
+  title = {Machine Learning and Deep Learning---{{A}} Review for Ecologists},
+  author = {Pichler, Maximilian and Hartig, Florian},
+  year = {2023},
+  month = apr,
+  journal = {Methods in Ecology and Evolution},
+  volume = {14},
+  number = {4},
+  pages = {994--1016},
+  issn = {2041-210X, 2041-210X},
+  doi = {10.1111/2041-210X.14061},
+  urldate = {2023-07-01},
+  langid = {english},
+  keywords = {ai-ecology,toread},
+  file = {/Users/victorboussange/Zotero/storage/DVBKUFVA/Pichler and Hartig - 2023 - Machine learning and deep learning—A review for ec.pdf}
 }

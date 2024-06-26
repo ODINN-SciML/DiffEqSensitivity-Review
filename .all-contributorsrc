@@ -16,7 +16,7 @@
       "contributions": [
         "code",
         "doc",
-        "infra",
+        "ideas",
         "maintenance",
         "projectManagement",
         "research"
@@ -29,19 +29,8 @@
       "profile": "https://jordibolibar.wordpress.com",
       "contributions": [
         "doc",
-        "example",
-        "ideas"
-      ]
-    },
-    {
-      "login": "fperez",
-      "name": "Fernando Perez",
-      "avatar_url": "https://avatars.githubusercontent.com/u/57394?v=4",
-      "profile": "https://statistics.berkeley.edu/people/fernando-perez",
-      "contributions": [
         "ideas",
-        "mentoring",
-        "financial"
+        "research"
       ]
     },
     {
@@ -50,7 +39,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/42201748?v=4",
       "profile": "http://frankschae.github.io",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "ideas",
+        "research"
       ]
     },
     {
@@ -59,36 +51,20 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/841306?v=4",
       "profile": "http://bgroenke.com",
       "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "ChrisRackauckas",
-      "name": "Christopher Rackauckas",
-      "avatar_url": "https://avatars.githubusercontent.com/u/1814174?v=4",
-      "profile": "http://www.chrisrackauckas.com",
-      "contributions": [
+        "code",
+        "doc",
         "ideas"
       ]
     },
     {
-      "login": "gileshooker",
-      "name": "gileshooker",
-      "avatar_url": "https://avatars.githubusercontent.com/u/12737775?v=4",
-      "profile": "https://github.com/gileshooker",
+      "login": "avik-pal",
+      "name": "Avik Pal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30564094?v=4",
+      "profile": "https://avik-pal.github.io",
       "contributions": [
-        "ideas",
-        "mentoring"
-      ]
-    },
-    {
-      "login": "heimbach",
-      "name": "Patrick Heimbach",
-      "avatar_url": "https://avatars.githubusercontent.com/u/5150349?v=4",
-      "profile": "https://github.com/heimbach",
-      "contributions": [
-        "ideas",
-        "doc"
+        "code",
+        "doc",
+        "test"
       ]
     },
     {
@@ -98,7 +74,56 @@
       "profile": "https://vboussange.github.io",
       "contributions": [
         "doc",
-        "ideas"
+        "ideas",
+        "research"
+      ]
+    },
+    {
+      "login": "heimbach",
+      "name": "Patrick Heimbach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5150349?v=4",
+      "profile": "https://github.com/heimbach",
+      "contributions": [
+        "doc",
+        "ideas",
+        "mentoring",
+        "research"
+      ]
+    },
+    {
+      "login": "gileshooker",
+      "name": "gileshooker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12737775?v=4",
+      "profile": "https://github.com/gileshooker",
+      "contributions": [
+        "doc",
+        "ideas",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "fperez",
+      "name": "Fernando Pérez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57394?v=4",
+      "profile": "https://statistics.berkeley.edu/people/fernando-perez",
+      "contributions": [
+        "doc",
+        "financial",
+        "ideas",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "ChrisRackauckas",
+      "name": "Christopher Rackauckas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1814174?v=4",
+      "profile": "http://www.chrisrackauckas.com",
+      "contributions": [
+        "code",
+        "doc",
+        "financial",
+        "ideas",
+        "mentoring"
       ]
     }
   ]

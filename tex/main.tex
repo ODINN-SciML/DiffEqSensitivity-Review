@@ -1,59 +1,19 @@
-\documentclass[10pt]{article}
-
-\setlength{\oddsidemargin}{0in}
-\setlength{\textwidth}{6.5in}
-\setlength{\topmargin}{-0.5in}
-\setlength{\textheight}{9in}
+\documentclass[11pt]{article}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%% General packages %%%%%%%%
+%%%%%%% Customized packages %%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{graphicx} % Include figure files
-\usepackage{caption}
-\usepackage{color} % Include colors for document elements
-\usepackage{dcolumn} % Align table columns on decimal point
-\usepackage{float}
-\usepackage[hidelinks]{hyperref} % hidelinks added to not display red box for links
-\usepackage{algorithm}
-\usepackage{enumitem} % Necesarry for enumerating with romans (i), (ii), ...
-\usepackage{todonotes} % Taking notes
-\usepackage{csquotes}
-\usepackage{titlesec}
-\usepackage{multirow}
-\setcounter{tocdepth}{4}
-\setcounter{secnumdepth}{4}
-
-\titleformat{\paragraph}
-{\normalfont\small\bfseries}{\theparagraph}{1em}{}
-\titlespacing*{\paragraph}
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
-\usepackage{titlesec}
-
-\setcounter{tocdepth}{4}
-\setcounter{secnumdepth}{4}
-
-\titleformat{\paragraph}
-{\normalfont\small\bfseries}{\theparagraph}{1em}{}
-\titlespacing*{\paragraph}
-{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%% Customized packages %%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Authors information
+\usepackage{mystyle}
 \usepackage{contributors}
-
-% Julia code
+\usepackage{mymath}
 \usepackage{jlcode}
 
-% Math 
-\usepackage{mymath}
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
-% Bibliography %
-\usepackage{mybib}
 % IMPORTANT NOTE:
 % All the bib files are centralized here in bibliography.bib, which is 
 % automatically created by compiling all the required cites in the references contained inside ./bibs/
@@ -72,34 +32,37 @@
 %%%%%%%%%%%%% Document %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\title{Differentiable Programming for Differential \\ Equations: A Review}
 
-\title{Differentiable Programming for Differential Equations: \\ A Review}
-
-\date{\today}
+\date{}
+% \date{\today}
 
 \begin{document}
 \maketitle
 
-\hfill \break
-\thanks
-\newpage
+% \hfill \break
+% \thanks
+% \newpage
 
 \begin{abstract}
 \input{sections/abstract}
 \end{abstract}
+\newpage 
 
-\vspace{300px}
-\input{sections/community-statement}
 
-\normalsize
-
-\clearpage
+% \clearpage
 
 \tableofcontents
-\clearpage
+% \clearpage
+% \vspace{220px}
 
-\section*{Plain language summary}
-\input{sections/plain}
+\mbox{}
+\vfill
+\input{sections/community-statement}
+\newpage
+
+% \section*{Plain language summary}
+% \input{sections/plain}
 
 \section{Introduction}
 \input{sections/introduction}
@@ -132,7 +95,7 @@
 \label{section:symbolic}
 \input{sections/symbolic}
 
-\subsection{Sensitivity equations}
+\subsection{Forward sensitivity equations}
 \label{section:sensitivity-equation}
 \input{sections/sensitivity-equation}
 
@@ -148,7 +111,7 @@
 \label{section:continuous-adjoint}
 \input{sections/adjoint-continuous}
 
-\subsection{Mathematical comparision of the methods}
+\subsection{Mathematical comparison of the methods}
 \label{section:compatison-math}
 \input{sections/methods-comparison}
 
@@ -162,9 +125,12 @@
 \label{section:solver-methods}
 \input{sections/software-solver}
 
-% \section{Extensions}
+\section{Generalizations}
+\label{section:generalization}
+\input{sections/generalization}
 
 \section{Recommendations}
+\label{section:recomendations}
 \input{sections/recommendations}
 
 \section{Conclusions}
@@ -173,27 +139,36 @@
 % \section{Notation}
 % \input{sections/notation}
 
+% \mbox{}
+% \vfill
+\vspace{30px}
+\section*{Software availability}
+\input{sections/software-availability}
+\section*{Contribution statement}
+\input{sections/contribution-statement}
+\section*{Acknowledgments}
+\input{sections/acknowledments}
+
 \newpage
 \appendix
 \section*{Appendices}
 \addcontentsline{toc}{section}{Appendices}
 \renewcommand{\thesubsection}{\Alph{subsection}}
 
-% \subsection{Statistical foundations of inverse modelling}
-% \input{sections/statistical-foundations}
-\subsection{Lagrangian formulation of the adjoint method}
-\input{appendix/lagrangian}
-\newpage
-\subsection{When AD is algorithmically correct but numerically wrong}
-\input{appendix/AD-norm}
-\newpage
+% \subsection{Lagrangian formulation of the adjoint method}
+% \input{appendix/lagrangian}
+% \newpage
+% \subsection{When AD is algorithmically correct but numerically wrong}
+% \input{appendix/AD-norm}
+% \newpage
 \subsection{Supplementary code}
 \input{appendix/code}
+\label{appedix:code}
+
 
 % \section{Glossary} 
 
 \newpage
-
 \printbibliography[heading=bibintoc, title={References}]
 
 \end{document}

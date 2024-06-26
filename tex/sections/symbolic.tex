@@ -1,65 +1,16 @@
-In symbolic differentiation, functions are represented algebraically instead of algorithmically, reason why many symbolic differentiation tools are included inside computer algebra systems (CAS)\cite{Symbolics_jl_2022}. 
-Instead of numerically evaluating the final value of a derivative, symbolic systems define \textit{algebraic} objects, including variable names, expressions, operations, and literals. 
-For example, the relation $y = x^2$ is interpreted as expression with two variables, $x$ and $y$, and the symbolic system need to generate the derivative $y' = 2 \times x$ with $2$ a numeric literal, $\times$ a binary operation, and $x$ the same variable assignment than in the original expression.
-When the function to differentiate is large, symbolic differentiation can lead to \textit{expression swell}, that is, exponentially large or complex symbolic expressions \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.
-Here, an important piece of CAS is simplification routines that reduce the size and complexity of algebraic expressions by finding common sub-expressions.  
-This can make symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 
+In symbolic differentiation, functions are represented algebraically instead of algorithmically, which is why many symbolic differentiation tools are included inside computer algebra systems (CAS) \cite{Symbolics_jl_2022}. 
+Instead of numerically evaluating the final value of a derivative, symbolic systems assign variable names, expressions, operations, and literals to \textit{algebraic} objects. 
+For example, the relation $y = x^2$ is interpreted as expression with two variables, $x$ and $y$, and the symbolic system generates the derivative $y' = 2 \times x$ with $2$ a numeric literal, $\times$ a binary operation, and $x$ the same variable assignment as in the original expression.
 
-It is important to remark on the close relationship between AD and symbolic differentiation.
-There is no agreement as to whether symbolic differentiation should be classified as AD\cite{juedes1991taxonomy, Elliott_2018, Laue2020} or as a different method \cite{Baydin_Pearlmutter_Radul_Siskind_2015}.  
-Both are equivalent in the sense that they perform the same operations but the underlying data structure is different \cite{Laue2020}. 
-Here, expression swell is a consequence of the underlying representation when this does not allow for common sub-expressions. 
-This can also be understood as if AD is symbolic differentiation performed by a compiler \cite{Elliott_2018}, meaning that different AD can be classified based on the level of integration with the underlying source language \cite{juedes1991taxonomy}.
-% This means that the mathematical calculations involved are the same, but they need to be interpreted by the compiler at the moment of computing the derivative. 
-% Something like $x + 2$ needs to be understood as an \textit{expression} composed by a variable $x$, a literal $2$, and a binary operation $+$ binding them. 
+The general issue with symbolic differentiation is \textit{expression swell}, i.e. the fact that the size of a derivative expression can be much larger than the original expression \cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
+One way to visualize this swell is to note that the product rule grows and expression of $f(x)g(x)$ into two expressions, namely $\frac{d}{dx}(f(x)g(x)) = \frac{df}{dx}g(x) + f(x)\frac{dg}{dx}$, and thus the composition of many functions leads to a large derivative expression. 
+AD avoids expression swell by instead numerically calculating the derivative of a given expression at some fixed value, never representing the general derivative but only at the values obtained by the forward pass. 
+This eager evaluation of the derivative around a given value forces the intermediate computation into the JVPs or VJPs form as a way to continually pass forward/reverse the current state. 
+Meanwhile, symbolic differentiation can represent the complete derivative expression and thus avoid being forced into a given computation order, but at the memory cost of having to represent larger expressions.
+% Simplification routines implemented in CAS may however reduce the size and complexity of algebraic expressions by finding common sub-expressions, making symbolic differentiation very efficient when computing derivatives multiple times and for different input values \cite{Dürrbaum_Klier_Hahn_2002}. 
 
-% \subsubsection{Sparse Symbolic Differentiation vs Sparse Colored AD}
-
-% Sparse Jacobians are commonplace in several large-scale nonlinear systems, discretized PDEs, etc., and are often a major computational bottleneck for solving those problems. 
-% We will consider 2 possibilities for computing these sparse Jacobians -- Symbolic Differentiation and Colored AD. 
-% Consider a toy example, with a Jacobian with known sparsity pattern $\mathcal{J}_{\text{sparse}}$:
-% \begin{equation}
-%     \mathcal{J}_{\text{sparse}} = \begin{bmatrix}
-%         \bullet &         &         &         &         \\
-%                 & \bullet & \bullet &         &         \\
-%                 &         &         & \bullet &         \\
-%         \bullet & \bullet &         &         & \bullet \\
-%                 &         &         &         & \bullet
-%     \end{bmatrix}
-% \end{equation}
-% where $\bullet$ denotes the non-zero elements of the Jacobian. 
-% AD tools compute Jacobians column-wise or row-wise by composing multiple JVPs or VJPs respectively. 
-% This is done to avoid perturbation confusion~\cite{manzyuk2019perturbation}. Sparse Colored AD can chunk multiple JVPs or VJPs using the colored Jacobian~\cite{gebremedhin2005color}. 
-% More concretely, we can color the above matrix as follows:
-% \begin{equation}
-%     \mathcal{J}^{(\text{col})}_{\text{sparse}} = \begin{bmatrix}
-%         \color{red}{\blacktriangleright} &                            &                                  &                                  &                              \\
-%                                          & \color{blue}{\blacksquare} & \color{red}{\blacktriangleright} &                                  &                              \\
-%                                          &                            &                                  & \color{red}{\blacktriangleright} &                              \\
-%         \color{red}{\blacktriangleright} & \color{blue}{\blacksquare} &                                  &                                  & \color{green}{\blacklozenge} \\
-%                                          &                            &                                  &                                  & \color{green}{\blacklozenge}
-%     \end{bmatrix} \qquad \mathcal{J}^{(\text{row})}_{\text{sparse}} = \begin{bmatrix}
-%         \color{blue}{\blacksquare}   &                              &                            &                            &                              \\
-%                                      & \color{blue}{\blacksquare}   & \color{blue}{\blacksquare} &                            &                              \\
-%                                      &                              &                            & \color{blue}{\blacksquare} &                              \\
-%         \color{green}{\blacklozenge} & \color{green}{\blacklozenge} &                            &                            & \color{green}{\blacklozenge} \\
-%                                      &                              &                            &                            & \color{blue}{\blacksquare}
-%     \end{bmatrix}
-% \end{equation}
-% To compute $\mathcal{J}^{(\text{col})}_{\text{sparse}}$, we need to perform 3 JVPs (once each for $\color{red}{\blacktriangleright}$, $\color{blue}{\blacksquare}$, and $\color{green}{\blacklozenge}$) compared to 5 JVPs for a $5 \times 5$ dense Jacobian.
-% Similarly, since reverse mode materializes the Jacobian one row at a time, we need 2 VJPs (once each for $\color{blue}{\blacksquare}$, and $\color{green}{\blacklozenge}$) compared to 5 VJPs for the dense counterpart. 
-% However, colored AD has the limitation that an extremely sparse matrix can have no rows or columns independent of each other. Consider the arrowhead matrix:
-% \begin{equation}
-%     \mathcal{J}_{\text{arrowhead}} = \begin{bmatrix}
-%         \bullet & \bullet & \bullet & \bullet & \bullet \\
-%         \bullet & \bullet &         &         &         \\
-%         \bullet &         & \bullet &         &         \\
-%         \bullet &         &         & \bullet &         \\
-%         \bullet &         &         &         & \bullet
-%     \end{bmatrix}
-% \end{equation}
-% In this case, both reverse mode AD and forward mode AD will have to perform $N$ VJPs and JVPs, respectively (for a $N \times N$ arrowhead matrix), i.e., there is no computational benefit of coloring the matrix here. 
-% Instead, Symbolic Differentiation constructs a symbolic representation of the Sparse Jacobian and can fill the Jacobian with $N + 2 \cdot (N - 1)$ computations, where each computation is significantly cheaper than each VJP or JVP.
-
-% In Chapter 3, Section 3.5, of Griewank (2008) there is an example where they evaluate a symbolic differentiation pipeline for weird neasted functions  
-
+However, it is important to acknowledge the close relationship between AD and symbolic differentiation.
+AD uses symbolic differentiation in its definition of primitives which are then chained together in a specific way to form VJPs and vector products. 
+Forward AD can be expressed as a form of symbolic differentiation with a specific choice of common subexpression elimination, i.e. forward AD can be expressed as a symbolic differentiation with a specific choice of how to accumulate the intermediate calculations so that expression growth can be avoided \cite{juedes1991taxonomy, Elliott_2018, Laue2020, Dürrbaum_Klier_Hahn_2002}.
+However, general symbolic differentiation can have many other choices for the differentiation order, and does not in general require computation using the JVPs or VJPs \cite{Baydin_Pearlmutter_Radul_Siskind_2015}. 
+This is apparent for example when computing sparse Jacobians, where generally symbolic differentiation computes entries element-by-element while forward AD computes the matrix column-by-column and reverse AD computes row-by-row (see Section \ref{section:sparsity}).

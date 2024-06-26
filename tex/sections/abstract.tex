@@ -1,8 +1,18 @@
-The differentiable programming paradigm has become a central component of modern machine learning techniques. 
-A long tradition of this paradigm exists in the context of scientific computing, in particular in differential equation-constrained, gradient-based optimization.
-The recognition of the strong conceptual synergies between inverse methods and machine learning offers the opportunity to lay out a coherent framework applicable to both fields.
-For models described by differential equations, the calculation of sensitivities and gradients requires careful algebraic and numeric manipulations of the underlying dynamical system.
-Here, we provide a comprehensive review of existing techniques to compute gradients of numerical solutions of differential equation systems.
-We first discuss the importance of gradients of solutions of ODEs in a variety of scientific domains, covering computational fluid dynamics, electromagnetism, geosciences, meteorology, oceanograpgy, climate science, flux inversion, glaciology, solid earth geophysics, biology and ecology, and quantum physics.
+{\footnotesize
+The differentiable programming paradigm is a cornerstone of modern scientific computing. 
+It refers to numerical methods for computing the gradient of a numerical model's output. 
+Many scientific models are based on differential equations, where differentiable programming plays a crucial role in calculating model sensitivities, inverting model parameters, and training hybrid models that combine differential equations with data-driven approaches.
+Furthermore, recognizing the strong synergies between inverse methods and machine learning offers the opportunity to establish a coherent framework applicable to both fields.
+Differentiating functions based on the numerical solution of differential equations is non-trivial. 
+Numerous methods based on a wide variety of paradigms have been proposed in the literature, each with pros and cons specific to the type of problem investigated.
+Here, we provide a comprehensive review of existing techniques to compute derivatives of numerical solutions of differential equations.
+We first discuss the importance of gradients of solutions of differential equations in a variety of scientific domains.
+% , covering computational fluid dynamics, electromagnetism, geosciences, meteorology, oceanograpgy, climate science, flux inversion, glaciology, solid earth geophysics, biology and ecology, and quantum physics.
 Second, we lay out the mathematical foundations of the various approaches and compare them with each other. 
-Finally, we delve into the computational considerations and explore the solutions available in modern scientific software. 
+Third, we cover the computational considerations and explore the solutions available in modern scientific software.
+Last but not least, we provide best-practices and recommendations for practitioners. 
+% By delivering an exhaustive review of sensitivity methods, 
+We hope that this work accelerates the fusion of scientific models and data, and fosters a modern approach to scientific modelling.
+\\ \\
+\noindent \textbf{Key words.} differentiable programming, sensitivity analysis, differential equations, inverse modelling, scientific machine learning, automatic differentiation, adjoint methods.
+}
