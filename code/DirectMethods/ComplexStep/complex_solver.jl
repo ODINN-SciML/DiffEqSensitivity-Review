@@ -3,7 +3,7 @@ using OrdinaryDiffEq
 function dyn!(du::Array{Complex{Float64}}, u::Array{Complex{Float64}}, p, t)
     ω = p[1]
     du[1] = u[2]
-    du[2] = - ω^2 * u[1]
+    du[2] = -ω^2 * u[1]
 end
 
 tspan = [0.0, 10.0]
@@ -15,4 +15,5 @@ function complexstep_differentiation(f::Function, p::Float64, ε::Float64)
     return imag(f(p_complex)) / ε
 end
 
-complexstep_differentiation(x -> solve(ODEProblem(dyn!, u0, tspan, [x]), Tsit5()).u[end][1], 20., 1e-3)
+complexstep_differentiation(
+    x -> solve(ODEProblem(dyn!, u0, tspan, [x]), Tsit5()).u[end][1], 20.0, 1e-3)

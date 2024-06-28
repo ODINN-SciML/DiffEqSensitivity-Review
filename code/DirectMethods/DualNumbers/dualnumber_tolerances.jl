@@ -15,20 +15,20 @@ This generates solutions u(t) = (t-θ)^5/5 that can be solved exactly with a 5th
 """
 function dyn!(du, u, p, t)
     θ = p[1]
-    du .= (t .- θ).^4.0
+    du .= (t .- θ) .^ 4.0
 end
 
 p = [1.0]
 
 prob = ODEProblem(dyn!, u0, tspan, p)
-sol  = solve(prob, Tsit5(), reltol=reltol, abstol=abstol)
+sol = solve(prob, Tsit5(), reltol = reltol, abstol = abstol)
 
 # We can see that the time steps increase with non-stop
 # @show diff(sol.t)
 
 function loss(p, sensealg)
     prob = ODEProblem(dyn!, u0, tspan, p)
-    sol = solve(prob, Tsit5(), sensealg=sensealg, reltol=reltol, abstol=abstol)
+    sol = solve(prob, Tsit5(), sensealg = sensealg, reltol = reltol, abstol = abstol)
     @show "Number of time steps: ", length(sol.t)
     sol.u[end][1]
 end
@@ -52,21 +52,23 @@ condition(u, t, integrator) = true
 function printstepsize!(integrator)
     if length(integrator.sol.t) > 1
         println("Stepsize at step ", length(integrator.sol.t), ":   ",
-            integrator.sol.t[end] - integrator.sol.t[end-1])
+            integrator.sol.t[end] - integrator.sol.t[end - 1])
     end
 end
 
 cb = DiscreteCallback(condition, printstepsize!)
 
 # g1 = Zygote.gradient(p -> loss(p, ForwardDiffSensitivity()), internalnorm = (u,t) -> sum(abs2,u/length(u)), p)
-g1 = Zygote.gradient(p -> solve(ODEProblem(dyn!, u0, tspan, p),
-                                Tsit5(),
-                                sensealg = ForwardDiffSensitivity(),
-                                saveat = 0.1,
-                                internalnorm = (u,t) -> sum(abs2, u/length(u)),
-                                callback = cb,
-                                reltol=1e-6,
-                                abstol=1e-6).u[end][1], p)
+g1 = Zygote.gradient(
+    p -> solve(ODEProblem(dyn!, u0, tspan, p),
+    Tsit5(),
+    sensealg = ForwardDiffSensitivity(),
+    saveat = 0.1,
+    internalnorm = (u, t) -> sum(abs2, u / length(u)),
+    callback = cb,
+    reltol = 1e-6,
+    abstol = 1e-6).u[end][1],
+    p)
 @show g1
 
 # Forward Sensitivity
@@ -82,13 +84,13 @@ g1 = Zygote.gradient(p -> solve(ODEProblem(dyn!, u0, tspan, p),
 
 # Corrected AD
 # g3 = ForwardDiff.gradient(p -> loss(p, nothing), p)
-g3 = Zygote.gradient(p -> solve(ODEProblem(dyn!, u0, tspan, p),
-                                Tsit5(),
-                                sensealg = ForwardDiffSensitivity(),
-                                # saveat = 0.1,
-                                # callback = cb,
-                                reltol=1e-6,
-                                abstol=1e-6).u[end][1], p)
+g3 = Zygote.gradient(
+    p -> solve(ODEProblem(dyn!, u0, tspan, p),
+    Tsit5(),
+    sensealg = ForwardDiffSensitivity(),     # saveat = 0.1,     # callback = cb,
+    reltol = 1e-6,
+    abstol = 1e-6).u[end][1],
+    p)
 @show g3
 
 @show grad_true(p)
