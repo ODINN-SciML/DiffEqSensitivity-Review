@@ -1,15 +1,19 @@
+# Differentiable programming for Differential equations: a review
+
+[![CI](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/CI.yml)
 ![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/latex.yml/badge.svg)
 ![example workflow](https://github.com/ODINN-SciML/DiffEqSensitivity-Review/actions/workflows/biblatex.yml/badge.svg)
-[![All Contributors](https://img.shields.io/github/all-contributors/ODINN-SciML/DiffEqSensitivity-Review?color=ee8449&style=flat-square)](#contributors)
 
-# Differentiable programming for Differential equations: a review
+[![All Contributors](https://img.shields.io/github/all-contributors/ODINN-SciML/DiffEqSensitivity-Review?color=ee8449&style=flat-square)](#contributors)
+[![SciML Code Style](https://img.shields.io/static/v1?label=code%20style&message=SciML&color=9558b2&labelColor=389826)](https://github.com/SciML/SciMLStyle)
 
 ### ⚠️ New preprint available! 📖 ⚠️
 
 The review paper is now available as a preprint on arXiv: https://arxiv.org/abs/2406.09699 
 
 If you want to cite this work, please use this BibTex citation:
-```
+
+```bibtex
 @misc{sapienza2024differentiable,
       title={Differentiable Programming for Differential Equations: A Review}, 
       author={Facundo Sapienza and Jordi Bolibar and Frank Schäfer and Brian Groenke and Avik Pal and Victor Boussange and Patrick Heimbach and Giles Hooker and Fernando Pérez and Per-Olof Persson and Christopher Rackauckas},

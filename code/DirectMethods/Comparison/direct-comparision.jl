@@ -20,7 +20,7 @@ abstol = 1e-5
 function oscilatior!(du, u, p, t)
     ω = p[1]
     du[1] = u[2]
-    du[2] = - ω^2 * u[1]
+    du[2] = -ω^2 * u[1]
     nothing
 end
 
@@ -36,14 +36,14 @@ function solution_derivative(t, u0, p)
     ω = p[1]
     A₀ = u0[2] / ω
     B₀ = u0[1]
-    return A₀ * ( t * cos(ω * t) - sin(ω * t)/ω ) - B₀ * t * sin(ω * t)
+    return A₀ * (t * cos(ω * t) - sin(ω * t) / ω) - B₀ * t * sin(ω * t)
 end
 
 ######### Simple example of how to run the dynamcics ###########
 
 # Solve numerical problem
 prob = ODEProblem(oscilatior!, u0, tspan, p)
-sol = solve(prob, Tsit5(), reltol=reltol, abstol=abstol)
+sol = solve(prob, Tsit5(), reltol = reltol, abstol = abstol)
 
 u_final = sol.u[end][1]
 
@@ -65,17 +65,17 @@ function finitediff_solver(h, t, u0, p, reltol, abstol)
     tspan = (0.0, t)
     # Forward model with -h
     prob₋ = ODEProblem(oscilatior!, u0, tspan, p₋)
-    sol₋ = solve(prob₋, Tsit5(), reltol=reltol, abstol=abstol)
+    sol₋ = solve(prob₋, Tsit5(), reltol = reltol, abstol = abstol)
     # Forward model with +h
     prob₊ = ODEProblem(oscilatior!, u0, tspan, p₊)
-    sol₊ = solve(prob₊, Tsit5(), reltol=reltol, abstol=abstol)
+    sol₊ = solve(prob₊, Tsit5(), reltol = reltol, abstol = abstol)
 
-    return (sol₊.u[end][1] - sol₋.u[end][1]) /(2h)
+    return (sol₊.u[end][1] - sol₋.u[end][1]) / (2h)
 end
 
 ######### Simulation with differerent stepsizes ###########
 
-stepsizes = 2.0.^collect(round(log2(eps(Float64))):1:0)
+stepsizes = 2.0 .^ collect(round(log2(eps(Float64))):1:0)
 times = collect(t₀:1.0:t₁)
 
 # True derivative computend analytially
@@ -85,71 +85,85 @@ derivative_true = solution_derivative(t₁, u0, p)
 # derivative_numerical = finitediff_numerical.(stepsizes, Ref(t₁), Ref(u0), Ref(p))
 derivative_numerical = finitediff_numerical.(stepsizes, Ref(t₁), Ref(u0), Ref(p))
 derivative_finitediff_exact = finitediff_numerical.(stepsizes, Ref(t₁), Ref(u0), Ref(p))
-error_finitediff_exact = abs.((derivative_numerical .- derivative_true)./derivative_true)
+error_finitediff_exact = abs.((derivative_numerical .- derivative_true) ./ derivative_true)
 
 # Finite differences with solution from solver and low tolerance
-derivative_solver_low = finitediff_solver.(stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-6), Ref(1e-6))
-error_finitediff_low = abs.((derivative_solver_low .- derivative_true)./derivative_true)
+derivative_solver_low = finitediff_solver.(
+    stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-6), Ref(1e-6))
+error_finitediff_low = abs.((derivative_solver_low .- derivative_true) ./ derivative_true)
 
 # Finite differences with solution from solver and high tolerance
-derivative_solver_high = finitediff_solver.(stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-12), Ref(1e-12))
-error_finitediff_high = abs.((derivative_solver_high .- derivative_true)./derivative_true)
+derivative_solver_high = finitediff_solver.(
+    stepsizes, Ref(t₁), Ref(u0), Ref(p), Ref(1e-12), Ref(1e-12))
+error_finitediff_high = abs.((derivative_solver_high .- derivative_true) ./ derivative_true)
 
 # Complex step differentiation with solution from solver and high tolerance
 u0_complex = ComplexF64.(u0)
 
-derivative_complex_low = complexstep_differentiation.(Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol=1e-6, abstol=1e-6).u[end][1]), Ref(p[1]), stepsizes)
+derivative_complex_low = complexstep_differentiation.(
+    Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol = 1e-6, abstol = 1e-6).u[end][1]),
+    Ref(p[1]),
+    stepsizes)
 error_complex_low = abs.((derivative_true .- derivative_complex_low) ./ derivative_true)
-derivative_complex_high = complexstep_differentiation.(Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol=1e-12, abstol=1e-12).u[end][1]), Ref(p[1]), stepsizes)
+derivative_complex_high = complexstep_differentiation.(
+    Ref(x -> solve(ODEProblem(oscilatior!, u0_complex, tspan, [x]), Tsit5(), reltol = 1e-12, abstol = 1e-12).u[end][1]),
+    Ref(p[1]),
+    stepsizes)
 error_complex_high = abs.((derivative_true .- derivative_complex_high) ./ derivative_true)
 
 # Complex step Differentiation
-derivative_complex_exact = ComplexDiff.derivative.(ω -> solution(t₁, u0, [ω]), p[1], stepsizes)
-error_complex_exact = abs.((derivative_complex_exact .- derivative_true)./derivative_true)
+derivative_complex_exact = ComplexDiff.derivative.(
+    ω -> solution(t₁, u0, [ω]), p[1], stepsizes)
+error_complex_exact = abs.((derivative_complex_exact .- derivative_true) ./ derivative_true)
 
 # Forward AD applied to numerical solver
-derivative_AD_low = Zygote.gradient(p->solve(ODEProblem(oscilatior!, u0, tspan, p), Tsit5(), reltol=1e-6, abstol=1e-6).u[end][1], p)[1][1]
+derivative_AD_low = Zygote.gradient(
+    p -> solve(ODEProblem(oscilatior!, u0, tspan, p), Tsit5(), reltol = 1e-6, abstol = 1e-6).u[end][1],
+    p)[1][1]
 error_AD_low = abs((derivative_true - derivative_AD_low) / derivative_true)
 
-derivative_AD_high = Zygote.gradient(p->solve(ODEProblem(oscilatior!, u0, tspan, p), Tsit5(), reltol=1e-12, abstol=1e-12).u[end][1], p)[1][1]
+derivative_AD_high = Zygote.gradient(
+    p -> solve(ODEProblem(oscilatior!, u0, tspan, p), Tsit5(), reltol = 1e-12, abstol = 1e-12).u[end][1],
+    p)[1][1]
 error_AD_high = abs((derivative_true - derivative_AD_high) / derivative_true)
-
 
 ######### Figure ###########
 
-color_finitediff = RGBf(192/255, 57/255, 43/255)
-color_finitediff_low = RGBf(230/255, 126/255, 34/255)
-color_complex = RGBf(41/255, 128/255, 185/255)
-color_complex_low = RGBf(52/255, 152/255, 219/255)
-color_AD = RGBf(142/255, 68/255, 173/255)
-color_AD_low = RGBf(155/255, 89/255, 182/255)
+color_finitediff = RGBf(192 / 255, 57 / 255, 43 / 255)
+color_finitediff_low = RGBf(230 / 255, 126 / 255, 34 / 255)
+color_complex = RGBf(41 / 255, 128 / 255, 185 / 255)
+color_complex_low = RGBf(52 / 255, 152 / 255, 219 / 255)
+color_AD = RGBf(142 / 255, 68 / 255, 173 / 255)
+color_AD_low = RGBf(155 / 255, 89 / 255, 182 / 255)
 
-fig = Figure(resolution=(1000, 400))
-ax = Axis(fig[1, 1], xlabel = L"Stepsize ($\varepsilon$)", ylabel = L"\text{Absolute relative error}",
-          xscale = log10, yscale=log10, xlabelsize=24, ylabelsize=24, xticklabelsize=18, yticklabelsize=18)
+fig = Figure(resolution = (1000, 400))
+ax = Axis(fig[1, 1], xlabel = L"Stepsize ($\varepsilon$)",
+    ylabel = L"\text{Absolute relative error}", xscale = log10, yscale = log10,
+    xlabelsize = 24, ylabelsize = 24, xticklabelsize = 18, yticklabelsize = 18)
 
 # Plot derivatived of true solution (no numerical solver)
-lines!(ax, stepsizes, error_finitediff_exact, label=L"\text{Finite differences (exact solution)}",
-    color=color_finitediff, linewidth=2, linestyle = :dash)
+lines!(ax, stepsizes, error_finitediff_exact,
+    label = L"\text{Finite differences (exact solution)}",
+    color = color_finitediff, linewidth = 2, linestyle = :dash)
 lines!(ax, stepsizes, error_complex_exact,
-    label=L"\text{Complex step differentiation (exact solution)}",
-    color=color_complex, linewidth=2, linestyle = :dash)
-    
+    label = L"\text{Complex step differentiation (exact solution)}",
+    color = color_complex, linewidth = 2, linestyle = :dash)
+
 # Plot derivatives computed on top of numerical solver with finite differences
-scatter!(ax, stepsizes, error_finitediff_low,
-    label=L"Finite differences (tol=$10^{-6}$)", color=color_finitediff_low,
-    marker ='•', markersize=20)
-scatter!(ax, stepsizes, error_finitediff_high,
-    label=L"Finite differences (tol=$10^{-12}$)", color=color_finitediff,
-    marker ='•', markersize=30)
+scatter!(
+    ax, stepsizes, error_finitediff_low, label = L"Finite differences (tol=$10^{-6}$)",
+    color = color_finitediff_low, marker = '•', markersize = 20)
+scatter!(
+    ax, stepsizes, error_finitediff_high, label = L"Finite differences (tol=$10^{-12}$)",
+    color = color_finitediff, marker = '•', markersize = 30)
 
 # Plot derivatives computed on top of numerical solver with complex step method
 scatter!(ax, stepsizes, error_complex_low,
-    label=L"Complex step differentiation (tol=$10^{-6}$)",
-    color=color_complex_low, marker ='∘', markersize=20)
+    label = L"Complex step differentiation (tol=$10^{-6}$)",
+    color = color_complex_low, marker = '∘', markersize = 20)
 scatter!(ax, stepsizes, error_complex_high,
-    label=L"Complex step differentiation (tol=$10^{-12}$)", color=color_complex,
-    marker ='∘', markersize=30)
+    label = L"Complex step differentiation (tol=$10^{-12}$)",
+    color = color_complex, marker = '∘', markersize = 30)
 
 # AD
 # hlines!(ax, [error_AD_low, error_AD_high], color=color_AD, linewidth=1.5)
@@ -158,17 +172,16 @@ scatter!(ax, stepsizes, error_complex_high,
 # plot!(ax, [stepsizes[begin], stepsizes[end]],[error_AD_high, error_AD_high],
 #     color=color_AD, label=L"Forward AD (tol=$10^{-12}$)", marker='•', markersize=25)
 
-lines!(ax, stepsizes, repeat([error_AD_low], length(stepsizes)), 
-    color=color_AD_low, label=L"Forward AD (tol=$10^{-6}$)", linewidth=2)
-lines!(ax, stepsizes, repeat([error_AD_high], length(stepsizes)), 
-    color=color_AD, label=L"Forward AD (tol=$10^{-12}$)", linewidth=3)
+lines!(ax, stepsizes, repeat([error_AD_low], length(stepsizes)),
+    color = color_AD_low, label = L"Forward AD (tol=$10^{-6}$)", linewidth = 2)
+lines!(ax, stepsizes, repeat([error_AD_high], length(stepsizes)),
+    color = color_AD, label = L"Forward AD (tol=$10^{-12}$)", linewidth = 3)
 
 # Add legend
 fig[1, 2] = Legend(fig, ax)
 
 !ispath("Figures") && mkpath("Figures")
 save("Figures/DirectMethods_comparison.pdf", fig)
-
 
 ######### Benchmark ###########
 

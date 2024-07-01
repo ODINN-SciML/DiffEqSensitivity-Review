@@ -11,8 +11,7 @@ sol = solve(prob, Tsit5(), saveat = 0.1)
 
 function cost(u0)
     _prob = remake(prob, u0 = u0)
-    solve(_prob, Tsit5(), reltol = 1e-12, 
-          abstol = 1e-12, saveat = 0.1)[1, :]
+    solve(_prob, Tsit5(), reltol = 1e-12, abstol = 1e-12, saveat = 0.1)[1, :]
 end
 dx = ForwardDiff.jacobian(cost, u0)[end, :]
 #=
@@ -29,8 +28,7 @@ dx2 = Zygote.jacobian(cost, u0)[1][end, :]
 
 function cost(u0)
     _prob = remake(prob, u0 = u0)
-    solve(_prob, Tsit5(), reltol = 1e-6, 
-          abstol = 1e-6, saveat = 0.1)[1, :]
+    solve(_prob, Tsit5(), reltol = 1e-6, abstol = 1e-6, saveat = 0.1)[1, :]
 end
 dx = ForwardDiff.jacobian(cost, u0)[end, :]
 #=
@@ -48,9 +46,8 @@ dx2 = Zygote.jacobian(cost, u0)[1][end, :]
 
 function cost(u0)
     _prob = remake(prob, u0 = u0)
-    solve(_prob, Tsit5(), reltol = 1e-12, 
-          abstol = 1e-12, saveat = 0.1)[1, :]
+    solve(_prob, Tsit5(), reltol = 1e-12, abstol = 1e-12, saveat = 0.1)[1, :]
 end
 p = [1.0001, 1.0];
-((cost(p) - cost([1.0,1.0])) / 0.0001)[end]
+((cost(p) - cost([1.0, 1.0])) / 0.0001)[end]
 # 11013.732900492363

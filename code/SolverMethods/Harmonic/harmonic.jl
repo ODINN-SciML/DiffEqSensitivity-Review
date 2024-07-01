@@ -15,27 +15,27 @@ tspan = [0.0, 10.0]
 # Dynamics
 function f(u, p, t)
     du₁ = u[2]
-    du₂ = - p[1]^2 * u[1]
+    du₂ = -p[1]^2 * u[1]
     return [du₁, du₂]
 end
 
 function f!(du, u, p, t)
     du[1] = u[2]
-    du[2] = - p[1]^2 * u[1]
+    du[2] = -p[1]^2 * u[1]
 end
 
 # Jacobian ∂f/∂p
 function ∂f∂p(u, p, t)
     Jac = zeros(length(u), length(p))
-    Jac[2,1] = -2*p[1]*u[1]
+    Jac[2, 1] = -2 * p[1] * u[1]
     return Jac
 end
 
 # Jacobian ∂f/∂u
 function ∂f∂u(u, p, t)
     Jac = zeros(length(u), length(u))
-    Jac[1,2] = 1
-    Jac[2,1] = -p[1]^2
+    Jac[1, 2] = 1
+    Jac[2, 1] = -p[1]^2
     return Jac
 end
 
@@ -43,7 +43,7 @@ end
 
 function cost(p)
     prob = ODEProblem(f, u0, tspan, p)
-    return solve(prob, Euler(), dt=0.001, save_everystep=false, sensealg=BacksolveAdjoint()).u[end][1]
+    return solve(prob, Euler(), dt = 0.001, save_everystep = false, sensealg = BacksolveAdjoint()).u[end][1]
 end
 cost(p)
 

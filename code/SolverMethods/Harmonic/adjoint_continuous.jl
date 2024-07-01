@@ -14,14 +14,13 @@ end
 
 # Solution of original ODE
 prob = ODEProblem(f, u0, tspan, p)
-sol = solve(prob, Euler(), dt=0.001)
+sol = solve(prob, Euler(), dt = 0.001)
 
 # Final state
 u1 = sol.u[end]
 z1 = VectorOfArray([u1, [1.0, 0.0], zeros(length(p))])
 
 aug_prob = ODEProblem(f_aug, z1, reverse(tspan), p)
-u0_, λ0, dLdp_cont = solve(aug_prob, Euler(), dt=-0.001).u[end]
-
+u0_, λ0, dLdp_cont = solve(aug_prob, Euler(), dt = -0.001).u[end]
 
 @test dLdp_cont[1] ≈ dLdp_SciML[1]

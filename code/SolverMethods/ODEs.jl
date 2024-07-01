@@ -31,7 +31,7 @@ end
 function euler(f, u0, tspan, p, dt)
     u = u0
     t = tspan[1]:dt:tspan[2] # time grid
-    for ti in t[1:end-1]
+    for ti in t[1:(end - 1)]
         u = u .+ f(u, p, ti) .* dt
     end
     u
@@ -42,8 +42,7 @@ end
 # Setup the ODE problem, then solve
 prob = ODEProblem(f, u0, tspan, p)
 sol = solve(prob, Euler(), dt = dt)
-@test euler(f, u0, tspan, p, dt) ≈ sol.u[end] rtol = 1e-10
-
+@test euler(f, u0, tspan, p, dt)≈sol.u[end] rtol=1e-10
 
 ### Discrete-forward sensitivity analysis
 
@@ -56,8 +55,8 @@ function fu(u, p, t)
 
     J[1, 1] = α - β * y * t
     J[2, 1] = γ * y * t
-    J[1, 2] = - β * x * t
-    J[2, 2] = - δ + x * γ * t
+    J[1, 2] = -β * x * t
+    J[2, 2] = -δ + x * γ * t
 
     J
 end
@@ -70,12 +69,12 @@ function fp(u, p, t)
 
     Jp[1, 1] = x
     Jp[2, 1] = 0
-    Jp[1, 2] = - x*y*t
+    Jp[1, 2] = -x * y * t
     Jp[2, 2] = 0
     Jp[1, 3] = 0
-    Jp[2, 3] = - y
+    Jp[2, 3] = -y
     Jp[1, 4] = 0
-    Jp[2, 4] = x*y*t
+    Jp[2, 4] = x * y * t
 
     Jp
 end
@@ -87,7 +86,7 @@ function DFSA(u0, tspan, p, dt)
     vu = I(length(u))
     vp = zeros(length(u), length(p))
 
-    for ti in t[1:end-1]
+    for ti in t[1:(end - 1)]
         vu = vu + dt * fu(u, p, ti) * vu
         vp = vp + dt * (fu(u, p, ti) * vp + fp(u, p, ti))
         u = u + f(u, p, ti) * dt # Euler step
@@ -104,7 +103,6 @@ vp_AD = ForwardDiff.jacobian(p -> euler(f, u0, tspan, p, dt), p)
 @test vu ≈ vu_AD
 @test vp ≈ vp_AD
 
-
 ### Discrete-adjoint sensitivity analysis
 
 # with L = z_T
@@ -118,7 +116,7 @@ function DASA(u0, tspan, p, dt)
     λp = zeros(length(p))
     # forward pass
     us = [u]
-    for ti in t[1:end-1]
+    for ti in t[1:(end - 1)]
         u = u + f(u, p, ti) * dt # Euler step
         push!(us, u)
     end
@@ -135,7 +133,6 @@ function DASA(u0, tspan, p, dt)
     us[1], vec(λu), vec(λp)
 end
 
-
 u0_, λu, λp = DASA(u0, tspan, p, dt)
 
 λu_AD = ReverseDiff.gradient(u0 -> euler(f, u0, tspan, p, dt)[1], u0)
@@ -143,7 +140,6 @@ u0_, λu, λp = DASA(u0, tspan, p, dt)
 
 @test λu ≈ λu_AD
 @test λp ≈ λp_AD
-
 
 ### Continuous-forward sensitivity analysis (identical to DFSA since non-adaptive)
 
@@ -182,7 +178,9 @@ u0_, λu, λp = euler(f_augmented_CASA, y0, reverse(tspan), p, -dt)
 
 function cost(u0, p)
     prob = ODEProblem(f, u0, tspan, p)
-    u = Array(solve(prob, Euler(), dt=dt, save_everystep=false, sensealg=BacksolveAdjoint()))[1, end]
+    u = Array(solve(
+        prob, Euler(), dt = dt, save_everystep = false, sensealg = BacksolveAdjoint()))[
+        1, end]
 end
 cost(u0, p)
 

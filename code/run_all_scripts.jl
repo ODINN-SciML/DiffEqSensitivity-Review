@@ -17,6 +17,8 @@ recursive_readdir!(@__DIR__, "", scripts)
 @testset "DiffEqSensitivity Review All Scripts" begin
     for script in scripts
         @info "Running $script"
-        @time @eval @safetestset $script begin include($script) end
+        @time @eval @safetestset $script begin
+            include($script)
+        end
     end
 end
