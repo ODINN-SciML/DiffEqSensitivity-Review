@@ -36,7 +36,7 @@ jobs:
       - name: Move artifact location
         run: mv tex/main.pdf main.pdf
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 📚 Automated compiled Latex PDF
           branch: main
