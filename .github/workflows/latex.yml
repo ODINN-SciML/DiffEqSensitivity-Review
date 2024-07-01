@@ -28,7 +28,7 @@ jobs:
           texlive_version: 2023
           # args: -f
       - name: Upload PDF file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Compiled main PDF
           path: tex/main.pdf
