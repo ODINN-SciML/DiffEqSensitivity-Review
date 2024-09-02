@@ -83,7 +83,7 @@ In the first case, common choices for these include $M^m_i = \max \{ u_i^{m}, \h
 % The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total error $\text{Err}_\text{scaled}$, sometimes known as Hairer norm, has been the standard for a long time \cite{Ranocha_Dalcin_Parsani_Ketcheson_2022} and it is based on the assumption that a small increase in the size of the systems of ODEs (e.g., by simply duplicating the ODE system) should not affect the stepsize choice, but other options can be considered \cite{hairer-solving-1}.   
 
 Modern solvers include stepsize controllers that pick $\Delta t_m$ as large as possible to minimize the total number of steps while preventing large errors by keeping $\text{Err}^m_\text{scaled} \leq 1$. 
-One of the most used methods to archive this is the proportional-integral controller (PIC) that updates the stepsize according to 
+One of the most used methods to achieve this is the proportional-integral controller (PIC) that updates the stepsize according to 
 \begin{equation}
     \Delta t_{m} = \eta \, \Delta t_{m-1}
     \qquad 
@@ -189,7 +189,7 @@ with $\alpha_m$ some choice of the stepsize and some initialization $\theta^0 \i
 A direct implementation of gradient descent following Equation \eqref{eq:gradient-descent} is prone to converge to a local minimum and slows down in a neighborhood of saddle points. 
 To address these issues, variants of this scheme employing more advanced updating strategies have been proposed, including Newton-type methods \cite{second-order-optimization}, quasi-Newton methods, acceleration techniques \cite{JMLR:v22:20-207}, and natural gradient descent methods \cite{doi:10.1137/22M1477805}. 
 For instance, ADAM is an adaptive, momentum-based algorithm  that stores the parameter update at each iteration, and determines the next update as a linear combination of the gradient and the previous update \cite{Kingma2014}.
-ADAM been widely adopted to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}).
+ADAM has been widely adopted to train highly parametrized neural networks (up to the order of $10^8$ parameters \cite{NIPS2017_3f5ee243}).
 Other widely employed algorithms are the Broyden–Fletcher–Goldfarb–Shanno (BFGS) and its limited-memory version algorithm (L-BFGS), which determine the descent direction by preconditioning the gradient with curvature information. 
 % ADAM is less prone to converge to a local minimum, while (L-)BFGS has a faster converge rate. 
 % Using ADAM for the first iterations followed by (L-)BFGS proves to be a successful strategy to minimize a loss function with best accuracy. 

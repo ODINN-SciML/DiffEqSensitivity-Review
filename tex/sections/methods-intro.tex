@@ -29,7 +29,7 @@ On the other side, continuous methods lead to consistency error calculation of t
 % However, one has to keep in mind that AD computes the exact derivative of an approximation of the objective and may not yield an approximation to the exact derivatives of the objective (Section \ref{section:forwardAD-sensitivity}).
 
 The distinction between \textit{forward} and \textit{reverse} regards whether sensitivities are computed for intermediate variables with respect to the input variable or parameter to differentiate (forward) or, on the contrary, we compute the sensitivity of the output variable with respect to each intermediate variable by defining a new adjoint variable (reverse). 
-Mathematically speaking, this distinction translated to the fact that forward methods compute directional derivatives by mapping sequential mappings between tangent spaces, while reverse methods apply sequential mappings between co-tangent spaces from the direction of the output variable to the input variable (Section \ref{sec:vjp-jvp}).   
+Mathematically speaking, this distinction translates to the fact that forward methods compute directional derivatives by mapping sequential mappings between tangent spaces, while reverse methods apply sequential mappings between co-tangent spaces from the direction of the output variable to the input variable (Section \ref{sec:vjp-jvp}).   
 In all forward methods the DE is solved sequentially and simultaneously with the directional derivative during the forward pass of the numerical solver. 
 On the contrary, reverse methods compute the gradient by solving a new problem that moves in the opposite direction as the original numerical solver.
 In DE-based models, intermediate variables correspond to intermediate solutions of the DE.
