@@ -16,7 +16,7 @@ The choice of the norm $\frac{1}{\sqrt n} \| \cdot \|_2$ for computing the total
 % Chris on https://discourse.julialang.org/t/default-norm-used-in-ode-error-control/70995/4 mention to this norm to be the defaul since 70s
 
 The goal of a stepize controller is to pick $\Delta t_{n+1}$ as large as possible (so the solver requires less total steps) at the same time that $\text{Err}_\text{scaled} \leq 1$. 
-One of the most used methods to archive this is the proportional-integral controller (PIC) that updates the stepsize according to \cite{hairer-solving-2, Ranocha_Dalcin_Parsani_Ketcheson_2022}
+One of the most used methods to achieve this is the proportional-integral controller (PIC) that updates the stepsize according to \cite{hairer-solving-2, Ranocha_Dalcin_Parsani_Ketcheson_2022}
 \begin{equation}
     \Delta t_{n+1} = \eta \, \Delta t_n
     \qquad 
