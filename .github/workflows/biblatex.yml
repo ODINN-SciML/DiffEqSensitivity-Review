@@ -30,7 +30,7 @@ jobs:
         run: |
           python .utils/biblatex_merger.py . tex/bibliography.bib
       - name: Upload biblatex file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Merged biblatex file
           path: tex/bibliography.bib
